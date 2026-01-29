@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:16
+    container_name: hockeyspare_postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: hockeyspare
+      POSTGRES_PASSWORD: hockeyspare
+      POSTGRES_DB: hockeyspare
+    volumes:
+      - hockeyspare_pg:/var/lib/postgresql/data
+
+volumes:
+  hockeyspare_pg:

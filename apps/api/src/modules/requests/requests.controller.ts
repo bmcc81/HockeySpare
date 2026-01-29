@@ -1,23 +1,30 @@
-import { Body, Controller, Get, Post, Version } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { CreateRequestDto } from './dto/create-request.dto';
-import { RequestsService } from './requests.service';
+import { Controller, Get } from '@nestjs/common';
 
-@ApiTags('requests')
 @Controller('requests')
-@Version('1')
 export class RequestsController {
-  constructor(private readonly service: RequestsService) {}
-
   @Get()
-  @ApiOkResponse({ description: 'List requests' })
-  getAll() {
-    return this.service.getAll();
-  }
-
-  @Post()
-  @ApiCreatedResponse({ description: 'Create a request' })
-  create(@Body() dto: CreateRequestDto) {
-    return this.service.create(dto);
+  findAll() {
+    return [
+      {
+        id: 1,
+        type: 'team_needs_player',
+        position: 'goalie',
+        skillLevel: 'intermediate',
+        payAmount: 40,
+        arena: 'Vaudreuil Arena',
+        time: 'Tonight 8:30 PM',
+        notes: 'Beer league C level',
+      },
+      {
+        id: 2,
+        type: 'player_needs_team',
+        position: 'forward',
+        skillLevel: 'advanced',
+        payAmount: 15,
+        arena: 'Any rink near Dorion',
+        time: 'Tonight 10:30 PM',
+        notes: 'Looking for extra ice',
+      }
+    ];
   }
 }

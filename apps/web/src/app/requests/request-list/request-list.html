@@ -1,0 +1,9 @@
+<h2>Marketplace</h2>
+
+<div *ngFor="let req of (requests$ | async)" class="card">
+  <h3>{{ req.position | uppercase }} - {{ req.skillLevel }}</h3>
+  <p><strong>Arena:</strong> {{ req.arena }}</p>
+  <p><strong>Time:</strong> {{ req.time }}</p>
+  <p><strong>Pay:</strong> {{ req.payAmount | currency:'CAD':'symbol' }}</p>
+  <p *ngIf="req.notes">{{ req.notes }}</p>
+</div>

@@ -1,0 +1,9 @@
+{
+  "name": "hockeyspare-monorepo",
+  "private": true,
+  "scripts": {
+    "web": "cd apps/web && ng serve",
+    "api": "cd apps/api && npm run start:dev",
+    "dev": "concurrently \"npm run web\" \"npm run api\""
+  }
+}

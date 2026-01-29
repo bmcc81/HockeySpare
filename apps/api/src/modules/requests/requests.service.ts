@@ -1,18 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { CreateRequestDto } from './dto/create-request.dto';
-
-type SpareRequest = CreateRequestDto & { id: number };
+import { SpareRequest } from './requests.types';
+import { Position, RequestType, SkillLevel } from './dto/create-request.dto';
 
 @Injectable()
 export class RequestsService {
-  private seq = 2;
-
-  private data: SpareRequest[] = [
+  private requests: SpareRequest[] = [
     {
       id: 1,
-      type: 'team_needs_player',
-      position: 'goalie',
-      skillLevel: 'intermediate',
+      type: RequestType.TEAM_NEEDS_PLAYER,
+      position: Position.GOALIE,
+      skillLevel: SkillLevel.INTERMEDIATE,
       payAmount: 40,
       arena: 'Vaudreuil Arena',
       time: 'Tonight 8:30 PM',
@@ -20,9 +17,9 @@ export class RequestsService {
     },
     {
       id: 2,
-      type: 'player_needs_team',
-      position: 'forward',
-      skillLevel: 'advanced',
+      type: RequestType.PLAYER_NEEDS_TEAM,
+      position: Position.FORWARD,
+      skillLevel: SkillLevel.ADVANCED,
       payAmount: 15,
       arena: 'Any rink near Dorion',
       time: 'Tonight 7-10 PM',
@@ -30,13 +27,7 @@ export class RequestsService {
     },
   ];
 
-  getAll() {
-    return this.data;
-  }
-
-  create(dto: CreateRequestDto) {
-    const created: SpareRequest = { id: ++this.seq, ...dto };
-    this.data.unshift(created);
-    return created;
+  findAll() {
+    return this.requests;
   }
 }

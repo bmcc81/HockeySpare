@@ -1,30 +1,18 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
+import { CreateRequestDto } from './dto/create-request.dto';
+import { RequestsService } from './requests.service';
 
 @Controller('requests')
 export class RequestsController {
+  constructor(private readonly requestsService: RequestsService) {}
+
   @Get()
   findAll() {
-    return [
-      {
-        id: 1,
-        type: 'team_needs_player',
-        position: 'goalie',
-        skillLevel: 'intermediate',
-        payAmount: 40,
-        arena: 'Vaudreuil Arena',
-        time: 'Tonight 8:30 PM',
-        notes: 'Beer league C level',
-      },
-      {
-        id: 2,
-        type: 'player_needs_team',
-        position: 'forward',
-        skillLevel: 'advanced',
-        payAmount: 15,
-        arena: 'Any rink near Dorion',
-        time: 'Tonight 10:30 PM',
-        notes: 'Looking for extra ice',
-      }
-    ];
+    return this.requestsService.findAll();
+  }
+
+  @Post()
+  create(@Body() dto: CreateRequestDto) {
+    return this.requestsService.create(dto);
   }
 }

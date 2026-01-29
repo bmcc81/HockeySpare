@@ -1,1 +1,36 @@
-<p>team-request-create works!</p>
+<h2>Create Team Request</h2>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <label>Position</label>
+  <select formControlName="position">
+    <option value="goalie">Goalie</option>
+    <option value="defense">Defense</option>
+    <option value="forward">Forward</option>
+    <option value="any">Any</option>
+  </select>
+
+  <label>Skill Level</label>
+  <select formControlName="skillLevel">
+    <option value="beginner">Beginner</option>
+    <option value="intermediate">Intermediate</option>
+    <option value="advanced">Advanced</option>
+  </select>
+
+  <label>Pay Amount</label>
+  <input type="number" formControlName="payAmount" />
+
+  <label>Arena</label>
+  <input type="text" formControlName="arena" />
+
+  <label>Time</label>
+  <input type="text" formControlName="time" />
+
+  <label>Notes</label>
+  <textarea formControlName="notes"></textarea>
+
+  <p *ngIf="error" style="color:red">{{ error }}</p>
+
+  <button type="submit" [disabled]="saving">
+    {{ saving ? 'Saving...' : 'Create' }}
+  </button>
+</form>

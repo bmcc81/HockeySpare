@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
-import { RequestService } from '../../core/services/request';
+import { RequestApiService } from '../../core/services/request-api';
 import { SpareRequest } from '../../shared/models/request.model';
 
 @Component({
@@ -14,7 +14,7 @@ import { SpareRequest } from '../../shared/models/request.model';
 export class RequestListComponent {
   requests$: Observable<SpareRequest[]>;
 
-  constructor(private requestService: RequestService) {
-    this.requests$ = this.requestService.getAll();
+  constructor(private api: RequestApiService) {
+    this.requests$ = this.api.getAll();
   }
 }

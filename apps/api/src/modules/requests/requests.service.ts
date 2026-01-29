@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { SpareRequest } from './requests.types';
-import { Position, RequestType, SkillLevel } from './dto/create-request.dto';
+import { Position, RequestType, SkillLevel, CreateRequestDto } from './dto/create-request.dto';
 
 @Injectable()
 export class RequestsService {
+  [x: string]: any;
   private requests: SpareRequest[] = [
     {
       id: 1,
@@ -29,5 +30,16 @@ export class RequestsService {
 
   findAll() {
     return this.requests;
+  }
+
+  create(dto: CreateRequestDto): SpareRequest {
+    const created: SpareRequest = {
+      id: this.nextId++,
+      ...dto,
+    };
+
+    // newest first
+    this.requests.unshift(created);
+    return created;
   }
 }

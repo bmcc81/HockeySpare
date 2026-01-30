@@ -15,6 +15,10 @@ export class RequestApiService {
     return this.http.get<SpareRequest[]>(this.baseUrl);
   }
 
+  getById(id: number): Observable<SpareRequest> {
+    return this.http.get<SpareRequest>(`${this.baseUrl}/${id}`);
+  }
+
   create(payload: CreateRequestPayload): Observable<SpareRequest> {
     return this.http.post<SpareRequest>(this.baseUrl, payload);
   }

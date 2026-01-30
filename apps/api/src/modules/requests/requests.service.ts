@@ -32,6 +32,10 @@ export class RequestsService {
     return this.requests;
   }
 
+  findOne(id: number) {
+    return this.requests.find(r => r.id === id);
+  }
+
   create(dto: CreateRequestDto): SpareRequest {
     const created: SpareRequest = {
       id: this.nextId++,

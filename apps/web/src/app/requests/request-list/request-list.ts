@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { RequestApiService } from '../../core/services/request-api';
 import { SpareRequest } from '../../shared/models/request.model';
@@ -7,7 +8,7 @@ import { SpareRequest } from '../../shared/models/request.model';
 @Component({
   selector: 'app-request-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './request-list.html',
   styleUrls: ['./request-list.scss'],
 })

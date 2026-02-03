@@ -8,3 +8,5 @@
 # env
 **/.env
 
+libs/contracts/dist
+

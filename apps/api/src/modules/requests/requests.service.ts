@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { SpareRequest } from './requests.types';
-import { Position, RequestType, SkillLevel, CreateRequestDto } from './dto/create-request.dto';
+import { Position, RequestType, SkillLevel } from '@hockeyspare/contracts';
+import { CreateRequestDto } from './dto/create-request.dto';
 
 @Injectable()
 export class RequestsService {
-  [x: string]: any;
+
   private requests: SpareRequest[] = [
     {
       id: 1,
@@ -26,7 +27,20 @@ export class RequestsService {
       time: 'Tonight 7-10 PM',
       notes: 'Looking for extra ice',
     },
+    {
+      id: 3,
+      type: RequestType.PLAYER_NEEDS_TEAM,
+      position: Position.DEFENSE,
+      skillLevel: SkillLevel.INTERMEDIATE,
+      payAmount: 15,
+      arena: 'Any rink near Dorion',
+      time: 'Tonight 7-10 PM',
+      notes: 'Looking for extra ice',
+    },
   ];
+
+  private nextId =
+  this.requests.reduce((max, r) => Math.max(max, r.id), 0) + 1;
 
   findAll() {
     return this.requests;
@@ -41,8 +55,6 @@ export class RequestsService {
       id: this.nextId++,
       ...dto,
     };
-
-    // newest first
     this.requests.unshift(created);
     return created;
   }

@@ -7,9 +7,9 @@ export type CreateRequestPayload = Omit<SpareRequest, 'id'>;
 
 @Injectable({ providedIn: 'root' })
 export class RequestApiService {
-  private readonly baseUrl = 'http://localhost:3000/requests';
+  public readonly baseUrl = 'http://localhost:3000/requests';
 
-  constructor(private http: HttpClient) {}
+  constructor(public http: HttpClient) {}
 
   getAll(): Observable<SpareRequest[]> {
     return this.http.get<SpareRequest[]>(this.baseUrl);

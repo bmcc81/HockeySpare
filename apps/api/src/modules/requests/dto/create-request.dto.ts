@@ -1,22 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 
-export enum RequestType {
-  TEAM_NEEDS_PLAYER = 'team_needs_player',
-  PLAYER_NEEDS_TEAM = 'player_needs_team',
-}
+import { Position, RequestType, SkillLevel } from '@hockeyspare/contracts';
 
-export enum Position {
-  GOALIE = 'goalie',
-  DEFENSE = 'defense',
-  FORWARD = 'forward',
-}
-
-export enum SkillLevel {
-  BEGINNER = 'beginner',
-  INTERMEDIATE = 'intermediate',
-  ADVANCED = 'advanced',
-}
 
 export class CreateRequestDto {
   @ApiProperty({ enum: RequestType })

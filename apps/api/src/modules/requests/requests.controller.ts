@@ -4,7 +4,12 @@ import { RequestsService } from './requests.service';
 
 @Controller('requests')
 export class RequestsController {
-  constructor(private readonly requestsService: RequestsService) {}
+  private readonly requestsService: RequestsService;
+
+  constructor(requestsService: RequestsService) {
+  console.log('Injected RequestsService =', requestsService);
+  this.requestsService = requestsService;
+}
 
   @Get()
   findAll() {

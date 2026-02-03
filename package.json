@@ -2,8 +2,18 @@
   "name": "hockeyspare-monorepo",
   "private": true,
   "scripts": {
+    "build:contracts": "npm run --workspace @hockeyspare/contracts build",
+    "watch:contracts": "npm run --workspace @hockeyspare/contracts watch",
     "web": "cd apps/web && ng serve",
     "api": "cd apps/api && npm run start:dev",
-    "dev": "concurrently \"npm run web\" \"npm run api\""
+    "dev": "npm run build:contracts && concurrently \"npm run watch:contracts\" \"npm run web\" \"npm run api\""
+  },
+  "workspaces": [
+    "apps/*",
+    "libs/*"
+  ],
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "typescript": "^5.9.3"
   }
 }

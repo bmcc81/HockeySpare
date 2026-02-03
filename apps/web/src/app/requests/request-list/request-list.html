@@ -1,13 +1,60 @@
-<h2>Marketplace</h2>
+<section class="page">
+  <div class="header">
+    <h1>Requests</h1>
+    <div class="actions">
+      <a class="btn" [routerLink]="['/requests/team/new']">+ Team Request</a>
+      <a class="btn btn-outline" [routerLink]="['/requests/player/new']">+ Player Offer</a>
+    </div>
+  </div>
 
-<div *ngFor="let req of (requests$ | async)" class="card">
-    <a [routerLink]="['/requests', req.id]">
-        <h3>{{ req.position }} • {{ req.skillLevel }}</h3>
-    </a>
-    <h3>{{ req.position | uppercase }} - {{ req.skillLevel }}</h3>
-    
-    <p><strong>Arena:</strong> {{ req.arena }}</p>
-    <p><strong>Time:</strong> {{ req.time }}</p>
-    <p><strong>Pay:</strong> {{ req.payAmount | currency:'CAD':'symbol' }}</p>
-    <p *ngIf="req.notes">{{ req.notes }}</p>
-</div>
+  <div class="filters">
+    <input
+      class="input"
+      type="text"
+      placeholder="Search arena, time, notes, pay..."
+      [formControl]="searchCtrl"
+    />
+
+    <select class="select" [formControl]="typeCtrl">
+      <option *ngFor="let o of typeOptions" [ngValue]="o.value">{{ o.label }}</option>
+    </select>
+
+    <select class="select" [formControl]="positionCtrl">
+      <option *ngFor="let o of positionOptions" [ngValue]="o.value">{{ o.label }}</option>
+    </select>
+
+    <select class="select" [formControl]="skillCtrl">
+      <option *ngFor="let o of skillOptions" [ngValue]="o.value">{{ o.label }}</option>
+    </select>
+
+    <button class="btn btn-outline" type="button" (click)="clearFilters()">Clear</button>
+  </div>
+
+  <div class="list" *ngIf="filteredRequests$ | async as requests">
+    <p class="muted" *ngIf="requests.length === 0">No requests match your filters.</p>
+
+    <article class="card" *ngFor="let req of requests">
+      <a class="card-link" [routerLink]="['/requests', req.id]">
+        <div class="card-top">
+          <div class="title">
+            <span class="pill">
+              {{ req.type === RequestType.TEAM_NEEDS_PLAYER ? 'Team needs player' : 'Player needs team' }}
+            </span>
+            <h3>{{ req.position | titlecase }} • {{ req.skillLevel | titlecase }}</h3>
+          </div>
+
+          <div class="pay">
+            <span class="pay-label">Pay</span>
+            <span class="pay-amt">\${{ req.payAmount }}</span>
+          </div>
+        </div>
+
+        <div class="meta">
+          <div><strong>Arena:</strong> {{ req.arena }}</div>
+          <div><strong>Time:</strong> {{ req.time }}</div>
+          <div *ngIf="req.notes"><strong>Notes:</strong> {{ req.notes }}</div>
+        </div>
+      </a>
+    </article>
+  </div>
+</section>

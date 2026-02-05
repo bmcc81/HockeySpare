@@ -1,0 +1,51 @@
+/* Design tokens (CSS variables) */
+:root {
+  /* Brand */
+  --brand-50:  #eef6ff;
+  --brand-100: #d9ebff;
+  --brand-500: #2f6bff;  /* primary */
+  --brand-600: #2456d6;
+  --brand-700: #1f49b6;
+
+  --accent-500: #ff2d55; /* sporty red accent */
+
+  /* Neutrals */
+  --bg:        #0b1020;  /* deep navy */
+  --surface:   #0f1730;
+  --surface-2: #131f3f;
+  --text:      #eaf0ff;
+  --muted:     #a9b6d6;
+
+  --border:    rgba(255, 255, 255, 0.10);
+  --border-2:  rgba(255, 255, 255, 0.14);
+
+  /* Effects */
+  --shadow-sm: 0 6px 18px rgba(0,0,0,.25);
+  --shadow-md: 0 10px 28px rgba(0,0,0,.35);
+
+  /* Shape + spacing */
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 18px;
+
+  /* Typography */
+  --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+
+  /* Focus */
+  --ring: 0 0 0 4px rgba(47, 107, 255, 0.30);
+}
+
+/* Optional LIGHT theme (if you ever want it) */
+:root[data-theme="light"] {
+  --bg:        #f6f8ff;
+  --surface:   #ffffff;
+  --surface-2: #f0f4ff;
+  --text:      #0b1020;
+  --muted:     #4c5a7a;
+
+  --border:    rgba(11, 16, 32, 0.10);
+  --border-2:  rgba(11, 16, 32, 0.14);
+
+  --shadow-sm: 0 8px 18px rgba(11,16,32,.10);
+  --shadow-md: 0 12px 30px rgba(11,16,32,.14);
+}

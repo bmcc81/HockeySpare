@@ -1,1 +1,238 @@
-/* You can add global styles to this file, and also import other style files */
+@use "./styles/theme";
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+/* ---------- RINK BACKGROUND (base) ---------- */
+html {
+  height: 100%;
+  background-color: var(--bg);
+  isolation: isolate;              /* contain blend modes */
+  color-scheme: dark;              /* helps native controls in dark UIs */
+
+  background-image:
+    radial-gradient(1500px 950px at 50% 35%,
+      rgba(0,0,0,0) 0%,
+      rgba(0,0,0,.18) 55%,
+      rgba(0,0,0,.58) 100%),
+
+    radial-gradient(1600px 320px at 50% 10%,
+      rgba(235,245,255,.10) 0%,
+      rgba(235,245,255,.05) 45%,
+      rgba(235,245,255,0) 75%),
+
+    radial-gradient(1200px 900px at 50% 32%,
+      rgba(235,245,255,.12) 0%,
+      rgba(235,245,255,.06) 38%,
+      rgba(235,245,255,0) 78%),
+
+    linear-gradient(90deg,
+      rgba(235,245,255,.04) 0%,
+      rgba(235,245,255,0) 18%,
+      rgba(235,245,255,0) 82%,
+      rgba(235,245,255,.04) 100%),
+
+    radial-gradient(950px 650px at 12% -10%,
+      rgba(47,107,255,.12) 0%,
+      rgba(47,107,255,.05) 44%,
+      rgba(47,107,255,0) 80%),
+
+    radial-gradient(900px 650px at 108% 6%,
+      rgba(255,45,85,.09) 0%,
+      rgba(255,45,85,.04) 46%,
+      rgba(255,45,85,0) 82%),
+
+    linear-gradient(180deg,
+      rgba(255,255,255,.02) 0%,
+      rgba(255,255,255,0) 34%,
+      rgba(0,0,0,.22) 100%);
+
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* ---------- ICE TEXTURE (static overlay behind app) ---------- */
+html::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+
+  background-image:
+    repeating-linear-gradient(
+      110deg,
+      rgba(210,225,255,.012) 0px,
+      rgba(210,225,255,.012) 1px,
+      rgba(210,225,255,0) 36px
+    ),
+    repeating-linear-gradient(
+      20deg,
+      rgba(255,255,255,.007) 0px,
+      rgba(255,255,255,.007) 1px,
+      rgba(255,255,255,0) 56px
+    ),
+    radial-gradient(circle,
+      rgba(255,255,255,.055) 0 1px,
+      rgba(255,255,255,0) 1.3px);
+
+  background-repeat: repeat;
+  background-size: auto, auto, 160px 160px;
+
+  mix-blend-mode: screen;
+  opacity: .50;
+}
+
+/* ---------- ARENA BEAMS (animated overlay behind app) ---------- */
+html::after {
+  content: "";
+  position: fixed;
+  inset: -10%;
+  pointer-events: none;
+  z-index: 0;
+
+  background-image:
+    linear-gradient(115deg,
+      rgba(235,245,255,0) 0%,
+      rgba(235,245,255,.10) 18%,
+      rgba(235,245,255,.04) 32%,
+      rgba(235,245,255,0) 52%),
+    linear-gradient(115deg,
+      rgba(235,245,255,0) 0%,
+      rgba(235,245,255,.08) 22%,
+      rgba(235,245,255,.03) 36%,
+      rgba(235,245,255,0) 58%),
+    linear-gradient(115deg,
+      rgba(235,245,255,0) 0%,
+      rgba(235,245,255,.06) 26%,
+      rgba(235,245,255,.02) 42%,
+      rgba(235,245,255,0) 66%),
+    radial-gradient(900px 420px at 50% 8%,
+      rgba(235,245,255,.06) 0%,
+      rgba(235,245,255,.03) 40%,
+      rgba(235,245,255,0) 78%);
+
+  background-size: 900px 1200px, 1100px 1400px, 1200px 1600px, auto;
+  background-position: -20% -10%, 35% -20%, 90% -30%, 50% 0%;
+  background-repeat: no-repeat;
+
+  mix-blend-mode: screen;
+  opacity: .26;
+  filter: blur(0.8px);
+
+  will-change: transform, opacity, filter;
+  transform: translate3d(0,0,0) rotate(-2deg);
+  animation: rinkBeams 22s ease-in-out infinite;
+}
+
+@keyframes rinkBeams {
+  0%   { transform: translate3d(-2%, -1%, 0) rotate(-3deg); opacity: .22; filter: blur(0.7px); }
+  50%  { transform: translate3d( 2%,  1%, 0) rotate( 2deg); opacity: .34; filter: blur(1.0px); }
+  100% { transform: translate3d(-2%, -1%, 0) rotate(-3deg); opacity: .22; filter: blur(0.7px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html::after { animation: none; }
+}
+
+/* ---------- APP LAYER (keeps overlays BEHIND the UI) ---------- */
+body {
+  min-height: 100%;
+  margin: 0;
+  font-family: var(--font);
+  color: var(--text);
+  background: transparent;
+
+  position: relative;
+  z-index: 1; /* critical: content above html::before/after */
+}
+
+/* ---------- GLOBAL CONTROL FIX (search + dropdown pills) ---------- */
+/* This wins even if something else sets input/select backgrounds */
+input.input,
+select.select,
+.input,
+.select {
+  height: 42px !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text) !important;
+  font: inherit !important;
+  outline: none !important;
+  background-clip: padding-box !important;
+  transition: box-shadow .12s ease, border-color .12s ease, background .12s ease;
+}
+
+/* Search input */
+input.input,
+.input {
+  padding: 0 14px 0 42px !important;
+
+  background: rgba(255,255,255,.05) !important;
+  background-image:
+    radial-gradient(circle at 18px 50%, rgba(234,240,255,.70) 0 2px, transparent 3px),
+    linear-gradient(45deg, rgba(234,240,255,.70) 0 2px, transparent 3px) !important;
+  background-size: 24px 24px, 10px 10px !important;
+  background-position: 10px 50%, 26px 60% !important;
+  background-repeat: no-repeat !important;
+}
+
+input.input::placeholder,
+.input::placeholder {
+  color: rgba(234,240,255,.55) !important;
+}
+
+/* Select dropdown */
+select.select,
+.select {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+
+  padding: 0 44px 0 14px !important;
+
+  background: rgba(255,255,255,.05) !important;
+  background-image:
+    linear-gradient(45deg, transparent 50%, rgba(234,240,255,.70) 50%),
+    linear-gradient(135deg, rgba(234,240,255,.70) 50%, transparent 50%) !important;
+  background-position:
+    calc(100% - 18px) 50%,
+    calc(100% - 12px) 50% !important;
+  background-size: 6px 6px, 6px 6px !important;
+  background-repeat: no-repeat !important;
+}
+
+select.select::-ms-expand,
+.select::-ms-expand { display: none; }
+
+input.input:focus,
+select.select:focus,
+.input:focus,
+.select:focus {
+  border-color: rgba(47,107,255,.55) !important;
+  box-shadow: var(--ring) !important;
+  background-color: rgba(255,255,255,.07) !important;
+}
+
+/* Optional: readable option menu */
+select.select option,
+.select option {
+  background: var(--surface);
+  color: var(--text);
+}
+
+/* Links */
+a { color: inherit; text-decoration: none; }
+a:hover { opacity: .95; }
+
+/* Container helper */
+.container {
+  width: min(1100px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+/* Divider */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.14), transparent);
+}

@@ -34,7 +34,8 @@
     <!-- Requests -->
     <p class="muted" *ngIf="vm.requests.length === 0">No requests match your filters.</p>
 
-    <article class="card" *ngFor="let req of vm.requests">
+   <article class="card" *ngFor="let req of vm.requests" 
+    [ngClass]="['type-' + req.type, 'pos-' + req.position, 'skill-' + req.skillLevel]">
       <a class="card-link" [routerLink]="['/requests', req.id]">
         <div class="card-top">
           <div class="title">
@@ -64,7 +65,8 @@
 
     <p class="muted" *ngIf="vm.playerOffers.length === 0">No player offers match your filters.</p>
 
-    <article class="card" *ngFor="let offer of vm.playerOffers">
+    <article class="card" *ngFor="let offer of vm.playerOffers"
+      [ngClass]="['type-player_offer', 'pos-' + offer.position, 'skill-' + offer.skillLevel]">
       <!-- choose a route that exists; adjust if you have a dedicated offer detail page -->
       <a class="card-link" [routerLink]="['/requests', offer.id]">
         <div class="card-top">

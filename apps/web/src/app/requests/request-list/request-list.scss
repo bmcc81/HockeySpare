@@ -1,7 +1,8 @@
+/* ===== Page shell ===== */
 .page {
-  max-width: 980px;
+  width: min(1100px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 24px;
+  padding: 22px 0 40px;
 }
 
 .header {
@@ -9,122 +10,357 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+  margin-bottom: 14px;
 
   h1 {
     margin: 0;
     font-size: 28px;
-  }
-
-  .actions {
-    display: flex;
-    gap: 10px;
+    letter-spacing: 0.2px;
+    line-height: 1.15;
   }
 }
 
-.filters {
-  margin-top: 16px;
-  display: grid;
-  grid-template-columns: 1.6fr 1fr 1fr 1fr auto;
+.actions {
+  display: flex;
   gap: 10px;
-  align-items: center;
+  flex-wrap: wrap;
+
+  .btn {
+    height: 42px;
+    padding: 0 14px;
+  }
 }
 
-.input,
-.select {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid rgba(0,0,0,.12);
-  border-radius: 10px;
-  outline: none;
-  background: white;
+/* ===== Filters bar ===== */
+.filters {
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+
+  padding: 14px;
+  display: grid;
+  grid-template-columns: 1.7fr 1fr 1fr 1fr auto;
+  gap: 10px;
+  margin-bottom: 16px;
+
+  .input,
+  .select {
+    width: 100%;
+    height: 42px;
+  }
+
+  .btn {
+    height: 42px;
+    padding: 0 14px;
+    white-space: nowrap;
+  }
 }
 
-.btn {
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid transparent;
-  cursor: pointer;
-  background: #111;
-  color: #fff;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  white-space: nowrap;
+/* Optional: sticky filter bar */
+.filters.is-sticky {
+  position: sticky;
+  top: 12px;
+  z-index: 10;
+  backdrop-filter: blur(10px);
+  background: rgba(15, 23, 48, 0.75);
 }
 
-.btn-outline {
-  background: transparent;
-  color: #111;
-  border-color: rgba(0,0,0,.18);
-}
-
+/* ===== List + empty states ===== */
 .list {
-  margin-top: 18px;
   display: grid;
   gap: 12px;
 }
 
-.card {
-  border: 1px solid rgba(0,0,0,.10);
-  border-radius: 14px;
-  background: white;
-  overflow: hidden;
-  transition: transform .08s ease, box-shadow .08s ease;
+.muted {
+  margin: 6px 0 2px;
+  color: var(--muted);
+  font-size: 13px;
 }
 
-.card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 26px rgba(0,0,0,.08);
+/* ===== Section title ===== */
+.section-title {
+  margin: 18px 0 10px;
+  font-size: 14px;
+  letter-spacing: 0.35px;
+  text-transform: uppercase;
+  color: rgba(234,240,255,.82);
+}
+
+/* ===== Cards ===== */
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden; /* so hover glow looks clean */
 }
 
 .card-link {
   display: block;
-  padding: 14px 16px;
+  padding: 14px;
   color: inherit;
   text-decoration: none;
+
+  transition: transform .12s ease, background .12s ease, border-color .12s ease;
 }
 
+.card:hover .card-link {
+  transform: translateY(-1px);
+}
+
+.card:has(.card-link:focus-visible) {
+  outline: none;
+  box-shadow: var(--shadow-md);
+}
+
+.card-link:focus-visible {
+  outline: none;
+  box-shadow: var(--ring);
+  border-radius: calc(var(--r-lg) - 2px);
+}
+
+/* Top row: title + pay */
 .card-top {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 14px;
+  gap: 12px;
+  margin-bottom: 10px;
 }
 
+.title {
+  min-width: 0;
+
+  h3 {
+    margin: 6px 0 0;
+    font-size: 16px;
+    line-height: 1.2;
+    font-weight: 800;
+    letter-spacing: .15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* Pills */
 .pill {
   display: inline-flex;
-  padding: 4px 10px;
+  align-items: center;
+  gap: 8px;
+
+  padding: 6px 10px;
   border-radius: 999px;
   font-size: 12px;
-  background: rgba(0,0,0,.06);
+  font-weight: 800;
+  letter-spacing: .2px;
+
+  background: rgba(47,107,255,.14);
+  border: 1px solid rgba(47,107,255,.30);
+  color: rgba(234,240,255,.92);
 }
 
-.title h3 {
-  margin: 8px 0 0;
-}
-
+/* Pay badge */
 .pay {
+  flex: 0 0 auto;
   text-align: right;
+
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+
+  background: radial-gradient(500px 120px at 80% 0%, rgba(255,45,85,.18), transparent 55%),
+              rgba(255,255,255,.04);
 }
 
 .pay-label {
   display: block;
-  font-size: 12px;
-  opacity: .7;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: .2px;
 }
 
 .pay-amt {
+  display: block;
+  margin-top: 2px;
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 900;
+  letter-spacing: .2px;
 }
 
+/* Meta grid */
 .meta {
-  margin-top: 12px;
   display: grid;
-  gap: 6px;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 8px 14px;
+
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  color: rgba(234,240,255,.90);
+  font-size: 13px;
+
+  strong {
+    font-weight: 800;
+    color: rgba(234,240,255,.92);
+  }
+
+  /* Notes spans full width */
+  > div:last-child {
+    grid-column: 1 / -1;
+  }
 }
 
-.muted {
-  opacity: .7;
+/* ===== Responsive ===== */
+@media (max-width: 980px) {
+  .filters {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .filters .btn {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
+  .meta {
+    grid-template-columns: 1fr 1fr;
+  }
 }
+
+@media (max-width: 600px) {
+  .page {
+    width: min(1100px, calc(100% - 20px));
+    padding: 16px 0 32px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+
+    h1 {
+      font-size: 24px;
+    }
+  }
+
+  .card-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .pay {
+    width: 100%;
+    text-align: left;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .meta {
+    grid-template-columns: 1fr;
+  }
+
+  .title h3 {
+    white-space: normal;
+  }
+}
+
+/* ===== Type/Position/Skill accents via CSS vars ===== */
+.card {
+  position: relative;
+  --accent: var(--brand-500);
+  --accent-2: var(--brand-700);
+
+  /* left accent bar */
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 10px;
+    bottom: 10px;
+    width: 4px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, var(--accent), var(--accent-2));
+    opacity: 0.95;
+  }
+}
+
+/* Card padding accommodates left bar */
+.card-link {
+  padding-left: 18px; /* original 14px + accent bar spacing */
+}
+
+/* ===== Type colors ===== */
+.type-team_needs_player {
+  --accent: #2f6bff;   /* blue */
+  --accent-2: #1f49b6;
+}
+
+.type-player_needs_team {
+  --accent: #ff2d55;   /* red */
+  --accent-2: #b21633;
+}
+
+/* Optional distinct color for Player Offers section */
+.type-player_offer {
+  --accent: #8a5cff;   /* purple */
+  --accent-2: #4a2bb8;
+}
+
+/* ===== Pill uses accent ===== */
+.pill {
+  /* fallback (if color-mix unsupported) */
+  background: rgba(47,107,255,.14);
+  border: 1px solid rgba(47,107,255,.30);
+
+  /* accent-driven */
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 36%, transparent);
+  color: rgba(234,240,255,.92);
+}
+
+/* ===== Pay badge uses accent ===== */
+.pay {
+  border-color: color-mix(in srgb, var(--accent) 28%, var(--border));
+  background:
+    radial-gradient(500px 120px at 80% 0%,
+      color-mix(in srgb, var(--accent) 22%, transparent),
+      transparent 55%),
+    rgba(255,255,255,.04);
+}
+
+.pay-amt {
+  text-shadow: 0 6px 18px rgba(0,0,0,.35);
+}
+
+/* ===== Optional: position/skill micro-accents (subtle, not loud) ===== */
+.pos-goalie .title h3 { letter-spacing: .25px; }
+.pos-defense .title h3 { letter-spacing: .20px; }
+.pos-forward .title h3 { letter-spacing: .15px; }
+
+.skill-beginner .pay-amt { opacity: .92; }
+.skill-intermediate .pay-amt { opacity: .96; }
+.skill-advanced .pay-amt { opacity: 1; }
+
+/* ===== Meta layout: add separators on wide screens (matches your screenshot feel) ===== */
+@media (min-width: 901px) {
+  .meta {
+    align-items: start;
+  }
+
+  .meta > div {
+    padding-right: 12px;
+  }
+
+  .meta > div:not(:nth-child(3)):not(:last-child) {
+    border-right: 1px solid var(--border);
+  }
+
+  /* Notes spans full width already; ensure it has no right border */
+  .meta > div:last-child {
+    border-right: none;
+    padding-right: 0;
+  }
+}
+

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RequestApiService } from '../../core/services/request-api';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-team-request-create',
@@ -43,10 +44,9 @@ export class TeamRequestCreateComponent {
 
     this.api.create(this.form.getRawValue() as any).subscribe({
       next: () => this.router.navigateByUrl('/requests'),
-      error: (err) => {
-        this.error = err?.error?.message ?? 'Failed to create request';
-        this.saving = false;
-      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Create failed', err.status, err.message, err.error);
+      }
     });
   }
 }

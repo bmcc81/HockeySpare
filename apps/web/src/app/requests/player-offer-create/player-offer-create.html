@@ -1,1 +1,39 @@
-<p>player-offer-create works!</p>
+<h2>Create Player Offer</h2>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <label>
+    Position
+    <select formControlName="position">
+      <option *ngFor="let p of positions" [value]="p">{{ p }}</option>
+    </select>
+  </label>
+
+  <label>
+    Skill Level
+    <select formControlName="skillLevel">
+      <option *ngFor="let s of skillLevels" [value]="s">{{ s }}</option>
+    </select>
+  </label>
+
+  <label>
+    Pay Amount
+    <input type="number" formControlName="payAmount" />
+  </label>
+
+  <label>
+    Arena
+    <input type="text" formControlName="arena" />
+  </label>
+
+  <label>
+    Time
+    <input type="text" formControlName="time" placeholder="Tonight 8:30 PM" />
+  </label>
+
+  <label>
+    Notes
+    <textarea formControlName="notes"></textarea>
+  </label>
+
+  <button type="submit" [disabled]="form.invalid">Create</button>
+</form>

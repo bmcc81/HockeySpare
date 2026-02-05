@@ -13,6 +13,7 @@ export class RequestsService {
       position: Position.GOALIE,
       skillLevel: SkillLevel.INTERMEDIATE,
       payAmount: 40,
+      teamName: 'Vaudreuil Beer League', // ✅ teamName for TEAM_NEEDS_PLAYER
       arena: 'Vaudreuil Arena',
       time: 'Tonight 8:30 PM',
       notes: 'Beer league C level',
@@ -22,10 +23,11 @@ export class RequestsService {
       type: RequestType.PLAYER_NEEDS_TEAM,
       position: Position.FORWARD,
       skillLevel: SkillLevel.ADVANCED,
-      payAmount: 15,
+      payAmount: 25,
+      playerName: 'Nathan MacKinnon',
       arena: 'Any rink near Dorion',
       time: 'Tonight 7-10 PM',
-      notes: 'Looking for extra ice',
+      notes: 'Looking for extra ice time',
     },
     {
       id: 3,
@@ -33,10 +35,22 @@ export class RequestsService {
       position: Position.DEFENSE,
       skillLevel: SkillLevel.INTERMEDIATE,
       payAmount: 15,
+      playerName: 'Cale Makar',
       arena: 'Any rink near Dorion',
       time: 'Tonight 7-10 PM',
       notes: 'Looking for extra ice',
     },
+    {
+      id: 4,
+      type: RequestType.TEAM_NEEDS_PLAYER,
+      position: Position.FORWARD,
+      skillLevel: SkillLevel.ADVANCED,
+      payAmount: 40,
+      teamName: 'Kirkland Beer League', // ✅ teamName for TEAM_NEEDS_PLAYER
+      arena: 'Kirkland Arena',
+      time: 'Tonight 10:00 PM',
+      notes: 'Beer league A level',
+    }
   ];
 
   private nextId =
@@ -51,10 +65,22 @@ export class RequestsService {
   }
 
   create(dto: CreateRequestDto): SpareRequest {
-    const created: SpareRequest = {
+    const base = {
       id: this.nextId++,
-      ...dto,
+      type: dto.type,
+      position: dto.position,
+      skillLevel: dto.skillLevel,
+      payAmount: dto.payAmount,
+      arena: dto.arena,
+      time: dto.time,
+      notes: dto.notes,
     };
+
+    const created: SpareRequest =
+      dto.type === RequestType.PLAYER_NEEDS_TEAM
+        ? { ...base, type: RequestType.PLAYER_NEEDS_TEAM, playerName: dto.playerName! }
+        : { ...base, type: RequestType.TEAM_NEEDS_PLAYER, teamName: dto.teamName! };
+
     this.requests.unshift(created);
     return created;
   }

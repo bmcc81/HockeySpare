@@ -30,10 +30,11 @@
     <button class="btn btn-outline" type="button" (click)="clearFilters()">Clear</button>
   </div>
 
-  <div class="list" *ngIf="filteredRequests$ | async as requests">
-    <p class="muted" *ngIf="requests.length === 0">No requests match your filters.</p>
+  <div class="list" *ngIf="vm$ | async as vm">
+    <!-- Requests -->
+    <p class="muted" *ngIf="vm.requests.length === 0">No requests match your filters.</p>
 
-    <article class="card" *ngFor="let req of requests">
+    <article class="card" *ngFor="let req of vm.requests">
       <a class="card-link" [routerLink]="['/requests', req.id]">
         <div class="card-top">
           <div class="title">
@@ -45,16 +46,47 @@
 
           <div class="pay">
             <span class="pay-label">Pay</span>
-            <span class="pay-amt">\${{ req.payAmount }}</span>
+            <span class="pay-amt">${{ req.payAmount }}</span>
           </div>
         </div>
 
         <div class="meta">
+          <div><strong>Team Name:</strong> {{ teamName(req) }}</div>
           <div><strong>Arena:</strong> {{ req.arena }}</div>
           <div><strong>Time:</strong> {{ req.time }}</div>
           <div *ngIf="req.notes"><strong>Notes:</strong> {{ req.notes }}</div>
         </div>
       </a>
     </article>
+
+    <!-- Divider -->
+    <h2 class="section-title" style="margin-top: 18px;">Player Offers</h2>
+
+    <p class="muted" *ngIf="vm.playerOffers.length === 0">No player offers match your filters.</p>
+
+    <article class="card" *ngFor="let offer of vm.playerOffers">
+      <!-- choose a route that exists; adjust if you have a dedicated offer detail page -->
+      <a class="card-link" [routerLink]="['/requests', offer.id]">
+        <div class="card-top">
+          <div class="title">
+            <span class="pill">Player offer</span>
+            <h3>{{ offer.position | titlecase }} • {{ offer.skillLevel | titlecase }}</h3>
+          </div>
+
+          <div class="pay">
+            <span class="pay-label">Pay</span>
+            <span class="pay-amt">${{ offer.payAmount }}</span>
+          </div>
+        </div>
+
+        <div class="meta">
+          <div><strong>Player Name:</strong> {{ playerName(offer) }}</div>
+          <div><strong>Arena:</strong> {{ offer.arena }}</div>
+          <div><strong>Time:</strong> {{ offer.time }}</div>
+          <div *ngIf="offer.notes"><strong>Notes:</strong> {{ offer.notes }}</div>
+        </div>
+      </a>
+    </article>
   </div>
+
 </section>

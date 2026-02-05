@@ -7,6 +7,9 @@
   <p><strong>Position:</strong> {{ req.position }}</p>
   <p><strong>Skill:</strong> {{ req.skillLevel }}</p>
   <p><strong>Pay:</strong> ${{ req.payAmount }}</p>
+
+  <p><strong>{{ nameLabel(req) }}:</strong> {{ nameValue(req) }}</p>
+
   <p><strong>Arena:</strong> {{ req.arena }}</p>
   <p><strong>Time:</strong> {{ req.time }}</p>
 

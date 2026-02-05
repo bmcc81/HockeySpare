@@ -1,25 +1,45 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { SpareRequest } from '../../shared/models/request.model';
+import { SpareRequest, CreateRequestInput, PlayerOffer } from '@hockeyspare/contracts';
 
-export type CreateRequestPayload = Omit<SpareRequest, 'id'>;
+export type CreateRequestPayload = CreateRequestInput;
+export type CreatePlayerOfferPayload = Omit<PlayerOffer, 'id'>;
 
 @Injectable({ providedIn: 'root' })
 export class RequestApiService {
-  public readonly baseUrl = 'http://localhost:3000/requests';
+  private readonly baseUrl = 'http://localhost:3000';
 
-  constructor(public http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
-  getAll(): Observable<SpareRequest[]> {
-    return this.http.get<SpareRequest[]>(this.baseUrl);
+  // ---- Requests (/requests)
+  getRequests(): Observable<SpareRequest[]> {
+    return this.http.get<SpareRequest[]>(`${this.baseUrl}/requests`);
   }
 
+  getRequestById(id: number): Observable<SpareRequest> {
+    return this.http.get<SpareRequest>(`${this.baseUrl}/requests/${id}`);
+  }
+
+  createRequest(payload: CreateRequestPayload): Observable<SpareRequest> {
+    return this.http.post<SpareRequest>(`${this.baseUrl}/requests`, payload);
+  }
+
+  // ---- Player offers (/player-offers)
+  getPlayerOffers(): Observable<PlayerOffer[]> {
+    return this.http.get<PlayerOffer[]>(`${this.baseUrl}/player-offers`);
+  }
+
+  createPlayerOffer(payload: CreatePlayerOfferPayload): Observable<PlayerOffer> {
+    return this.http.post<PlayerOffer>(`${this.baseUrl}/player-offers`, payload);
+  }
+
+  // ✅ Backwards-compatible aliases (fix your TS2339 errors)
   getById(id: number): Observable<SpareRequest> {
-    return this.http.get<SpareRequest>(`${this.baseUrl}/${id}`);
+    return this.getRequestById(id);
   }
 
   create(payload: CreateRequestPayload): Observable<SpareRequest> {
-    return this.http.post<SpareRequest>(this.baseUrl, payload);
+    return this.createRequest(payload);
   }
 }

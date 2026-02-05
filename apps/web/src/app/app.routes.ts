@@ -36,7 +36,6 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./requests/player-offer-create/player-offer-create').then(m => m.PlayerOfferCreateComponent),
   },
-
   {
     path: 'profile/player',
     loadComponent: () =>

@@ -1,3 +1,4 @@
+// src/app/requests/request-list/request-list.ts
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -25,7 +26,7 @@ function enumStringValues<T extends object>(e: T): string[] {
   return Object.values(e).filter((v): v is string => typeof v === 'string');
 }
 
-// ✅ type guards (no more casts)
+// ✅ type guards
 const isTeamNeedsPlayer = (r: SpareRequest): r is TeamNeedsPlayerRequest =>
   r.type === RequestType.TEAM_NEEDS_PLAYER;
 
@@ -50,13 +51,27 @@ export class RequestListComponent {
 
   readonly RequestType = RequestType;
 
-  // template helpers (avoid union-property access in template)
+  // template helpers
   teamName(req: TeamNeedsPlayerRequest): string {
     return req.teamName;
   }
 
   playerName(x: PlayerNeedsTeamRequest | PlayerOffer): string {
     return x.playerName;
+  }
+
+  /**
+   * PlayerOffer contract currently doesn't have arenaAddress on its type,
+   * so we safely read it via a helper to keep template type-checking happy.
+   * (Best fix is to add arenaAddress?: string to PlayerOffer in @hockeyspare/contracts.)
+   */
+  arenaAddr(x: unknown): string | undefined {
+    return (x as { arenaAddress?: string }).arenaAddress;
+  }
+
+  mapsUrl(arena?: string, address?: string): string {
+    const query = [arena, address].filter(Boolean).join(', ');
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
   }
 
   // options
@@ -91,6 +106,7 @@ export class RequestListComponent {
 
       const matchesCommon = (x: {
         arena?: string;
+        arenaAddress?: string; // ✅ NEW
         time?: string;
         notes?: string;
         payAmount?: number;
@@ -100,6 +116,7 @@ export class RequestListComponent {
         const matchesSearch =
           !q ||
           (x.arena ?? '').toLowerCase().includes(q) ||
+          (x.arenaAddress ?? '').toLowerCase().includes(q) ||
           (x.time ?? '').toLowerCase().includes(q) ||
           (x.notes ?? '').toLowerCase().includes(q) ||
           String(x.payAmount ?? '').includes(q) ||
@@ -120,12 +137,12 @@ export class RequestListComponent {
       const showOffers = type === 'all' || type === RequestType.PLAYER_NEEDS_TEAM;
       const filteredOffers = showOffers ? offers.filter(matchesCommon) : [];
 
-      const teamRequests = filteredRequests.filter(isTeamNeedsPlayer);     // TeamNeedsPlayerRequest[]
-      const playerNeedRequests = filteredRequests.filter(isPlayerNeedsTeam); // PlayerNeedsTeamRequest[]
+      const teamRequests = filteredRequests.filter(isTeamNeedsPlayer);
+      const playerNeedRequests = filteredRequests.filter(isPlayerNeedsTeam);
 
       return {
         requests: teamRequests,
-        playerOffers: [...playerNeedRequests, ...filteredOffers], // (PlayerNeedsTeamRequest | PlayerOffer)[]
+        playerOffers: [...playerNeedRequests, ...filteredOffers],
       };
     }),
     shareReplay({ bufferSize: 1, refCount: true }),

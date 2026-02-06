@@ -7,6 +7,7 @@ export type PlayerOffer = {
   payAmount: number;
   playerName: string;
   arena: string;
+  arenaAddress?: string;
   time: string;
   notes?: string;
 };

@@ -1,3 +1,4 @@
+<!-- src/app/requests/request-list/request-list.html -->
 <section class="page">
   <div class="header">
     <h1>Requests</h1>
@@ -11,7 +12,7 @@
     <input
       class="input"
       type="text"
-      placeholder="Search arena, time, notes, pay..."
+      placeholder="Search arena, address, time, notes, pay..."
       [formControl]="searchCtrl"
     />
 
@@ -34,14 +35,16 @@
     <!-- Requests -->
     <p class="muted" *ngIf="vm.requests.length === 0">No requests match your filters.</p>
 
-   <article class="card" *ngFor="let req of vm.requests" 
-    [ngClass]="['type-' + req.type, 'pos-' + req.position, 'skill-' + req.skillLevel]">
-      <a class="card-link" [routerLink]="['/requests', req.id]">
+    <article
+      class="card"
+      *ngFor="let req of vm.requests"
+      [ngClass]="['type-' + req.type, 'pos-' + req.position, 'skill-' + req.skillLevel]"
+    >
+      <!-- use div so we don't nest <a> tags (maps link inside) -->
+      <div class="card-link" [routerLink]="['/requests', req.id]">
         <div class="card-top">
           <div class="title">
-            <span class="pill">
-              {{ req.type === RequestType.TEAM_NEEDS_PLAYER ? 'Team needs player' : 'Player needs team' }}
-            </span>
+            <span class="pill">Team needs player</span>
             <h3>{{ req.position | titlecase }} • {{ req.skillLevel | titlecase }}</h3>
           </div>
 
@@ -53,11 +56,26 @@
 
         <div class="meta">
           <div><strong>Team Name:</strong> {{ teamName(req) }}</div>
-          <div><strong>Arena:</strong> {{ req.arena }}</div>
+
+          <div class="arena">
+            <div><strong>Arena:</strong> {{ req.arena }}</div>
+
+            <a
+              *ngIf="req.arenaAddress as addr"
+              class="arena-address"
+              [href]="mapsUrl(req.arena, addr)"
+              target="_blank"
+              rel="noopener noreferrer"
+              (click)="$event.stopPropagation()"
+            >
+              {{ addr }}
+            </a>
+          </div>
+
           <div><strong>Time:</strong> {{ req.time }}</div>
           <div *ngIf="req.notes"><strong>Notes:</strong> {{ req.notes }}</div>
         </div>
-      </a>
+      </div>
     </article>
 
     <!-- Divider -->
@@ -65,10 +83,12 @@
 
     <p class="muted" *ngIf="vm.playerOffers.length === 0">No player offers match your filters.</p>
 
-    <article class="card" *ngFor="let offer of vm.playerOffers"
-      [ngClass]="['type-player_offer', 'pos-' + offer.position, 'skill-' + offer.skillLevel]">
-      <!-- choose a route that exists; adjust if you have a dedicated offer detail page -->
-      <a class="card-link" [routerLink]="['/requests', offer.id]">
+    <article
+      class="card"
+      *ngFor="let offer of vm.playerOffers"
+      [ngClass]="['type-player_offer', 'pos-' + offer.position, 'skill-' + offer.skillLevel]"
+    >
+      <div class="card-link" [routerLink]="['/requests', offer.id]">
         <div class="card-top">
           <div class="title">
             <span class="pill">Player offer</span>
@@ -83,12 +103,26 @@
 
         <div class="meta">
           <div><strong>Player Name:</strong> {{ playerName(offer) }}</div>
-          <div><strong>Arena:</strong> {{ offer.arena }}</div>
+
+          <div class="arena">
+            <div><strong>Arena:</strong> {{ offer.arena }}</div>
+
+            <a
+              *ngIf="arenaAddr(offer) as addr"
+              class="arena-address"
+              [href]="mapsUrl(offer.arena, addr)"
+              target="_blank"
+              rel="noopener noreferrer"
+              (click)="$event.stopPropagation()"
+            >
+              {{ addr }}
+            </a>
+          </div>
+
           <div><strong>Time:</strong> {{ offer.time }}</div>
           <div *ngIf="offer.notes"><strong>Notes:</strong> {{ offer.notes }}</div>
         </div>
-      </a>
+      </div>
     </article>
   </div>
-
 </section>

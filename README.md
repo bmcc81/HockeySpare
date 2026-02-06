@@ -8,4 +8,5 @@ Frontend (Angular)	  apps/web	      ng serve -o
 
 ✔ Frontend running? http://localhost:4200
 
-✔ CORS enabled? (you already did this)
+✔ CORS enabled?
+

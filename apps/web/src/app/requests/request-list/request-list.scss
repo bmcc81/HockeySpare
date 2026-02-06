@@ -364,3 +364,14 @@
   }
 }
 
+.arena {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.arena-address {
+  opacity: 0.8;
+  text-decoration: underline;
+  width: fit-content;
+}

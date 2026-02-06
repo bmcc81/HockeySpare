@@ -13,8 +13,9 @@ export class RequestsService {
       position: Position.GOALIE,
       skillLevel: SkillLevel.INTERMEDIATE,
       payAmount: 40,
-      teamName: 'Vaudreuil Beer League', // ✅ teamName for TEAM_NEEDS_PLAYER
+      teamName: 'Vaudreuil Beer League', 
       arena: 'Vaudreuil Arena',
+      arenaAddress: '123 Main St, Vaudreuil', 
       time: 'Tonight 8:30 PM',
       notes: 'Beer league C level',
     },
@@ -26,6 +27,7 @@ export class RequestsService {
       payAmount: 25,
       playerName: 'Nathan MacKinnon',
       arena: 'Any rink near Dorion',
+      arenaAddress: '2580 Rue Paul Gérin-Lajoie, Vaudreuil-Dorion, QC J7V 9H8', 
       time: 'Tonight 7-10 PM',
       notes: 'Looking for extra ice time',
     },
@@ -37,6 +39,7 @@ export class RequestsService {
       payAmount: 15,
       playerName: 'Cale Makar',
       arena: 'Any rink near Dorion',
+      arenaAddress: '2580 Rue Paul Gérin-Lajoie, Vaudreuil-Dorion, QC J7V 9H8', 
       time: 'Tonight 7-10 PM',
       notes: 'Looking for extra ice',
     },
@@ -48,6 +51,7 @@ export class RequestsService {
       payAmount: 40,
       teamName: 'Kirkland Beer League', // ✅ teamName for TEAM_NEEDS_PLAYER
       arena: 'Kirkland Arena',
+      arenaAddress: '16950 Boul Hymus, Kirkland, QC H9H 3W7', 
       time: 'Tonight 10:00 PM',
       notes: 'Beer league A level',
     }

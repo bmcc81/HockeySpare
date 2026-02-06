@@ -22,6 +22,7 @@ export interface BaseRequest {
   skillLevel: SkillLevel;
   payAmount: number;
   arena: string;
+  arenaAddress?: string;
   time: string;
   notes?: string;
 }

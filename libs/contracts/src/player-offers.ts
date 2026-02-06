@@ -2,10 +2,11 @@ import { Position, SkillLevel } from './requests';
 
 export interface PlayerOffer {
   id: number;
-  playerName: string; // <-- add this back (you had it earlier)
+  playerName: string;
   position: Position;
   skillLevel: SkillLevel;
   payAmount: number;
+  arenaAddress?: string;
   arena: string;
   time: string;
   notes?: string;

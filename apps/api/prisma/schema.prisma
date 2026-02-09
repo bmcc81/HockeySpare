@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum RequestType {
+  TEAM_NEEDS_PLAYER
+  PLAYER_NEEDS_TEAM
+}
+
+enum Position {
+  GOALIE
+  DEFENSE
+  FORWARD
+}
+
+enum SkillLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  ELITE
+}
+
+model Request {
+  id           Int        @id @default(autoincrement())
+  type         RequestType
+  position     Position
+  skillLevel   SkillLevel
+
+  payAmount    Int?
+  teamName     String?
+  playerName   String?
+
+  arena        String
+  arenaAddress String?
+  time         String
+  notes        String?
+
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([type])
+  @@index([position, skillLevel])
+}
+
+model PlayerOffer {
+  id           Int        @id @default(autoincrement())
+
+  position     Position
+  skillLevel   SkillLevel
+
+  payAmount    Int?
+  playerName   String?
+
+  arena        String?
+  arenaAddress String?
+  time         String
+  notes        String?
+
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([position, skillLevel])
+}

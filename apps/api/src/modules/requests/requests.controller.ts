@@ -1,30 +1,23 @@
-import { Body, Controller, Get, Post, Param, ParseIntPipe, NotFoundException } from '@nestjs/common';
-import { CreateRequestDto } from './dto/create-request.dto';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { RequestsService } from './requests.service';
+import { CreateRequestDto } from './dto/create-request.dto';
 
 @Controller('requests')
 export class RequestsController {
-  private readonly requestsService: RequestsService;
-
-  constructor(requestsService: RequestsService) {
-  console.log('Injected RequestsService =', requestsService);
-  this.requestsService = requestsService;
-}
+  constructor(private readonly service: RequestsService) {}
 
   @Get()
-  findAll() {
-    return this.requestsService.findAll();
+  list() {
+    return this.service.list();
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    const req = this.requestsService.findOne(id);
-    if (!req) throw new NotFoundException('Request not found');
-    return req;
+  getById(@Param('id') id: string) {
+    return this.service.getById(Number(id));
   }
 
   @Post()
   create(@Body() dto: CreateRequestDto) {
-    return this.requestsService.create(dto);
+    return this.service.create(dto);
   }
 }

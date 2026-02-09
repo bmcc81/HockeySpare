@@ -1,91 +1,84 @@
-import { Injectable } from '@nestjs/common';
-import { SpareRequest } from './requests.types';
-import { Position, RequestType, SkillLevel } from '@hockeyspare/contracts';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from '../../prisma/prisma.service';
 import { CreateRequestDto } from './dto/create-request.dto';
+import { Request as DbRequest, RequestType, Position, SkillLevel } from '@prisma/client';
+
+const typeToDb: Record<CreateRequestDto['type'], RequestType> = {
+  team_needs_player: RequestType.TEAM_NEEDS_PLAYER,
+  player_needs_team: RequestType.PLAYER_NEEDS_TEAM,
+};
+
+const posToDb: Record<CreateRequestDto['position'], Position> = {
+  goalie: Position.GOALIE,
+  defense: Position.DEFENSE,
+  forward: Position.FORWARD,
+};
+
+const skillToDb: Record<CreateRequestDto['skillLevel'], SkillLevel> = {
+  beginner: SkillLevel.BEGINNER,
+  intermediate: SkillLevel.INTERMEDIATE,
+  advanced: SkillLevel.ADVANCED,
+  elite: SkillLevel.ELITE,
+};
+
+function toApi(r: DbRequest) {
+  const typeFromDb: Record<RequestType, CreateRequestDto['type']> = {
+    [RequestType.TEAM_NEEDS_PLAYER]: 'team_needs_player',
+    [RequestType.PLAYER_NEEDS_TEAM]: 'player_needs_team',
+  };
+
+  const posFromDb: Record<Position, CreateRequestDto['position']> = {
+    [Position.GOALIE]: 'goalie',
+    [Position.DEFENSE]: 'defense',
+    [Position.FORWARD]: 'forward',
+  };
+
+  const skillFromDb: Record<SkillLevel, CreateRequestDto['skillLevel']> = {
+    [SkillLevel.BEGINNER]: 'beginner',
+    [SkillLevel.INTERMEDIATE]: 'intermediate',
+    [SkillLevel.ADVANCED]: 'advanced',
+    [SkillLevel.ELITE]: 'elite',
+  };  
+
+  return {
+    ...r,
+    type: typeFromDb[r.type as keyof typeof typeFromDb],
+    position: posFromDb[r.position as keyof typeof posFromDb],
+    skillLevel: skillFromDb[r.skillLevel as keyof typeof skillFromDb],
+  };
+}
 
 @Injectable()
 export class RequestsService {
+  constructor(private readonly prisma: PrismaService) {}
 
-  private requests: SpareRequest[] = [
-    {
-      id: 1,
-      type: RequestType.TEAM_NEEDS_PLAYER,
-      position: Position.GOALIE,
-      skillLevel: SkillLevel.INTERMEDIATE,
-      payAmount: 40,
-      teamName: 'Vaudreuil Beer League', 
-      arena: 'Vaudreuil Arena',
-      arenaAddress: '123 Main St, Vaudreuil', 
-      time: 'Tonight 8:30 PM',
-      notes: 'Beer league C level',
-    },
-    {
-      id: 2,
-      type: RequestType.PLAYER_NEEDS_TEAM,
-      position: Position.FORWARD,
-      skillLevel: SkillLevel.ADVANCED,
-      payAmount: 25,
-      playerName: 'Nathan MacKinnon',
-      arena: 'Any rink near Dorion',
-      arenaAddress: '2580 Rue Paul Gérin-Lajoie, Vaudreuil-Dorion, QC J7V 9H8', 
-      time: 'Tonight 7-10 PM',
-      notes: 'Looking for extra ice time',
-    },
-    {
-      id: 3,
-      type: RequestType.PLAYER_NEEDS_TEAM,
-      position: Position.DEFENSE,
-      skillLevel: SkillLevel.INTERMEDIATE,
-      payAmount: 15,
-      playerName: 'Cale Makar',
-      arena: 'Any rink near Dorion',
-      arenaAddress: '2580 Rue Paul Gérin-Lajoie, Vaudreuil-Dorion, QC J7V 9H8', 
-      time: 'Tonight 7-10 PM',
-      notes: 'Looking for extra ice',
-    },
-    {
-      id: 4,
-      type: RequestType.TEAM_NEEDS_PLAYER,
-      position: Position.FORWARD,
-      skillLevel: SkillLevel.ADVANCED,
-      payAmount: 40,
-      teamName: 'Kirkland Beer League', // ✅ teamName for TEAM_NEEDS_PLAYER
-      arena: 'Kirkland Arena',
-      arenaAddress: '16950 Boul Hymus, Kirkland, QC H9H 3W7', 
-      time: 'Tonight 10:00 PM',
-      notes: 'Beer league A level',
-    }
-  ];
-
-  private nextId =
-  this.requests.reduce((max, r) => Math.max(max, r.id), 0) + 1;
-
-  findAll() {
-    return this.requests;
+  async list() {
+    const items = await this.prisma.request.findMany({ orderBy: { id: 'desc' } });
+    return items.map(toApi);
   }
 
-  findOne(id: number) {
-    return this.requests.find(r => r.id === id);
+  async getById(id: number) {
+    const item = await this.prisma.request.findUnique({ where: { id } });
+    if (!item) throw new NotFoundException('Request not found');
+    return toApi(item);
   }
 
-  create(dto: CreateRequestDto): SpareRequest {
-    const base = {
-      id: this.nextId++,
-      type: dto.type,
-      position: dto.position,
-      skillLevel: dto.skillLevel,
-      payAmount: dto.payAmount,
-      arena: dto.arena,
-      time: dto.time,
-      notes: dto.notes,
-    };
+  async create(dto: CreateRequestDto) {
+    const created = await this.prisma.request.create({
+      data: {
+        type: typeToDb[dto.type],
+        position: posToDb[dto.position],
+        skillLevel: skillToDb[dto.skillLevel],
+        payAmount: dto.payAmount ?? null,
+        teamName: dto.teamName ?? null,
+        playerName: dto.playerName ?? null,
+        arena: dto.arena,
+        arenaAddress: dto.arenaAddress ?? null,
+        time: dto.time,
+        notes: dto.notes ?? null,
+      },
+    });
 
-    const created: SpareRequest =
-      dto.type === RequestType.PLAYER_NEEDS_TEAM
-        ? { ...base, type: RequestType.PLAYER_NEEDS_TEAM, playerName: dto.playerName! }
-        : { ...base, type: RequestType.TEAM_NEEDS_PLAYER, teamName: dto.teamName! };
-
-    this.requests.unshift(created);
-    return created;
+    return toApi(created);
   }
 }

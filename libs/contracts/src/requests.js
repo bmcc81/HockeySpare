@@ -17,5 +17,6 @@ var SkillLevel;
     SkillLevel["BEGINNER"] = "beginner";
     SkillLevel["INTERMEDIATE"] = "intermediate";
     SkillLevel["ADVANCED"] = "advanced";
+    SkillLevel["ELITE"] = "elite";
 })(SkillLevel || (exports.SkillLevel = SkillLevel = {}));
 //# sourceMappingURL=requests.js.map

@@ -8,33 +8,31 @@ export type CreatePlayerOfferPayload = Omit<PlayerOffer, 'id'>;
 
 @Injectable({ providedIn: 'root' })
 export class RequestApiService {
-  private readonly baseUrl = 'http://localhost:3000';
-
   constructor(private readonly http: HttpClient) {}
 
   // ---- Requests (/requests)
   getRequests(): Observable<SpareRequest[]> {
-    return this.http.get<SpareRequest[]>(`${this.baseUrl}/requests`);
+    return this.http.get<SpareRequest[]>('/requests');
   }
 
   getRequestById(id: number): Observable<SpareRequest> {
-    return this.http.get<SpareRequest>(`${this.baseUrl}/requests/${id}`);
+    return this.http.get<SpareRequest>(`/requests/${id}`);
   }
 
   createRequest(payload: CreateRequestPayload): Observable<SpareRequest> {
-    return this.http.post<SpareRequest>(`${this.baseUrl}/requests`, payload);
+    return this.http.post<SpareRequest>('/requests', payload);
   }
 
   // ---- Player offers (/player-offers)
   getPlayerOffers(): Observable<PlayerOffer[]> {
-    return this.http.get<PlayerOffer[]>(`${this.baseUrl}/player-offers`);
+    return this.http.get<PlayerOffer[]>('/player-offers');
   }
 
   createPlayerOffer(payload: CreatePlayerOfferPayload): Observable<PlayerOffer> {
-    return this.http.post<PlayerOffer>(`${this.baseUrl}/player-offers`, payload);
+    return this.http.post<PlayerOffer>('/player-offers', payload);
   }
 
-  // ✅ Backwards-compatible aliases (fix your TS2339 errors)
+  // Backwards-compatible aliases
   getById(id: number): Observable<SpareRequest> {
     return this.getRequestById(id);
   }

@@ -4,8 +4,8 @@
   "scripts": {
     "build:contracts": "npm run --workspace @hockeyspare/contracts build",
     "watch:contracts": "npm run --workspace @hockeyspare/contracts watch",
-    "web": "cd apps/web && ng serve",
-    "api": "cd apps/api && npm run start:dev",
+    "web": "cd apps/web && ng serve --configuration development --source-map",
+    "api": "cd apps/api && npm run start:dev && npx prisma studio",
     "dev": "npm run build:contracts && concurrently \"npm run watch:contracts\" \"npm run web\" \"npm run api\""
   },
   "workspaces": [

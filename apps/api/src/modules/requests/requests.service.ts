@@ -1,50 +1,62 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateRequestDto } from './dto/create-request.dto';
-import { Request as DbRequest, RequestType, Position, SkillLevel } from '@prisma/client';
 
-const typeToDb: Record<CreateRequestDto['type'], RequestType> = {
-  team_needs_player: RequestType.TEAM_NEEDS_PLAYER,
-  player_needs_team: RequestType.PLAYER_NEEDS_TEAM,
+import {
+  RequestType as CRequestType,
+  Position as CPosition,
+  SkillLevel as CSkillLevel,
+} from '@hockeyspare/contracts';
+
+import {
+  Request as DbRequest,
+  RequestType as PRequestType,
+  Position as PPosition,
+  SkillLevel as PSkillLevel,
+} from '@prisma/client';
+
+const typeToDb: Record<CRequestType, PRequestType> = {
+  [CRequestType.TEAM_NEEDS_PLAYER]: PRequestType.TEAM_NEEDS_PLAYER,
+  [CRequestType.PLAYER_NEEDS_TEAM]: PRequestType.PLAYER_NEEDS_TEAM,
 };
 
-const posToDb: Record<CreateRequestDto['position'], Position> = {
-  goalie: Position.GOALIE,
-  defense: Position.DEFENSE,
-  forward: Position.FORWARD,
+const posToDb: Record<CPosition, PPosition> = {
+  [CPosition.GOALIE]: PPosition.GOALIE,
+  [CPosition.DEFENSE]: PPosition.DEFENSE,
+  [CPosition.FORWARD]: PPosition.FORWARD,
 };
 
-const skillToDb: Record<CreateRequestDto['skillLevel'], SkillLevel> = {
-  beginner: SkillLevel.BEGINNER,
-  intermediate: SkillLevel.INTERMEDIATE,
-  advanced: SkillLevel.ADVANCED,
-  elite: SkillLevel.ELITE,
+const skillToDb: Record<CSkillLevel, PSkillLevel> = {
+  [CSkillLevel.BEGINNER]: PSkillLevel.BEGINNER,
+  [CSkillLevel.INTERMEDIATE]: PSkillLevel.INTERMEDIATE,
+  [CSkillLevel.ADVANCED]: PSkillLevel.ADVANCED,
+  [CSkillLevel.ELITE]: PSkillLevel.ELITE
+};
+
+const typeFromDb: Record<PRequestType, CRequestType> = {
+  [PRequestType.TEAM_NEEDS_PLAYER]: CRequestType.TEAM_NEEDS_PLAYER,
+  [PRequestType.PLAYER_NEEDS_TEAM]: CRequestType.PLAYER_NEEDS_TEAM,
+};
+
+const posFromDb: Record<PPosition, CPosition> = {
+  [PPosition.GOALIE]: CPosition.GOALIE,
+  [PPosition.DEFENSE]: CPosition.DEFENSE,
+  [PPosition.FORWARD]: CPosition.FORWARD,
+};
+
+const skillFromDb: Record<PSkillLevel, CSkillLevel> = {
+  [PSkillLevel.BEGINNER]: CSkillLevel.BEGINNER,
+  [PSkillLevel.INTERMEDIATE]: CSkillLevel.INTERMEDIATE,
+  [PSkillLevel.ADVANCED]: CSkillLevel.ADVANCED,
+  [PSkillLevel.ELITE]: CSkillLevel.ELITE
 };
 
 function toApi(r: DbRequest) {
-  const typeFromDb: Record<RequestType, CreateRequestDto['type']> = {
-    [RequestType.TEAM_NEEDS_PLAYER]: 'team_needs_player',
-    [RequestType.PLAYER_NEEDS_TEAM]: 'player_needs_team',
-  };
-
-  const posFromDb: Record<Position, CreateRequestDto['position']> = {
-    [Position.GOALIE]: 'goalie',
-    [Position.DEFENSE]: 'defense',
-    [Position.FORWARD]: 'forward',
-  };
-
-  const skillFromDb: Record<SkillLevel, CreateRequestDto['skillLevel']> = {
-    [SkillLevel.BEGINNER]: 'beginner',
-    [SkillLevel.INTERMEDIATE]: 'intermediate',
-    [SkillLevel.ADVANCED]: 'advanced',
-    [SkillLevel.ELITE]: 'elite',
-  };  
-
   return {
     ...r,
-    type: typeFromDb[r.type as keyof typeof typeFromDb],
-    position: posFromDb[r.position as keyof typeof posFromDb],
-    skillLevel: skillFromDb[r.skillLevel as keyof typeof skillFromDb],
+    type: typeFromDb[r.type],
+    position: posFromDb[r.position],
+    skillLevel: skillFromDb[r.skillLevel],
   };
 }
 
@@ -53,8 +65,7 @@ export class RequestsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async list() {
-    const items = await this.prisma.request.findMany({ orderBy: { id: 'desc' } });
-    return items.map(toApi);
+    return (await this.prisma.request.findMany({ orderBy: { id: 'desc' } })).map(toApi);
   }
 
   async getById(id: number) {

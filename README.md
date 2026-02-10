@@ -14,6 +14,9 @@ Frontend (Angular)	  apps/web	      ng serve -o
 
 -----------------
 In order to view the database:
+
 cd apps\api
+
 npx prisma studio
+
 

@@ -5,7 +5,7 @@ import { SpareRequest } from '../../shared/models/request.model';
 
 @Injectable({ providedIn: 'root' })
 export class RequestService {
-  private readonly baseUrl = 'http://localhost:3000';
+  private readonly baseUrl = '/api/requests';
 
   constructor(private http: HttpClient) {}
 

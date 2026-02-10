@@ -13,6 +13,7 @@ export enum SkillLevel {
   BEGINNER = 'beginner',
   INTERMEDIATE = 'intermediate',
   ADVANCED = 'advanced',
+  ELITE = 'elite',
 }
 
 export interface BaseRequest {
@@ -35,6 +36,7 @@ export type PlayerNeedsTeamRequest = BaseRequest & {
 export type TeamNeedsPlayerRequest = BaseRequest & {
   type: RequestType.TEAM_NEEDS_PLAYER;
   teamName: string;
+  playerName?: string; 
 };
 
 export type SpareRequest = PlayerNeedsTeamRequest | TeamNeedsPlayerRequest;

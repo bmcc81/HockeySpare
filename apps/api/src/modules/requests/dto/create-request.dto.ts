@@ -1,14 +1,15 @@
-import { IsIn, IsInt, IsOptional, IsString, MaxLength, Min } from 'class-validator';
+import { IsEnum, IsInt, IsOptional, IsString, MaxLength, Min } from 'class-validator';
+import { RequestType, Position, SkillLevel } from '@hockeyspare/contracts';
 
 export class CreateRequestDto {
-  @IsIn(['team_needs_player', 'player_needs_team'])
-  type!: 'team_needs_player' | 'player_needs_team';
+  @IsEnum(RequestType)
+  type!: RequestType;
 
-  @IsIn(['goalie', 'defense', 'forward'])
-  position!: 'goalie' | 'defense' | 'forward';
+  @IsEnum(Position)
+  position!: Position;
 
-  @IsIn(['beginner', 'intermediate', 'advanced', 'elite'])
-  skillLevel!: 'beginner' | 'intermediate' | 'advanced' | 'elite';
+  @IsEnum(SkillLevel)
+  skillLevel!: SkillLevel;
 
   @IsOptional()
   @IsInt()

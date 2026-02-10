@@ -1,23 +1,5 @@
 {
-  "/requests": {
-    "target": "http://localhost:3000",
-    "secure": false,
-    "changeOrigin": true,
-    "logLevel": "debug"
-  },
-  "/requests/*": {
-    "target": "http://localhost:3000",
-    "secure": false,
-    "changeOrigin": true,
-    "logLevel": "debug"
-  },
-  "/player-offers": {
-    "target": "http://localhost:3000",
-    "secure": false,
-    "changeOrigin": true,
-    "logLevel": "debug"
-  },
-  "/player-offers/*": {
+  "/api": {
     "target": "http://localhost:3000",
     "secure": false,
     "changeOrigin": true,

@@ -12,24 +12,24 @@ export class RequestApiService {
 
   // ---- Requests (/requests)
   getRequests(): Observable<SpareRequest[]> {
-    return this.http.get<SpareRequest[]>('/requests');
+    return this.http.get<SpareRequest[]>('/api/requests');
   }
 
   getRequestById(id: number): Observable<SpareRequest> {
-    return this.http.get<SpareRequest>(`/requests/${id}`);
+    return this.http.get<SpareRequest>(`/api/requests/${id}`);
   }
 
   createRequest(payload: CreateRequestPayload): Observable<SpareRequest> {
-    return this.http.post<SpareRequest>('/requests', payload);
+    return this.http.post<SpareRequest>('/api/requests', payload);
   }
 
   // ---- Player offers (/player-offers)
   getPlayerOffers(): Observable<PlayerOffer[]> {
-    return this.http.get<PlayerOffer[]>('/player-offers');
+    return this.http.get<PlayerOffer[]>('/api/player-offers');
   }
 
   createPlayerOffer(payload: CreatePlayerOfferPayload): Observable<PlayerOffer> {
-    return this.http.post<PlayerOffer>('/player-offers', payload);
+    return this.http.post<PlayerOffer>('/api/player-offers', payload);
   }
 
   // Backwards-compatible aliases

@@ -37,7 +37,7 @@ export class PlayerOfferCreateComponent {
       type: RequestType.PLAYER_NEEDS_TEAM, // ✅ this makes it show under "Player Offers"
     };
 
-    this.http.post('http://localhost:3000/requests', payload).subscribe({
+    this.http.post('http://localhost:3000/api/requests', payload).subscribe({
       next: (res) => {
         console.log('Created offer:', res);
         this.router.navigateByUrl('/requests');

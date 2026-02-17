@@ -5,7 +5,9 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
 }
 
 datasource db {
@@ -54,20 +56,15 @@ model Request {
 
 model PlayerOffer {
   id           Int        @id @default(autoincrement())
-
+  playerName   String
   position     Position
   skillLevel   SkillLevel
-
-  payAmount    Int?
-  playerName   String?
-
-  arena        String?
-  arenaAddress String?
+  payAmount    Int
+  arena        String
+  arenaAddress String
   time         String
   notes        String?
 
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-
-  @@index([position, skillLevel])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }

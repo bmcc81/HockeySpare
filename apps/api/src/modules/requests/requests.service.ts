@@ -13,7 +13,7 @@ import {
   RequestType as PRequestType,
   Position as PPosition,
   SkillLevel as PSkillLevel,
-} from '@prisma/client';
+} from '../../generated/prisma/client';
 
 const typeToDb: Record<CRequestType, PRequestType> = {
   [CRequestType.TEAM_NEEDS_PLAYER]: PRequestType.TEAM_NEEDS_PLAYER,

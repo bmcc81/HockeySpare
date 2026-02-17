@@ -4,7 +4,7 @@
   "scripts": {
     "build:contracts": "npm run --workspace @hockeyspare/contracts build",
     "watch:contracts": "npm run --workspace @hockeyspare/contracts watch",
-    "web": "cd apps/web && ng serve --configuration development --source-map",
+    "web": "cd apps/web && ng serve --configuration development",
     "api": "cd apps/api && npm run start:dev && npx prisma studio",
     "dev": "npm run build:contracts && concurrently \"npm run watch:contracts\" \"npm run web\" \"npm run api\""
   },
@@ -15,6 +15,10 @@
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.28.1",
     "concurrently": "^9.2.1",
+    "prisma": "^7.4.0",
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.4.0"
   }
 }

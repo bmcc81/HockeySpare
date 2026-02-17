@@ -1,18 +1,23 @@
-// apps/api/src/modules/player-offers/player-offers.controller.ts
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param, ParseIntPipe } from '@nestjs/common';
 import { PlayerOffersService } from './player-offers.service';
+import { CreatePlayerOfferDto } from './dto/create-player-offer.dto';
 
 @Controller('player-offers')
 export class PlayerOffersController {
   constructor(private readonly service: PlayerOffersService) {}
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.service.findAll();
   }
 
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.service.findOne(id);
+  }
+
   @Post()
-  create(@Body() dto: any) {
+  async create(@Body() dto: CreatePlayerOfferDto) {
     return this.service.create(dto);
   }
 }

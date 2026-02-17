@@ -19,4 +19,8 @@ cd apps\api
 
 npx prisma studio
 
+GET DOCKER DESKTOP RUNNING:
+Start-Process "$Env:ProgramFiles\Docker\Docker\Docker Desktop.exe"
+
+
 

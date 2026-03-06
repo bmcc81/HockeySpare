@@ -1,1 +1,30 @@
-<p>register works!</p>
+<section class="page" style="max-width: 520px; margin: 0 auto;">
+  <div class="header">
+    <h1>Create account</h1>
+  </div>
+
+  <form class="card" (ngSubmit)="submit()" [formGroup]="form" style="display:grid; gap:12px;">
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+      <input class="input" placeholder="First name" formControlName="firstName" />
+      <input class="input" placeholder="Last name" formControlName="lastName" />
+    </div>
+
+    <input class="input" placeholder="Email" formControlName="email" />
+    <div *ngIf="form.controls.email.touched && form.controls.email.invalid" class="hint">
+      Enter a valid email.
+    </div>
+
+    <input class="input" type="password" placeholder="Password" formControlName="password" />
+    <input class="input" type="password" placeholder="Confirm password" formControlName="confirmPassword" />
+
+    <div *ngIf="error" class="alert" style="padding:10px; border-radius:10px;">
+      {{ error }}
+    </div>
+
+    <button class="btn btn-primary" type="submit" [disabled]="loading">
+      {{ loading ? 'Creating...' : 'Register' }}
+    </button>
+
+    <a class="btn btn-outline" routerLink="/login">Already have an account? Sign in</a>
+  </form>
+</section>

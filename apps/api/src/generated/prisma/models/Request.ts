@@ -27,121 +27,121 @@ export type AggregateRequest = {
 }
 
 export type RequestAvgAggregateOutputType = {
-  id: number | null
   payAmount: number | null
+  id: number | null
 }
 
 export type RequestSumAggregateOutputType = {
-  id: number | null
   payAmount: number | null
+  id: number | null
 }
 
 export type RequestMinAggregateOutputType = {
-  id: number | null
-  type: $Enums.RequestType | null
-  position: $Enums.Position | null
-  skillLevel: $Enums.SkillLevel | null
-  payAmount: number | null
-  teamName: string | null
-  playerName: string | null
   arena: string | null
-  arenaAddress: string | null
-  time: string | null
   notes: string | null
+  position: $Enums.Position | null
   createdAt: Date | null
   updatedAt: Date | null
+  arenaAddress: string | null
+  payAmount: number | null
+  playerName: string | null
+  skillLevel: $Enums.SkillLevel | null
+  teamName: string | null
+  time: string | null
+  type: $Enums.RequestType | null
+  id: number | null
 }
 
 export type RequestMaxAggregateOutputType = {
-  id: number | null
-  type: $Enums.RequestType | null
-  position: $Enums.Position | null
-  skillLevel: $Enums.SkillLevel | null
-  payAmount: number | null
-  teamName: string | null
-  playerName: string | null
   arena: string | null
-  arenaAddress: string | null
-  time: string | null
   notes: string | null
+  position: $Enums.Position | null
   createdAt: Date | null
   updatedAt: Date | null
+  arenaAddress: string | null
+  payAmount: number | null
+  playerName: string | null
+  skillLevel: $Enums.SkillLevel | null
+  teamName: string | null
+  time: string | null
+  type: $Enums.RequestType | null
+  id: number | null
 }
 
 export type RequestCountAggregateOutputType = {
-  id: number
-  type: number
-  position: number
-  skillLevel: number
-  payAmount: number
-  teamName: number
-  playerName: number
   arena: number
-  arenaAddress: number
-  time: number
   notes: number
+  position: number
   createdAt: number
   updatedAt: number
+  arenaAddress: number
+  payAmount: number
+  playerName: number
+  skillLevel: number
+  teamName: number
+  time: number
+  type: number
+  id: number
   _all: number
 }
 
 
 export type RequestAvgAggregateInputType = {
-  id?: true
   payAmount?: true
+  id?: true
 }
 
 export type RequestSumAggregateInputType = {
-  id?: true
   payAmount?: true
+  id?: true
 }
 
 export type RequestMinAggregateInputType = {
-  id?: true
-  type?: true
-  position?: true
-  skillLevel?: true
-  payAmount?: true
-  teamName?: true
-  playerName?: true
   arena?: true
-  arenaAddress?: true
-  time?: true
   notes?: true
+  position?: true
   createdAt?: true
   updatedAt?: true
+  arenaAddress?: true
+  payAmount?: true
+  playerName?: true
+  skillLevel?: true
+  teamName?: true
+  time?: true
+  type?: true
+  id?: true
 }
 
 export type RequestMaxAggregateInputType = {
-  id?: true
-  type?: true
-  position?: true
-  skillLevel?: true
-  payAmount?: true
-  teamName?: true
-  playerName?: true
   arena?: true
-  arenaAddress?: true
-  time?: true
   notes?: true
+  position?: true
   createdAt?: true
   updatedAt?: true
+  arenaAddress?: true
+  payAmount?: true
+  playerName?: true
+  skillLevel?: true
+  teamName?: true
+  time?: true
+  type?: true
+  id?: true
 }
 
 export type RequestCountAggregateInputType = {
-  id?: true
-  type?: true
-  position?: true
-  skillLevel?: true
-  payAmount?: true
-  teamName?: true
-  playerName?: true
   arena?: true
-  arenaAddress?: true
-  time?: true
   notes?: true
+  position?: true
   createdAt?: true
   updatedAt?: true
+  arenaAddress?: true
+  payAmount?: true
+  playerName?: true
+  skillLevel?: true
+  teamName?: true
+  time?: true
+  type?: true
+  id?: true
   _all?: true
 }
 
@@ -232,19 +232,19 @@ export type RequestGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 export type RequestGroupByOutputType = {
-  id: number
-  type: $Enums.RequestType
-  position: $Enums.Position
-  skillLevel: $Enums.SkillLevel
-  payAmount: number | null
-  teamName: string | null
-  playerName: string | null
   arena: string
-  arenaAddress: string | null
-  time: string
   notes: string | null
+  position: $Enums.Position
   createdAt: Date
   updatedAt: Date
+  arenaAddress: string | null
+  payAmount: number | null
+  playerName: string | null
+  skillLevel: $Enums.SkillLevel
+  teamName: string | null
+  time: string
+  type: $Enums.RequestType
+  id: number
   _count: RequestCountAggregateOutputType | null
   _avg: RequestAvgAggregateOutputType | null
   _sum: RequestSumAggregateOutputType | null
@@ -271,35 +271,35 @@ export type RequestWhereInput = {
   AND?: Prisma.RequestWhereInput | Prisma.RequestWhereInput[]
   OR?: Prisma.RequestWhereInput[]
   NOT?: Prisma.RequestWhereInput | Prisma.RequestWhereInput[]
-  id?: Prisma.IntFilter<"Request"> | number
-  type?: Prisma.EnumRequestTypeFilter<"Request"> | $Enums.RequestType
-  position?: Prisma.EnumPositionFilter<"Request"> | $Enums.Position
-  skillLevel?: Prisma.EnumSkillLevelFilter<"Request"> | $Enums.SkillLevel
-  payAmount?: Prisma.IntNullableFilter<"Request"> | number | null
-  teamName?: Prisma.StringNullableFilter<"Request"> | string | null
-  playerName?: Prisma.StringNullableFilter<"Request"> | string | null
   arena?: Prisma.StringFilter<"Request"> | string
-  arenaAddress?: Prisma.StringNullableFilter<"Request"> | string | null
-  time?: Prisma.StringFilter<"Request"> | string
   notes?: Prisma.StringNullableFilter<"Request"> | string | null
+  position?: Prisma.EnumPositionFilter<"Request"> | $Enums.Position
   createdAt?: Prisma.DateTimeFilter<"Request"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Request"> | Date | string
+  arenaAddress?: Prisma.StringNullableFilter<"Request"> | string | null
+  payAmount?: Prisma.IntNullableFilter<"Request"> | number | null
+  playerName?: Prisma.StringNullableFilter<"Request"> | string | null
+  skillLevel?: Prisma.EnumSkillLevelFilter<"Request"> | $Enums.SkillLevel
+  teamName?: Prisma.StringNullableFilter<"Request"> | string | null
+  time?: Prisma.StringFilter<"Request"> | string
+  type?: Prisma.EnumRequestTypeFilter<"Request"> | $Enums.RequestType
+  id?: Prisma.IntFilter<"Request"> | number
 }
 
 export type RequestOrderByWithRelationInput = {
-  id?: Prisma.SortOrder
-  type?: Prisma.SortOrder
-  position?: Prisma.SortOrder
-  skillLevel?: Prisma.SortOrder
-  payAmount?: Prisma.SortOrderInput | Prisma.SortOrder
-  teamName?: Prisma.SortOrderInput | Prisma.SortOrder
-  playerName?: Prisma.SortOrderInput | Prisma.SortOrder
   arena?: Prisma.SortOrder
-  arenaAddress?: Prisma.SortOrderInput | Prisma.SortOrder
-  time?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  position?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  arenaAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  payAmount?: Prisma.SortOrderInput | Prisma.SortOrder
+  playerName?: Prisma.SortOrderInput | Prisma.SortOrder
+  skillLevel?: Prisma.SortOrder
+  teamName?: Prisma.SortOrderInput | Prisma.SortOrder
+  time?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  id?: Prisma.SortOrder
 }
 
 export type RequestWhereUniqueInput = Prisma.AtLeast<{
@@ -307,34 +307,34 @@ export type RequestWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.RequestWhereInput | Prisma.RequestWhereInput[]
   OR?: Prisma.RequestWhereInput[]
   NOT?: Prisma.RequestWhereInput | Prisma.RequestWhereInput[]
-  type?: Prisma.EnumRequestTypeFilter<"Request"> | $Enums.RequestType
-  position?: Prisma.EnumPositionFilter<"Request"> | $Enums.Position
-  skillLevel?: Prisma.EnumSkillLevelFilter<"Request"> | $Enums.SkillLevel
-  payAmount?: Prisma.IntNullableFilter<"Request"> | number | null
-  teamName?: Prisma.StringNullableFilter<"Request"> | string | null
-  playerName?: Prisma.StringNullableFilter<"Request"> | string | null
   arena?: Prisma.StringFilter<"Request"> | string
-  arenaAddress?: Prisma.StringNullableFilter<"Request"> | string | null
-  time?: Prisma.StringFilter<"Request"> | string
   notes?: Prisma.StringNullableFilter<"Request"> | string | null
+  position?: Prisma.EnumPositionFilter<"Request"> | $Enums.Position
   createdAt?: Prisma.DateTimeFilter<"Request"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Request"> | Date | string
+  arenaAddress?: Prisma.StringNullableFilter<"Request"> | string | null
+  payAmount?: Prisma.IntNullableFilter<"Request"> | number | null
+  playerName?: Prisma.StringNullableFilter<"Request"> | string | null
+  skillLevel?: Prisma.EnumSkillLevelFilter<"Request"> | $Enums.SkillLevel
+  teamName?: Prisma.StringNullableFilter<"Request"> | string | null
+  time?: Prisma.StringFilter<"Request"> | string
+  type?: Prisma.EnumRequestTypeFilter<"Request"> | $Enums.RequestType
 }, "id">
 
 export type RequestOrderByWithAggregationInput = {
-  id?: Prisma.SortOrder
-  type?: Prisma.SortOrder
-  position?: Prisma.SortOrder
-  skillLevel?: Prisma.SortOrder
-  payAmount?: Prisma.SortOrderInput | Prisma.SortOrder
-  teamName?: Prisma.SortOrderInput | Prisma.SortOrder
-  playerName?: Prisma.SortOrderInput | Prisma.SortOrder
   arena?: Prisma.SortOrder
-  arenaAddress?: Prisma.SortOrderInput | Prisma.SortOrder
-  time?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  position?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  arenaAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  payAmount?: Prisma.SortOrderInput | Prisma.SortOrder
+  playerName?: Prisma.SortOrderInput | Prisma.SortOrder
+  skillLevel?: Prisma.SortOrder
+  teamName?: Prisma.SortOrderInput | Prisma.SortOrder
+  time?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  id?: Prisma.SortOrder
   _count?: Prisma.RequestCountOrderByAggregateInput
   _avg?: Prisma.RequestAvgOrderByAggregateInput
   _max?: Prisma.RequestMaxOrderByAggregateInput
@@ -346,198 +346,202 @@ export type RequestScalarWhereWithAggregatesInput = {
   AND?: Prisma.RequestScalarWhereWithAggregatesInput | Prisma.RequestScalarWhereWithAggregatesInput[]
   OR?: Prisma.RequestScalarWhereWithAggregatesInput[]
   NOT?: Prisma.RequestScalarWhereWithAggregatesInput | Prisma.RequestScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"Request"> | number
-  type?: Prisma.EnumRequestTypeWithAggregatesFilter<"Request"> | $Enums.RequestType
-  position?: Prisma.EnumPositionWithAggregatesFilter<"Request"> | $Enums.Position
-  skillLevel?: Prisma.EnumSkillLevelWithAggregatesFilter<"Request"> | $Enums.SkillLevel
-  payAmount?: Prisma.IntNullableWithAggregatesFilter<"Request"> | number | null
-  teamName?: Prisma.StringNullableWithAggregatesFilter<"Request"> | string | null
-  playerName?: Prisma.StringNullableWithAggregatesFilter<"Request"> | string | null
   arena?: Prisma.StringWithAggregatesFilter<"Request"> | string
-  arenaAddress?: Prisma.StringNullableWithAggregatesFilter<"Request"> | string | null
-  time?: Prisma.StringWithAggregatesFilter<"Request"> | string
   notes?: Prisma.StringNullableWithAggregatesFilter<"Request"> | string | null
+  position?: Prisma.EnumPositionWithAggregatesFilter<"Request"> | $Enums.Position
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Request"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Request"> | Date | string
+  arenaAddress?: Prisma.StringNullableWithAggregatesFilter<"Request"> | string | null
+  payAmount?: Prisma.IntNullableWithAggregatesFilter<"Request"> | number | null
+  playerName?: Prisma.StringNullableWithAggregatesFilter<"Request"> | string | null
+  skillLevel?: Prisma.EnumSkillLevelWithAggregatesFilter<"Request"> | $Enums.SkillLevel
+  teamName?: Prisma.StringNullableWithAggregatesFilter<"Request"> | string | null
+  time?: Prisma.StringWithAggregatesFilter<"Request"> | string
+  type?: Prisma.EnumRequestTypeWithAggregatesFilter<"Request"> | $Enums.RequestType
+  id?: Prisma.IntWithAggregatesFilter<"Request"> | number
 }
 
 export type RequestCreateInput = {
-  type: $Enums.RequestType
-  position: $Enums.Position
-  skillLevel: $Enums.SkillLevel
-  payAmount?: number | null
-  teamName?: string | null
-  playerName?: string | null
   arena: string
-  arenaAddress?: string | null
-  time: string
   notes?: string | null
+  position: $Enums.Position
   createdAt?: Date | string
   updatedAt?: Date | string
+  arenaAddress?: string | null
+  payAmount?: number | null
+  playerName?: string | null
+  skillLevel: $Enums.SkillLevel
+  teamName?: string | null
+  time: string
+  type: $Enums.RequestType
 }
 
 export type RequestUncheckedCreateInput = {
-  id?: number
-  type: $Enums.RequestType
-  position: $Enums.Position
-  skillLevel: $Enums.SkillLevel
-  payAmount?: number | null
-  teamName?: string | null
-  playerName?: string | null
   arena: string
-  arenaAddress?: string | null
-  time: string
   notes?: string | null
+  position: $Enums.Position
   createdAt?: Date | string
   updatedAt?: Date | string
+  arenaAddress?: string | null
+  payAmount?: number | null
+  playerName?: string | null
+  skillLevel: $Enums.SkillLevel
+  teamName?: string | null
+  time: string
+  type: $Enums.RequestType
+  id?: number
 }
 
 export type RequestUpdateInput = {
-  type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
-  position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
-  skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
-  payAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  playerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   arena?: Prisma.StringFieldUpdateOperationsInput | string
-  arenaAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  time?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  arenaAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  playerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
+  teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  time?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
 }
 
 export type RequestUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
-  position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
-  skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
-  payAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  playerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   arena?: Prisma.StringFieldUpdateOperationsInput | string
-  arenaAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  time?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  arenaAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  playerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
+  teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  time?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
+  id?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type RequestCreateManyInput = {
-  id?: number
-  type: $Enums.RequestType
-  position: $Enums.Position
-  skillLevel: $Enums.SkillLevel
-  payAmount?: number | null
-  teamName?: string | null
-  playerName?: string | null
   arena: string
-  arenaAddress?: string | null
-  time: string
   notes?: string | null
+  position: $Enums.Position
   createdAt?: Date | string
   updatedAt?: Date | string
+  arenaAddress?: string | null
+  payAmount?: number | null
+  playerName?: string | null
+  skillLevel: $Enums.SkillLevel
+  teamName?: string | null
+  time: string
+  type: $Enums.RequestType
+  id?: number
 }
 
 export type RequestUpdateManyMutationInput = {
-  type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
-  position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
-  skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
-  payAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  playerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   arena?: Prisma.StringFieldUpdateOperationsInput | string
-  arenaAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  time?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  arenaAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  playerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
+  teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  time?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
 }
 
 export type RequestUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
-  position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
-  skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
-  payAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  playerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   arena?: Prisma.StringFieldUpdateOperationsInput | string
-  arenaAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  time?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  arenaAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  playerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
+  teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  time?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
+  id?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type RequestCountOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  type?: Prisma.SortOrder
-  position?: Prisma.SortOrder
-  skillLevel?: Prisma.SortOrder
-  payAmount?: Prisma.SortOrder
-  teamName?: Prisma.SortOrder
-  playerName?: Prisma.SortOrder
   arena?: Prisma.SortOrder
-  arenaAddress?: Prisma.SortOrder
-  time?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  position?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  arenaAddress?: Prisma.SortOrder
+  payAmount?: Prisma.SortOrder
+  playerName?: Prisma.SortOrder
+  skillLevel?: Prisma.SortOrder
+  teamName?: Prisma.SortOrder
+  time?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  id?: Prisma.SortOrder
 }
 
 export type RequestAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
   payAmount?: Prisma.SortOrder
+  id?: Prisma.SortOrder
 }
 
 export type RequestMaxOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  type?: Prisma.SortOrder
-  position?: Prisma.SortOrder
-  skillLevel?: Prisma.SortOrder
-  payAmount?: Prisma.SortOrder
-  teamName?: Prisma.SortOrder
-  playerName?: Prisma.SortOrder
   arena?: Prisma.SortOrder
-  arenaAddress?: Prisma.SortOrder
-  time?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  position?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  arenaAddress?: Prisma.SortOrder
+  payAmount?: Prisma.SortOrder
+  playerName?: Prisma.SortOrder
+  skillLevel?: Prisma.SortOrder
+  teamName?: Prisma.SortOrder
+  time?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  id?: Prisma.SortOrder
 }
 
 export type RequestMinOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  type?: Prisma.SortOrder
-  position?: Prisma.SortOrder
-  skillLevel?: Prisma.SortOrder
-  payAmount?: Prisma.SortOrder
-  teamName?: Prisma.SortOrder
-  playerName?: Prisma.SortOrder
   arena?: Prisma.SortOrder
-  arenaAddress?: Prisma.SortOrder
-  time?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  position?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  arenaAddress?: Prisma.SortOrder
+  payAmount?: Prisma.SortOrder
+  playerName?: Prisma.SortOrder
+  skillLevel?: Prisma.SortOrder
+  teamName?: Prisma.SortOrder
+  time?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  id?: Prisma.SortOrder
 }
 
 export type RequestSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
   payAmount?: Prisma.SortOrder
+  id?: Prisma.SortOrder
 }
 
-export type EnumRequestTypeFieldUpdateOperationsInput = {
-  set?: $Enums.RequestType
+export type StringFieldUpdateOperationsInput = {
+  set?: string
+}
+
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
 }
 
 export type EnumPositionFieldUpdateOperationsInput = {
   set?: $Enums.Position
 }
 
-export type EnumSkillLevelFieldUpdateOperationsInput = {
-  set?: $Enums.SkillLevel
+export type DateTimeFieldUpdateOperationsInput = {
+  set?: Date | string
 }
 
 export type NullableIntFieldUpdateOperationsInput = {
@@ -548,16 +552,12 @@ export type NullableIntFieldUpdateOperationsInput = {
   divide?: number
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
+export type EnumSkillLevelFieldUpdateOperationsInput = {
+  set?: $Enums.SkillLevel
 }
 
-export type StringFieldUpdateOperationsInput = {
-  set?: string
-}
-
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
+export type EnumRequestTypeFieldUpdateOperationsInput = {
+  set?: $Enums.RequestType
 }
 
 export type IntFieldUpdateOperationsInput = {
@@ -571,88 +571,88 @@ export type IntFieldUpdateOperationsInput = {
 
 
 export type RequestSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  type?: boolean
-  position?: boolean
-  skillLevel?: boolean
-  payAmount?: boolean
-  teamName?: boolean
-  playerName?: boolean
   arena?: boolean
-  arenaAddress?: boolean
-  time?: boolean
   notes?: boolean
+  position?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  arenaAddress?: boolean
+  payAmount?: boolean
+  playerName?: boolean
+  skillLevel?: boolean
+  teamName?: boolean
+  time?: boolean
+  type?: boolean
+  id?: boolean
 }, ExtArgs["result"]["request"]>
 
 export type RequestSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  type?: boolean
-  position?: boolean
-  skillLevel?: boolean
-  payAmount?: boolean
-  teamName?: boolean
-  playerName?: boolean
   arena?: boolean
-  arenaAddress?: boolean
-  time?: boolean
   notes?: boolean
+  position?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  arenaAddress?: boolean
+  payAmount?: boolean
+  playerName?: boolean
+  skillLevel?: boolean
+  teamName?: boolean
+  time?: boolean
+  type?: boolean
+  id?: boolean
 }, ExtArgs["result"]["request"]>
 
 export type RequestSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  type?: boolean
-  position?: boolean
-  skillLevel?: boolean
-  payAmount?: boolean
-  teamName?: boolean
-  playerName?: boolean
   arena?: boolean
-  arenaAddress?: boolean
-  time?: boolean
   notes?: boolean
+  position?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  arenaAddress?: boolean
+  payAmount?: boolean
+  playerName?: boolean
+  skillLevel?: boolean
+  teamName?: boolean
+  time?: boolean
+  type?: boolean
+  id?: boolean
 }, ExtArgs["result"]["request"]>
 
 export type RequestSelectScalar = {
-  id?: boolean
-  type?: boolean
-  position?: boolean
-  skillLevel?: boolean
-  payAmount?: boolean
-  teamName?: boolean
-  playerName?: boolean
   arena?: boolean
-  arenaAddress?: boolean
-  time?: boolean
   notes?: boolean
+  position?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  arenaAddress?: boolean
+  payAmount?: boolean
+  playerName?: boolean
+  skillLevel?: boolean
+  teamName?: boolean
+  time?: boolean
+  type?: boolean
+  id?: boolean
 }
 
-export type RequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "position" | "skillLevel" | "payAmount" | "teamName" | "playerName" | "arena" | "arenaAddress" | "time" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["request"]>
+export type RequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"arena" | "notes" | "position" | "createdAt" | "updatedAt" | "arenaAddress" | "payAmount" | "playerName" | "skillLevel" | "teamName" | "time" | "type" | "id", ExtArgs["result"]["request"]>
 
 export type $RequestPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Request"
   objects: {}
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
-    type: $Enums.RequestType
-    position: $Enums.Position
-    skillLevel: $Enums.SkillLevel
-    payAmount: number | null
-    teamName: string | null
-    playerName: string | null
     arena: string
-    arenaAddress: string | null
-    time: string
     notes: string | null
+    position: $Enums.Position
     createdAt: Date
     updatedAt: Date
+    arenaAddress: string | null
+    payAmount: number | null
+    playerName: string | null
+    skillLevel: $Enums.SkillLevel
+    teamName: string | null
+    time: string
+    type: $Enums.RequestType
+    id: number
   }, ExtArgs["result"]["request"]>
   composites: {}
 }
@@ -736,8 +736,8 @@ export interface RequestDelegate<ExtArgs extends runtime.Types.Extensions.Intern
    * // Get first 10 Requests
    * const requests = await prisma.request.findMany({ take: 10 })
    * 
-   * // Only select the `id`
-   * const requestWithIdOnly = await prisma.request.findMany({ select: { id: true } })
+   * // Only select the `arena`
+   * const requestWithArenaOnly = await prisma.request.findMany({ select: { arena: true } })
    * 
    */
   findMany<T extends RequestFindManyArgs>(args?: Prisma.SelectSubset<T, RequestFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -781,9 +781,9 @@ export interface RequestDelegate<ExtArgs extends runtime.Types.Extensions.Intern
    *   ]
    * })
    * 
-   * // Create many Requests and only return the `id`
-   * const requestWithIdOnly = await prisma.request.createManyAndReturn({
-   *   select: { id: true },
+   * // Create many Requests and only return the `arena`
+   * const requestWithArenaOnly = await prisma.request.createManyAndReturn({
+   *   select: { arena: true },
    *   data: [
    *     // ... provide data here
    *   ]
@@ -872,9 +872,9 @@ export interface RequestDelegate<ExtArgs extends runtime.Types.Extensions.Intern
    *   ]
    * })
    * 
-   * // Update zero or more Requests and only return the `id`
-   * const requestWithIdOnly = await prisma.request.updateManyAndReturn({
-   *   select: { id: true },
+   * // Update zero or more Requests and only return the `arena`
+   * const requestWithArenaOnly = await prisma.request.updateManyAndReturn({
+   *   select: { arena: true },
    *   where: {
    *     // ... provide filter here
    *   },
@@ -1076,19 +1076,19 @@ export interface Prisma__RequestClient<T, Null = never, ExtArgs extends runtime.
  * Fields of the Request model
  */
 export interface RequestFieldRefs {
-  readonly id: Prisma.FieldRef<"Request", 'Int'>
-  readonly type: Prisma.FieldRef<"Request", 'RequestType'>
-  readonly position: Prisma.FieldRef<"Request", 'Position'>
-  readonly skillLevel: Prisma.FieldRef<"Request", 'SkillLevel'>
-  readonly payAmount: Prisma.FieldRef<"Request", 'Int'>
-  readonly teamName: Prisma.FieldRef<"Request", 'String'>
-  readonly playerName: Prisma.FieldRef<"Request", 'String'>
   readonly arena: Prisma.FieldRef<"Request", 'String'>
-  readonly arenaAddress: Prisma.FieldRef<"Request", 'String'>
-  readonly time: Prisma.FieldRef<"Request", 'String'>
   readonly notes: Prisma.FieldRef<"Request", 'String'>
+  readonly position: Prisma.FieldRef<"Request", 'Position'>
   readonly createdAt: Prisma.FieldRef<"Request", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Request", 'DateTime'>
+  readonly arenaAddress: Prisma.FieldRef<"Request", 'String'>
+  readonly payAmount: Prisma.FieldRef<"Request", 'Int'>
+  readonly playerName: Prisma.FieldRef<"Request", 'String'>
+  readonly skillLevel: Prisma.FieldRef<"Request", 'SkillLevel'>
+  readonly teamName: Prisma.FieldRef<"Request", 'String'>
+  readonly time: Prisma.FieldRef<"Request", 'String'>
+  readonly type: Prisma.FieldRef<"Request", 'RequestType'>
+  readonly id: Prisma.FieldRef<"Request", 'Int'>
 }
     
 

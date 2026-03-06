@@ -27,3 +27,8 @@ export type Request = Prisma.RequestModel
  * 
  */
 export type PlayerOffer = Prisma.PlayerOfferModel
+/**
+ * Model User
+ * 
+ */
+export type User = Prisma.UserModel

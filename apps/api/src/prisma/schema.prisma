@@ -1,17 +1,54 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider     = "prisma-client"
-  output       = "../src/generated/prisma"
+  output       = "../generated/prisma"
   moduleFormat = "cjs"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+model Request {
+  arena        String
+  notes        String?
+  position     Position
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  arenaAddress String?
+  payAmount    Int?
+  playerName   String?
+  skillLevel   SkillLevel
+  teamName     String?
+  time         String
+  type         RequestType
+  id           Int         @id @default(autoincrement())
+
+  @@index([type])
+  @@index([position, skillLevel])
+}
+
+model PlayerOffer {
+  arena        String
+  notes        String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  arenaAddress String
+  payAmount    Int
+  playerName   String
+  time         String
+  id           Int        @id @default(autoincrement())
+  position     Position
+  skillLevel   SkillLevel
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  firstName    String?
+  lastName     String?
 }
 
 enum RequestType {
@@ -30,51 +67,4 @@ enum SkillLevel {
   INTERMEDIATE
   ADVANCED
   ELITE
-}
-
-model Request {
-  id           Int        @id @default(autoincrement())
-  type         RequestType
-  position     Position
-  skillLevel   SkillLevel
-
-  payAmount    Int?
-  teamName     String?
-  playerName   String?
-
-  arena        String
-  arenaAddress String?
-  time         String
-  notes        String?
-
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-
-  @@index([type])
-  @@index([position, skillLevel])
-}
-
-model PlayerOffer {
-  id           Int        @id @default(autoincrement())
-  playerName   String
-  position     Position
-  skillLevel   SkillLevel
-  payAmount    Int
-  arena        String
-  arenaAddress String
-  time         String
-  notes        String?
-
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-}
-
-model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
-  passwordHash String
-  firstName    String?
-  lastName     String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
 }

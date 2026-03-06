@@ -52,7 +52,8 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Request: 'Request',
-  PlayerOffer: 'PlayerOffer'
+  PlayerOffer: 'PlayerOffer',
+  User: 'User'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -72,39 +73,52 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 
 
 export const RequestScalarFieldEnum = {
-  id: 'id',
-  type: 'type',
-  position: 'position',
-  skillLevel: 'skillLevel',
-  payAmount: 'payAmount',
-  teamName: 'teamName',
-  playerName: 'playerName',
   arena: 'arena',
-  arenaAddress: 'arenaAddress',
-  time: 'time',
   notes: 'notes',
+  position: 'position',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  arenaAddress: 'arenaAddress',
+  payAmount: 'payAmount',
+  playerName: 'playerName',
+  skillLevel: 'skillLevel',
+  teamName: 'teamName',
+  time: 'time',
+  type: 'type',
+  id: 'id'
 } as const
 
 export type RequestScalarFieldEnum = (typeof RequestScalarFieldEnum)[keyof typeof RequestScalarFieldEnum]
 
 
 export const PlayerOfferScalarFieldEnum = {
-  id: 'id',
-  playerName: 'playerName',
-  position: 'position',
-  skillLevel: 'skillLevel',
-  payAmount: 'payAmount',
   arena: 'arena',
-  arenaAddress: 'arenaAddress',
-  time: 'time',
   notes: 'notes',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  arenaAddress: 'arenaAddress',
+  payAmount: 'payAmount',
+  playerName: 'playerName',
+  time: 'time',
+  id: 'id',
+  position: 'position',
+  skillLevel: 'skillLevel'
 } as const
 
 export type PlayerOfferScalarFieldEnum = (typeof PlayerOfferScalarFieldEnum)[keyof typeof PlayerOfferScalarFieldEnum]
+
+
+export const UserScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  passwordHash: 'passwordHash',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  firstName: 'firstName',
+  lastName: 'lastName'
+} as const
+
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
 export const SortOrder = {

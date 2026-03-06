@@ -5,16 +5,9 @@
     "build:contracts": "npm run --workspace @hockeyspare/contracts build",
     "watch:contracts": "npm run --workspace @hockeyspare/contracts watch",
     "web": "cd apps/web && ng serve --configuration development",
-<<<<<<< Updated upstream
-    "api": "cd apps/api && npm run start:dev && npx prisma studio",
-    "dev": "npm run build:contracts && concurrently \"npm run watch:contracts\" \"npm run web\" \"npm run api\""
-=======
-
     "api": "cd apps/api && npm run start:dev",
     "studio": "cd apps/api && npx prisma studio",
-
     "dev": "npm run build:contracts && concurrently \"npm run watch:contracts\" \"npm run web\" \"npm run api\" \"npm run studio\""
->>>>>>> Stashed changes
   },
   "workspaces": [
     "apps/*",

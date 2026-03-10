@@ -22,11 +22,6 @@ export const routes: Routes = [
       import('./requests/request-list/request-list').then(m => m.RequestListComponent),
   },
   {
-    path: 'requests/:id',
-    loadComponent: () =>
-      import('./requests/request-detail/request-detail').then(m => m.RequestDetailComponent),
-  },
-  {
     path: 'requests/team/new',
     loadComponent: () =>
       import('./requests/team-request-create/team-request-create').then(m => m.TeamRequestCreateComponent),
@@ -35,6 +30,11 @@ export const routes: Routes = [
     path: 'requests/player/new',
     loadComponent: () =>
       import('./requests/player-offer-create/player-offer-create').then(m => m.PlayerOfferCreateComponent),
+  },
+  {
+    path: 'requests/:id',
+    loadComponent: () =>
+      import('./requests/request-detail/request-detail').then(m => m.RequestDetailComponent),
   },
   {
     path: 'profile/player',
@@ -46,7 +46,6 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./profiles/team-profile/team-profile').then(m => m.TeamProfileComponent),
   },
-
   {
     path: 'messages',
     loadComponent: () =>
@@ -57,12 +56,10 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./messaging/chat-window/chat-window').then(m => m.ChatWindowComponent),
   },
-
   {
     path: 'my-bookings',
     loadComponent: () =>
       import('./matches/my-bookings/my-bookings').then(m => m.MyBookingsComponent),
   },
-
   { path: '**', redirectTo: '' },
 ];

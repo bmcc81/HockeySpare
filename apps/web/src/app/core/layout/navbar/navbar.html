@@ -1,0 +1,155 @@
+<header class="site-header" [class.scrolled]="scrolled()">
+  <nav class="nav-shell">
+    <a class="brand" routerLink="/" (click)="closeAll()">
+      <img
+        src="/images/hockey_spare_logo.png"
+        alt="HockeySpare"
+        class="brand-logo"
+      />
+    </a>
+
+    <button
+      class="mobile-toggle"
+      type="button"
+      (click)="toggleMobile()"
+      [attr.aria-expanded]="mobileOpen()"
+      aria-label="Toggle navigation"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <div class="nav-content" [class.open]="mobileOpen()">
+      <div class="nav-main">
+        <a
+          routerLink="/"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-link"
+          (click)="closeAll()"
+        >
+          Home
+        </a>
+
+        <a
+          routerLink="/requests"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-link"
+          (click)="closeAll()"
+        >
+          Requests
+        </a>
+
+        <a
+          routerLink="/messages"
+          routerLinkActive="active"
+          class="nav-link"
+          (click)="closeAll()"
+        >
+          Messages
+        </a>
+
+        <a
+          routerLink="/my-bookings"
+          routerLinkActive="active"
+          class="nav-link"
+          (click)="closeAll()"
+        >
+          My Bookings
+        </a>
+
+        <div class="nav-dropdown">
+          <button
+            type="button"
+            class="nav-link nav-button"
+            [class.active]="actionsOpen()"
+            (click)="toggleActions()"
+          >
+            Post
+            <span class="chevron" [class.open]="actionsOpen()"></span>
+          </button>
+
+          @if (actionsOpen()) {
+            <div class="dropdown-panel">
+              <a
+                routerLink="/requests/team/new"
+                class="dropdown-link"
+                (click)="closeAll()"
+              >
+                + Team Request
+              </a>
+
+              <a
+                routerLink="/requests/player/new"
+                class="dropdown-link"
+                (click)="closeAll()"
+              >
+                + Player Offer
+              </a>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="nav-side">
+        <div class="nav-dropdown">
+          <button
+            type="button"
+            class="profile-trigger"
+            [class.active]="accountOpen()"
+            (click)="toggleAccount()"
+          >
+            Account
+            <span class="chevron" [class.open]="accountOpen()"></span>
+          </button>
+
+          @if (accountOpen()) {
+            <div class="dropdown-panel dropdown-panel-right">
+              <a
+                routerLink="/profile/player"
+                class="dropdown-link"
+                (click)="closeAll()"
+              >
+                Player Profile
+              </a>
+
+              <a
+                routerLink="/profile/team"
+                class="dropdown-link"
+                (click)="closeAll()"
+              >
+                Team Profile
+              </a>
+
+              <a
+                routerLink="/login"
+                class="dropdown-link"
+                (click)="closeAll()"
+              >
+                Login
+              </a>
+
+              <a
+                routerLink="/register"
+                class="dropdown-link"
+                (click)="closeAll()"
+              >
+                Register
+              </a>
+            </div>
+          }
+        </div>
+
+        <a
+          routerLink="/requests/team/new"
+          class="cta"
+          (click)="closeAll()"
+        >
+          Post Request
+        </a>
+      </div>
+    </div>
+  </nav>
+</header>

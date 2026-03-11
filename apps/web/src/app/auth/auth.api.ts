@@ -19,6 +19,6 @@ export class AuthApi {
   private baseUrl = 'http://localhost:3000';
 
   register(body: RegisterRequest) {
-    return this.http.post<RegisterResponse>(`${this.baseUrl}/auth/register`, body);
+    return this.http.post<RegisterResponse>(`${this.baseUrl}/api/auth/register`, body);
   }
 }

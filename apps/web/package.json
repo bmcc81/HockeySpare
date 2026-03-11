@@ -8,29 +8,9 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
-  "prettier": {
-    "printWidth": 100,
-    "singleQuote": true,
-    "overrides": [
-      {
-        "files": "*.html",
-        "options": {
-          "parser": "angular"
-        }
-      }
-    ]
-  },
   "private": true,
   "packageManager": "npm@10.9.3",
   "dependencies": {
-<<<<<<< Updated upstream
-    "@angular/common": "^21.1.0",
-    "@angular/compiler": "^21.1.0",
-    "@angular/core": "^21.1.0",
-    "@angular/forms": "^21.1.0",
-    "@angular/platform-browser": "^21.1.0",
-    "@angular/router": "^21.1.0",
-=======
     "@angular/common": "21.2.0",
     "@angular/compiler": "21.2.0",
     "@angular/core": "21.2.0",
@@ -38,20 +18,15 @@
     "@angular/platform-browser": "21.2.0",
     "@angular/router": "21.2.0",
     "bootstrap": "^5.3.8",
->>>>>>> Stashed changes
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@angular/build": "^21.1.1",
-    "@angular/cli": "^21.2.0",
-    "@angular/compiler-cli": "^21.1.0",
+    "@angular/build": "21.2.0",
+    "@angular/cli": "21.2.0",
+    "@angular/compiler-cli": "21.2.0",
     "jsdom": "^27.1.0",
     "typescript": "~5.9.2",
     "vitest": "^4.0.8"
-  },
-  "overrides": {
-    "hono": "^4.11.7",
-    "lodash": "^4.17.23"
   }
 }

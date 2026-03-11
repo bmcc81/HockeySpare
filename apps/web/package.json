@@ -23,12 +23,22 @@
   "private": true,
   "packageManager": "npm@10.9.3",
   "dependencies": {
+<<<<<<< Updated upstream
     "@angular/common": "^21.1.0",
     "@angular/compiler": "^21.1.0",
     "@angular/core": "^21.1.0",
     "@angular/forms": "^21.1.0",
     "@angular/platform-browser": "^21.1.0",
     "@angular/router": "^21.1.0",
+=======
+    "@angular/common": "21.2.0",
+    "@angular/compiler": "21.2.0",
+    "@angular/core": "21.2.0",
+    "@angular/forms": "21.2.0",
+    "@angular/platform-browser": "21.2.0",
+    "@angular/router": "21.2.0",
+    "bootstrap": "^5.3.8",
+>>>>>>> Stashed changes
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },

@@ -1,3 +1,5 @@
+@import "../../../styles/variable";
+
 /* ===== Page shell ===== */
 .page {
   width: min(1100px, calc(100% - 32px));
@@ -133,6 +135,7 @@
   min-width: 0;
 
   h3 {
+    color: $text-color;
     margin: 6px 0 0;
     font-size: 16px;
     line-height: 1.2;
@@ -182,6 +185,7 @@
 }
 
 .pay-amt {
+  color: $text-color;
   display: block;
   margin-top: 2px;
   font-size: 18px;

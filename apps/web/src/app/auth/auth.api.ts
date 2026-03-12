@@ -13,6 +13,22 @@ export interface RegisterResponse {
   accessToken: string;
 }
 
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface AuthResponse {
+  accessToken: string;
+  user: {
+    id: string;
+    email: string;
+    firstName: string | null;
+    lastName: string | null;
+    createdAt: string;
+  };
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthApi {
   private http = inject(HttpClient);
@@ -20,5 +36,9 @@ export class AuthApi {
 
   register(body: RegisterRequest) {
     return this.http.post<RegisterResponse>(`${this.baseUrl}/api/auth/register`, body);
+  }
+
+  login(body: LoginRequest) {
+    return this.http.post<AuthResponse>(`${this.baseUrl}/api/auth/login`, body);
   }
 }

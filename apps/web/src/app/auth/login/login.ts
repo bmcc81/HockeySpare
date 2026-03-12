@@ -22,8 +22,6 @@ export class LoginComponent {
   form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]],
-    firstName: ['', [Validators.required]],
-    lastName: ['', [Validators.required]],
   });
 
   submit(): void {
@@ -35,32 +33,29 @@ export class LoginComponent {
     this.loading = true;
     this.error = '';
 
-    const { firstName, lastName, email, password } = this.form.getRawValue();
+    const { email, password } = this.form.getRawValue();
 
-    this.api.login({
-        firstName: firstName.trim(),
-        lastName: lastName.trim(),
+    this.api
+      .login({
         email: email.trim().toLowerCase(),
         password,
-      }).subscribe({
-      next: (res) => {
-        const token = res.accessToken;
+      })
+      .subscribe({
+        next: (res) => {
+          if (res.accessToken) {
+            localStorage.setItem('token', res.accessToken);
+          }
 
-        if (token) {
-          localStorage.setItem('token', token);
-        }
-
-        this.router.navigateByUrl('/requests');
-      },
-      error: (err) => {
-        this.loading = false;
-        this.error =
-          err?.error?.message ||
-          'Login failed. Please check your email and password.';
-      },
-      complete: () => {
-        this.loading = false;
-      },
-    });
+          this.router.navigateByUrl('/requests');
+        },
+        error: (err) => {
+          this.error =
+            err?.error?.message || 'Login failed. Please check your email and password.';
+          this.loading = false;
+        },
+        complete: () => {
+          this.loading = false;
+        },
+      });
   }
 }

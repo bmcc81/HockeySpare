@@ -1,39 +1,102 @@
-<h2>Create Player Offer</h2>
+<div class="offer-page">
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-10 col-lg-7 col-xl-6">
+        <div class="offer-card">
+          <div class="text-center mb-4">
+            <h2 class="offer-title">Create Player Offer</h2>
+            <p class="offer-subtitle mb-0">Post your availability on HockeySpare</p>
+          </div>
 
-<form [formGroup]="form" (ngSubmit)="submit()">
-  <label>
-    Position
-    <select formControlName="position">
-      <option *ngFor="let p of positions" [value]="p">{{ p }}</option>
-    </select>
-  </label>
+          <form [formGroup]="form" (ngSubmit)="submit()" class="row g-3">
+            <div class="col-12 col-md-6">
+              <label for="position" class="form-label">Position</label>
+              <select id="position" formControlName="position" class="form-select custom-input">
+                <option value="" disabled>Select position</option>
+                <option *ngFor="let p of positions" [value]="p">{{ p }}</option>
+              </select>
+            </div>
 
-  <label>
-    Skill Level
-    <select formControlName="skillLevel">
-      <option *ngFor="let s of skillLevels" [value]="s">{{ s }}</option>
-    </select>
-  </label>
+            <div class="col-12 col-md-6">
+              <label for="skillLevel" class="form-label">Skill level</label>
+              <select
+                id="skillLevel"
+                formControlName="skillLevel"
+                class="form-select custom-input"
+              >
+                <option value="" disabled>Select skill level</option>
+                <option *ngFor="let s of skillLevels" [value]="s">{{ s }}</option>
+              </select>
+            </div>
 
-  <label>
-    Pay Amount
-    <input type="number" formControlName="payAmount" />
-  </label>
+            <div class="col-12 col-md-6">
+              <label for="payAmount" class="form-label">Pay amount</label>
+              <input
+                id="payAmount"
+                type="number"
+                formControlName="payAmount"
+                class="form-control custom-input"
+                placeholder="40"
+              />
+            </div>
 
-  <label>
-    Arena
-    <input type="text" formControlName="arena" />
-  </label>
+            <div class="col-12 col-md-6">
+              <label class="form-label">Time</label>
 
-  <label>
-    Time
-    <input type="text" formControlName="time" placeholder="Tonight 8:30 PM" />
-  </label>
+              <div
+                class="timepicker-shell"
+                [class.is-invalid]="form.controls.time.touched && form.controls.time.invalid"
+              >
+                <ngb-timepicker
+                  formControlName="time"
+                  [spinners]="true"
+                  [seconds]="false"
+                  [meridian]="true"
+                  size="small"
+                ></ngb-timepicker>
+              </div>
 
-  <label>
-    Notes
-    <textarea formControlName="notes"></textarea>
-  </label>
+              <div
+                class="invalid-feedback d-block"
+                *ngIf="form.controls.time.touched && form.controls.time.invalid"
+              >
+                <span *ngIf="form.controls.time.errors?.['required']">Time is required.</span>
+              </div>
+            </div>
 
-  <button type="submit" [disabled]="form.invalid">Create</button>
-</form>
+            <div class="col-12">
+              <label for="arena" class="form-label">Arena</label>
+              <input
+                id="arena"
+                type="text"
+                formControlName="arena"
+                class="form-control custom-input"
+                placeholder="Arena name"
+              />
+            </div>
+
+            <div class="col-12">
+              <label for="notes" class="form-label">Notes</label>
+              <textarea
+                id="notes"
+                formControlName="notes"
+                class="form-control custom-input custom-textarea"
+                placeholder="Add details about your availability, level, or preferences"
+              ></textarea>
+            </div>
+
+            <div class="col-12 mt-4">
+              <button type="submit" class="btn submit-btn w-100" [disabled]="form.invalid">
+                Create Offer
+              </button>
+            </div>
+          </form>
+
+          <div class="text-center form-footer mt-4">
+            Looking for team requests? <a routerLink="/requests">Browse requests</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

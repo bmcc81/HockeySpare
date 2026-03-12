@@ -1,0 +1,57 @@
+.timepicker-shell {
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.08);
+  min-height: auto;
+}
+
+.timepicker-shell.is-invalid {
+  border-color: rgba(220, 53, 69, 0.9);
+}
+
+:host ::ng-deep ngb-timepicker {
+  display: block;
+  color: #fff;
+}
+
+:host ::ng-deep ngb-timepicker fieldset {
+  margin: 0;
+}
+
+:host ::ng-deep ngb-timepicker .form-control {
+  min-height: 44px;
+  height: 44px;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #f4f4f5;
+  color: #111827;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: none;
+}
+
+:host ::ng-deep ngb-timepicker .form-control:focus {
+  background: #fff;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 0.22rem rgba(37, 99, 235, 0.22);
+}
+
+:host ::ng-deep ngb-timepicker .btn {
+  padding: 0.2rem 0.35rem;
+  min-width: 36px;
+  min-height: 32px;
+  border-radius: 0.6rem;
+}
+
+:host ::ng-deep ngb-timepicker .btn-outline-primary {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+:host ::ng-deep ngb-timepicker .btn-outline-primary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.28);
+}

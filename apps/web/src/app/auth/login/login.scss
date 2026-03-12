@@ -1,0 +1,119 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-card {
+  position: relative;
+  z-index: 1;
+  padding: 3rem 2rem 2rem;
+  border-radius: 1.75rem;
+  background: linear-gradient(180deg, rgba(31, 41, 55, 0.92), rgba(10, 16, 28, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+}
+
+.auth-title {
+  color: #fff;
+  font-size: clamp(2.4rem, 4.5vw, 4rem);
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 0.75rem;
+}
+
+.auth-subtitle {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.form-label {
+  color: #f3f4f6;
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+}
+
+.custom-input {
+  min-height: 60px;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background-color: #f4f4f5;
+  color: #1f2937;
+  font-size: 1rem;
+  padding: 0.95rem 1.15rem;
+  box-shadow: none;
+}
+
+.custom-input::placeholder {
+  color: #6b7280;
+}
+
+.custom-input:focus {
+  background-color: #fff;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 0.22rem rgba(37, 99, 235, 0.22);
+  color: #111827;
+}
+
+.submit-btn {
+  min-height: 58px;
+  border: 0;
+  border-radius: 0.9rem;
+  background: linear-gradient(180deg, #2e7df6 0%, #1d68ea 100%);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+  box-shadow: 0 10px 24px rgba(29, 104, 234, 0.28);
+}
+
+.submit-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(29, 104, 234, 0.34);
+}
+
+.submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.form-footer {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.98rem;
+  font-weight: 600;
+}
+
+.form-footer a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.form-footer a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 576px) {
+  .auth-card {
+    padding: 2rem 1.25rem 1.5rem;
+    border-radius: 1.35rem;
+  }
+
+  .custom-input,
+  .submit-btn {
+    min-height: 56px;
+  }
+}

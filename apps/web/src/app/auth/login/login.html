@@ -10,6 +10,45 @@
 
           <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
             <div class="row g-3">
+
+                <div class="col-12">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input
+                        id="firstName"
+                        type="text"
+                        formControlName="firstName"
+                        class="form-control form-control-lg custom-input"
+                        [class.is-invalid]="form.controls.firstName.touched && form.controls.firstName.invalid"
+                        placeholder="First Name"
+                    />
+                    <div
+                        class="invalid-feedback d-block"
+                        *ngIf="form.controls.firstName.touched && form.controls.firstName.invalid"
+                    >
+                    <span *ngIf="form.controls.firstName.errors?.['required']">
+                        First Name is required.
+                    </span>
+                    </div>
+              </div>
+              <div class="col-12">
+                    <label for="lastName" class="form-label">Last Name</label>
+                    <input
+                        id="lastName"
+                        type="text"
+                        formControlName="lastName"
+                        class="form-control form-control-lg custom-input"
+                        [class.is-invalid]="form.controls.lastName.touched && form.controls.lastName.invalid"
+                        placeholder="Last Name"
+                    />
+                    <div
+                        class="invalid-feedback d-block"
+                        *ngIf="form.controls.lastName.touched && form.controls.lastName.invalid"
+                    >
+                    <span *ngIf="form.controls.lastName.errors?.['required']">
+                        Last Name is required.
+                    </span>
+                    </div>
+              </div>
               <div class="col-12">
                 <label for="email" class="form-label">Email</label>
                 <input

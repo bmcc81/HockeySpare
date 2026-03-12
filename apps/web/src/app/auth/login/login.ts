@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
+import { AuthApi } from '../auth.api';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +13,7 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class LoginComponent {
   private fb = inject(FormBuilder);
-  private http = inject(HttpClient);
+  private api = inject(AuthApi);
   private router = inject(Router);
 
   loading = false;
@@ -22,6 +22,8 @@ export class LoginComponent {
   form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]],
+    firstName: ['', [Validators.required]],
+    lastName: ['', [Validators.required]],
   });
 
   submit(): void {
@@ -33,12 +35,16 @@ export class LoginComponent {
     this.loading = true;
     this.error = '';
 
-    this.http.post<{ accessToken?: string; token?: string }>(
-      'http://localhost:3000/api/auth/login',
-      this.form.getRawValue()
-    ).subscribe({
+    const { firstName, lastName, email, password } = this.form.getRawValue();
+
+    this.api.login({
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        email: email.trim().toLowerCase(),
+        password,
+      }).subscribe({
       next: (res) => {
-        const token = res.accessToken ?? res.token;
+        const token = res.accessToken;
 
         if (token) {
           localStorage.setItem('token', token);

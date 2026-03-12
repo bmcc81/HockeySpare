@@ -20,9 +20,10 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "@ng-bootstrap/ng-bootstrap": "^20.0.0",
     "@prisma/client": "^7.4.0"
   },
- "overrides": {
+  "overrides": {
     "@prisma/dev": {
       "@hono/node-server": "1.19.11",
       "hono": "4.12.7",

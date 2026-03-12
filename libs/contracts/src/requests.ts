@@ -4,16 +4,16 @@ export enum RequestType {
 }
 
 export enum Position {
-  GOALIE = 'goalie',
-  DEFENSE = 'defense',
-  FORWARD = 'forward',
+  GOALIE = 'GOALIE',
+  DEFENSE = 'DEFENSE',
+  FORWARD = 'FORWARD',
 }
 
 export enum SkillLevel {
-  BEGINNER = 'beginner',
-  INTERMEDIATE = 'intermediate',
-  ADVANCED = 'advanced',
-  ELITE = 'elite',
+  BEGINNER = 'BEGINNER',
+  INTERMEDIATE = 'INTERMEDIATE',
+  ADVANCED = 'ADVANCED',
+  ELITE = 'ELITE',
 }
 
 export interface BaseRequest {

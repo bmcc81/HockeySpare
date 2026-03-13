@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { AuthStateService } from '../../auth/auth-state.service';
 
 @Component({
   selector: 'app-home',
@@ -10,6 +11,8 @@ import { RouterLink } from '@angular/router';
   styleUrl: './home.scss',
 })
 export class HomeComponent {
+  authState = inject(AuthStateService);
+
   readonly features = [
     {
       title: 'Post in seconds',

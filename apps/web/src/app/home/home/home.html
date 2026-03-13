@@ -21,15 +21,34 @@
               players find games worth showing up for.
             </p>
 
-            <div class="hero-actions">
-              <a routerLink="/register" class="btn btn-primary btn-lg hero-btn-primary">
-                Join HockeySpare
-              </a>
+            @if (authState.isLoggedIn() && authState.user()) {
+                <p class="hero-welcome">
+                    Welcome back, {{ authState.user()?.firstName || authState.user()?.email }}.
+                </p>
+            }
 
-              <a routerLink="/requests" class="btn btn-outline-light btn-lg hero-btn-secondary">
-                Browse Requests
-              </a>
-            </div>
+            <div class="hero-actions">
+                @if (authState.isLoggedIn()) {
+                    <a routerLink="/requests" class="btn btn-primary btn-lg hero-btn-primary">
+                    Browse Requests
+                    </a>
+
+                    <a
+                    routerLink="/requests/team/new"
+                    class="btn btn-outline-light btn-lg hero-btn-secondary"
+                    >
+                    Post Request
+                    </a>
+                } @else {
+                    <a routerLink="/register" class="btn btn-primary btn-lg hero-btn-primary">
+                    Join HockeySpare
+                    </a>
+
+                    <a routerLink="/login" class="btn btn-outline-light btn-lg hero-btn-secondary">
+                    Sign In
+                    </a>
+                }
+                </div>
 
             <div class="hero-trust">
               <div class="trust-item">🏒 Spare goalies</div>
@@ -133,10 +152,17 @@
               HockeySpare keeps the process simple so your team can spend less time
               messaging and more time getting dressed.
             </p>
-
+            
+            @if (authState.isLoggedIn()) {
             <a routerLink="/requests/team/new" class="btn btn-primary hero-btn-primary mt-3">
-              Post a Request
+                Post a Request
             </a>
+            } @else {
+            <a routerLink="/register" class="btn btn-primary hero-btn-primary mt-3">
+                Create Your Account
+            </a>
+            }
+
           </div>
         </div>
 
@@ -170,13 +196,24 @@
 
           <div class="col-12 col-lg-4">
             <div class="cta-actions">
-              <a routerLink="/register" class="btn btn-light btn-lg cta-btn">
-                Create Account
-              </a>
-              <a routerLink="/requests" class="btn btn-outline-light btn-lg cta-btn">
-                Explore Requests
-              </a>
-            </div>
+                @if (authState.isLoggedIn()) {
+                    <a routerLink="/requests" class="btn btn-light btn-lg cta-btn">
+                    Explore Requests
+                    </a>
+
+                    <a routerLink="/requests/player/new" class="btn btn-outline-light btn-lg cta-btn">
+                    Post Player Offer
+                    </a>
+                } @else {
+                    <a routerLink="/register" class="btn btn-light btn-lg cta-btn">
+                    Create Account
+                    </a>
+
+                    <a routerLink="/login" class="btn btn-outline-light btn-lg cta-btn">
+                    Sign In
+                    </a>
+                }
+                </div>
           </div>
         </div>
       </div>

@@ -42,55 +42,57 @@
           Requests
         </a>
 
-        <a
-          routerLink="/messages"
-          routerLinkActive="active"
-          class="nav-link"
-          (click)="closeAll()"
-        >
-          Messages
-        </a>
-
-        <a
-          routerLink="/my-bookings"
-          routerLinkActive="active"
-          class="nav-link"
-          (click)="closeAll()"
-        >
-          My Bookings
-        </a>
-
-        <div class="nav-dropdown">
-          <button
-            type="button"
-            class="nav-link nav-button"
-            [class.active]="actionsOpen()"
-            (click)="toggleActions()"
+        @if (authState.isLoggedIn()) {
+          <a
+            routerLink="/messages"
+            routerLinkActive="active"
+            class="nav-link"
+            (click)="closeAll()"
           >
-            Post
-            <span class="chevron" [class.open]="actionsOpen()"></span>
-          </button>
+            Messages
+          </a>
 
-          @if (actionsOpen()) {
-            <div class="dropdown-panel">
-              <a
-                routerLink="/requests/team/new"
-                class="dropdown-link"
-                (click)="closeAll()"
-              >
-                + Team Request
-              </a>
+          <a
+            routerLink="/my-bookings"
+            routerLinkActive="active"
+            class="nav-link"
+            (click)="closeAll()"
+          >
+            My Bookings
+          </a>
 
-              <a
-                routerLink="/requests/player/new"
-                class="dropdown-link"
-                (click)="closeAll()"
-              >
-                + Player Offer
-              </a>
-            </div>
-          }
-        </div>
+          <div class="nav-dropdown">
+            <button
+              type="button"
+              class="nav-link nav-button"
+              [class.active]="actionsOpen()"
+              (click)="toggleActions()"
+            >
+              Post
+              <span class="chevron" [class.open]="actionsOpen()"></span>
+            </button>
+
+            @if (actionsOpen()) {
+              <div class="dropdown-panel">
+                <a
+                  routerLink="/requests/team/new"
+                  class="dropdown-link"
+                  (click)="closeAll()"
+                >
+                  + Team Request
+                </a>
+
+                <a
+                  routerLink="/requests/player/new"
+                  class="dropdown-link"
+                  (click)="closeAll()"
+                >
+                  + Player Offer
+                </a>
+              </div>
+            }
+          </div>
+        }
       </div>
 
       <div class="nav-side">
@@ -101,54 +103,78 @@
             [class.active]="accountOpen()"
             (click)="toggleAccount()"
           >
-            Account
+            @if (authState.isLoggedIn()) {
+              Account
+            } @else {
+              Sign In
+            }
             <span class="chevron" [class.open]="accountOpen()"></span>
           </button>
 
           @if (accountOpen()) {
             <div class="dropdown-panel dropdown-panel-right">
-              <a
-                routerLink="/profile/player"
-                class="dropdown-link"
-                (click)="closeAll()"
-              >
-                Player Profile
-              </a>
+              @if (authState.isLoggedIn()) {
+                <a
+                  routerLink="/profile/player"
+                  class="dropdown-link"
+                  (click)="closeAll()"
+                >
+                  Player Profile
+                </a>
 
-              <a
-                routerLink="/profile/team"
-                class="dropdown-link"
-                (click)="closeAll()"
-              >
-                Team Profile
-              </a>
+                <a
+                  routerLink="/profile/team"
+                  class="dropdown-link"
+                  (click)="closeAll()"
+                >
+                  Team Profile
+                </a>
 
-              <a
-                routerLink="/login"
-                class="dropdown-link"
-                (click)="closeAll()"
-              >
-                Login
-              </a>
+                <button
+                  type="button"
+                  class="dropdown-link dropdown-button"
+                  (click)="logout()"
+                >
+                  Logout
+                </button>
+              } @else {
+                <a
+                  routerLink="/login"
+                  class="dropdown-link"
+                  (click)="closeAll()"
+                >
+                  Login
+                </a>
 
-              <a
-                routerLink="/register"
-                class="dropdown-link"
-                (click)="closeAll()"
-              >
-                Register
-              </a>
+                <a
+                  routerLink="/register"
+                  class="dropdown-link"
+                  (click)="closeAll()"
+                >
+                  Register
+                </a>
+              }
             </div>
           }
         </div>
 
-        <a
-          routerLink="/requests/team/new"
-          class="cta"
-          (click)="closeAll()"
-        >
-          Post Request
-        </a>
+        @if (authState.isLoggedIn()) {
+          <a
+            routerLink="/requests/team/new"
+            class="cta"
+            (click)="closeAll()"
+          >
+            Post Request
+          </a>
+        } @else {
+          <a
+            routerLink="/register"
+            class="cta"
+            (click)="closeAll()"
+          >
+            Join Now
+          </a>
+        }
       </div>
     </div>
   </nav>

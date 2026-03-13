@@ -1,1 +1,185 @@
-<p>home works!</p>
+<div class="home-page">
+  <section class="hero-section">
+    <div class="hero-overlay"></div>
+
+    <div class="container position-relative">
+      <div class="row align-items-center min-vh-100 py-5">
+        <div class="col-12 col-lg-7">
+          <div class="hero-copy">
+            <div class="hero-badge">
+              <span class="badge-dot"></span>
+              Built for players, goalies, and teams
+            </div>
+
+            <h1 class="hero-title">
+              Never lose a hockey night
+              <span>because someone backed out.</span>
+            </h1>
+
+            <p class="hero-text">
+              HockeySpare helps teams find last-minute players and goalies, and helps
+              players find games worth showing up for.
+            </p>
+
+            <div class="hero-actions">
+              <a routerLink="/register" class="btn btn-primary btn-lg hero-btn-primary">
+                Join HockeySpare
+              </a>
+
+              <a routerLink="/requests" class="btn btn-outline-light btn-lg hero-btn-secondary">
+                Browse Requests
+              </a>
+            </div>
+
+            <div class="hero-trust">
+              <div class="trust-item">🏒 Spare goalies</div>
+              <div class="trust-item">📍 Local arenas</div>
+              <div class="trust-item">⚡ Same-day games</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-lg-5 mt-5 mt-lg-0">
+          <div class="hero-visual">
+            <div class="visual-card visual-card-main">
+              <div class="visual-top">
+                <span class="live-pill">LIVE</span>
+                <span class="arena-tag">Montreal • Tonight</span>
+              </div>
+
+              <h3>Need a goalie for 9:30 PM</h3>
+              <p class="mb-3">
+                Fast-paced rec league looking for a reliable spare.
+              </p>
+
+              <div class="visual-meta">
+                <div>
+                  <span class="meta-label">Arena</span>
+                  <strong>Centre Étienne Desmarteau</strong>
+                </div>
+                <div>
+                  <span class="meta-label">Pay</span>
+                  <strong>$45</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="visual-card visual-card-floating floating-left">
+              <div class="mini-label">Player Offer</div>
+              <strong>Defence available</strong>
+              <span>Intermediate • West Island</span>
+            </div>
+
+            <div class="visual-card visual-card-floating floating-right">
+              <div class="mini-label">Team Request</div>
+              <strong>Need 2 skaters</strong>
+              <span>Tonight • 8:15 PM</span>
+            </div>
+
+            <div class="ice-ring ice-ring-1"></div>
+            <div class="ice-ring ice-ring-2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats-section">
+    <div class="container">
+      <div class="stats-shell">
+        <div class="row g-3">
+          <div class="col-12 col-md-4" *ngFor="let stat of stats">
+            <div class="stat-card">
+              <div class="stat-value">{{ stat.value }}</div>
+              <div class="stat-label">{{ stat.label }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features-section section-space">
+    <div class="container">
+      <div class="section-heading text-center">
+        <p class="section-kicker">Why HockeySpare</p>
+        <h2>Everything built around hockey availability</h2>
+        <p>
+          Fast posting, easy discovery, and a visual experience designed for players who
+          need something now.
+        </p>
+      </div>
+
+      <div class="row g-4 mt-2">
+        <div class="col-12 col-md-6 col-xl-4" *ngFor="let feature of features">
+          <div class="feature-card h-100">
+            <div class="feature-icon">{{ feature.icon }}</div>
+            <h3>{{ feature.title }}</h3>
+            <p>{{ feature.text }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="how-section section-space">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-12 col-lg-5">
+          <div class="section-heading mb-0 text-lg-start text-center">
+            <p class="section-kicker">How it works</p>
+            <h2>Get from missing player to game-ready fast</h2>
+            <p>
+              HockeySpare keeps the process simple so your team can spend less time
+              messaging and more time getting dressed.
+            </p>
+
+            <a routerLink="/requests/team/new" class="btn btn-primary hero-btn-primary mt-3">
+              Post a Request
+            </a>
+          </div>
+        </div>
+
+        <div class="col-12 col-lg-7">
+          <div class="steps-grid">
+            <div class="step-card" *ngFor="let item of steps">
+              <div class="step-number">{{ item.step }}</div>
+              <div>
+                <h3>{{ item.title }}</h3>
+                <p>{{ item.text }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section section-space">
+    <div class="container">
+      <div class="cta-shell">
+        <div class="row align-items-center g-4">
+          <div class="col-12 col-lg-8">
+            <p class="section-kicker mb-2">Ready to hit the ice?</p>
+            <h2 class="cta-title">Start posting, browsing, and filling games today.</h2>
+            <p class="cta-text mb-0">
+              Whether you need a goalie tonight or want to find your next skate,
+              HockeySpare makes it easier.
+            </p>
+          </div>
+
+          <div class="col-12 col-lg-4">
+            <div class="cta-actions">
+              <a routerLink="/register" class="btn btn-light btn-lg cta-btn">
+                Create Account
+              </a>
+              <a routerLink="/requests" class="btn btn-outline-light btn-lg cta-btn">
+                Explore Requests
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthApi } from '../auth.api';
+import { AuthStateService } from '../auth-state.service';
 
 @Component({
   selector: 'app-login',
@@ -14,6 +15,7 @@ import { AuthApi } from '../auth.api';
 export class LoginComponent {
   private fb = inject(FormBuilder);
   private api = inject(AuthApi);
+  private authState = inject(AuthStateService);
   private router = inject(Router);
 
   loading = false;
@@ -35,27 +37,22 @@ export class LoginComponent {
 
     const { email, password } = this.form.getRawValue();
 
-    this.api
-      .login({
-        email: email.trim().toLowerCase(),
-        password,
-      })
-      .subscribe({
-        next: (res) => {
-          if (res.accessToken) {
-            localStorage.setItem('token', res.accessToken);
-          }
-
-          this.router.navigateByUrl('/requests');
-        },
-        error: (err) => {
-          this.error =
-            err?.error?.message || 'Login failed. Please check your email and password.';
-          this.loading = false;
-        },
-        complete: () => {
-          this.loading = false;
-        },
-      });
+    this.api.login({
+      email: email.trim().toLowerCase(),
+      password,
+    }).subscribe({
+      next: (res) => {
+        this.authState.setSession(res);
+        this.router.navigateByUrl('/requests');
+      },
+      error: (err) => {
+        this.error =
+          err?.error?.message || 'Login failed. Please check your email and password.';
+        this.loading = false;
+      },
+      complete: () => {
+        this.loading = false;
+      },
+    });
   }
 }

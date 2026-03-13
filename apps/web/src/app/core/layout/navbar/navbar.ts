@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, HostListener, inject, signal } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthStateService } from '../../../auth/auth-state.service';
 
 @Component({
   selector: 'app-navbar',
@@ -10,6 +11,9 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './navbar.scss',
 })
 export class NavbarComponent {
+  authState = inject(AuthStateService);
+  private router = inject(Router);
+
   mobileOpen = signal(false);
   actionsOpen = signal(false);
   accountOpen = signal(false);
@@ -39,6 +43,12 @@ export class NavbarComponent {
     this.mobileOpen.set(false);
     this.actionsOpen.set(false);
     this.accountOpen.set(false);
+  }
+
+  logout(): void {
+    this.authState.clearSession();
+    this.closeAll();
+    this.router.navigateByUrl('/login');
   }
 
   @HostListener('window:scroll')

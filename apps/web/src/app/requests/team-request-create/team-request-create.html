@@ -1,36 +1,104 @@
-<h2>Create Team Request</h2>
+<div class="request-page">
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-10 col-lg-7 col-xl-6">
+        <div class="request-card">
+          <div class="text-center mb-4">
+            <h2 class="request-title">Create Team Request</h2>
+            <p class="request-subtitle mb-0">Post a player need on HockeySpare</p>
+          </div>
 
-<form [formGroup]="form" (ngSubmit)="submit()">
-  <label>Position</label>
-  <select formControlName="position">
-    <option value="goalie">Goalie</option>
-    <option value="defense">Defense</option>
-    <option value="forward">Forward</option>
-    <option value="any">Any</option>
-  </select>
+          <form [formGroup]="form" (ngSubmit)="submit()" class="row g-3">
+            <div class="col-12 col-md-6">
+              <label for="position" class="form-label">Position Needed</label>
+              <select id="position" formControlName="position" class="form-select custom-input">
+                <option value="" disabled>Select position</option>
+                <option *ngFor="let p of positions" [value]="p">{{ p }}</option>
+              </select>
+            </div>
 
-  <label>Skill Level</label>
-  <select formControlName="skillLevel">
-    <option value="beginner">Beginner</option>
-    <option value="intermediate">Intermediate</option>
-    <option value="advanced">Advanced</option>
-  </select>
+            <div class="col-12 col-md-6">
+              <label for="skillLevel" class="form-label">Skill Level</label>
+              <select id="skillLevel" formControlName="skillLevel" class="form-select custom-input">
+                <option value="" disabled>Select skill level</option>
+                <option *ngFor="let s of skillLevels" [value]="s">{{ s }}</option>
+              </select>
+            </div>
 
-  <label>Pay Amount</label>
-  <input type="number" formControlName="payAmount" />
+            <div class="col-12 col-md-6">
+              <label for="payAmount" class="form-label">Pay Amount</label>
+              <input
+                id="payAmount"
+                type="number"
+                formControlName="payAmount"
+                class="form-control custom-input"
+                placeholder="40"
+              />
+            </div>
 
-  <label>Arena</label>
-  <input type="text" formControlName="arena" />
+            <div class="col-12 col-md-6">
+              <label class="form-label">Time</label>
 
-  <label>Time</label>
-  <input type="text" formControlName="time" />
+              <div
+                class="timepicker-shell"
+                [class.is-invalid]="form.controls.time.touched && form.controls.time.invalid"
+              >
+                <ngb-timepicker
+                  formControlName="time"
+                  [spinners]="true"
+                  [seconds]="false"
+                  [meridian]="true"
+                  size="small"
+                ></ngb-timepicker>
+              </div>
 
-  <label>Notes</label>
-  <textarea formControlName="notes"></textarea>
+              <div
+                class="invalid-feedback d-block"
+                *ngIf="form.controls.time.touched && form.controls.time.invalid"
+              >
+                <span *ngIf="form.controls.time.errors?.['required']">Time is required.</span>
+              </div>
+            </div>
 
-  <p *ngIf="error" style="color:red">{{ error }}</p>
+            <div class="col-12">
+              <label for="arena" class="form-label">Arena</label>
+              <input
+                id="arena"
+                type="text"
+                formControlName="arena"
+                class="form-control custom-input"
+                placeholder="Arena name"
+              />
+            </div>
 
-  <button type="submit" [disabled]="saving">
-    {{ saving ? 'Saving...' : 'Create' }}
-  </button>
-</form>
+            <div class="col-12">
+              <label for="notes" class="form-label">Notes</label>
+              <textarea
+                id="notes"
+                formControlName="notes"
+                class="form-control custom-input custom-textarea"
+                placeholder="Add game details, dressing room info, level, or anything players should know"
+              ></textarea>
+            </div>
+
+            <div class="col-12" *ngIf="error">
+              <div class="alert alert-danger mb-0" role="alert">
+                {{ error }}
+              </div>
+            </div>
+
+            <div class="col-12 mt-4">
+              <button type="submit" class="btn submit-btn w-100" [disabled]="loading || form.invalid">
+                {{ loading ? 'Creating Request...' : 'Create Team Request' }}
+              </button>
+            </div>
+          </form>
+
+          <div class="text-center form-footer mt-4">
+            Looking to join a team instead? <a routerLink="/requests/player/new">Post a player offer</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

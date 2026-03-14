@@ -1,4 +1,4 @@
-@import "../../../styles/variable";
+@use "../../../styles/variables" as *;;
 
 /* ===== Page shell ===== */
 .page {
@@ -28,8 +28,7 @@
   flex-wrap: wrap;
 
   .btn {
-    height: 42px;
-    padding: 0 14px;
+    padding: 6px 15px;
   }
 }
 

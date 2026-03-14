@@ -1,0 +1,194 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.request-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.request-card {
+  position: relative;
+  z-index: 1;
+  padding: 3rem 2rem 2rem;
+  border-radius: 1.75rem;
+  background: linear-gradient(180deg, rgba(31, 41, 55, 0.92), rgba(10, 16, 28, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+}
+
+.request-title {
+  color: #fff;
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 0.75rem;
+}
+
+.request-subtitle {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.form-label {
+  color: #f3f4f6;
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+}
+
+.custom-input {
+  min-height: 60px;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background-color: #f4f4f5;
+  color: #1f2937;
+  font-size: 1rem;
+  padding: 0.95rem 1.15rem;
+  box-shadow: none;
+}
+
+.custom-input::placeholder {
+  color: #6b7280;
+}
+
+.custom-input:focus {
+  background-color: #fff;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 0.22rem rgba(37, 99, 235, 0.22);
+  color: #111827;
+}
+
+.form-select.custom-input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 3rem;
+  background-color: #f4f4f5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23374151' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 16px 12px;
+}
+
+.custom-textarea {
+  min-height: 140px;
+  resize: vertical;
+  padding-top: 1rem;
+}
+
+.timepicker-shell {
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.timepicker-shell.is-invalid {
+  border-color: rgba(220, 53, 69, 0.9);
+}
+
+:host ::ng-deep ngb-timepicker {
+  display: block;
+  color: #fff;
+}
+
+:host ::ng-deep ngb-timepicker fieldset {
+  margin: 0;
+}
+
+:host ::ng-deep ngb-timepicker .form-control {
+  min-height: 44px;
+  height: 44px;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #f4f4f5;
+  color: #111827;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: none;
+}
+
+:host ::ng-deep ngb-timepicker .form-control:focus {
+  background: #fff;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 0.22rem rgba(37, 99, 235, 0.22);
+}
+
+:host ::ng-deep ngb-timepicker .btn {
+  padding: 0.2rem 0.35rem;
+  min-width: 36px;
+  min-height: 32px;
+  border-radius: 0.6rem;
+}
+
+:host ::ng-deep ngb-timepicker .btn-outline-primary {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+:host ::ng-deep ngb-timepicker .btn-outline-primary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.submit-btn {
+  min-height: 58px;
+  border: 0;
+  border-radius: 0.9rem;
+  background: linear-gradient(180deg, #2e7df6 0%, #1d68ea 100%);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+  box-shadow: 0 10px 24px rgba(29, 104, 234, 0.28);
+}
+
+.submit-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(29, 104, 234, 0.34);
+}
+
+.submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.form-footer {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.98rem;
+  font-weight: 600;
+}
+
+.form-footer a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.form-footer a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 576px) {
+  .request-card {
+    padding: 2rem 1.25rem 1.5rem;
+    border-radius: 1.35rem;
+  }
+
+  .custom-input,
+  .submit-btn {
+    min-height: 56px;
+  }
+}

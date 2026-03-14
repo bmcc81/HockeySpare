@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { InViewDirective } from '../../shared/directives/in-view.directive';
 
 type AudienceCard = {
   title: string;
@@ -28,7 +29,7 @@ type FeaturedRequest = {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, InViewDirective],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })

@@ -1,6 +1,6 @@
 <section class="home-page">
   <section class="hero">
-    <div class="hero-copy">
+    <div class="hero-copy" [appInView]="0">
       <span class="eyebrow">HockeySpare</span>
       <h1>Find a spare goalie or player fast</h1>
       <p class="hero-text">
@@ -20,7 +20,7 @@
       </div>
     </div>
 
-    <div class="hero-panel">
+    <div class="hero-panel" [appInView]="120">
       <div class="hero-card hero-card-main">
         <div class="badge">Live Marketplace</div>
         <h3>Tonight’s needs</h3>
@@ -59,7 +59,7 @@
     </div>
 
     <div class="audience-grid">
-      <article class="audience-card" *ngFor="let card of audienceCards">
+      <article class="audience-card" *ngFor="let card of audienceCards; index as i" [appInView]="i * 100">
         <h3>{{ card.title }}</h3>
         <p>{{ card.text }}</p>
 
@@ -79,14 +79,18 @@
     </div>
 
     <div class="flows">
-      <div class="flow-card">
+      <div class="flow-card" [appInView]="0">
         <div class="flow-header">
           <h3>For Teams</h3>
           <a routerLink="/requests/team/new">Post a request</a>
         </div>
 
         <div class="step-list">
-          <article class="step-card" *ngFor="let step of teamSteps; index as i">
+          <article
+            class="step-card"
+            *ngFor="let step of teamSteps; index as i"
+            [appInView]="i * 80"
+          >
             <span class="step-number">{{ i + 1 }}</span>
             <div>
               <h4>{{ step.title }}</h4>
@@ -96,14 +100,18 @@
         </div>
       </div>
 
-      <div class="flow-card">
+      <div class="flow-card" [appInView]="120">
         <div class="flow-header">
-          <h3>For Players & Goalies</h3>
+          <h3>For Players &amp; Goalies</h3>
           <a routerLink="/requests/player/new">Create an offer</a>
         </div>
 
         <div class="step-list">
-          <article class="step-card" *ngFor="let step of playerSteps; index as i">
+          <article
+            class="step-card"
+            *ngFor="let step of playerSteps; index as i"
+            [appInView]="i * 80"
+          >
             <span class="step-number">{{ i + 1 }}</span>
             <div>
               <h4>{{ step.title }}</h4>
@@ -126,7 +134,11 @@
     </div>
 
     <div class="request-grid">
-      <article class="request-card" *ngFor="let request of featuredRequests">
+      <article
+        class="request-card"
+        *ngFor="let request of featuredRequests; index as i"
+        [appInView]="i * 100"
+      >
         <div class="request-top">
           <span class="request-type">{{ request.type }}</span>
           <span class="request-pay">{{ request.pay }}</span>
@@ -143,14 +155,14 @@
   </section>
 
   <section class="trust-strip">
-    <article class="trust-card" *ngFor="let stat of stats">
+    <article class="trust-card" *ngFor="let stat of stats; index as i" [appInView]="i * 90">
       <strong>{{ stat.value }}</strong>
       <span>{{ stat.label }}</span>
     </article>
   </section>
 
   <section class="final-cta">
-    <div class="final-cta-card">
+    <div class="final-cta-card" [appInView]="80">
       <span class="eyebrow">Ready to get on the ice?</span>
       <h2>Post a request or join as a spare</h2>
       <p>

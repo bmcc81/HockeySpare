@@ -44,7 +44,9 @@
       <div class="card-link" [routerLink]="['/requests', req.id]">
         <div class="card-top">
           <div class="title">
-            <span class="pill">Team needs player</span>
+            <span class="pill">
+              {{ req.position === 'goalie' ? 'Team needs goalie' : 'Team needs player' }}
+            </span>
             <h3>{{ req.position | titlecase }} • {{ req.skillLevel | titlecase }}</h3>
           </div>
 

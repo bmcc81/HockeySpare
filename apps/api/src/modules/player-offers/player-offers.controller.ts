@@ -18,6 +18,7 @@ export class PlayerOffersController {
 
   @Post()
   async create(@Body() dto: CreatePlayerOfferDto) {
-    return this.service.create(dto);
+    const devUserId = 'cmmmi08nm0000nkuadck34p7f';
+    return this.service.create(devUserId, dto);
   }
 }

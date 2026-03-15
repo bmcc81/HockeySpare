@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { CreateRequestDto } from './dto/create-request.dto';
 
 import {
@@ -9,10 +10,13 @@ import {
 } from '@hockeyspare/contracts';
 
 import {
+  NotificationType,
   Request as DbRequest,
+  RequestStatus,
   RequestType as PRequestType,
   Position as PPosition,
   SkillLevel as PSkillLevel,
+  OfferStatus,
 } from '../../generated/prisma/client';
 
 const typeToDb: Record<CRequestType, PRequestType> = {
@@ -30,7 +34,7 @@ const skillToDb: Record<CSkillLevel, PSkillLevel> = {
   [CSkillLevel.BEGINNER]: PSkillLevel.BEGINNER,
   [CSkillLevel.INTERMEDIATE]: PSkillLevel.INTERMEDIATE,
   [CSkillLevel.ADVANCED]: PSkillLevel.ADVANCED,
-  [CSkillLevel.ELITE]: PSkillLevel.ELITE
+  [CSkillLevel.ELITE]: PSkillLevel.ELITE,
 };
 
 const typeFromDb: Record<PRequestType, CRequestType> = {
@@ -48,7 +52,7 @@ const skillFromDb: Record<PSkillLevel, CSkillLevel> = {
   [PSkillLevel.BEGINNER]: CSkillLevel.BEGINNER,
   [PSkillLevel.INTERMEDIATE]: CSkillLevel.INTERMEDIATE,
   [PSkillLevel.ADVANCED]: CSkillLevel.ADVANCED,
-  [PSkillLevel.ELITE]: CSkillLevel.ELITE
+  [PSkillLevel.ELITE]: CSkillLevel.ELITE,
 };
 
 function toApi(r: DbRequest) {
@@ -62,7 +66,10 @@ function toApi(r: DbRequest) {
 
 @Injectable()
 export class RequestsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notificationsService: NotificationsService,
+  ) {}
 
   async list() {
     return (await this.prisma.request.findMany({ orderBy: { id: 'desc' } })).map(toApi);
@@ -74,9 +81,11 @@ export class RequestsService {
     return toApi(item);
   }
 
-  async create(dto: CreateRequestDto) {
+  async create(userId: string, dto: CreateRequestDto) {
     const created = await this.prisma.request.create({
       data: {
+        userId,
+        status: RequestStatus.OPEN,
         type: typeToDb[dto.type],
         position: posToDb[dto.position],
         skillLevel: skillToDb[dto.skillLevel],
@@ -89,6 +98,30 @@ export class RequestsService {
         notes: dto.notes ?? null,
       },
     });
+
+    const matchingOffers = await this.prisma.playerOffer.findMany({
+      where: {
+        position: created.position,
+        skillLevel: created.skillLevel,
+        status: OfferStatus.OPEN,
+        userId: { not: userId },
+      },
+    });
+
+    await this.notificationsService.createMany(
+      matchingOffers.map(offer => ({
+        userId: offer.userId,
+        type: NotificationType.REQUEST_MATCH,
+        title: 'New request matches your availability',
+        body: `${created.position} needed at ${created.arena}${created.payAmount ? ` for $${created.payAmount}` : ''}`,
+        link: `/requests/${created.id}`,
+        metadata: {
+          requestId: created.id,
+          offerId: offer.id,
+          requestType: created.type,
+        },
+      })),
+    );
 
     return toApi(created);
   }

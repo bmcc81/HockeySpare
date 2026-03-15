@@ -7,6 +7,8 @@ import { combineLatest } from 'rxjs';
 import { map, shareReplay, startWith } from 'rxjs/operators';
 
 import { RequestApiService } from '../../core/services/request-api';
+import { InViewDirective } from '../../shared/directives/in-view.directive';
+
 import {
   Position,
   SkillLevel,
@@ -36,7 +38,7 @@ const isPlayerNeedsTeam = (r: SpareRequest): r is PlayerNeedsTeamRequest =>
 @Component({
   selector: 'app-request-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, InViewDirective],
   templateUrl: './request-list.html',
   styleUrls: ['./request-list.scss'],
 })

@@ -16,4 +16,8 @@ export class RequestService {
   getById(id: number): Observable<SpareRequest> {
     return this.http.get<SpareRequest>(`${this.baseUrl}/requests/${id}`);
   }
+
+  teamRequest(payload: Omit<SpareRequest, 'id' | 'type'>): Observable<SpareRequest> {
+    return this.http.post<SpareRequest>(`${this.baseUrl}/api/requests`, payload);
+  }
 }

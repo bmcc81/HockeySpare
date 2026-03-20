@@ -9,6 +9,15 @@
 * 🟢 You can import this file directly.
 */
 
+export const ResponseStatus = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  DECLINED: 'DECLINED'
+} as const
+
+export type ResponseStatus = (typeof ResponseStatus)[keyof typeof ResponseStatus]
+
+
 export const RequestType = {
   TEAM_NEEDS_PLAYER: 'TEAM_NEEDS_PLAYER',
   PLAYER_NEEDS_TEAM: 'PLAYER_NEEDS_TEAM'
@@ -34,3 +43,34 @@ export const SkillLevel = {
 } as const
 
 export type SkillLevel = (typeof SkillLevel)[keyof typeof SkillLevel]
+
+
+export const RequestStatus = {
+  OPEN: 'OPEN',
+  MATCHED: 'MATCHED',
+  CLOSED: 'CLOSED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type RequestStatus = (typeof RequestStatus)[keyof typeof RequestStatus]
+
+
+export const OfferStatus = {
+  OPEN: 'OPEN',
+  MATCHED: 'MATCHED',
+  CLOSED: 'CLOSED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type OfferStatus = (typeof OfferStatus)[keyof typeof OfferStatus]
+
+
+export const NotificationType = {
+  REQUEST_MATCH: 'REQUEST_MATCH',
+  OFFER_MATCH: 'OFFER_MATCH',
+  REQUEST_RESPONSE: 'REQUEST_RESPONSE',
+  REQUEST_ACCEPTED: 'REQUEST_ACCEPTED',
+  REQUEST_DECLINED: 'REQUEST_DECLINED'
+} as const
+
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]

@@ -45,6 +45,11 @@ export { Prisma }
  */
 export type Request = Prisma.RequestModel
 /**
+ * Model RequestResponse
+ * 
+ */
+export type RequestResponse = Prisma.RequestResponseModel
+/**
  * Model PlayerOffer
  * 
  */
@@ -54,3 +59,8 @@ export type PlayerOffer = Prisma.PlayerOfferModel
  * 
  */
 export type User = Prisma.UserModel
+/**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel

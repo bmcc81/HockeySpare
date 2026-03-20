@@ -16,12 +16,10 @@
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.28.1",
     "concurrently": "^9.2.1",
-    "prisma": "^7.4.2",
+    "prisma": "^7.5.0",
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@ng-bootstrap/ng-bootstrap": "^20.0.0",
-    "@prisma/client": "^7.4.0"
   },
   "overrides": {
     "@prisma/dev": {

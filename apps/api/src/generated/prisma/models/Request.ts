@@ -27,16 +27,18 @@ export type AggregateRequest = {
 }
 
 export type RequestAvgAggregateOutputType = {
-  payAmount: number | null
   id: number | null
+  payAmount: number | null
 }
 
 export type RequestSumAggregateOutputType = {
-  payAmount: number | null
   id: number | null
+  payAmount: number | null
 }
 
 export type RequestMinAggregateOutputType = {
+  id: number | null
+  userId: string | null
   arena: string | null
   notes: string | null
   position: $Enums.Position | null
@@ -49,10 +51,12 @@ export type RequestMinAggregateOutputType = {
   teamName: string | null
   time: string | null
   type: $Enums.RequestType | null
-  id: number | null
+  status: $Enums.RequestStatus | null
 }
 
 export type RequestMaxAggregateOutputType = {
+  id: number | null
+  userId: string | null
   arena: string | null
   notes: string | null
   position: $Enums.Position | null
@@ -65,10 +69,12 @@ export type RequestMaxAggregateOutputType = {
   teamName: string | null
   time: string | null
   type: $Enums.RequestType | null
-  id: number | null
+  status: $Enums.RequestStatus | null
 }
 
 export type RequestCountAggregateOutputType = {
+  id: number
+  userId: number
   arena: number
   notes: number
   position: number
@@ -81,22 +87,24 @@ export type RequestCountAggregateOutputType = {
   teamName: number
   time: number
   type: number
-  id: number
+  status: number
   _all: number
 }
 
 
 export type RequestAvgAggregateInputType = {
-  payAmount?: true
   id?: true
+  payAmount?: true
 }
 
 export type RequestSumAggregateInputType = {
-  payAmount?: true
   id?: true
+  payAmount?: true
 }
 
 export type RequestMinAggregateInputType = {
+  id?: true
+  userId?: true
   arena?: true
   notes?: true
   position?: true
@@ -109,10 +117,12 @@ export type RequestMinAggregateInputType = {
   teamName?: true
   time?: true
   type?: true
-  id?: true
+  status?: true
 }
 
 export type RequestMaxAggregateInputType = {
+  id?: true
+  userId?: true
   arena?: true
   notes?: true
   position?: true
@@ -125,10 +135,12 @@ export type RequestMaxAggregateInputType = {
   teamName?: true
   time?: true
   type?: true
-  id?: true
+  status?: true
 }
 
 export type RequestCountAggregateInputType = {
+  id?: true
+  userId?: true
   arena?: true
   notes?: true
   position?: true
@@ -141,7 +153,7 @@ export type RequestCountAggregateInputType = {
   teamName?: true
   time?: true
   type?: true
-  id?: true
+  status?: true
   _all?: true
 }
 
@@ -232,6 +244,8 @@ export type RequestGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 export type RequestGroupByOutputType = {
+  id: number
+  userId: string
   arena: string
   notes: string | null
   position: $Enums.Position
@@ -244,7 +258,7 @@ export type RequestGroupByOutputType = {
   teamName: string | null
   time: string
   type: $Enums.RequestType
-  id: number
+  status: $Enums.RequestStatus
   _count: RequestCountAggregateOutputType | null
   _avg: RequestAvgAggregateOutputType | null
   _sum: RequestSumAggregateOutputType | null
@@ -271,6 +285,8 @@ export type RequestWhereInput = {
   AND?: Prisma.RequestWhereInput | Prisma.RequestWhereInput[]
   OR?: Prisma.RequestWhereInput[]
   NOT?: Prisma.RequestWhereInput | Prisma.RequestWhereInput[]
+  id?: Prisma.IntFilter<"Request"> | number
+  userId?: Prisma.StringFilter<"Request"> | string
   arena?: Prisma.StringFilter<"Request"> | string
   notes?: Prisma.StringNullableFilter<"Request"> | string | null
   position?: Prisma.EnumPositionFilter<"Request"> | $Enums.Position
@@ -283,10 +299,14 @@ export type RequestWhereInput = {
   teamName?: Prisma.StringNullableFilter<"Request"> | string | null
   time?: Prisma.StringFilter<"Request"> | string
   type?: Prisma.EnumRequestTypeFilter<"Request"> | $Enums.RequestType
-  id?: Prisma.IntFilter<"Request"> | number
+  status?: Prisma.EnumRequestStatusFilter<"Request"> | $Enums.RequestStatus
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  responses?: Prisma.RequestResponseListRelationFilter
 }
 
 export type RequestOrderByWithRelationInput = {
+  id?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   arena?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   position?: Prisma.SortOrder
@@ -299,7 +319,9 @@ export type RequestOrderByWithRelationInput = {
   teamName?: Prisma.SortOrderInput | Prisma.SortOrder
   time?: Prisma.SortOrder
   type?: Prisma.SortOrder
-  id?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  user?: Prisma.UserOrderByWithRelationInput
+  responses?: Prisma.RequestResponseOrderByRelationAggregateInput
 }
 
 export type RequestWhereUniqueInput = Prisma.AtLeast<{
@@ -307,6 +329,7 @@ export type RequestWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.RequestWhereInput | Prisma.RequestWhereInput[]
   OR?: Prisma.RequestWhereInput[]
   NOT?: Prisma.RequestWhereInput | Prisma.RequestWhereInput[]
+  userId?: Prisma.StringFilter<"Request"> | string
   arena?: Prisma.StringFilter<"Request"> | string
   notes?: Prisma.StringNullableFilter<"Request"> | string | null
   position?: Prisma.EnumPositionFilter<"Request"> | $Enums.Position
@@ -319,9 +342,14 @@ export type RequestWhereUniqueInput = Prisma.AtLeast<{
   teamName?: Prisma.StringNullableFilter<"Request"> | string | null
   time?: Prisma.StringFilter<"Request"> | string
   type?: Prisma.EnumRequestTypeFilter<"Request"> | $Enums.RequestType
+  status?: Prisma.EnumRequestStatusFilter<"Request"> | $Enums.RequestStatus
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  responses?: Prisma.RequestResponseListRelationFilter
 }, "id">
 
 export type RequestOrderByWithAggregationInput = {
+  id?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   arena?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   position?: Prisma.SortOrder
@@ -334,7 +362,7 @@ export type RequestOrderByWithAggregationInput = {
   teamName?: Prisma.SortOrderInput | Prisma.SortOrder
   time?: Prisma.SortOrder
   type?: Prisma.SortOrder
-  id?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   _count?: Prisma.RequestCountOrderByAggregateInput
   _avg?: Prisma.RequestAvgOrderByAggregateInput
   _max?: Prisma.RequestMaxOrderByAggregateInput
@@ -346,6 +374,8 @@ export type RequestScalarWhereWithAggregatesInput = {
   AND?: Prisma.RequestScalarWhereWithAggregatesInput | Prisma.RequestScalarWhereWithAggregatesInput[]
   OR?: Prisma.RequestScalarWhereWithAggregatesInput[]
   NOT?: Prisma.RequestScalarWhereWithAggregatesInput | Prisma.RequestScalarWhereWithAggregatesInput[]
+  id?: Prisma.IntWithAggregatesFilter<"Request"> | number
+  userId?: Prisma.StringWithAggregatesFilter<"Request"> | string
   arena?: Prisma.StringWithAggregatesFilter<"Request"> | string
   notes?: Prisma.StringNullableWithAggregatesFilter<"Request"> | string | null
   position?: Prisma.EnumPositionWithAggregatesFilter<"Request"> | $Enums.Position
@@ -358,7 +388,7 @@ export type RequestScalarWhereWithAggregatesInput = {
   teamName?: Prisma.StringNullableWithAggregatesFilter<"Request"> | string | null
   time?: Prisma.StringWithAggregatesFilter<"Request"> | string
   type?: Prisma.EnumRequestTypeWithAggregatesFilter<"Request"> | $Enums.RequestType
-  id?: Prisma.IntWithAggregatesFilter<"Request"> | number
+  status?: Prisma.EnumRequestStatusWithAggregatesFilter<"Request"> | $Enums.RequestStatus
 }
 
 export type RequestCreateInput = {
@@ -374,9 +404,14 @@ export type RequestCreateInput = {
   teamName?: string | null
   time: string
   type: $Enums.RequestType
+  status?: $Enums.RequestStatus
+  user: Prisma.UserCreateNestedOneWithoutRequestsInput
+  responses?: Prisma.RequestResponseCreateNestedManyWithoutRequestInput
 }
 
 export type RequestUncheckedCreateInput = {
+  id?: number
+  userId: string
   arena: string
   notes?: string | null
   position: $Enums.Position
@@ -389,7 +424,8 @@ export type RequestUncheckedCreateInput = {
   teamName?: string | null
   time: string
   type: $Enums.RequestType
-  id?: number
+  status?: $Enums.RequestStatus
+  responses?: Prisma.RequestResponseUncheckedCreateNestedManyWithoutRequestInput
 }
 
 export type RequestUpdateInput = {
@@ -405,9 +441,14 @@ export type RequestUpdateInput = {
   teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   time?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
+  status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  user?: Prisma.UserUpdateOneRequiredWithoutRequestsNestedInput
+  responses?: Prisma.RequestResponseUpdateManyWithoutRequestNestedInput
 }
 
 export type RequestUncheckedUpdateInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
   arena?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
@@ -420,10 +461,13 @@ export type RequestUncheckedUpdateInput = {
   teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   time?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  responses?: Prisma.RequestResponseUncheckedUpdateManyWithoutRequestNestedInput
 }
 
 export type RequestCreateManyInput = {
+  id?: number
+  userId: string
   arena: string
   notes?: string | null
   position: $Enums.Position
@@ -436,7 +480,7 @@ export type RequestCreateManyInput = {
   teamName?: string | null
   time: string
   type: $Enums.RequestType
-  id?: number
+  status?: $Enums.RequestStatus
 }
 
 export type RequestUpdateManyMutationInput = {
@@ -452,9 +496,12 @@ export type RequestUpdateManyMutationInput = {
   teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   time?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
+  status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
 }
 
 export type RequestUncheckedUpdateManyInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
   arena?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
@@ -467,10 +514,12 @@ export type RequestUncheckedUpdateManyInput = {
   teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   time?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
 }
 
 export type RequestCountOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   arena?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   position?: Prisma.SortOrder
@@ -483,15 +532,17 @@ export type RequestCountOrderByAggregateInput = {
   teamName?: Prisma.SortOrder
   time?: Prisma.SortOrder
   type?: Prisma.SortOrder
-  id?: Prisma.SortOrder
+  status?: Prisma.SortOrder
 }
 
 export type RequestAvgOrderByAggregateInput = {
-  payAmount?: Prisma.SortOrder
   id?: Prisma.SortOrder
+  payAmount?: Prisma.SortOrder
 }
 
 export type RequestMaxOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   arena?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   position?: Prisma.SortOrder
@@ -504,10 +555,12 @@ export type RequestMaxOrderByAggregateInput = {
   teamName?: Prisma.SortOrder
   time?: Prisma.SortOrder
   type?: Prisma.SortOrder
-  id?: Prisma.SortOrder
+  status?: Prisma.SortOrder
 }
 
 export type RequestMinOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   arena?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   position?: Prisma.SortOrder
@@ -520,12 +573,27 @@ export type RequestMinOrderByAggregateInput = {
   teamName?: Prisma.SortOrder
   time?: Prisma.SortOrder
   type?: Prisma.SortOrder
-  id?: Prisma.SortOrder
+  status?: Prisma.SortOrder
 }
 
 export type RequestSumOrderByAggregateInput = {
-  payAmount?: Prisma.SortOrder
   id?: Prisma.SortOrder
+  payAmount?: Prisma.SortOrder
+}
+
+export type RequestScalarRelationFilter = {
+  is?: Prisma.RequestWhereInput
+  isNot?: Prisma.RequestWhereInput
+}
+
+export type RequestListRelationFilter = {
+  every?: Prisma.RequestWhereInput
+  some?: Prisma.RequestWhereInput
+  none?: Prisma.RequestWhereInput
+}
+
+export type RequestOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type StringFieldUpdateOperationsInput = {
@@ -560,6 +628,10 @@ export type EnumRequestTypeFieldUpdateOperationsInput = {
   set?: $Enums.RequestType
 }
 
+export type EnumRequestStatusFieldUpdateOperationsInput = {
+  set?: $Enums.RequestStatus
+}
+
 export type IntFieldUpdateOperationsInput = {
   set?: number
   increment?: number
@@ -568,9 +640,333 @@ export type IntFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type RequestCreateNestedOneWithoutResponsesInput = {
+  create?: Prisma.XOR<Prisma.RequestCreateWithoutResponsesInput, Prisma.RequestUncheckedCreateWithoutResponsesInput>
+  connectOrCreate?: Prisma.RequestCreateOrConnectWithoutResponsesInput
+  connect?: Prisma.RequestWhereUniqueInput
+}
+
+export type RequestUpdateOneRequiredWithoutResponsesNestedInput = {
+  create?: Prisma.XOR<Prisma.RequestCreateWithoutResponsesInput, Prisma.RequestUncheckedCreateWithoutResponsesInput>
+  connectOrCreate?: Prisma.RequestCreateOrConnectWithoutResponsesInput
+  upsert?: Prisma.RequestUpsertWithoutResponsesInput
+  connect?: Prisma.RequestWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.RequestUpdateToOneWithWhereWithoutResponsesInput, Prisma.RequestUpdateWithoutResponsesInput>, Prisma.RequestUncheckedUpdateWithoutResponsesInput>
+}
+
+export type RequestCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.RequestCreateWithoutUserInput, Prisma.RequestUncheckedCreateWithoutUserInput> | Prisma.RequestCreateWithoutUserInput[] | Prisma.RequestUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.RequestCreateOrConnectWithoutUserInput | Prisma.RequestCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.RequestCreateManyUserInputEnvelope
+  connect?: Prisma.RequestWhereUniqueInput | Prisma.RequestWhereUniqueInput[]
+}
+
+export type RequestUncheckedCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.RequestCreateWithoutUserInput, Prisma.RequestUncheckedCreateWithoutUserInput> | Prisma.RequestCreateWithoutUserInput[] | Prisma.RequestUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.RequestCreateOrConnectWithoutUserInput | Prisma.RequestCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.RequestCreateManyUserInputEnvelope
+  connect?: Prisma.RequestWhereUniqueInput | Prisma.RequestWhereUniqueInput[]
+}
+
+export type RequestUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.RequestCreateWithoutUserInput, Prisma.RequestUncheckedCreateWithoutUserInput> | Prisma.RequestCreateWithoutUserInput[] | Prisma.RequestUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.RequestCreateOrConnectWithoutUserInput | Prisma.RequestCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.RequestUpsertWithWhereUniqueWithoutUserInput | Prisma.RequestUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.RequestCreateManyUserInputEnvelope
+  set?: Prisma.RequestWhereUniqueInput | Prisma.RequestWhereUniqueInput[]
+  disconnect?: Prisma.RequestWhereUniqueInput | Prisma.RequestWhereUniqueInput[]
+  delete?: Prisma.RequestWhereUniqueInput | Prisma.RequestWhereUniqueInput[]
+  connect?: Prisma.RequestWhereUniqueInput | Prisma.RequestWhereUniqueInput[]
+  update?: Prisma.RequestUpdateWithWhereUniqueWithoutUserInput | Prisma.RequestUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.RequestUpdateManyWithWhereWithoutUserInput | Prisma.RequestUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.RequestScalarWhereInput | Prisma.RequestScalarWhereInput[]
+}
+
+export type RequestUncheckedUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.RequestCreateWithoutUserInput, Prisma.RequestUncheckedCreateWithoutUserInput> | Prisma.RequestCreateWithoutUserInput[] | Prisma.RequestUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.RequestCreateOrConnectWithoutUserInput | Prisma.RequestCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.RequestUpsertWithWhereUniqueWithoutUserInput | Prisma.RequestUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.RequestCreateManyUserInputEnvelope
+  set?: Prisma.RequestWhereUniqueInput | Prisma.RequestWhereUniqueInput[]
+  disconnect?: Prisma.RequestWhereUniqueInput | Prisma.RequestWhereUniqueInput[]
+  delete?: Prisma.RequestWhereUniqueInput | Prisma.RequestWhereUniqueInput[]
+  connect?: Prisma.RequestWhereUniqueInput | Prisma.RequestWhereUniqueInput[]
+  update?: Prisma.RequestUpdateWithWhereUniqueWithoutUserInput | Prisma.RequestUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.RequestUpdateManyWithWhereWithoutUserInput | Prisma.RequestUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.RequestScalarWhereInput | Prisma.RequestScalarWhereInput[]
+}
+
+export type RequestCreateWithoutResponsesInput = {
+  arena: string
+  notes?: string | null
+  position: $Enums.Position
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  arenaAddress?: string | null
+  payAmount?: number | null
+  playerName?: string | null
+  skillLevel: $Enums.SkillLevel
+  teamName?: string | null
+  time: string
+  type: $Enums.RequestType
+  status?: $Enums.RequestStatus
+  user: Prisma.UserCreateNestedOneWithoutRequestsInput
+}
+
+export type RequestUncheckedCreateWithoutResponsesInput = {
+  id?: number
+  userId: string
+  arena: string
+  notes?: string | null
+  position: $Enums.Position
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  arenaAddress?: string | null
+  payAmount?: number | null
+  playerName?: string | null
+  skillLevel: $Enums.SkillLevel
+  teamName?: string | null
+  time: string
+  type: $Enums.RequestType
+  status?: $Enums.RequestStatus
+}
+
+export type RequestCreateOrConnectWithoutResponsesInput = {
+  where: Prisma.RequestWhereUniqueInput
+  create: Prisma.XOR<Prisma.RequestCreateWithoutResponsesInput, Prisma.RequestUncheckedCreateWithoutResponsesInput>
+}
+
+export type RequestUpsertWithoutResponsesInput = {
+  update: Prisma.XOR<Prisma.RequestUpdateWithoutResponsesInput, Prisma.RequestUncheckedUpdateWithoutResponsesInput>
+  create: Prisma.XOR<Prisma.RequestCreateWithoutResponsesInput, Prisma.RequestUncheckedCreateWithoutResponsesInput>
+  where?: Prisma.RequestWhereInput
+}
+
+export type RequestUpdateToOneWithWhereWithoutResponsesInput = {
+  where?: Prisma.RequestWhereInput
+  data: Prisma.XOR<Prisma.RequestUpdateWithoutResponsesInput, Prisma.RequestUncheckedUpdateWithoutResponsesInput>
+}
+
+export type RequestUpdateWithoutResponsesInput = {
+  arena?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  arenaAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  playerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
+  teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  time?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
+  status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  user?: Prisma.UserUpdateOneRequiredWithoutRequestsNestedInput
+}
+
+export type RequestUncheckedUpdateWithoutResponsesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  arena?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  arenaAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  playerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
+  teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  time?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
+  status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+}
+
+export type RequestCreateWithoutUserInput = {
+  arena: string
+  notes?: string | null
+  position: $Enums.Position
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  arenaAddress?: string | null
+  payAmount?: number | null
+  playerName?: string | null
+  skillLevel: $Enums.SkillLevel
+  teamName?: string | null
+  time: string
+  type: $Enums.RequestType
+  status?: $Enums.RequestStatus
+  responses?: Prisma.RequestResponseCreateNestedManyWithoutRequestInput
+}
+
+export type RequestUncheckedCreateWithoutUserInput = {
+  id?: number
+  arena: string
+  notes?: string | null
+  position: $Enums.Position
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  arenaAddress?: string | null
+  payAmount?: number | null
+  playerName?: string | null
+  skillLevel: $Enums.SkillLevel
+  teamName?: string | null
+  time: string
+  type: $Enums.RequestType
+  status?: $Enums.RequestStatus
+  responses?: Prisma.RequestResponseUncheckedCreateNestedManyWithoutRequestInput
+}
+
+export type RequestCreateOrConnectWithoutUserInput = {
+  where: Prisma.RequestWhereUniqueInput
+  create: Prisma.XOR<Prisma.RequestCreateWithoutUserInput, Prisma.RequestUncheckedCreateWithoutUserInput>
+}
+
+export type RequestCreateManyUserInputEnvelope = {
+  data: Prisma.RequestCreateManyUserInput | Prisma.RequestCreateManyUserInput[]
+  skipDuplicates?: boolean
+}
+
+export type RequestUpsertWithWhereUniqueWithoutUserInput = {
+  where: Prisma.RequestWhereUniqueInput
+  update: Prisma.XOR<Prisma.RequestUpdateWithoutUserInput, Prisma.RequestUncheckedUpdateWithoutUserInput>
+  create: Prisma.XOR<Prisma.RequestCreateWithoutUserInput, Prisma.RequestUncheckedCreateWithoutUserInput>
+}
+
+export type RequestUpdateWithWhereUniqueWithoutUserInput = {
+  where: Prisma.RequestWhereUniqueInput
+  data: Prisma.XOR<Prisma.RequestUpdateWithoutUserInput, Prisma.RequestUncheckedUpdateWithoutUserInput>
+}
+
+export type RequestUpdateManyWithWhereWithoutUserInput = {
+  where: Prisma.RequestScalarWhereInput
+  data: Prisma.XOR<Prisma.RequestUpdateManyMutationInput, Prisma.RequestUncheckedUpdateManyWithoutUserInput>
+}
+
+export type RequestScalarWhereInput = {
+  AND?: Prisma.RequestScalarWhereInput | Prisma.RequestScalarWhereInput[]
+  OR?: Prisma.RequestScalarWhereInput[]
+  NOT?: Prisma.RequestScalarWhereInput | Prisma.RequestScalarWhereInput[]
+  id?: Prisma.IntFilter<"Request"> | number
+  userId?: Prisma.StringFilter<"Request"> | string
+  arena?: Prisma.StringFilter<"Request"> | string
+  notes?: Prisma.StringNullableFilter<"Request"> | string | null
+  position?: Prisma.EnumPositionFilter<"Request"> | $Enums.Position
+  createdAt?: Prisma.DateTimeFilter<"Request"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Request"> | Date | string
+  arenaAddress?: Prisma.StringNullableFilter<"Request"> | string | null
+  payAmount?: Prisma.IntNullableFilter<"Request"> | number | null
+  playerName?: Prisma.StringNullableFilter<"Request"> | string | null
+  skillLevel?: Prisma.EnumSkillLevelFilter<"Request"> | $Enums.SkillLevel
+  teamName?: Prisma.StringNullableFilter<"Request"> | string | null
+  time?: Prisma.StringFilter<"Request"> | string
+  type?: Prisma.EnumRequestTypeFilter<"Request"> | $Enums.RequestType
+  status?: Prisma.EnumRequestStatusFilter<"Request"> | $Enums.RequestStatus
+}
+
+export type RequestCreateManyUserInput = {
+  id?: number
+  arena: string
+  notes?: string | null
+  position: $Enums.Position
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  arenaAddress?: string | null
+  payAmount?: number | null
+  playerName?: string | null
+  skillLevel: $Enums.SkillLevel
+  teamName?: string | null
+  time: string
+  type: $Enums.RequestType
+  status?: $Enums.RequestStatus
+}
+
+export type RequestUpdateWithoutUserInput = {
+  arena?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  arenaAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  playerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
+  teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  time?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
+  status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  responses?: Prisma.RequestResponseUpdateManyWithoutRequestNestedInput
+}
+
+export type RequestUncheckedUpdateWithoutUserInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  arena?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  arenaAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  playerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
+  teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  time?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
+  status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  responses?: Prisma.RequestResponseUncheckedUpdateManyWithoutRequestNestedInput
+}
+
+export type RequestUncheckedUpdateManyWithoutUserInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  arena?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  arenaAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  playerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
+  teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  time?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
+  status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+}
+
+
+/**
+ * Count Type RequestCountOutputType
+ */
+
+export type RequestCountOutputType = {
+  responses: number
+}
+
+export type RequestCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  responses?: boolean | RequestCountOutputTypeCountResponsesArgs
+}
+
+/**
+ * RequestCountOutputType without action
+ */
+export type RequestCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RequestCountOutputType
+   */
+  select?: Prisma.RequestCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * RequestCountOutputType without action
+ */
+export type RequestCountOutputTypeCountResponsesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RequestResponseWhereInput
+}
 
 
 export type RequestSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  userId?: boolean
   arena?: boolean
   notes?: boolean
   position?: boolean
@@ -583,10 +979,15 @@ export type RequestSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   teamName?: boolean
   time?: boolean
   type?: boolean
-  id?: boolean
+  status?: boolean
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  responses?: boolean | Prisma.Request$responsesArgs<ExtArgs>
+  _count?: boolean | Prisma.RequestCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["request"]>
 
 export type RequestSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  userId?: boolean
   arena?: boolean
   notes?: boolean
   position?: boolean
@@ -599,10 +1000,13 @@ export type RequestSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   teamName?: boolean
   time?: boolean
   type?: boolean
-  id?: boolean
+  status?: boolean
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["request"]>
 
 export type RequestSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  userId?: boolean
   arena?: boolean
   notes?: boolean
   position?: boolean
@@ -615,10 +1019,13 @@ export type RequestSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   teamName?: boolean
   time?: boolean
   type?: boolean
-  id?: boolean
+  status?: boolean
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["request"]>
 
 export type RequestSelectScalar = {
+  id?: boolean
+  userId?: boolean
   arena?: boolean
   notes?: boolean
   position?: boolean
@@ -631,15 +1038,31 @@ export type RequestSelectScalar = {
   teamName?: boolean
   time?: boolean
   type?: boolean
-  id?: boolean
+  status?: boolean
 }
 
-export type RequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"arena" | "notes" | "position" | "createdAt" | "updatedAt" | "arenaAddress" | "payAmount" | "playerName" | "skillLevel" | "teamName" | "time" | "type" | "id", ExtArgs["result"]["request"]>
+export type RequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "arena" | "notes" | "position" | "createdAt" | "updatedAt" | "arenaAddress" | "payAmount" | "playerName" | "skillLevel" | "teamName" | "time" | "type" | "status", ExtArgs["result"]["request"]>
+export type RequestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  responses?: boolean | Prisma.Request$responsesArgs<ExtArgs>
+  _count?: boolean | Prisma.RequestCountOutputTypeDefaultArgs<ExtArgs>
+}
+export type RequestIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}
+export type RequestIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}
 
 export type $RequestPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Request"
-  objects: {}
+  objects: {
+    user: Prisma.$UserPayload<ExtArgs>
+    responses: Prisma.$RequestResponsePayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
+    id: number
+    userId: string
     arena: string
     notes: string | null
     position: $Enums.Position
@@ -652,7 +1075,7 @@ export type $RequestPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     teamName: string | null
     time: string
     type: $Enums.RequestType
-    id: number
+    status: $Enums.RequestStatus
   }, ExtArgs["result"]["request"]>
   composites: {}
 }
@@ -736,8 +1159,8 @@ export interface RequestDelegate<ExtArgs extends runtime.Types.Extensions.Intern
    * // Get first 10 Requests
    * const requests = await prisma.request.findMany({ take: 10 })
    * 
-   * // Only select the `arena`
-   * const requestWithArenaOnly = await prisma.request.findMany({ select: { arena: true } })
+   * // Only select the `id`
+   * const requestWithIdOnly = await prisma.request.findMany({ select: { id: true } })
    * 
    */
   findMany<T extends RequestFindManyArgs>(args?: Prisma.SelectSubset<T, RequestFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -781,9 +1204,9 @@ export interface RequestDelegate<ExtArgs extends runtime.Types.Extensions.Intern
    *   ]
    * })
    * 
-   * // Create many Requests and only return the `arena`
-   * const requestWithArenaOnly = await prisma.request.createManyAndReturn({
-   *   select: { arena: true },
+   * // Create many Requests and only return the `id`
+   * const requestWithIdOnly = await prisma.request.createManyAndReturn({
+   *   select: { id: true },
    *   data: [
    *     // ... provide data here
    *   ]
@@ -872,9 +1295,9 @@ export interface RequestDelegate<ExtArgs extends runtime.Types.Extensions.Intern
    *   ]
    * })
    * 
-   * // Update zero or more Requests and only return the `arena`
-   * const requestWithArenaOnly = await prisma.request.updateManyAndReturn({
-   *   select: { arena: true },
+   * // Update zero or more Requests and only return the `id`
+   * const requestWithIdOnly = await prisma.request.updateManyAndReturn({
+   *   select: { id: true },
    *   where: {
    *     // ... provide filter here
    *   },
@@ -1047,6 +1470,8 @@ readonly fields: RequestFieldRefs;
  */
 export interface Prisma__RequestClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  responses<T extends Prisma.Request$responsesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Request$responsesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RequestResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1076,6 +1501,8 @@ export interface Prisma__RequestClient<T, Null = never, ExtArgs extends runtime.
  * Fields of the Request model
  */
 export interface RequestFieldRefs {
+  readonly id: Prisma.FieldRef<"Request", 'Int'>
+  readonly userId: Prisma.FieldRef<"Request", 'String'>
   readonly arena: Prisma.FieldRef<"Request", 'String'>
   readonly notes: Prisma.FieldRef<"Request", 'String'>
   readonly position: Prisma.FieldRef<"Request", 'Position'>
@@ -1088,7 +1515,7 @@ export interface RequestFieldRefs {
   readonly teamName: Prisma.FieldRef<"Request", 'String'>
   readonly time: Prisma.FieldRef<"Request", 'String'>
   readonly type: Prisma.FieldRef<"Request", 'RequestType'>
-  readonly id: Prisma.FieldRef<"Request", 'Int'>
+  readonly status: Prisma.FieldRef<"Request", 'RequestStatus'>
 }
     
 
@@ -1105,6 +1532,10 @@ export type RequestFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the Request
    */
   omit?: Prisma.RequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RequestInclude<ExtArgs> | null
   /**
    * Filter, which Request to fetch.
    */
@@ -1124,6 +1555,10 @@ export type RequestFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extension
    */
   omit?: Prisma.RequestOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RequestInclude<ExtArgs> | null
+  /**
    * Filter, which Request to fetch.
    */
   where: Prisma.RequestWhereUniqueInput
@@ -1141,6 +1576,10 @@ export type RequestFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Omit specific fields from the Request
    */
   omit?: Prisma.RequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RequestInclude<ExtArgs> | null
   /**
    * Filter, which Request to fetch.
    */
@@ -1190,6 +1629,10 @@ export type RequestFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions
    */
   omit?: Prisma.RequestOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RequestInclude<ExtArgs> | null
+  /**
    * Filter, which Request to fetch.
    */
   where?: Prisma.RequestWhereInput
@@ -1238,6 +1681,10 @@ export type RequestFindManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    */
   omit?: Prisma.RequestOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RequestInclude<ExtArgs> | null
+  /**
    * Filter, which Requests to fetch.
    */
   where?: Prisma.RequestWhereInput
@@ -1265,6 +1712,11 @@ export type RequestFindManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Skip the first `n` Requests.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Requests.
+   */
   distinct?: Prisma.RequestScalarFieldEnum | Prisma.RequestScalarFieldEnum[]
 }
 
@@ -1280,6 +1732,10 @@ export type RequestCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the Request
    */
   omit?: Prisma.RequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RequestInclude<ExtArgs> | null
   /**
    * The data needed to create a Request.
    */
@@ -1314,6 +1770,10 @@ export type RequestCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    */
   data: Prisma.RequestCreateManyInput | Prisma.RequestCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RequestIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1328,6 +1788,10 @@ export type RequestUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the Request
    */
   omit?: Prisma.RequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RequestInclude<ExtArgs> | null
   /**
    * The data needed to update a Request.
    */
@@ -1380,6 +1844,10 @@ export type RequestUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    * Limit how many Requests to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RequestIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1394,6 +1862,10 @@ export type RequestUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the Request
    */
   omit?: Prisma.RequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RequestInclude<ExtArgs> | null
   /**
    * The filter to search for the Request to update in case it exists.
    */
@@ -1421,6 +1893,10 @@ export type RequestDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    */
   omit?: Prisma.RequestOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RequestInclude<ExtArgs> | null
+  /**
    * Filter which Request to delete.
    */
   where: Prisma.RequestWhereUniqueInput
@@ -1441,6 +1917,30 @@ export type RequestDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
 }
 
 /**
+ * Request.responses
+ */
+export type Request$responsesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RequestResponse
+   */
+  select?: Prisma.RequestResponseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RequestResponse
+   */
+  omit?: Prisma.RequestResponseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RequestResponseInclude<ExtArgs> | null
+  where?: Prisma.RequestResponseWhereInput
+  orderBy?: Prisma.RequestResponseOrderByWithRelationInput | Prisma.RequestResponseOrderByWithRelationInput[]
+  cursor?: Prisma.RequestResponseWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RequestResponseScalarFieldEnum | Prisma.RequestResponseScalarFieldEnum[]
+}
+
+/**
  * Request without action
  */
 export type RequestDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1452,4 +1952,8 @@ export type RequestDefaultArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the Request
    */
   omit?: Prisma.RequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RequestInclude<ExtArgs> | null
 }

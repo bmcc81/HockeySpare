@@ -27,16 +27,18 @@ export type AggregatePlayerOffer = {
 }
 
 export type PlayerOfferAvgAggregateOutputType = {
-  payAmount: number | null
   id: number | null
+  payAmount: number | null
 }
 
 export type PlayerOfferSumAggregateOutputType = {
-  payAmount: number | null
   id: number | null
+  payAmount: number | null
 }
 
 export type PlayerOfferMinAggregateOutputType = {
+  id: number | null
+  userId: string | null
   arena: string | null
   notes: string | null
   createdAt: Date | null
@@ -45,12 +47,14 @@ export type PlayerOfferMinAggregateOutputType = {
   payAmount: number | null
   playerName: string | null
   time: string | null
-  id: number | null
   position: $Enums.Position | null
   skillLevel: $Enums.SkillLevel | null
+  status: $Enums.OfferStatus | null
 }
 
 export type PlayerOfferMaxAggregateOutputType = {
+  id: number | null
+  userId: string | null
   arena: string | null
   notes: string | null
   createdAt: Date | null
@@ -59,12 +63,14 @@ export type PlayerOfferMaxAggregateOutputType = {
   payAmount: number | null
   playerName: string | null
   time: string | null
-  id: number | null
   position: $Enums.Position | null
   skillLevel: $Enums.SkillLevel | null
+  status: $Enums.OfferStatus | null
 }
 
 export type PlayerOfferCountAggregateOutputType = {
+  id: number
+  userId: number
   arena: number
   notes: number
   createdAt: number
@@ -73,24 +79,26 @@ export type PlayerOfferCountAggregateOutputType = {
   payAmount: number
   playerName: number
   time: number
-  id: number
   position: number
   skillLevel: number
+  status: number
   _all: number
 }
 
 
 export type PlayerOfferAvgAggregateInputType = {
-  payAmount?: true
   id?: true
+  payAmount?: true
 }
 
 export type PlayerOfferSumAggregateInputType = {
-  payAmount?: true
   id?: true
+  payAmount?: true
 }
 
 export type PlayerOfferMinAggregateInputType = {
+  id?: true
+  userId?: true
   arena?: true
   notes?: true
   createdAt?: true
@@ -99,12 +107,14 @@ export type PlayerOfferMinAggregateInputType = {
   payAmount?: true
   playerName?: true
   time?: true
-  id?: true
   position?: true
   skillLevel?: true
+  status?: true
 }
 
 export type PlayerOfferMaxAggregateInputType = {
+  id?: true
+  userId?: true
   arena?: true
   notes?: true
   createdAt?: true
@@ -113,12 +123,14 @@ export type PlayerOfferMaxAggregateInputType = {
   payAmount?: true
   playerName?: true
   time?: true
-  id?: true
   position?: true
   skillLevel?: true
+  status?: true
 }
 
 export type PlayerOfferCountAggregateInputType = {
+  id?: true
+  userId?: true
   arena?: true
   notes?: true
   createdAt?: true
@@ -127,9 +139,9 @@ export type PlayerOfferCountAggregateInputType = {
   payAmount?: true
   playerName?: true
   time?: true
-  id?: true
   position?: true
   skillLevel?: true
+  status?: true
   _all?: true
 }
 
@@ -220,17 +232,19 @@ export type PlayerOfferGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
 }
 
 export type PlayerOfferGroupByOutputType = {
+  id: number
+  userId: string
   arena: string
   notes: string | null
   createdAt: Date
   updatedAt: Date
-  arenaAddress: string
-  payAmount: number
+  arenaAddress: string | null
+  payAmount: number | null
   playerName: string
   time: string
-  id: number
   position: $Enums.Position
   skillLevel: $Enums.SkillLevel
+  status: $Enums.OfferStatus
   _count: PlayerOfferCountAggregateOutputType | null
   _avg: PlayerOfferAvgAggregateOutputType | null
   _sum: PlayerOfferSumAggregateOutputType | null
@@ -257,31 +271,37 @@ export type PlayerOfferWhereInput = {
   AND?: Prisma.PlayerOfferWhereInput | Prisma.PlayerOfferWhereInput[]
   OR?: Prisma.PlayerOfferWhereInput[]
   NOT?: Prisma.PlayerOfferWhereInput | Prisma.PlayerOfferWhereInput[]
+  id?: Prisma.IntFilter<"PlayerOffer"> | number
+  userId?: Prisma.StringFilter<"PlayerOffer"> | string
   arena?: Prisma.StringFilter<"PlayerOffer"> | string
   notes?: Prisma.StringNullableFilter<"PlayerOffer"> | string | null
   createdAt?: Prisma.DateTimeFilter<"PlayerOffer"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PlayerOffer"> | Date | string
-  arenaAddress?: Prisma.StringFilter<"PlayerOffer"> | string
-  payAmount?: Prisma.IntFilter<"PlayerOffer"> | number
+  arenaAddress?: Prisma.StringNullableFilter<"PlayerOffer"> | string | null
+  payAmount?: Prisma.IntNullableFilter<"PlayerOffer"> | number | null
   playerName?: Prisma.StringFilter<"PlayerOffer"> | string
   time?: Prisma.StringFilter<"PlayerOffer"> | string
-  id?: Prisma.IntFilter<"PlayerOffer"> | number
   position?: Prisma.EnumPositionFilter<"PlayerOffer"> | $Enums.Position
   skillLevel?: Prisma.EnumSkillLevelFilter<"PlayerOffer"> | $Enums.SkillLevel
+  status?: Prisma.EnumOfferStatusFilter<"PlayerOffer"> | $Enums.OfferStatus
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
 export type PlayerOfferOrderByWithRelationInput = {
+  id?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   arena?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  arenaAddress?: Prisma.SortOrder
-  payAmount?: Prisma.SortOrder
+  arenaAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  payAmount?: Prisma.SortOrderInput | Prisma.SortOrder
   playerName?: Prisma.SortOrder
   time?: Prisma.SortOrder
-  id?: Prisma.SortOrder
   position?: Prisma.SortOrder
   skillLevel?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  user?: Prisma.UserOrderByWithRelationInput
 }
 
 export type PlayerOfferWhereUniqueInput = Prisma.AtLeast<{
@@ -289,30 +309,35 @@ export type PlayerOfferWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.PlayerOfferWhereInput | Prisma.PlayerOfferWhereInput[]
   OR?: Prisma.PlayerOfferWhereInput[]
   NOT?: Prisma.PlayerOfferWhereInput | Prisma.PlayerOfferWhereInput[]
+  userId?: Prisma.StringFilter<"PlayerOffer"> | string
   arena?: Prisma.StringFilter<"PlayerOffer"> | string
   notes?: Prisma.StringNullableFilter<"PlayerOffer"> | string | null
   createdAt?: Prisma.DateTimeFilter<"PlayerOffer"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PlayerOffer"> | Date | string
-  arenaAddress?: Prisma.StringFilter<"PlayerOffer"> | string
-  payAmount?: Prisma.IntFilter<"PlayerOffer"> | number
+  arenaAddress?: Prisma.StringNullableFilter<"PlayerOffer"> | string | null
+  payAmount?: Prisma.IntNullableFilter<"PlayerOffer"> | number | null
   playerName?: Prisma.StringFilter<"PlayerOffer"> | string
   time?: Prisma.StringFilter<"PlayerOffer"> | string
   position?: Prisma.EnumPositionFilter<"PlayerOffer"> | $Enums.Position
   skillLevel?: Prisma.EnumSkillLevelFilter<"PlayerOffer"> | $Enums.SkillLevel
+  status?: Prisma.EnumOfferStatusFilter<"PlayerOffer"> | $Enums.OfferStatus
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id">
 
 export type PlayerOfferOrderByWithAggregationInput = {
+  id?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   arena?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  arenaAddress?: Prisma.SortOrder
-  payAmount?: Prisma.SortOrder
+  arenaAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  payAmount?: Prisma.SortOrderInput | Prisma.SortOrder
   playerName?: Prisma.SortOrder
   time?: Prisma.SortOrder
-  id?: Prisma.SortOrder
   position?: Prisma.SortOrder
   skillLevel?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   _count?: Prisma.PlayerOfferCountOrderByAggregateInput
   _avg?: Prisma.PlayerOfferAvgOrderByAggregateInput
   _max?: Prisma.PlayerOfferMaxOrderByAggregateInput
@@ -324,17 +349,19 @@ export type PlayerOfferScalarWhereWithAggregatesInput = {
   AND?: Prisma.PlayerOfferScalarWhereWithAggregatesInput | Prisma.PlayerOfferScalarWhereWithAggregatesInput[]
   OR?: Prisma.PlayerOfferScalarWhereWithAggregatesInput[]
   NOT?: Prisma.PlayerOfferScalarWhereWithAggregatesInput | Prisma.PlayerOfferScalarWhereWithAggregatesInput[]
+  id?: Prisma.IntWithAggregatesFilter<"PlayerOffer"> | number
+  userId?: Prisma.StringWithAggregatesFilter<"PlayerOffer"> | string
   arena?: Prisma.StringWithAggregatesFilter<"PlayerOffer"> | string
   notes?: Prisma.StringNullableWithAggregatesFilter<"PlayerOffer"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"PlayerOffer"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"PlayerOffer"> | Date | string
-  arenaAddress?: Prisma.StringWithAggregatesFilter<"PlayerOffer"> | string
-  payAmount?: Prisma.IntWithAggregatesFilter<"PlayerOffer"> | number
+  arenaAddress?: Prisma.StringNullableWithAggregatesFilter<"PlayerOffer"> | string | null
+  payAmount?: Prisma.IntNullableWithAggregatesFilter<"PlayerOffer"> | number | null
   playerName?: Prisma.StringWithAggregatesFilter<"PlayerOffer"> | string
   time?: Prisma.StringWithAggregatesFilter<"PlayerOffer"> | string
-  id?: Prisma.IntWithAggregatesFilter<"PlayerOffer"> | number
   position?: Prisma.EnumPositionWithAggregatesFilter<"PlayerOffer"> | $Enums.Position
   skillLevel?: Prisma.EnumSkillLevelWithAggregatesFilter<"PlayerOffer"> | $Enums.SkillLevel
+  status?: Prisma.EnumOfferStatusWithAggregatesFilter<"PlayerOffer"> | $Enums.OfferStatus
 }
 
 export type PlayerOfferCreateInput = {
@@ -342,26 +369,30 @@ export type PlayerOfferCreateInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  arenaAddress: string
-  payAmount: number
+  arenaAddress?: string | null
+  payAmount?: number | null
   playerName: string
   time: string
   position: $Enums.Position
   skillLevel: $Enums.SkillLevel
+  status?: $Enums.OfferStatus
+  user: Prisma.UserCreateNestedOneWithoutPlayerOffersInput
 }
 
 export type PlayerOfferUncheckedCreateInput = {
+  id?: number
+  userId: string
   arena: string
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  arenaAddress: string
-  payAmount: number
+  arenaAddress?: string | null
+  payAmount?: number | null
   playerName: string
   time: string
-  id?: number
   position: $Enums.Position
   skillLevel: $Enums.SkillLevel
+  status?: $Enums.OfferStatus
 }
 
 export type PlayerOfferUpdateInput = {
@@ -369,40 +400,46 @@ export type PlayerOfferUpdateInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  arenaAddress?: Prisma.StringFieldUpdateOperationsInput | string
-  payAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  arenaAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   playerName?: Prisma.StringFieldUpdateOperationsInput | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
   skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
+  status?: Prisma.EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
+  user?: Prisma.UserUpdateOneRequiredWithoutPlayerOffersNestedInput
 }
 
 export type PlayerOfferUncheckedUpdateInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
   arena?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  arenaAddress?: Prisma.StringFieldUpdateOperationsInput | string
-  payAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  arenaAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   playerName?: Prisma.StringFieldUpdateOperationsInput | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
-  id?: Prisma.IntFieldUpdateOperationsInput | number
   position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
   skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
+  status?: Prisma.EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
 }
 
 export type PlayerOfferCreateManyInput = {
+  id?: number
+  userId: string
   arena: string
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  arenaAddress: string
-  payAmount: number
+  arenaAddress?: string | null
+  payAmount?: number | null
   playerName: string
   time: string
-  id?: number
   position: $Enums.Position
   skillLevel: $Enums.SkillLevel
+  status?: $Enums.OfferStatus
 }
 
 export type PlayerOfferUpdateManyMutationInput = {
@@ -410,29 +447,34 @@ export type PlayerOfferUpdateManyMutationInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  arenaAddress?: Prisma.StringFieldUpdateOperationsInput | string
-  payAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  arenaAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   playerName?: Prisma.StringFieldUpdateOperationsInput | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
   skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
+  status?: Prisma.EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
 }
 
 export type PlayerOfferUncheckedUpdateManyInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
   arena?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  arenaAddress?: Prisma.StringFieldUpdateOperationsInput | string
-  payAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  arenaAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   playerName?: Prisma.StringFieldUpdateOperationsInput | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
-  id?: Prisma.IntFieldUpdateOperationsInput | number
   position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
   skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
+  status?: Prisma.EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
 }
 
 export type PlayerOfferCountOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   arena?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -441,17 +483,19 @@ export type PlayerOfferCountOrderByAggregateInput = {
   payAmount?: Prisma.SortOrder
   playerName?: Prisma.SortOrder
   time?: Prisma.SortOrder
-  id?: Prisma.SortOrder
   position?: Prisma.SortOrder
   skillLevel?: Prisma.SortOrder
+  status?: Prisma.SortOrder
 }
 
 export type PlayerOfferAvgOrderByAggregateInput = {
-  payAmount?: Prisma.SortOrder
   id?: Prisma.SortOrder
+  payAmount?: Prisma.SortOrder
 }
 
 export type PlayerOfferMaxOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   arena?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -460,12 +504,14 @@ export type PlayerOfferMaxOrderByAggregateInput = {
   payAmount?: Prisma.SortOrder
   playerName?: Prisma.SortOrder
   time?: Prisma.SortOrder
-  id?: Prisma.SortOrder
   position?: Prisma.SortOrder
   skillLevel?: Prisma.SortOrder
+  status?: Prisma.SortOrder
 }
 
 export type PlayerOfferMinOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   arena?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -474,19 +520,210 @@ export type PlayerOfferMinOrderByAggregateInput = {
   payAmount?: Prisma.SortOrder
   playerName?: Prisma.SortOrder
   time?: Prisma.SortOrder
-  id?: Prisma.SortOrder
   position?: Prisma.SortOrder
   skillLevel?: Prisma.SortOrder
+  status?: Prisma.SortOrder
 }
 
 export type PlayerOfferSumOrderByAggregateInput = {
-  payAmount?: Prisma.SortOrder
   id?: Prisma.SortOrder
+  payAmount?: Prisma.SortOrder
+}
+
+export type PlayerOfferListRelationFilter = {
+  every?: Prisma.PlayerOfferWhereInput
+  some?: Prisma.PlayerOfferWhereInput
+  none?: Prisma.PlayerOfferWhereInput
+}
+
+export type PlayerOfferOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
+export type EnumOfferStatusFieldUpdateOperationsInput = {
+  set?: $Enums.OfferStatus
+}
+
+export type PlayerOfferCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.PlayerOfferCreateWithoutUserInput, Prisma.PlayerOfferUncheckedCreateWithoutUserInput> | Prisma.PlayerOfferCreateWithoutUserInput[] | Prisma.PlayerOfferUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.PlayerOfferCreateOrConnectWithoutUserInput | Prisma.PlayerOfferCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.PlayerOfferCreateManyUserInputEnvelope
+  connect?: Prisma.PlayerOfferWhereUniqueInput | Prisma.PlayerOfferWhereUniqueInput[]
+}
+
+export type PlayerOfferUncheckedCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.PlayerOfferCreateWithoutUserInput, Prisma.PlayerOfferUncheckedCreateWithoutUserInput> | Prisma.PlayerOfferCreateWithoutUserInput[] | Prisma.PlayerOfferUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.PlayerOfferCreateOrConnectWithoutUserInput | Prisma.PlayerOfferCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.PlayerOfferCreateManyUserInputEnvelope
+  connect?: Prisma.PlayerOfferWhereUniqueInput | Prisma.PlayerOfferWhereUniqueInput[]
+}
+
+export type PlayerOfferUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.PlayerOfferCreateWithoutUserInput, Prisma.PlayerOfferUncheckedCreateWithoutUserInput> | Prisma.PlayerOfferCreateWithoutUserInput[] | Prisma.PlayerOfferUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.PlayerOfferCreateOrConnectWithoutUserInput | Prisma.PlayerOfferCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.PlayerOfferUpsertWithWhereUniqueWithoutUserInput | Prisma.PlayerOfferUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.PlayerOfferCreateManyUserInputEnvelope
+  set?: Prisma.PlayerOfferWhereUniqueInput | Prisma.PlayerOfferWhereUniqueInput[]
+  disconnect?: Prisma.PlayerOfferWhereUniqueInput | Prisma.PlayerOfferWhereUniqueInput[]
+  delete?: Prisma.PlayerOfferWhereUniqueInput | Prisma.PlayerOfferWhereUniqueInput[]
+  connect?: Prisma.PlayerOfferWhereUniqueInput | Prisma.PlayerOfferWhereUniqueInput[]
+  update?: Prisma.PlayerOfferUpdateWithWhereUniqueWithoutUserInput | Prisma.PlayerOfferUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.PlayerOfferUpdateManyWithWhereWithoutUserInput | Prisma.PlayerOfferUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.PlayerOfferScalarWhereInput | Prisma.PlayerOfferScalarWhereInput[]
+}
+
+export type PlayerOfferUncheckedUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.PlayerOfferCreateWithoutUserInput, Prisma.PlayerOfferUncheckedCreateWithoutUserInput> | Prisma.PlayerOfferCreateWithoutUserInput[] | Prisma.PlayerOfferUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.PlayerOfferCreateOrConnectWithoutUserInput | Prisma.PlayerOfferCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.PlayerOfferUpsertWithWhereUniqueWithoutUserInput | Prisma.PlayerOfferUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.PlayerOfferCreateManyUserInputEnvelope
+  set?: Prisma.PlayerOfferWhereUniqueInput | Prisma.PlayerOfferWhereUniqueInput[]
+  disconnect?: Prisma.PlayerOfferWhereUniqueInput | Prisma.PlayerOfferWhereUniqueInput[]
+  delete?: Prisma.PlayerOfferWhereUniqueInput | Prisma.PlayerOfferWhereUniqueInput[]
+  connect?: Prisma.PlayerOfferWhereUniqueInput | Prisma.PlayerOfferWhereUniqueInput[]
+  update?: Prisma.PlayerOfferUpdateWithWhereUniqueWithoutUserInput | Prisma.PlayerOfferUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.PlayerOfferUpdateManyWithWhereWithoutUserInput | Prisma.PlayerOfferUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.PlayerOfferScalarWhereInput | Prisma.PlayerOfferScalarWhereInput[]
+}
+
+export type PlayerOfferCreateWithoutUserInput = {
+  arena: string
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  arenaAddress?: string | null
+  payAmount?: number | null
+  playerName: string
+  time: string
+  position: $Enums.Position
+  skillLevel: $Enums.SkillLevel
+  status?: $Enums.OfferStatus
+}
+
+export type PlayerOfferUncheckedCreateWithoutUserInput = {
+  id?: number
+  arena: string
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  arenaAddress?: string | null
+  payAmount?: number | null
+  playerName: string
+  time: string
+  position: $Enums.Position
+  skillLevel: $Enums.SkillLevel
+  status?: $Enums.OfferStatus
+}
+
+export type PlayerOfferCreateOrConnectWithoutUserInput = {
+  where: Prisma.PlayerOfferWhereUniqueInput
+  create: Prisma.XOR<Prisma.PlayerOfferCreateWithoutUserInput, Prisma.PlayerOfferUncheckedCreateWithoutUserInput>
+}
+
+export type PlayerOfferCreateManyUserInputEnvelope = {
+  data: Prisma.PlayerOfferCreateManyUserInput | Prisma.PlayerOfferCreateManyUserInput[]
+  skipDuplicates?: boolean
+}
+
+export type PlayerOfferUpsertWithWhereUniqueWithoutUserInput = {
+  where: Prisma.PlayerOfferWhereUniqueInput
+  update: Prisma.XOR<Prisma.PlayerOfferUpdateWithoutUserInput, Prisma.PlayerOfferUncheckedUpdateWithoutUserInput>
+  create: Prisma.XOR<Prisma.PlayerOfferCreateWithoutUserInput, Prisma.PlayerOfferUncheckedCreateWithoutUserInput>
+}
+
+export type PlayerOfferUpdateWithWhereUniqueWithoutUserInput = {
+  where: Prisma.PlayerOfferWhereUniqueInput
+  data: Prisma.XOR<Prisma.PlayerOfferUpdateWithoutUserInput, Prisma.PlayerOfferUncheckedUpdateWithoutUserInput>
+}
+
+export type PlayerOfferUpdateManyWithWhereWithoutUserInput = {
+  where: Prisma.PlayerOfferScalarWhereInput
+  data: Prisma.XOR<Prisma.PlayerOfferUpdateManyMutationInput, Prisma.PlayerOfferUncheckedUpdateManyWithoutUserInput>
+}
+
+export type PlayerOfferScalarWhereInput = {
+  AND?: Prisma.PlayerOfferScalarWhereInput | Prisma.PlayerOfferScalarWhereInput[]
+  OR?: Prisma.PlayerOfferScalarWhereInput[]
+  NOT?: Prisma.PlayerOfferScalarWhereInput | Prisma.PlayerOfferScalarWhereInput[]
+  id?: Prisma.IntFilter<"PlayerOffer"> | number
+  userId?: Prisma.StringFilter<"PlayerOffer"> | string
+  arena?: Prisma.StringFilter<"PlayerOffer"> | string
+  notes?: Prisma.StringNullableFilter<"PlayerOffer"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"PlayerOffer"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"PlayerOffer"> | Date | string
+  arenaAddress?: Prisma.StringNullableFilter<"PlayerOffer"> | string | null
+  payAmount?: Prisma.IntNullableFilter<"PlayerOffer"> | number | null
+  playerName?: Prisma.StringFilter<"PlayerOffer"> | string
+  time?: Prisma.StringFilter<"PlayerOffer"> | string
+  position?: Prisma.EnumPositionFilter<"PlayerOffer"> | $Enums.Position
+  skillLevel?: Prisma.EnumSkillLevelFilter<"PlayerOffer"> | $Enums.SkillLevel
+  status?: Prisma.EnumOfferStatusFilter<"PlayerOffer"> | $Enums.OfferStatus
+}
+
+export type PlayerOfferCreateManyUserInput = {
+  id?: number
+  arena: string
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  arenaAddress?: string | null
+  payAmount?: number | null
+  playerName: string
+  time: string
+  position: $Enums.Position
+  skillLevel: $Enums.SkillLevel
+  status?: $Enums.OfferStatus
+}
+
+export type PlayerOfferUpdateWithoutUserInput = {
+  arena?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  arenaAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  playerName?: Prisma.StringFieldUpdateOperationsInput | string
+  time?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
+  skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
+  status?: Prisma.EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
+}
+
+export type PlayerOfferUncheckedUpdateWithoutUserInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  arena?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  arenaAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  playerName?: Prisma.StringFieldUpdateOperationsInput | string
+  time?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
+  skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
+  status?: Prisma.EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
+}
+
+export type PlayerOfferUncheckedUpdateManyWithoutUserInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  arena?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  arenaAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  playerName?: Prisma.StringFieldUpdateOperationsInput | string
+  time?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
+  skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
+  status?: Prisma.EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
 }
 
 
 
 export type PlayerOfferSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  userId?: boolean
   arena?: boolean
   notes?: boolean
   createdAt?: boolean
@@ -495,12 +732,15 @@ export type PlayerOfferSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   payAmount?: boolean
   playerName?: boolean
   time?: boolean
-  id?: boolean
   position?: boolean
   skillLevel?: boolean
+  status?: boolean
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["playerOffer"]>
 
 export type PlayerOfferSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  userId?: boolean
   arena?: boolean
   notes?: boolean
   createdAt?: boolean
@@ -509,12 +749,15 @@ export type PlayerOfferSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   payAmount?: boolean
   playerName?: boolean
   time?: boolean
-  id?: boolean
   position?: boolean
   skillLevel?: boolean
+  status?: boolean
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["playerOffer"]>
 
 export type PlayerOfferSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  userId?: boolean
   arena?: boolean
   notes?: boolean
   createdAt?: boolean
@@ -523,12 +766,15 @@ export type PlayerOfferSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   payAmount?: boolean
   playerName?: boolean
   time?: boolean
-  id?: boolean
   position?: boolean
   skillLevel?: boolean
+  status?: boolean
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["playerOffer"]>
 
 export type PlayerOfferSelectScalar = {
+  id?: boolean
+  userId?: boolean
   arena?: boolean
   notes?: boolean
   createdAt?: boolean
@@ -537,28 +783,41 @@ export type PlayerOfferSelectScalar = {
   payAmount?: boolean
   playerName?: boolean
   time?: boolean
-  id?: boolean
   position?: boolean
   skillLevel?: boolean
+  status?: boolean
 }
 
-export type PlayerOfferOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"arena" | "notes" | "createdAt" | "updatedAt" | "arenaAddress" | "payAmount" | "playerName" | "time" | "id" | "position" | "skillLevel", ExtArgs["result"]["playerOffer"]>
+export type PlayerOfferOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "arena" | "notes" | "createdAt" | "updatedAt" | "arenaAddress" | "payAmount" | "playerName" | "time" | "position" | "skillLevel" | "status", ExtArgs["result"]["playerOffer"]>
+export type PlayerOfferInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}
+export type PlayerOfferIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}
+export type PlayerOfferIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}
 
 export type $PlayerOfferPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "PlayerOffer"
-  objects: {}
+  objects: {
+    user: Prisma.$UserPayload<ExtArgs>
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
+    id: number
+    userId: string
     arena: string
     notes: string | null
     createdAt: Date
     updatedAt: Date
-    arenaAddress: string
-    payAmount: number
+    arenaAddress: string | null
+    payAmount: number | null
     playerName: string
     time: string
-    id: number
     position: $Enums.Position
     skillLevel: $Enums.SkillLevel
+    status: $Enums.OfferStatus
   }, ExtArgs["result"]["playerOffer"]>
   composites: {}
 }
@@ -642,8 +901,8 @@ export interface PlayerOfferDelegate<ExtArgs extends runtime.Types.Extensions.In
    * // Get first 10 PlayerOffers
    * const playerOffers = await prisma.playerOffer.findMany({ take: 10 })
    * 
-   * // Only select the `arena`
-   * const playerOfferWithArenaOnly = await prisma.playerOffer.findMany({ select: { arena: true } })
+   * // Only select the `id`
+   * const playerOfferWithIdOnly = await prisma.playerOffer.findMany({ select: { id: true } })
    * 
    */
   findMany<T extends PlayerOfferFindManyArgs>(args?: Prisma.SelectSubset<T, PlayerOfferFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlayerOfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -687,9 +946,9 @@ export interface PlayerOfferDelegate<ExtArgs extends runtime.Types.Extensions.In
    *   ]
    * })
    * 
-   * // Create many PlayerOffers and only return the `arena`
-   * const playerOfferWithArenaOnly = await prisma.playerOffer.createManyAndReturn({
-   *   select: { arena: true },
+   * // Create many PlayerOffers and only return the `id`
+   * const playerOfferWithIdOnly = await prisma.playerOffer.createManyAndReturn({
+   *   select: { id: true },
    *   data: [
    *     // ... provide data here
    *   ]
@@ -778,9 +1037,9 @@ export interface PlayerOfferDelegate<ExtArgs extends runtime.Types.Extensions.In
    *   ]
    * })
    * 
-   * // Update zero or more PlayerOffers and only return the `arena`
-   * const playerOfferWithArenaOnly = await prisma.playerOffer.updateManyAndReturn({
-   *   select: { arena: true },
+   * // Update zero or more PlayerOffers and only return the `id`
+   * const playerOfferWithIdOnly = await prisma.playerOffer.updateManyAndReturn({
+   *   select: { id: true },
    *   where: {
    *     // ... provide filter here
    *   },
@@ -953,6 +1212,7 @@ readonly fields: PlayerOfferFieldRefs;
  */
 export interface Prisma__PlayerOfferClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -982,6 +1242,8 @@ export interface Prisma__PlayerOfferClient<T, Null = never, ExtArgs extends runt
  * Fields of the PlayerOffer model
  */
 export interface PlayerOfferFieldRefs {
+  readonly id: Prisma.FieldRef<"PlayerOffer", 'Int'>
+  readonly userId: Prisma.FieldRef<"PlayerOffer", 'String'>
   readonly arena: Prisma.FieldRef<"PlayerOffer", 'String'>
   readonly notes: Prisma.FieldRef<"PlayerOffer", 'String'>
   readonly createdAt: Prisma.FieldRef<"PlayerOffer", 'DateTime'>
@@ -990,9 +1252,9 @@ export interface PlayerOfferFieldRefs {
   readonly payAmount: Prisma.FieldRef<"PlayerOffer", 'Int'>
   readonly playerName: Prisma.FieldRef<"PlayerOffer", 'String'>
   readonly time: Prisma.FieldRef<"PlayerOffer", 'String'>
-  readonly id: Prisma.FieldRef<"PlayerOffer", 'Int'>
   readonly position: Prisma.FieldRef<"PlayerOffer", 'Position'>
   readonly skillLevel: Prisma.FieldRef<"PlayerOffer", 'SkillLevel'>
+  readonly status: Prisma.FieldRef<"PlayerOffer", 'OfferStatus'>
 }
     
 
@@ -1009,6 +1271,10 @@ export type PlayerOfferFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.I
    * Omit specific fields from the PlayerOffer
    */
   omit?: Prisma.PlayerOfferOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlayerOfferInclude<ExtArgs> | null
   /**
    * Filter, which PlayerOffer to fetch.
    */
@@ -1028,6 +1294,10 @@ export type PlayerOfferFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Exten
    */
   omit?: Prisma.PlayerOfferOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlayerOfferInclude<ExtArgs> | null
+  /**
    * Filter, which PlayerOffer to fetch.
    */
   where: Prisma.PlayerOfferWhereUniqueInput
@@ -1045,6 +1315,10 @@ export type PlayerOfferFindFirstArgs<ExtArgs extends runtime.Types.Extensions.In
    * Omit specific fields from the PlayerOffer
    */
   omit?: Prisma.PlayerOfferOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlayerOfferInclude<ExtArgs> | null
   /**
    * Filter, which PlayerOffer to fetch.
    */
@@ -1094,6 +1368,10 @@ export type PlayerOfferFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extens
    */
   omit?: Prisma.PlayerOfferOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlayerOfferInclude<ExtArgs> | null
+  /**
    * Filter, which PlayerOffer to fetch.
    */
   where?: Prisma.PlayerOfferWhereInput
@@ -1142,6 +1420,10 @@ export type PlayerOfferFindManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   omit?: Prisma.PlayerOfferOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlayerOfferInclude<ExtArgs> | null
+  /**
    * Filter, which PlayerOffers to fetch.
    */
   where?: Prisma.PlayerOfferWhereInput
@@ -1169,6 +1451,11 @@ export type PlayerOfferFindManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Skip the first `n` PlayerOffers.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of PlayerOffers.
+   */
   distinct?: Prisma.PlayerOfferScalarFieldEnum | Prisma.PlayerOfferScalarFieldEnum[]
 }
 
@@ -1184,6 +1471,10 @@ export type PlayerOfferCreateArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the PlayerOffer
    */
   omit?: Prisma.PlayerOfferOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlayerOfferInclude<ExtArgs> | null
   /**
    * The data needed to create a PlayerOffer.
    */
@@ -1218,6 +1509,10 @@ export type PlayerOfferCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ext
    */
   data: Prisma.PlayerOfferCreateManyInput | Prisma.PlayerOfferCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlayerOfferIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1232,6 +1527,10 @@ export type PlayerOfferUpdateArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the PlayerOffer
    */
   omit?: Prisma.PlayerOfferOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlayerOfferInclude<ExtArgs> | null
   /**
    * The data needed to update a PlayerOffer.
    */
@@ -1284,6 +1583,10 @@ export type PlayerOfferUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Ext
    * Limit how many PlayerOffers to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlayerOfferIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1298,6 +1601,10 @@ export type PlayerOfferUpsertArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the PlayerOffer
    */
   omit?: Prisma.PlayerOfferOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlayerOfferInclude<ExtArgs> | null
   /**
    * The filter to search for the PlayerOffer to update in case it exists.
    */
@@ -1324,6 +1631,10 @@ export type PlayerOfferDeleteArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the PlayerOffer
    */
   omit?: Prisma.PlayerOfferOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlayerOfferInclude<ExtArgs> | null
   /**
    * Filter which PlayerOffer to delete.
    */
@@ -1356,4 +1667,8 @@ export type PlayerOfferDefaultArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Omit specific fields from the PlayerOffer
    */
   omit?: Prisma.PlayerOfferOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlayerOfferInclude<ExtArgs> | null
 }

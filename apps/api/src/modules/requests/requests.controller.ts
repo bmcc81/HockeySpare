@@ -1,23 +1,35 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+// src/modules/requests/requests.controller.ts
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { RequestsService } from './requests.service';
 import { CreateRequestDto } from './dto/create-request.dto';
+import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 
 @Controller('requests')
 export class RequestsController {
-  constructor(private readonly service: RequestsService) {}
+  constructor(private readonly requestsService: RequestsService) {}
 
   @Get()
   list() {
-    return this.service.list();
+    return this.requestsService.list();
   }
 
   @Get(':id')
-  getById(@Param('id') id: string) {
-    return this.service.getById(Number(id));
+  getById(@Param('id', ParseIntPipe) id: number) {
+    return this.requestsService.getById(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() dto: CreateRequestDto) {
-    return this.service.create(dto);
+  create(@Req() req: any, @Body() dto: CreateRequestDto) {
+    return this.requestsService.create(req.user.id, dto);
   }
 }

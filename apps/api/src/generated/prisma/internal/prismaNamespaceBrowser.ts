@@ -52,8 +52,10 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Request: 'Request',
+  RequestResponse: 'RequestResponse',
   PlayerOffer: 'PlayerOffer',
-  User: 'User'
+  User: 'User',
+  Notification: 'Notification'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -73,6 +75,8 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 
 
 export const RequestScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
   arena: 'arena',
   notes: 'notes',
   position: 'position',
@@ -85,13 +89,27 @@ export const RequestScalarFieldEnum = {
   teamName: 'teamName',
   time: 'time',
   type: 'type',
-  id: 'id'
+  status: 'status'
 } as const
 
 export type RequestScalarFieldEnum = (typeof RequestScalarFieldEnum)[keyof typeof RequestScalarFieldEnum]
 
 
+export const RequestResponseScalarFieldEnum = {
+  id: 'id',
+  requestId: 'requestId',
+  responderUserId: 'responderUserId',
+  message: 'message',
+  status: 'status',
+  createdAt: 'createdAt'
+} as const
+
+export type RequestResponseScalarFieldEnum = (typeof RequestResponseScalarFieldEnum)[keyof typeof RequestResponseScalarFieldEnum]
+
+
 export const PlayerOfferScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
   arena: 'arena',
   notes: 'notes',
   createdAt: 'createdAt',
@@ -100,9 +118,9 @@ export const PlayerOfferScalarFieldEnum = {
   payAmount: 'payAmount',
   playerName: 'playerName',
   time: 'time',
-  id: 'id',
   position: 'position',
-  skillLevel: 'skillLevel'
+  skillLevel: 'skillLevel',
+  status: 'status'
 } as const
 
 export type PlayerOfferScalarFieldEnum = (typeof PlayerOfferScalarFieldEnum)[keyof typeof PlayerOfferScalarFieldEnum]
@@ -121,12 +139,35 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+export const NotificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  title: 'title',
+  body: 'body',
+  link: 'link',
+  isRead: 'isRead',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -143,4 +184,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

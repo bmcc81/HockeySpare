@@ -8,7 +8,7 @@ type CreateNotificationInput = {
   title: string;
   body: string;
   link?: string;
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string, any | null>;
 };
 
 @Injectable()

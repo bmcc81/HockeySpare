@@ -82,9 +82,18 @@ export class RequestsService {
   }
 
   async create(userId: string, dto: CreateRequestDto) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User not found for id: ${userId}`);
+    }
+
     const created = await this.prisma.request.create({
       data: {
-        userId,
+        user: { connect: { id: user.id } },
         status: RequestStatus.OPEN,
         type: typeToDb[dto.type],
         position: posToDb[dto.position],
@@ -104,7 +113,7 @@ export class RequestsService {
         position: created.position,
         skillLevel: created.skillLevel,
         status: OfferStatus.OPEN,
-        userId: { not: userId },
+        userId: { not: user.id },
       },
     });
 

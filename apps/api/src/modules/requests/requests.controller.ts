@@ -1,6 +1,17 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
+// src/modules/requests/requests.controller.ts
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { RequestsService } from './requests.service';
 import { CreateRequestDto } from './dto/create-request.dto';
+import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 
 @Controller('requests')
 export class RequestsController {
@@ -16,9 +27,9 @@ export class RequestsController {
     return this.requestsService.getById(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() dto: CreateRequestDto) {
-    const devUserId = 'dev-user-1';
-    return this.requestsService.create(devUserId, dto);
+  create(@Req() req: any, @Body() dto: CreateRequestDto) {
+    return this.requestsService.create(req.user.id, dto);
   }
 }

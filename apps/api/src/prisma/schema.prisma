@@ -25,7 +25,8 @@ model Request {
   type         RequestType
   status       RequestStatus @default(OPEN)
 
-  user         User          @relation("UserRequests", fields: [userId], references: [id], onDelete: Cascade)
+  user      User              @relation("UserRequests", fields: [userId], references: [id], onDelete: Cascade)
+  responses RequestResponse[]
 
   @@index([type])
   @@index([position, skillLevel])
@@ -33,15 +34,15 @@ model Request {
 }
 
 model RequestResponse {
-  id            Int                  @id @default(autoincrement())
-  requestId      Int
+  id              Int            @id @default(autoincrement())
+  requestId       Int
   responderUserId String
-  message        String?
-  status         ResponseStatus      @default(PENDING)
-  createdAt      DateTime            @default(now())
+  message         String?
+  status          ResponseStatus @default(PENDING)
+  createdAt       DateTime       @default(now())
 
-  request        Request             @relation(fields: [requestId], references: [id], onDelete: Cascade)
-  responder      User                @relation(fields: [responderUserId], references: [id], onDelete: Cascade)
+  request   Request @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  responder User    @relation(fields: [responderUserId], references: [id], onDelete: Cascade)
 
   @@index([requestId, responderUserId])
 }
@@ -53,38 +54,39 @@ enum ResponseStatus {
 }
 
 model PlayerOffer {
-  id           Int          @id @default(autoincrement())
+  id           Int         @id @default(autoincrement())
   userId       String
   arena        String
   notes        String?
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
   arenaAddress String?
   payAmount    Int?
   playerName   String
   time         String
   position     Position
   skillLevel   SkillLevel
-  status       OfferStatus  @default(OPEN)
+  status       OfferStatus @default(OPEN)
 
-  user         User         @relation("UserOffers", fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation("UserOffers", fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([position, skillLevel])
   @@index([userId, status])
 }
 
 model User {
-  id            String         @id @default(cuid())
-  email         String         @unique
-  passwordHash  String
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  firstName     String?
-  lastName      String?
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  firstName    String?
+  lastName     String?
 
-  requests      Request[]      @relation("UserRequests")
-  playerOffers  PlayerOffer[]  @relation("UserOffers")
-  notifications Notification[]
+  requests         Request[]         @relation("UserRequests")
+  playerOffers     PlayerOffer[]     @relation("UserOffers")
+  notifications    Notification[]
+  requestResponses RequestResponse[]
 }
 
 enum RequestType {
@@ -138,8 +140,7 @@ model Notification {
   metadata  Json?
   createdAt DateTime         @default(now())
 
-  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, isRead, createdAt])
 }
-

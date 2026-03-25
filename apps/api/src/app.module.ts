@@ -9,6 +9,7 @@ import { RequestsModule } from './modules/requests/requests.module';
 import { PlayerOffersModule } from './modules/player-offers/player-offers.module';
 import { AuthModule } from './auth/auth.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
+import { TeamsModule } from './modules/teams/teams.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     RequestsModule,
     PlayerOffersModule,
     NotificationsModule,
+    TeamsModule
   ],
   controllers: [AppController],
   providers: [AppService],

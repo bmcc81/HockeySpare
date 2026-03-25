@@ -1,0 +1,208 @@
+<section class="my-team-page container py-4" *ngIf="!loading; else loadingTpl">
+  <div class="page-header d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+    <div>
+      <h1 class="mb-1">My Team</h1>
+      <p class="text-secondary mb-0">
+        Manage your regular players, spares, and upcoming games.
+      </p>
+    </div>
+
+    <div class="stats d-flex gap-3 flex-wrap">
+      <div class="stat-card">
+        <div class="stat-label">Regulars</div>
+        <div class="stat-value">{{ regulars.length }}</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Spares</div>
+        <div class="stat-value">{{ spares.length }}</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Games</div>
+        <div class="stat-value">{{ team?.games?.length || 0 }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <div class="row g-4">
+    <div class="col-12 col-xl-4">
+      <div class="card panel-card mb-4">
+        <div class="card-body">
+          <h3 class="panel-title">Add Player</h3>
+
+          <form [formGroup]="memberForm" (ngSubmit)="addMember()" class="d-grid gap-3">
+            <input id="member-display-name" class="form-control" formControlName="displayName" placeholder="Player name" />
+            <input id="member-email" class="form-control" formControlName="email" placeholder="Email" />
+            <input id="member-phone" class="form-control" formControlName="phone" placeholder="Phone" />
+
+            <select id="member-position" class="form-select" formControlName="position" placeholder="Position">
+              <option value="FORWARD">Forward</option>
+              <option value="DEFENSE">Defense</option>
+              <option value="GOALIE">Goalie</option>
+            </select>
+
+            <select id="member-type" class="form-select" formControlName="memberType">
+              <option value="REGULAR">Regular</option>
+              <option value="SPARE">Spare</option>
+            </select>
+
+            <label class="form-check">
+              <input id="member-notify-by-app" class="form-check-input" type="checkbox" formControlName="notifyByApp" />
+              <span class="form-check-label">Notify in app</span>
+            </label>
+
+            <label class="form-check">
+              <input id="member-notify-by-email" class="form-check-input" type="checkbox" formControlName="notifyByEmail" />
+              <span class="form-check-label">Notify by email</span>
+            </label>
+
+            <button class="btn btn-primary" type="submit">Add player</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card panel-card">
+        <div class="card-body">
+          <h3 class="panel-title">Add Game</h3>
+
+          <form [formGroup]="gameForm" (ngSubmit)="createGame()" class="d-grid gap-3">
+
+            <select id="game-title" class="form-select" formControlName="title" placeholder="Game title" name="Game Title">
+              <option value="League Game">League Game</option>
+              <option value="Playoff Game">Playoff Game</option>
+              <option value="Exhibition Game">Exhibition Game</option>
+            </select>
+
+            <input id="game-starts-at" class="form-control" type="datetime-local" formControlName="startsAt" />
+            <input id="game-arena" class="form-control" formControlName="arena" placeholder="Arena" />
+            <input id="game-opponent" class="form-control" formControlName="opponent" placeholder="Opponent" />
+            <textarea id="game-notes" class="form-control" rows="3" formControlName="notes" placeholder="Notes"></textarea>
+
+            <button class="btn btn-outline-light" type="submit">Create game</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-8">
+      <div class="card panel-card mb-4">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="panel-title mb-0">Regular Players</h3>
+            <span class="badge rounded-pill text-bg-primary">{{ regulars.length }}</span>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Contact</th>
+                  <th>Position</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let player of regulars">
+                  <td>{{ player.displayName }}</td>
+                  <td>{{ player.email || player.phone || 'No contact' }}</td>
+                  <td>{{ player.position || 'N/A' }}</td>
+                  <td class="text-end">
+                    <button class="btn btn-sm btn-outline-danger" (click)="removeMember(player.id)">
+                      Remove
+                    </button>
+                  </td>
+                </tr>
+
+                <tr *ngIf="regulars.length === 0">
+                  <td colspan="4" class="text-center text-secondary py-4">
+                    No regular players yet.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card panel-card mb-4">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="panel-title mb-0">Spares</h3>
+            <span class="badge rounded-pill text-bg-info">{{ spares.length }}</span>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Contact</th>
+                  <th>Position</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let player of spares">
+                  <td>{{ player.displayName }}</td>
+                  <td>{{ player.email || player.phone || 'No contact' }}</td>
+                  <td>{{ player.position || 'N/A' }}</td>
+                  <td class="text-end">
+                    <button class="btn btn-sm btn-outline-danger" (click)="removeMember(player.id)">
+                      Remove
+                    </button>
+                  </td>
+                </tr>
+
+                <tr *ngIf="spares.length === 0">
+                  <td colspan="4" class="text-center text-secondary py-4">
+                    No spares yet.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card panel-card">
+        <div class="card-body">
+          <h3 class="panel-title mb-3">Upcoming Games</h3>
+
+          <div class="game-list">
+            <div class="game-item" *ngFor="let game of team?.games">
+              <div>
+                <div class="game-title">{{ game.title }}</div>
+                <div class="game-meta">
+                  {{ game.startsAt | date:'medium' }}
+                  <span *ngIf="game.arena"> • {{ game.arena }}</span>
+                  <span *ngIf="game.opponent"> • vs {{ game.opponent }}</span>
+                </div>
+                <div class="game-meta" *ngIf="game.invites.length">
+                  {{ game.invites.length }} player(s) notified
+                </div>
+              </div>
+
+              <button class="btn btn-primary btn-sm" (click)="notifyGame(game.id)">
+                Notify team
+              </button>
+            </div>
+
+            <div *ngIf="!team?.games?.length" class="text-secondary">
+              No games scheduled yet.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<ng-template #loadingTpl>
+  <section class="container py-5 text-center text-secondary">
+    Loading team page...
+  </section>
+</ng-template>

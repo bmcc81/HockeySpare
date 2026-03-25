@@ -70,7 +70,26 @@ export const NotificationType = {
   OFFER_MATCH: 'OFFER_MATCH',
   REQUEST_RESPONSE: 'REQUEST_RESPONSE',
   REQUEST_ACCEPTED: 'REQUEST_ACCEPTED',
-  REQUEST_DECLINED: 'REQUEST_DECLINED'
+  REQUEST_DECLINED: 'REQUEST_DECLINED',
+  TEAM_GAME_REMINDER: 'TEAM_GAME_REMINDER'
 } as const
 
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
+
+
+export const TeamMemberType = {
+  REGULAR: 'REGULAR',
+  SPARE: 'SPARE'
+} as const
+
+export type TeamMemberType = (typeof TeamMemberType)[keyof typeof TeamMemberType]
+
+
+export const TeamGameInviteStatus = {
+  PENDING: 'PENDING',
+  SENT: 'SENT',
+  CONFIRMED: 'CONFIRMED',
+  DECLINED: 'DECLINED'
+} as const
+
+export type TeamGameInviteStatus = (typeof TeamGameInviteStatus)[keyof typeof TeamGameInviteStatus]

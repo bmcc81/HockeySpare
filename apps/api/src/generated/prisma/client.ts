@@ -64,3 +64,23 @@ export type User = Prisma.UserModel
  * 
  */
 export type Notification = Prisma.NotificationModel
+/**
+ * Model Team
+ * 
+ */
+export type Team = Prisma.TeamModel
+/**
+ * Model TeamMember
+ * 
+ */
+export type TeamMember = Prisma.TeamMemberModel
+/**
+ * Model TeamGame
+ * 
+ */
+export type TeamGame = Prisma.TeamGameModel
+/**
+ * Model TeamGameInvite
+ * 
+ */
+export type TeamGameInvite = Prisma.TeamGameInviteModel

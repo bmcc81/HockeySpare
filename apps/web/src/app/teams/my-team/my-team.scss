@@ -1,0 +1,70 @@
+.my-team-page {
+  color: var(--bs-light);
+}
+
+.panel-card,
+.stat-card {
+  background: rgba(11, 18, 34, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+}
+
+.panel-card .card-body {
+  padding: 1.25rem;
+}
+
+.panel-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.stat-card {
+  min-width: 120px;
+  padding: 0.9rem 1rem;
+}
+
+.stat-label {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.stat-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.table {
+  --bs-table-bg: transparent;
+  --bs-table-color: #e9eef7;
+  --bs-table-border-color: rgba(255, 255, 255, 0.08);
+}
+
+.game-list {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.game-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.game-title {
+  font-weight: 700;
+}
+
+.game-meta {
+  font-size: 0.92rem;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.card {
+  color: #fff;
+}

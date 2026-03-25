@@ -87,6 +87,9 @@ model User {
   playerOffers     PlayerOffer[]     @relation("UserOffers")
   notifications    Notification[]
   requestResponses RequestResponse[]
+
+  ownedTeam        Team?             @relation("OwnedTeam")
+  teamMemberships  TeamMember[]      @relation("UserTeamMemberships")
 }
 
 enum RequestType {
@@ -127,6 +130,7 @@ enum NotificationType {
   REQUEST_RESPONSE
   REQUEST_ACCEPTED
   REQUEST_DECLINED
+  TEAM_GAME_REMINDER
 }
 
 model Notification {
@@ -143,4 +147,82 @@ model Notification {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, isRead, createdAt])
+}
+
+enum TeamMemberType {
+  REGULAR
+  SPARE
+}
+
+enum TeamGameInviteStatus {
+  PENDING
+  SENT
+  CONFIRMED
+  DECLINED
+}
+
+model Team {
+  id        String       @id @default(cuid())
+  ownerId   String       @unique
+  name      String
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  owner     User         @relation("OwnedTeam", fields: [ownerId], references: [id], onDelete: Cascade)
+  members   TeamMember[]
+  games     TeamGame[]
+}
+
+model TeamMember {
+  id            String           @id @default(cuid())
+  teamId        String
+  userId        String?
+  displayName   String
+  email         String?
+  phone         String?
+  position      Position?
+  memberType    TeamMemberType
+  notifyByApp   Boolean          @default(true)
+  notifyByEmail Boolean          @default(false)
+  isActive      Boolean          @default(true)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  team          Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user          User?            @relation("UserTeamMemberships", fields: [userId], references: [id], onDelete: SetNull)
+  invites       TeamGameInvite[]
+
+  @@index([teamId, memberType])
+}
+
+model TeamGame {
+  id        String           @id @default(cuid())
+  teamId    String
+  title     String
+  startsAt  DateTime
+  arena     String?
+  opponent  String?
+  notes     String?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  team      Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  invites   TeamGameInvite[]
+
+  @@index([teamId, startsAt])
+}
+
+model TeamGameInvite {
+  id          String                @id @default(cuid())
+  gameId      String
+  memberId    String
+  status      TeamGameInviteStatus  @default(PENDING)
+  sentAt      DateTime?
+  respondedAt DateTime?
+  createdAt   DateTime              @default(now())
+
+  game        TeamGame              @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  member      TeamMember            @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([gameId, memberId])
 }

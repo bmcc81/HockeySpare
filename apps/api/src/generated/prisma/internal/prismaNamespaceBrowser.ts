@@ -55,7 +55,11 @@ export const ModelName = {
   RequestResponse: 'RequestResponse',
   PlayerOffer: 'PlayerOffer',
   User: 'User',
-  Notification: 'Notification'
+  Notification: 'Notification',
+  Team: 'Team',
+  TeamMember: 'TeamMember',
+  TeamGame: 'TeamGame',
+  TeamGameInvite: 'TeamGameInvite'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -152,6 +156,64 @@ export const NotificationScalarFieldEnum = {
 } as const
 
 export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
+
+
+export const TeamScalarFieldEnum = {
+  id: 'id',
+  ownerId: 'ownerId',
+  name: 'name',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TeamScalarFieldEnum = (typeof TeamScalarFieldEnum)[keyof typeof TeamScalarFieldEnum]
+
+
+export const TeamMemberScalarFieldEnum = {
+  id: 'id',
+  teamId: 'teamId',
+  userId: 'userId',
+  displayName: 'displayName',
+  email: 'email',
+  phone: 'phone',
+  position: 'position',
+  memberType: 'memberType',
+  notifyByApp: 'notifyByApp',
+  notifyByEmail: 'notifyByEmail',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TeamMemberScalarFieldEnum = (typeof TeamMemberScalarFieldEnum)[keyof typeof TeamMemberScalarFieldEnum]
+
+
+export const TeamGameScalarFieldEnum = {
+  id: 'id',
+  teamId: 'teamId',
+  title: 'title',
+  startsAt: 'startsAt',
+  arena: 'arena',
+  opponent: 'opponent',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TeamGameScalarFieldEnum = (typeof TeamGameScalarFieldEnum)[keyof typeof TeamGameScalarFieldEnum]
+
+
+export const TeamGameInviteScalarFieldEnum = {
+  id: 'id',
+  gameId: 'gameId',
+  memberId: 'memberId',
+  status: 'status',
+  sentAt: 'sentAt',
+  respondedAt: 'respondedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type TeamGameInviteScalarFieldEnum = (typeof TeamGameInviteScalarFieldEnum)[keyof typeof TeamGameInviteScalarFieldEnum]
 
 
 export const SortOrder = {

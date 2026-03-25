@@ -60,6 +60,12 @@ export const routes: Routes = [
       import('./profiles/team-profile/team-profile').then(m => m.TeamProfileComponent),
   },
   {
+    path: 'my-team',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./teams/my-team/my-team').then((m) => m.MyTeamComponent),
+  },
+  {
     path: 'messages',
     canActivate: [authGuard],
     loadComponent: () =>

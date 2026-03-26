@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Patch,
   Req,
   UnauthorizedException,
   UseGuards,
@@ -14,6 +15,7 @@ import { TeamsService } from './teams.service';
 import { CreateTeamMemberDto } from './dto/create-team-member.dto';
 import { CreateTeamGameDto } from './dto/create-team-game.dto';
 import { NotifyTeamGameDto } from './dto/notify-team-game.dto';
+import { UpdateTeamDto } from './dto/update-team.dto';  
 
 @Controller('my-team')
 @UseGuards(JwtAuthGuard)
@@ -48,6 +50,11 @@ export class TeamsController {
   @Post('games')
   createGame(@Req() req: any, @Body() dto: CreateTeamGameDto) {
     return this.teamsService.createGame(this.getUserId(req), dto);
+  }
+
+  @Patch()
+  updateMyTeam(@Req() req: any, @Body() dto: UpdateTeamDto) {
+    return this.teamsService.updateMyTeam(this.getUserId(req), dto);
   }
 
   @Post('games/:gameId/notify')

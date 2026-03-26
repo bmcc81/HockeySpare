@@ -52,6 +52,10 @@ export class TeamService {
     });
   }
 
+  updateMyTeam(input: { name: string }) {
+    return this.http.patch('/api/my-team', input);
+  }
+
   addMember(payload: {
     displayName: string;
     email?: string;

@@ -5,6 +5,7 @@ import { NotificationType } from '../../generated/prisma/client';
 import { CreateTeamMemberDto } from './dto/create-team-member.dto';
 import { CreateTeamGameDto } from './dto/create-team-game.dto';
 import { NotifyTeamGameDto } from './dto/notify-team-game.dto';
+import { UpdateTeamDto } from './dto/update-team.dto';
 
 @Injectable()
 export class TeamsService {
@@ -24,6 +25,17 @@ export class TeamsService {
       data: {
         ownerId: userId,
         name: 'My Team',
+      },
+    });
+  }
+
+  async updateMyTeam(userId: string, dto: UpdateTeamDto) {
+    const team = await this.getOrCreateTeam(userId);
+
+    return this.prisma.team.update({
+      where: { id: team.id },
+      data: {
+        name: dto.name,
       },
     });
   }

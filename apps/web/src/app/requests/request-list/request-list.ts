@@ -1,8 +1,8 @@
 // src/app/requests/request-list/request-list.ts
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { combineLatest } from 'rxjs';
 import { map, shareReplay, startWith } from 'rxjs/operators';
 
@@ -10,30 +10,64 @@ import { RequestApiService } from '../../core/services/request-api';
 import { InViewDirective } from '../../shared/directives/in-view.directive';
 
 import {
-  Position,
-  SkillLevel,
-  RequestType,
-  SpareRequest,
-  PlayerOffer,
   PlayerNeedsTeamRequest,
+  PlayerOffer,
+  Position,
+  RequestType,
+  SkillLevel,
+  SpareRequest,
   TeamNeedsPlayerRequest,
 } from '@hockeyspare/contracts';
 
-type Option<T> = { label: string; value: T };
+type Option<T> = {
+  label: string;
+  value: T;
+};
+
+type Maybe<T> = T | null | undefined;
+
+/**
+ * PlayerOffer may lag behind the API shape in the shared contracts.
+ * This local type keeps the component safe until the contract is updated.
+ */
+type PlayerOfferView = PlayerOffer & {
+  playerName?: Maybe<string>;
+  arena?: Maybe<string>;
+  arenaAddress?: Maybe<string>;
+  time?: Maybe<string>;
+  notes?: Maybe<string>;
+  payAmount?: Maybe<number>;
+  position?: Maybe<Position>;
+  skillLevel?: Maybe<SkillLevel>;
+  status?: Maybe<string>;
+};
+
+type PlayerSideItem = PlayerNeedsTeamRequest | PlayerOfferView;
+
+type FilterableItem = {
+  arena?: Maybe<string>;
+  arenaAddress?: Maybe<string>;
+  time?: Maybe<string>;
+  notes?: Maybe<string>;
+  payAmount?: Maybe<number>;
+  position?: Maybe<Position>;
+  skillLevel?: Maybe<SkillLevel>;
+  status?: Maybe<string>;
+};
 
 function humanize(value: string): string {
-  return value.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
-}
-function enumStringValues<T extends object>(e: T): string[] {
-  return Object.values(e).filter((v): v is string => typeof v === 'string');
+  return value.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
-// ✅ type guards
-const isTeamNeedsPlayer = (r: SpareRequest): r is TeamNeedsPlayerRequest =>
-  r.type === RequestType.TEAM_NEEDS_PLAYER;
+function enumStringValues<T extends object>(enumObj: T): string[] {
+  return Object.values(enumObj).filter((value): value is string => typeof value === 'string');
+}
 
-const isPlayerNeedsTeam = (r: SpareRequest): r is PlayerNeedsTeamRequest =>
-  r.type === RequestType.PLAYER_NEEDS_TEAM;
+const isTeamNeedsPlayer = (request: SpareRequest): request is TeamNeedsPlayerRequest =>
+  request.type === RequestType.TEAM_NEEDS_PLAYER;
+
+const isPlayerNeedsTeam = (request: SpareRequest): request is PlayerNeedsTeamRequest =>
+  request.type === RequestType.PLAYER_NEEDS_TEAM;
 
 @Component({
   selector: 'app-request-list',
@@ -45,56 +79,43 @@ const isPlayerNeedsTeam = (r: SpareRequest): r is PlayerNeedsTeamRequest =>
 export class RequestListComponent {
   private readonly api = inject(RequestApiService);
 
-  // controls
+  readonly RequestType = RequestType;
+
   readonly searchCtrl = new FormControl<string>('', { nonNullable: true });
   readonly typeCtrl = new FormControl<RequestType | 'all'>('all', { nonNullable: true });
   readonly positionCtrl = new FormControl<Position | 'all'>('all', { nonNullable: true });
   readonly skillCtrl = new FormControl<SkillLevel | 'all'>('all', { nonNullable: true });
 
-  readonly RequestType = RequestType;
-
-  // template helpers
-  teamName(req: TeamNeedsPlayerRequest): string {
-    return req.teamName;
-  }
-
-  playerName(x: PlayerNeedsTeamRequest | PlayerOffer): string {
-    return x.playerName;
-  }
-
-  /**
-   * PlayerOffer contract currently doesn't have arenaAddress on its type,
-   * so we safely read it via a helper to keep template type-checking happy.
-   * (Best fix is to add arenaAddress?: string to PlayerOffer in @hockeyspare/contracts.)
-   */
-  arenaAddr(x: unknown): string | undefined {
-    return (x as { arenaAddress?: string }).arenaAddress;
-  }
-
-  mapsUrl(arena?: string, address?: string): string {
-    const query = [arena, address].filter(Boolean).join(', ');
-    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
-  }
-
-  // options
   readonly typeOptions: Array<Option<RequestType | 'all'>> = [
     { label: 'All types', value: 'all' },
-    ...enumStringValues(RequestType).map((v) => ({ label: humanize(v), value: v as RequestType })),
+    ...enumStringValues(RequestType).map((value) => ({
+      label: humanize(value),
+      value: value as RequestType,
+    })),
   ];
+
   readonly positionOptions: Array<Option<Position | 'all'>> = [
     { label: 'All positions', value: 'all' },
-    ...enumStringValues(Position).map((v) => ({ label: humanize(v), value: v as Position })),
+    ...enumStringValues(Position).map((value) => ({
+      label: humanize(value),
+      value: value as Position,
+    })),
   ];
+
   readonly skillOptions: Array<Option<SkillLevel | 'all'>> = [
     { label: 'All skill', value: 'all' },
-    ...enumStringValues(SkillLevel).map((v) => ({ label: humanize(v), value: v as SkillLevel })),
+    ...enumStringValues(SkillLevel).map((value) => ({
+      label: humanize(value),
+      value: value as SkillLevel,
+    })),
   ];
 
-  // data
   readonly requests$ = this.api.getRequests().pipe(shareReplay({ bufferSize: 1, refCount: true }));
-  readonly offers$ = this.api.getPlayerOffers().pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
-  // view model
+  readonly offers$ = this.api
+    .getPlayerOffers()
+    .pipe(map((offers) => offers as PlayerOfferView[]), shareReplay({ bufferSize: 1, refCount: true }));
+
   readonly vm$ = combineLatest([
     this.requests$,
     this.offers$,
@@ -104,47 +125,24 @@ export class RequestListComponent {
     this.skillCtrl.valueChanges.pipe(startWith(this.skillCtrl.value)),
   ]).pipe(
     map(([requests, offers, search, type, position, skill]) => {
-      const q = search.trim().toLowerCase();
+      const query = search.trim().toLowerCase();
 
-      const matchesCommon = (x: {
-        arena?: string;
-        arenaAddress?: string; // ✅ NEW
-        time?: string;
-        notes?: string;
-        payAmount?: number;
-        position?: any;
-        skillLevel?: any;
-      }) => {
-        const matchesSearch =
-          !q ||
-          (x.arena ?? '').toLowerCase().includes(q) ||
-          (x.arenaAddress ?? '').toLowerCase().includes(q) ||
-          (x.time ?? '').toLowerCase().includes(q) ||
-          (x.notes ?? '').toLowerCase().includes(q) ||
-          String(x.payAmount ?? '').includes(q) ||
-          String(x.position ?? '').toLowerCase().includes(q) ||
-          String(x.skillLevel ?? '').toLowerCase().includes(q);
-
-        const matchesPosition = position === 'all' || x.position === position;
-        const matchesSkill = skill === 'all' || x.skillLevel === skill;
-
-        return matchesSearch && matchesPosition && matchesSkill;
-      };
-
-      const filteredRequests = requests.filter((r) => {
-        const matchesType = type === 'all' || r.type === type;
-        return matchesType && matchesCommon(r);
+      const filteredRequests = requests.filter((request) => {
+        const matchesType = type === 'all' || request.type === type;
+        return matchesType && this.matchesCommon(request, query, position, skill);
       });
 
       const showOffers = type === 'all' || type === RequestType.PLAYER_NEEDS_TEAM;
-      const filteredOffers = showOffers ? offers.filter(matchesCommon) : [];
+      const filteredOffers = showOffers
+        ? offers.filter((offer) => this.matchesCommon(offer, query, position, skill))
+        : [];
 
       const teamRequests = filteredRequests.filter(isTeamNeedsPlayer);
       const playerNeedRequests = filteredRequests.filter(isPlayerNeedsTeam);
 
       return {
         requests: teamRequests,
-        playerOffers: [...playerNeedRequests, ...filteredOffers],
+        playerOffers: [...playerNeedRequests, ...filteredOffers] as PlayerSideItem[],
       };
     }),
     shareReplay({ bufferSize: 1, refCount: true }),
@@ -155,5 +153,50 @@ export class RequestListComponent {
     this.typeCtrl.setValue('all');
     this.positionCtrl.setValue('all');
     this.skillCtrl.setValue('all');
+  }
+
+  teamName(request: TeamNeedsPlayerRequest): string {
+    return request.teamName ?? '';
+  }
+
+  playerName(item: PlayerSideItem): string {
+    return item.playerName ?? '';
+  }
+
+  arenaAddr(item: { arenaAddress?: Maybe<string> }): string | undefined {
+    return item.arenaAddress ?? undefined;
+  }
+
+  mapsUrl(arena?: Maybe<string>, address?: Maybe<string>): string {
+    const query = [arena, address].filter((value): value is string => Boolean(value?.trim())).join(', ');
+
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+  }
+
+  private matchesCommon(
+    item: FilterableItem,
+    query: string,
+    position: Position | 'all',
+    skill: SkillLevel | 'all',
+  ): boolean {
+    const matchesSearch =
+      query.length === 0 ||
+      this.includes(item.arena, query) ||
+      this.includes(item.arenaAddress, query) ||
+      this.includes(item.time, query) ||
+      this.includes(item.notes, query) ||
+      this.includes(item.position, query) ||
+      this.includes(item.skillLevel, query) ||
+      this.includes(item.status, query) ||
+      this.includes(item.payAmount, query);
+
+    const matchesPosition = position === 'all' || item.position === position;
+    const matchesSkill = skill === 'all' || item.skillLevel === skill;
+
+    return matchesSearch && matchesPosition && matchesSkill;
+  }
+
+  private includes(value: unknown, query: string): boolean {
+    return String(value ?? '').toLowerCase().includes(query);
   }
 }

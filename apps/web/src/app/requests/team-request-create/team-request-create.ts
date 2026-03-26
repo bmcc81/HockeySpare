@@ -25,10 +25,12 @@ export class TeamRequestCreateComponent {
   error = '';
 
   form = this.fb.group({
+    teamName: ['', [Validators.required, Validators.maxLength(80)]],
     position: [Position.FORWARD as Position, Validators.required],
     skillLevel: [SkillLevel.INTERMEDIATE as SkillLevel, Validators.required],
     payAmount: [40, [Validators.required, Validators.min(0)]],
     arena: ['', Validators.required],
+    arenaAddress: ['', [Validators.maxLength(220)]],
     time: [{ hour: 20, minute: 30, second: 0 } as NgbTimeStruct, Validators.required],
     notes: [''],
   });

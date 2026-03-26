@@ -9,6 +9,15 @@
           </div>
 
           <form [formGroup]="form" (ngSubmit)="submit()" class="row g-3">
+            <div class="mb-3">
+              <label class="form-label">Team name</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="teamName"
+                placeholder="Enter team name"
+              />
+            </div>
             <div class="col-12 col-md-6">
               <label for="position" class="form-label">Position Needed</label>
               <select id="position" formControlName="position" class="form-select custom-input">
@@ -68,6 +77,17 @@
                 formControlName="arena"
                 class="form-control custom-input"
                 placeholder="Arena name"
+              />
+            </div>
+
+            <div class="col-12">
+              <label for="arenaAddress" class="form-label">Arena Address</label>
+              <input
+                id="arenaAddress"
+                type="text"
+                formControlName="arenaAddress"
+                class="form-control custom-input"
+                placeholder="123 Main St, Vaudreuil-Dorion, QC"
               />
             </div>
 

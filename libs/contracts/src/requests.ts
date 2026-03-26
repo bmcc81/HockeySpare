@@ -16,31 +16,49 @@ export enum SkillLevel {
   ELITE = 'ELITE',
 }
 
+export enum RequestStatus {
+  OPEN = 'OPEN',
+  FILLED = 'FILLED',
+  CANCELLED = 'CANCELLED',
+}
+
 export interface BaseRequest {
   id: number;
   type: RequestType;
   position: Position;
   skillLevel: SkillLevel;
-  payAmount: number;
+  payAmount: number | null;
   arena: string;
-  arenaAddress?: string;
+  arenaAddress: string | null;
   time: string;
-  notes?: string;
+  status: RequestStatus;
+  notes: string | null;
 }
 
 export type PlayerNeedsTeamRequest = BaseRequest & {
   type: RequestType.PLAYER_NEEDS_TEAM;
-  playerName: string;
+  playerName: string | null;
+  teamName: null;
 };
 
 export type TeamNeedsPlayerRequest = BaseRequest & {
   type: RequestType.TEAM_NEEDS_PLAYER;
-  teamName: string;
-  playerName?: string; 
+  teamName: string | null;
+  playerName: null;
 };
 
 export type SpareRequest = PlayerNeedsTeamRequest | TeamNeedsPlayerRequest;
 
+export type CreatePlayerNeedsTeamInput = Omit<
+  PlayerNeedsTeamRequest,
+  'id' | 'status'
+>;
+
+export type CreateTeamNeedsPlayerInput = Omit<
+  TeamNeedsPlayerRequest,
+  'id' | 'status'
+>;
+
 export type CreateRequestInput =
-  | Omit<PlayerNeedsTeamRequest, 'id'>
-  | Omit<TeamNeedsPlayerRequest, 'id'>;
+  | CreatePlayerNeedsTeamInput
+  | CreateTeamNeedsPlayerInput;

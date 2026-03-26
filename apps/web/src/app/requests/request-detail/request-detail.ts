@@ -30,6 +30,7 @@ export class RequestDetailComponent {
   }
 
   nameValue(req: SpareRequest): string {
-    return req.type === RequestType.PLAYER_NEEDS_TEAM ? req.playerName : req.teamName;
+    const name = req.type === RequestType.PLAYER_NEEDS_TEAM ? req.playerName : req.teamName;
+    return name ?? 'N/A';
   }
 }

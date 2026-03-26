@@ -9,6 +9,16 @@
           </div>
 
           <form [formGroup]="form" (ngSubmit)="submit()" class="row g-3">
+
+            <div class="mb-3">
+              <label class="form-label">Player name</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="playerName"
+                placeholder="Enter player name"
+              />
+            </div>
             <div class="col-12 col-md-6">
               <label for="position" class="form-label">Position</label>
               <select id="position" formControlName="position" class="form-select custom-input">

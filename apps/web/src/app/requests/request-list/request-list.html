@@ -42,21 +42,31 @@
       <div class="card-link" [routerLink]="['/requests', req.id]">
         <div class="card-top">
           <div class="title">
-            <span class="pill">
-              {{ req.position === 'GOALIE' ? 'Team needs goalie' : 'Team needs player' }}
-            </span>
+            <div class="title-row">
+              <span class="pill">
+                {{ req.position === 'GOALIE' ? 'Team needs goalie' : 'Team needs player' }}
+              </span>
+
+              <span class="status-pill" [ngClass]="'status-' + (req.status ?? 'OPEN').toLowerCase()">
+                {{ (req.status ?? 'OPEN') | titlecase }}
+              </span>
+            </div>
+
             <h3>{{ req.position | titlecase }} • {{ req.skillLevel | titlecase }}</h3>
           </div>
 
           <div class="pay">
             <span class="pay-label">Pay</span>
-            <span class="pay-amt">${{ req.payAmount }}</span>
+            <span class="pay-amt">
+              {{ req.payAmount === 0 ? 'Free' : '$' + req.payAmount }}
+            </span>
           </div>
         </div>
 
         <div class="meta">
-          <div><strong>Team Name:</strong> {{ teamName(req) }}</div>
-          <div><strong>Player Name:</strong> {{ req.playerName }}</div>
+          <div><strong>Team Name:</strong> {{ req.teamName || 'N/A' }}</div>
+          <!-- <div><strong>Player Name:</strong> {{ req.playerName || 'N/A' }}</div> -->
+          <div><strong>Skill Level:</strong> {{ req.skillLevel | titlecase }}</div>
           <div class="arena">
             <div><strong>Arena:</strong> {{ req.arena }}</div>
 
@@ -91,24 +101,34 @@
       <div class="card-link" [routerLink]="['/requests', offer.id]">
         <div class="card-top">
           <div class="title">
-            <span class="pill">Player offer</span>
+            <div class="title-row">
+              <span class="pill">Player offer</span>
+
+              <span class="status-pill" [ngClass]="'status-' + (offer.status ?? 'OPEN').toLowerCase()">
+                {{ (offer.status ?? 'OPEN') | titlecase }}
+              </span>
+            </div>
+
             <h3>{{ offer.position | titlecase }} • {{ offer.skillLevel | titlecase }}</h3>
           </div>
 
           <div class="pay">
             <span class="pay-label">Pay</span>
-            <span class="pay-amt">${{ offer.payAmount }}</span>
+            <span class="pay-amt">
+              {{ offer.payAmount === 0 ? 'Free' : '$' + offer.payAmount }}
+            </span>
           </div>
         </div>
 
         <div class="meta">
-          <div><strong>Player Name:</strong> {{ playerName(offer) }}</div>
+          <div><strong>Player Name:</strong> {{ offer.playerName }}</div>
+          <div><strong>Skill Level:</strong> {{ offer.skillLevel | titlecase }}</div>
 
           <div class="arena">
             <div><strong>Arena:</strong> {{ offer.arena }}</div>
 
             <a
-              *ngIf="arenaAddr(offer) as addr"
+              *ngIf="offer.arenaAddress as addr"
               class="arena-address"
               [href]="mapsUrl(offer.arena, addr)"
               target="_blank"

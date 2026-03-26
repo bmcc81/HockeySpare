@@ -1,4 +1,4 @@
-import { Position, SkillLevel } from './requests';
+import { Position, SkillLevel, RequestStatus } from './requests';
 
 export interface PlayerOffer {
   id: number;
@@ -9,7 +9,8 @@ export interface PlayerOffer {
   arenaAddress?: string;
   arena: string;
   time: string;
+  status: RequestStatus;
   notes?: string;
 }
 
-export type CreatePlayerOfferInput = Omit<PlayerOffer, 'id'>;
+export type CreatePlayerOfferInput = Omit<PlayerOffer, 'id' | 'status'>;

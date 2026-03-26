@@ -1,7 +1,7 @@
 <section class="my-team-page container py-4" *ngIf="!loading; else loadingTpl">
   <div class="page-header d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
     <div>
-      <h1 class="mb-1">My Team</h1>
+      <h1 class="mb-1">{{ team?.name || 'My Team' }}</h1>
       <p class="text-secondary mb-0">
         Manage your regular players, spares, and upcoming games.
       </p>
@@ -14,7 +14,7 @@
       </div>
 
       <div class="stat-card">
-        <div class="stat-label">Spares</div>
+        <div class="stat-label">Spares</div>Q
         <div class="stat-value">{{ spares.length }}</div>
       </div>
 
@@ -29,6 +29,29 @@
 
   <div class="row g-4">
     <div class="col-12 col-xl-4">
+
+      <div class="card panel-card mb-4">
+        <div class="card-body">
+          <h3 class="panel-title">Team Details</h3>
+
+          <form [formGroup]="teamForm" (ngSubmit)="saveTeamName()" class="d-grid gap-3">
+            <div>
+              <label for="team-name" class="form-label">Team name</label>
+              <input
+                id="team-name"
+                class="form-control"
+                formControlName="name"
+                placeholder="Enter team name"
+              />
+            </div>
+
+            <button class="btn btn-primary" type="submit" [disabled]="teamForm.invalid">
+              Save team name
+            </button>
+          </form>
+        </div>
+      </div>
+
       <div class="card panel-card mb-4">
         <div class="card-body">
           <h3 class="panel-title">Add Player</h3>

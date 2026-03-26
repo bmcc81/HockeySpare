@@ -2,7 +2,6 @@ import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TeamMember, MyTeamResponse, TeamService } from '../../core/services/team';
-import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-my-team',
@@ -19,6 +18,10 @@ export class MyTeamComponent implements OnInit {
   loading = false;
   error = '';
   team: MyTeamResponse | null = null;
+
+  teamForm = this.fb.group({
+    name: ['', [Validators.required, Validators.maxLength(80)]],
+  });
 
   memberForm = this.fb.group({
     displayName: ['', Validators.required],
@@ -39,7 +42,6 @@ export class MyTeamComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    console.log('MyTeamComponent v2 loaded');
     this.reload();
   }
 
@@ -52,32 +54,49 @@ export class MyTeamComponent implements OnInit {
   }
 
   reload() {
-    console.log('reload() called');
     this.loading = true;
     this.error = '';
     this.cdr.detectChanges();
 
     this.teamApi.getMyTeam().subscribe({
       next: (team) => {
-        console.log('My Team response:', team);
-
         this.team = {
           ...team,
           members: team?.members ?? [],
           games: team?.games ?? [],
         };
 
+        this.teamForm.patchValue({
+          name: team?.name ?? '',
+        });
+
         this.loading = false;
         this.error = '';
-
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Could not load team page:', err);
         this.error = 'Could not load your team.';
         this.loading = false;
-
         this.cdr.detectChanges();
+      },
+    });
+  }
+
+  saveTeamName() {
+    if (this.teamForm.invalid) {
+      this.teamForm.markAllAsTouched();
+      return;
+    }
+
+    const raw = this.teamForm.getRawValue();
+
+    this.teamApi.updateMyTeam({
+      name: raw.name ?? '',
+    }).subscribe({
+      next: () => this.reload(),
+      error: () => {
+        this.error = 'Could not save team name.';
       },
     });
   }

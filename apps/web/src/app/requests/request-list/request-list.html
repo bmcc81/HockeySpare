@@ -35,7 +35,7 @@
 
     <article
       class="card"
-      *ngFor="let req of vm.requests; index as i"
+      *ngFor="let req of vm.requests; trackBy: trackById; index as i"
       [ngClass]="['type-' + req.type, 'pos-' + req.position, 'skill-' + req.skillLevel]"
       [appInView]="i * 90"
     >
@@ -65,11 +65,11 @@
 
         <div class="meta">
           <div><strong>Team Name:</strong> {{ req.teamName || 'N/A' }}</div>
-          <!-- <div><strong>Player Name:</strong> {{ req.playerName || 'N/A' }}</div> -->
           <div><strong>Skill Level:</strong> {{ req.skillLevel | titlecase }}</div>
-         <div><strong>Time:</strong> {{ req.time }}</div>
+          <div><strong>Time:</strong> {{ req.time }}</div>
           <div *ngIf="req.notes"><strong>Notes:</strong> {{ req.notes }}</div>
-           <div class="arena">
+
+          <div class="arena">
             <div><strong>Arena:</strong> {{ req.arena }}</div>
 
             <a
@@ -93,7 +93,7 @@
 
     <article
       class="card"
-      *ngFor="let offer of vm.playerOffers; index as i"
+      *ngFor="let offer of vm.playerOffers; trackBy: trackById; index as i"
       [ngClass]="['type-player_offer', 'pos-' + offer.position, 'skill-' + offer.skillLevel]"
       [appInView]="i * 90"
     >
@@ -124,6 +124,7 @@
           <div><strong>Skill Level:</strong> {{ offer.skillLevel | titlecase }}</div>
           <div><strong>Time:</strong> {{ offer.time }}</div>
           <div *ngIf="offer.notes"><strong>Notes:</strong> {{ offer.notes }}</div>
+
           <div class="arena">
             <div><strong>Arena:</strong> {{ offer.arena }}</div>
 

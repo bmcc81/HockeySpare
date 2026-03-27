@@ -116,14 +116,12 @@ enum SkillLevel {
 enum RequestStatus {
   OPEN
   FILLED
-  CLOSED
   CANCELLED
 }
 
 enum OfferStatus {
   OPEN
   FILLED
-  CLOSED
   CANCELLED
 }
 

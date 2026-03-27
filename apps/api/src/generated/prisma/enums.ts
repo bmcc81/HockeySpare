@@ -48,7 +48,6 @@ export type SkillLevel = (typeof SkillLevel)[keyof typeof SkillLevel]
 export const RequestStatus = {
   OPEN: 'OPEN',
   FILLED: 'FILLED',
-  CLOSED: 'CLOSED',
   CANCELLED: 'CANCELLED'
 } as const
 
@@ -58,7 +57,6 @@ export type RequestStatus = (typeof RequestStatus)[keyof typeof RequestStatus]
 export const OfferStatus = {
   OPEN: 'OPEN',
   FILLED: 'FILLED',
-  CLOSED: 'CLOSED',
   CANCELLED: 'CANCELLED'
 } as const
 

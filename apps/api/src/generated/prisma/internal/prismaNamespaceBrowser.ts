@@ -59,7 +59,8 @@ export const ModelName = {
   Team: 'Team',
   TeamMember: 'TeamMember',
   TeamGame: 'TeamGame',
-  TeamGameInvite: 'TeamGameInvite'
+  TeamGameInvite: 'TeamGameInvite',
+  Booking: 'Booking'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -214,6 +215,19 @@ export const TeamGameInviteScalarFieldEnum = {
 } as const
 
 export type TeamGameInviteScalarFieldEnum = (typeof TeamGameInviteScalarFieldEnum)[keyof typeof TeamGameInviteScalarFieldEnum]
+
+
+export const BookingScalarFieldEnum = {
+  id: 'id',
+  requestId: 'requestId',
+  userId: 'userId',
+  status: 'status',
+  message: 'message',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
 
 
 export const SortOrder = {

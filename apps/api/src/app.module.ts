@@ -10,6 +10,7 @@ import { PlayerOffersModule } from './modules/player-offers/player-offers.module
 import { AuthModule } from './auth/auth.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { TeamsModule } from './modules/teams/teams.module';
+import { BookingsModule } from './modules/bookings/bookings.module';
 
 @Module({
   imports: [
@@ -19,8 +20,9 @@ import { TeamsModule } from './modules/teams/teams.module';
     RequestsModule,
     PlayerOffersModule,
     NotificationsModule,
-    TeamsModule
-  ],
+    TeamsModule,
+    BookingsModule
+  ],  
   controllers: [AppController],
   providers: [AppService],
 })

@@ -47,7 +47,7 @@ export type SkillLevel = (typeof SkillLevel)[keyof typeof SkillLevel]
 
 export const RequestStatus = {
   OPEN: 'OPEN',
-  MATCHED: 'MATCHED',
+  FILLED: 'FILLED',
   CLOSED: 'CLOSED',
   CANCELLED: 'CANCELLED'
 } as const
@@ -57,7 +57,7 @@ export type RequestStatus = (typeof RequestStatus)[keyof typeof RequestStatus]
 
 export const OfferStatus = {
   OPEN: 'OPEN',
-  MATCHED: 'MATCHED',
+  FILLED: 'FILLED',
   CLOSED: 'CLOSED',
   CANCELLED: 'CANCELLED'
 } as const
@@ -93,3 +93,13 @@ export const TeamGameInviteStatus = {
 } as const
 
 export type TeamGameInviteStatus = (typeof TeamGameInviteStatus)[keyof typeof TeamGameInviteStatus]
+
+
+export const BookingStatus = {
+  PENDING: 'PENDING',
+  CONFIRMED: 'CONFIRMED',
+  DECLINED: 'DECLINED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type BookingStatus = (typeof BookingStatus)[keyof typeof BookingStatus]

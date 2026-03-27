@@ -1,73 +1,14 @@
-// src/app/requests/request-list/request-list.ts
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { combineLatest } from 'rxjs';
-import { map, shareReplay, startWith } from 'rxjs/operators';
+import { combineLatest, of } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, map, shareReplay, startWith } from 'rxjs/operators';
 
 import { RequestApiService } from '../../core/services/request-api';
 import { InViewDirective } from '../../shared/directives/in-view.directive';
 
-import {
-  PlayerNeedsTeamRequest,
-  PlayerOffer,
-  Position,
-  RequestType,
-  SkillLevel,
-  SpareRequest,
-  TeamNeedsPlayerRequest,
-} from '@hockeyspare/contracts';
-
-type Option<T> = {
-  label: string;
-  value: T;
-};
-
-type Maybe<T> = T | null | undefined;
-
-/**
- * PlayerOffer may lag behind the API shape in the shared contracts.
- * This local type keeps the component safe until the contract is updated.
- */
-type PlayerOfferView = PlayerOffer & {
-  playerName?: Maybe<string>;
-  arena?: Maybe<string>;
-  arenaAddress?: Maybe<string>;
-  time?: Maybe<string>;
-  notes?: Maybe<string>;
-  payAmount?: Maybe<number>;
-  position?: Maybe<Position>;
-  skillLevel?: Maybe<SkillLevel>;
-  status?: Maybe<string>;
-};
-
-type PlayerSideItem = PlayerNeedsTeamRequest | PlayerOfferView;
-
-type FilterableItem = {
-  arena?: Maybe<string>;
-  arenaAddress?: Maybe<string>;
-  time?: Maybe<string>;
-  notes?: Maybe<string>;
-  payAmount?: Maybe<number>;
-  position?: Maybe<Position>;
-  skillLevel?: Maybe<SkillLevel>;
-  status?: Maybe<string>;
-};
-
-function humanize(value: string): string {
-  return value.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
-}
-
-function enumStringValues<T extends object>(enumObj: T): string[] {
-  return Object.values(enumObj).filter((value): value is string => typeof value === 'string');
-}
-
-const isTeamNeedsPlayer = (request: SpareRequest): request is TeamNeedsPlayerRequest =>
-  request.type === RequestType.TEAM_NEEDS_PLAYER;
-
-const isPlayerNeedsTeam = (request: SpareRequest): request is PlayerNeedsTeamRequest =>
-  request.type === RequestType.PLAYER_NEEDS_TEAM;
+import { PlayerNeedsTeamRequest, PlayerOffer, Position, RequestType, SkillLevel, SpareRequest, TeamNeedsPlayerRequest } from '@hockeyspare/contracts';
 
 @Component({
   selector: 'app-request-list',
@@ -75,77 +16,103 @@ const isPlayerNeedsTeam = (request: SpareRequest): request is PlayerNeedsTeamReq
   imports: [CommonModule, RouterLink, ReactiveFormsModule, InViewDirective],
   templateUrl: './request-list.html',
   styleUrls: ['./request-list.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RequestListComponent {
   private readonly api = inject(RequestApiService);
 
   readonly RequestType = RequestType;
 
-  readonly searchCtrl = new FormControl<string>('', { nonNullable: true });
+  readonly searchCtrl = new FormControl('', { nonNullable: true });
   readonly typeCtrl = new FormControl<RequestType | 'all'>('all', { nonNullable: true });
   readonly positionCtrl = new FormControl<Position | 'all'>('all', { nonNullable: true });
   readonly skillCtrl = new FormControl<SkillLevel | 'all'>('all', { nonNullable: true });
 
-  readonly typeOptions: Array<Option<RequestType | 'all'>> = [
-    { label: 'All types', value: 'all' },
-    ...enumStringValues(RequestType).map((value) => ({
-      label: humanize(value),
-      value: value as RequestType,
-    })),
+  readonly typeOptions = [
+    { label: 'All types', value: 'all' as const },
+    ...Object.values(RequestType)
+      .filter((value): value is RequestType => typeof value === 'string')
+      .map((value) => ({
+        label: value.replace(/_/g, ' '),
+        value,
+      })),
   ];
 
-  readonly positionOptions: Array<Option<Position | 'all'>> = [
-    { label: 'All positions', value: 'all' },
-    ...enumStringValues(Position).map((value) => ({
-      label: humanize(value),
-      value: value as Position,
-    })),
+  readonly positionOptions = [
+    { label: 'All positions', value: 'all' as const },
+    ...Object.values(Position)
+      .filter((value): value is Position => typeof value === 'string')
+      .map((value) => ({
+        label: value.replace(/_/g, ' '),
+        value,
+      })),
   ];
 
-  readonly skillOptions: Array<Option<SkillLevel | 'all'>> = [
-    { label: 'All skill', value: 'all' },
-    ...enumStringValues(SkillLevel).map((value) => ({
-      label: humanize(value),
-      value: value as SkillLevel,
-    })),
+  readonly skillOptions = [
+    { label: 'All skill', value: 'all' as const },
+    ...Object.values(SkillLevel)
+      .filter((value): value is SkillLevel => typeof value === 'string')
+      .map((value) => ({
+        label: value.replace(/_/g, ' '),
+        value,
+      })),
   ];
 
-  readonly requests$ = this.api.getRequests().pipe(shareReplay({ bufferSize: 1, refCount: true }));
+  readonly requests$ = this.api.getRequests().pipe(
+    catchError((error) => {
+      console.error('Failed to load requests', error);
+      return of([] as SpareRequest[]);
+    }),
+    shareReplay(1),
+  );
 
-  readonly offers$ = this.api
-    .getPlayerOffers()
-    .pipe(map((offers) => offers as PlayerOfferView[]), shareReplay({ bufferSize: 1, refCount: true }));
+  readonly offers$ = this.api.getPlayerOffers().pipe(
+    catchError((error) => {
+      console.error('Failed to load player offers', error);
+      return of([] as PlayerOffer[]);
+    }),
+    shareReplay(1),
+  );
 
   readonly vm$ = combineLatest([
-    this.requests$,
-    this.offers$,
-    this.searchCtrl.valueChanges.pipe(startWith(this.searchCtrl.value)),
-    this.typeCtrl.valueChanges.pipe(startWith(this.typeCtrl.value)),
-    this.positionCtrl.valueChanges.pipe(startWith(this.positionCtrl.value)),
-    this.skillCtrl.valueChanges.pipe(startWith(this.skillCtrl.value)),
+    this.requests$.pipe(startWith([] as SpareRequest[])),
+    this.offers$.pipe(startWith([] as PlayerOffer[])),
+    this.searchCtrl.valueChanges.pipe(
+      startWith(this.searchCtrl.value),
+      debounceTime(150),
+      map((value) => value.trim().toLowerCase()),
+      distinctUntilChanged(),
+    ),
+    this.typeCtrl.valueChanges.pipe(startWith(this.typeCtrl.value), distinctUntilChanged()),
+    this.positionCtrl.valueChanges.pipe(startWith(this.positionCtrl.value), distinctUntilChanged()),
+    this.skillCtrl.valueChanges.pipe(startWith(this.skillCtrl.value), distinctUntilChanged()),
   ]).pipe(
     map(([requests, offers, search, type, position, skill]) => {
-      const query = search.trim().toLowerCase();
-
       const filteredRequests = requests.filter((request) => {
         const matchesType = type === 'all' || request.type === type;
-        return matchesType && this.matchesCommon(request, query, position, skill);
+        return matchesType && this.matchesCommon(request, search, position, skill);
       });
 
-      const showOffers = type === 'all' || type === RequestType.PLAYER_NEEDS_TEAM;
-      const filteredOffers = showOffers
-        ? offers.filter((offer) => this.matchesCommon(offer, query, position, skill))
-        : [];
-
-      const teamRequests = filteredRequests.filter(isTeamNeedsPlayer);
-      const playerNeedRequests = filteredRequests.filter(isPlayerNeedsTeam);
+      const filteredOffers =
+        type === 'all' || type === RequestType.PLAYER_NEEDS_TEAM
+          ? offers.filter((offer) => this.matchesCommon(offer, search, position, skill))
+          : [];
 
       return {
-        requests: teamRequests,
-        playerOffers: [...playerNeedRequests, ...filteredOffers] as PlayerSideItem[],
+        requests: filteredRequests.filter(
+          (request): request is TeamNeedsPlayerRequest =>
+            request.type === RequestType.TEAM_NEEDS_PLAYER,
+        ),
+        playerOffers: [
+          ...filteredRequests.filter(
+            (request): request is PlayerNeedsTeamRequest =>
+              request.type === RequestType.PLAYER_NEEDS_TEAM,
+          ),
+          ...filteredOffers,
+        ],
       };
     }),
-    shareReplay({ bufferSize: 1, refCount: true }),
+    shareReplay(1),
   );
 
   clearFilters(): void {
@@ -159,36 +126,48 @@ export class RequestListComponent {
     return request.teamName ?? '';
   }
 
-  playerName(item: PlayerSideItem): string {
+  playerName(item: PlayerNeedsTeamRequest | PlayerOffer): string {
     return item.playerName ?? '';
   }
 
-  arenaAddr(item: { arenaAddress?: Maybe<string> }): string | undefined {
+  arenaAddr(item: { arenaAddress?: string | null }): string | undefined {
     return item.arenaAddress ?? undefined;
   }
 
-  mapsUrl(arena?: Maybe<string>, address?: Maybe<string>): string {
-    const query = [arena, address].filter((value): value is string => Boolean(value?.trim())).join(', ');
-
+  mapsUrl(arena?: string | null, address?: string | null): string {
+    const query = [arena, address].filter((value): value is string => !!value?.trim()).join(', ');
     return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
   }
 
+  trackById(_: number, item: { id: number | string }): number | string {
+    return item.id;
+  }
+
   private matchesCommon(
-    item: FilterableItem,
-    query: string,
+    item: {
+      arena?: string | null;
+      arenaAddress?: string | null;
+      time?: string | null;
+      notes?: string | null;
+      payAmount?: number | null;
+      position?: Position | null;
+      skillLevel?: SkillLevel | null;
+      status?: string | null;
+    },
+    search: string,
     position: Position | 'all',
     skill: SkillLevel | 'all',
   ): boolean {
     const matchesSearch =
-      query.length === 0 ||
-      this.includes(item.arena, query) ||
-      this.includes(item.arenaAddress, query) ||
-      this.includes(item.time, query) ||
-      this.includes(item.notes, query) ||
-      this.includes(item.position, query) ||
-      this.includes(item.skillLevel, query) ||
-      this.includes(item.status, query) ||
-      this.includes(item.payAmount, query);
+      !search ||
+      this.includes(item.arena, search) ||
+      this.includes(item.arenaAddress, search) ||
+      this.includes(item.time, search) ||
+      this.includes(item.notes, search) ||
+      this.includes(item.position, search) ||
+      this.includes(item.skillLevel, search) ||
+      this.includes(item.status, search) ||
+      this.includes(item.payAmount, search);
 
     const matchesPosition = position === 'all' || item.position === position;
     const matchesSkill = skill === 'all' || item.skillLevel === skill;
@@ -196,7 +175,7 @@ export class RequestListComponent {
     return matchesSearch && matchesPosition && matchesSkill;
   }
 
-  private includes(value: unknown, query: string): boolean {
-    return String(value ?? '').toLowerCase().includes(query);
+  private includes(value: unknown, search: string): boolean {
+    return String(value ?? '').toLowerCase().includes(search);
   }
 }

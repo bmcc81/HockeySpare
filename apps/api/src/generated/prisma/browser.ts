@@ -62,3 +62,8 @@ export type TeamGame = Prisma.TeamGameModel
  * 
  */
 export type TeamGameInvite = Prisma.TeamGameInviteModel
+/**
+ * Model Booking
+ * 
+ */
+export type Booking = Prisma.BookingModel

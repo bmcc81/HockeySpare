@@ -24,6 +24,7 @@ model Request {
   time         String
   type         RequestType
   status       RequestStatus @default(OPEN)
+  bookings     Booking[]
 
   user      User              @relation("UserRequests", fields: [userId], references: [id], onDelete: Cascade)
   responses RequestResponse[]
@@ -88,6 +89,8 @@ model User {
   notifications    Notification[]
   requestResponses RequestResponse[]
 
+  bookings         Booking[]
+
   ownedTeam        Team?             @relation("OwnedTeam")
   teamMemberships  TeamMember[]      @relation("UserTeamMemberships")
 }
@@ -112,14 +115,14 @@ enum SkillLevel {
 
 enum RequestStatus {
   OPEN
-  MATCHED
+  FILLED
   CLOSED
   CANCELLED
 }
 
 enum OfferStatus {
   OPEN
-  MATCHED
+  FILLED
   CLOSED
   CANCELLED
 }
@@ -225,4 +228,26 @@ model TeamGameInvite {
   member      TeamMember            @relation(fields: [memberId], references: [id], onDelete: Cascade)
 
   @@unique([gameId, memberId])
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  DECLINED
+  CANCELLED
+}
+
+model Booking {
+  id         String        @id @default(cuid())
+  requestId  Int
+  userId     String
+  status     BookingStatus @default(PENDING)
+  message    String?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  request    Request       @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([requestId, userId])
 }

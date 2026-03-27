@@ -67,7 +67,9 @@
           <div><strong>Team Name:</strong> {{ req.teamName || 'N/A' }}</div>
           <!-- <div><strong>Player Name:</strong> {{ req.playerName || 'N/A' }}</div> -->
           <div><strong>Skill Level:</strong> {{ req.skillLevel | titlecase }}</div>
-          <div class="arena">
+         <div><strong>Time:</strong> {{ req.time }}</div>
+          <div *ngIf="req.notes"><strong>Notes:</strong> {{ req.notes }}</div>
+           <div class="arena">
             <div><strong>Arena:</strong> {{ req.arena }}</div>
 
             <a
@@ -81,9 +83,6 @@
               {{ addr }}
             </a>
           </div>
-
-          <div><strong>Time:</strong> {{ req.time }}</div>
-          <div *ngIf="req.notes"><strong>Notes:</strong> {{ req.notes }}</div>
         </div>
       </div>
     </article>
@@ -123,7 +122,8 @@
         <div class="meta">
           <div><strong>Player Name:</strong> {{ offer.playerName }}</div>
           <div><strong>Skill Level:</strong> {{ offer.skillLevel | titlecase }}</div>
-
+          <div><strong>Time:</strong> {{ offer.time }}</div>
+          <div *ngIf="offer.notes"><strong>Notes:</strong> {{ offer.notes }}</div>
           <div class="arena">
             <div><strong>Arena:</strong> {{ offer.arena }}</div>
 
@@ -138,9 +138,6 @@
               {{ addr }}
             </a>
           </div>
-
-          <div><strong>Time:</strong> {{ offer.time }}</div>
-          <div *ngIf="offer.notes"><strong>Notes:</strong> {{ offer.notes }}</div>
         </div>
       </div>
     </article>

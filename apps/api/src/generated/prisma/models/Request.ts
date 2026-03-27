@@ -300,6 +300,7 @@ export type RequestWhereInput = {
   time?: Prisma.StringFilter<"Request"> | string
   type?: Prisma.EnumRequestTypeFilter<"Request"> | $Enums.RequestType
   status?: Prisma.EnumRequestStatusFilter<"Request"> | $Enums.RequestStatus
+  bookings?: Prisma.BookingListRelationFilter
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   responses?: Prisma.RequestResponseListRelationFilter
 }
@@ -320,6 +321,7 @@ export type RequestOrderByWithRelationInput = {
   time?: Prisma.SortOrder
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  bookings?: Prisma.BookingOrderByRelationAggregateInput
   user?: Prisma.UserOrderByWithRelationInput
   responses?: Prisma.RequestResponseOrderByRelationAggregateInput
 }
@@ -343,6 +345,7 @@ export type RequestWhereUniqueInput = Prisma.AtLeast<{
   time?: Prisma.StringFilter<"Request"> | string
   type?: Prisma.EnumRequestTypeFilter<"Request"> | $Enums.RequestType
   status?: Prisma.EnumRequestStatusFilter<"Request"> | $Enums.RequestStatus
+  bookings?: Prisma.BookingListRelationFilter
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   responses?: Prisma.RequestResponseListRelationFilter
 }, "id">
@@ -405,6 +408,7 @@ export type RequestCreateInput = {
   time: string
   type: $Enums.RequestType
   status?: $Enums.RequestStatus
+  bookings?: Prisma.BookingCreateNestedManyWithoutRequestInput
   user: Prisma.UserCreateNestedOneWithoutRequestsInput
   responses?: Prisma.RequestResponseCreateNestedManyWithoutRequestInput
 }
@@ -425,6 +429,7 @@ export type RequestUncheckedCreateInput = {
   time: string
   type: $Enums.RequestType
   status?: $Enums.RequestStatus
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutRequestInput
   responses?: Prisma.RequestResponseUncheckedCreateNestedManyWithoutRequestInput
 }
 
@@ -442,6 +447,7 @@ export type RequestUpdateInput = {
   time?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  bookings?: Prisma.BookingUpdateManyWithoutRequestNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutRequestsNestedInput
   responses?: Prisma.RequestResponseUpdateManyWithoutRequestNestedInput
 }
@@ -462,6 +468,7 @@ export type RequestUncheckedUpdateInput = {
   time?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutRequestNestedInput
   responses?: Prisma.RequestResponseUncheckedUpdateManyWithoutRequestNestedInput
 }
 
@@ -696,6 +703,20 @@ export type RequestUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.RequestScalarWhereInput | Prisma.RequestScalarWhereInput[]
 }
 
+export type RequestCreateNestedOneWithoutBookingsInput = {
+  create?: Prisma.XOR<Prisma.RequestCreateWithoutBookingsInput, Prisma.RequestUncheckedCreateWithoutBookingsInput>
+  connectOrCreate?: Prisma.RequestCreateOrConnectWithoutBookingsInput
+  connect?: Prisma.RequestWhereUniqueInput
+}
+
+export type RequestUpdateOneRequiredWithoutBookingsNestedInput = {
+  create?: Prisma.XOR<Prisma.RequestCreateWithoutBookingsInput, Prisma.RequestUncheckedCreateWithoutBookingsInput>
+  connectOrCreate?: Prisma.RequestCreateOrConnectWithoutBookingsInput
+  upsert?: Prisma.RequestUpsertWithoutBookingsInput
+  connect?: Prisma.RequestWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.RequestUpdateToOneWithWhereWithoutBookingsInput, Prisma.RequestUpdateWithoutBookingsInput>, Prisma.RequestUncheckedUpdateWithoutBookingsInput>
+}
+
 export type RequestCreateWithoutResponsesInput = {
   arena: string
   notes?: string | null
@@ -710,6 +731,7 @@ export type RequestCreateWithoutResponsesInput = {
   time: string
   type: $Enums.RequestType
   status?: $Enums.RequestStatus
+  bookings?: Prisma.BookingCreateNestedManyWithoutRequestInput
   user: Prisma.UserCreateNestedOneWithoutRequestsInput
 }
 
@@ -729,6 +751,7 @@ export type RequestUncheckedCreateWithoutResponsesInput = {
   time: string
   type: $Enums.RequestType
   status?: $Enums.RequestStatus
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutRequestInput
 }
 
 export type RequestCreateOrConnectWithoutResponsesInput = {
@@ -761,6 +784,7 @@ export type RequestUpdateWithoutResponsesInput = {
   time?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  bookings?: Prisma.BookingUpdateManyWithoutRequestNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutRequestsNestedInput
 }
 
@@ -780,6 +804,7 @@ export type RequestUncheckedUpdateWithoutResponsesInput = {
   time?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutRequestNestedInput
 }
 
 export type RequestCreateWithoutUserInput = {
@@ -796,6 +821,7 @@ export type RequestCreateWithoutUserInput = {
   time: string
   type: $Enums.RequestType
   status?: $Enums.RequestStatus
+  bookings?: Prisma.BookingCreateNestedManyWithoutRequestInput
   responses?: Prisma.RequestResponseCreateNestedManyWithoutRequestInput
 }
 
@@ -814,6 +840,7 @@ export type RequestUncheckedCreateWithoutUserInput = {
   time: string
   type: $Enums.RequestType
   status?: $Enums.RequestStatus
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutRequestInput
   responses?: Prisma.RequestResponseUncheckedCreateNestedManyWithoutRequestInput
 }
 
@@ -864,6 +891,96 @@ export type RequestScalarWhereInput = {
   status?: Prisma.EnumRequestStatusFilter<"Request"> | $Enums.RequestStatus
 }
 
+export type RequestCreateWithoutBookingsInput = {
+  arena: string
+  notes?: string | null
+  position: $Enums.Position
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  arenaAddress?: string | null
+  payAmount?: number | null
+  playerName?: string | null
+  skillLevel: $Enums.SkillLevel
+  teamName?: string | null
+  time: string
+  type: $Enums.RequestType
+  status?: $Enums.RequestStatus
+  user: Prisma.UserCreateNestedOneWithoutRequestsInput
+  responses?: Prisma.RequestResponseCreateNestedManyWithoutRequestInput
+}
+
+export type RequestUncheckedCreateWithoutBookingsInput = {
+  id?: number
+  userId: string
+  arena: string
+  notes?: string | null
+  position: $Enums.Position
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  arenaAddress?: string | null
+  payAmount?: number | null
+  playerName?: string | null
+  skillLevel: $Enums.SkillLevel
+  teamName?: string | null
+  time: string
+  type: $Enums.RequestType
+  status?: $Enums.RequestStatus
+  responses?: Prisma.RequestResponseUncheckedCreateNestedManyWithoutRequestInput
+}
+
+export type RequestCreateOrConnectWithoutBookingsInput = {
+  where: Prisma.RequestWhereUniqueInput
+  create: Prisma.XOR<Prisma.RequestCreateWithoutBookingsInput, Prisma.RequestUncheckedCreateWithoutBookingsInput>
+}
+
+export type RequestUpsertWithoutBookingsInput = {
+  update: Prisma.XOR<Prisma.RequestUpdateWithoutBookingsInput, Prisma.RequestUncheckedUpdateWithoutBookingsInput>
+  create: Prisma.XOR<Prisma.RequestCreateWithoutBookingsInput, Prisma.RequestUncheckedCreateWithoutBookingsInput>
+  where?: Prisma.RequestWhereInput
+}
+
+export type RequestUpdateToOneWithWhereWithoutBookingsInput = {
+  where?: Prisma.RequestWhereInput
+  data: Prisma.XOR<Prisma.RequestUpdateWithoutBookingsInput, Prisma.RequestUncheckedUpdateWithoutBookingsInput>
+}
+
+export type RequestUpdateWithoutBookingsInput = {
+  arena?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  arenaAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  playerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
+  teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  time?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
+  status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  user?: Prisma.UserUpdateOneRequiredWithoutRequestsNestedInput
+  responses?: Prisma.RequestResponseUpdateManyWithoutRequestNestedInput
+}
+
+export type RequestUncheckedUpdateWithoutBookingsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  arena?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  arenaAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  playerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
+  teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  time?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
+  status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  responses?: Prisma.RequestResponseUncheckedUpdateManyWithoutRequestNestedInput
+}
+
 export type RequestCreateManyUserInput = {
   id?: number
   arena: string
@@ -895,6 +1012,7 @@ export type RequestUpdateWithoutUserInput = {
   time?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  bookings?: Prisma.BookingUpdateManyWithoutRequestNestedInput
   responses?: Prisma.RequestResponseUpdateManyWithoutRequestNestedInput
 }
 
@@ -913,6 +1031,7 @@ export type RequestUncheckedUpdateWithoutUserInput = {
   time?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutRequestNestedInput
   responses?: Prisma.RequestResponseUncheckedUpdateManyWithoutRequestNestedInput
 }
 
@@ -939,10 +1058,12 @@ export type RequestUncheckedUpdateManyWithoutUserInput = {
  */
 
 export type RequestCountOutputType = {
+  bookings: number
   responses: number
 }
 
 export type RequestCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  bookings?: boolean | RequestCountOutputTypeCountBookingsArgs
   responses?: boolean | RequestCountOutputTypeCountResponsesArgs
 }
 
@@ -954,6 +1075,13 @@ export type RequestCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Exte
    * Select specific fields to fetch from the RequestCountOutputType
    */
   select?: Prisma.RequestCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * RequestCountOutputType without action
+ */
+export type RequestCountOutputTypeCountBookingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BookingWhereInput
 }
 
 /**
@@ -980,6 +1108,7 @@ export type RequestSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   time?: boolean
   type?: boolean
   status?: boolean
+  bookings?: boolean | Prisma.Request$bookingsArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   responses?: boolean | Prisma.Request$responsesArgs<ExtArgs>
   _count?: boolean | Prisma.RequestCountOutputTypeDefaultArgs<ExtArgs>
@@ -1043,6 +1172,7 @@ export type RequestSelectScalar = {
 
 export type RequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "arena" | "notes" | "position" | "createdAt" | "updatedAt" | "arenaAddress" | "payAmount" | "playerName" | "skillLevel" | "teamName" | "time" | "type" | "status", ExtArgs["result"]["request"]>
 export type RequestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  bookings?: boolean | Prisma.Request$bookingsArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   responses?: boolean | Prisma.Request$responsesArgs<ExtArgs>
   _count?: boolean | Prisma.RequestCountOutputTypeDefaultArgs<ExtArgs>
@@ -1057,6 +1187,7 @@ export type RequestIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type $RequestPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Request"
   objects: {
+    bookings: Prisma.$BookingPayload<ExtArgs>[]
     user: Prisma.$UserPayload<ExtArgs>
     responses: Prisma.$RequestResponsePayload<ExtArgs>[]
   }
@@ -1470,6 +1601,7 @@ readonly fields: RequestFieldRefs;
  */
 export interface Prisma__RequestClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  bookings<T extends Prisma.Request$bookingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Request$bookingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   responses<T extends Prisma.Request$responsesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Request$responsesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RequestResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1914,6 +2046,30 @@ export type RequestDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Requests to delete.
    */
   limit?: number
+}
+
+/**
+ * Request.bookings
+ */
+export type Request$bookingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Booking
+   */
+  select?: Prisma.BookingSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Booking
+   */
+  omit?: Prisma.BookingOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BookingInclude<ExtArgs> | null
+  where?: Prisma.BookingWhereInput
+  orderBy?: Prisma.BookingOrderByWithRelationInput | Prisma.BookingOrderByWithRelationInput[]
+  cursor?: Prisma.BookingWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BookingScalarFieldEnum | Prisma.BookingScalarFieldEnum[]
 }
 
 /**

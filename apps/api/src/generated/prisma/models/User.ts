@@ -202,6 +202,7 @@ export type UserWhereInput = {
   playerOffers?: Prisma.PlayerOfferListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
   requestResponses?: Prisma.RequestResponseListRelationFilter
+  bookings?: Prisma.BookingListRelationFilter
   ownedTeam?: Prisma.XOR<Prisma.TeamNullableScalarRelationFilter, Prisma.TeamWhereInput> | null
   teamMemberships?: Prisma.TeamMemberListRelationFilter
 }
@@ -218,6 +219,7 @@ export type UserOrderByWithRelationInput = {
   playerOffers?: Prisma.PlayerOfferOrderByRelationAggregateInput
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
   requestResponses?: Prisma.RequestResponseOrderByRelationAggregateInput
+  bookings?: Prisma.BookingOrderByRelationAggregateInput
   ownedTeam?: Prisma.TeamOrderByWithRelationInput
   teamMemberships?: Prisma.TeamMemberOrderByRelationAggregateInput
 }
@@ -237,6 +239,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   playerOffers?: Prisma.PlayerOfferListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
   requestResponses?: Prisma.RequestResponseListRelationFilter
+  bookings?: Prisma.BookingListRelationFilter
   ownedTeam?: Prisma.XOR<Prisma.TeamNullableScalarRelationFilter, Prisma.TeamWhereInput> | null
   teamMemberships?: Prisma.TeamMemberListRelationFilter
 }, "id" | "email">
@@ -279,6 +282,7 @@ export type UserCreateInput = {
   playerOffers?: Prisma.PlayerOfferCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseCreateNestedManyWithoutResponderInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
   ownedTeam?: Prisma.TeamCreateNestedOneWithoutOwnerInput
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
 }
@@ -295,6 +299,7 @@ export type UserUncheckedCreateInput = {
   playerOffers?: Prisma.PlayerOfferUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseUncheckedCreateNestedManyWithoutResponderInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   ownedTeam?: Prisma.TeamUncheckedCreateNestedOneWithoutOwnerInput
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
 }
@@ -311,6 +316,7 @@ export type UserUpdateInput = {
   playerOffers?: Prisma.PlayerOfferUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUpdateManyWithoutResponderNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
   ownedTeam?: Prisma.TeamUpdateOneWithoutOwnerNestedInput
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
 }
@@ -327,6 +333,7 @@ export type UserUncheckedUpdateInput = {
   playerOffers?: Prisma.PlayerOfferUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUncheckedUpdateManyWithoutResponderNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   ownedTeam?: Prisma.TeamUncheckedUpdateOneWithoutOwnerNestedInput
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -487,6 +494,20 @@ export type UserUpdateOneWithoutTeamMembershipsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTeamMembershipsInput, Prisma.UserUpdateWithoutTeamMembershipsInput>, Prisma.UserUncheckedUpdateWithoutTeamMembershipsInput>
 }
 
+export type UserCreateNestedOneWithoutBookingsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBookingsInput, Prisma.UserUncheckedCreateWithoutBookingsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBookingsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutBookingsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBookingsInput, Prisma.UserUncheckedCreateWithoutBookingsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBookingsInput
+  upsert?: Prisma.UserUpsertWithoutBookingsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBookingsInput, Prisma.UserUpdateWithoutBookingsInput>, Prisma.UserUncheckedUpdateWithoutBookingsInput>
+}
+
 export type UserCreateWithoutRequestsInput = {
   id?: string
   email: string
@@ -498,6 +519,7 @@ export type UserCreateWithoutRequestsInput = {
   playerOffers?: Prisma.PlayerOfferCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseCreateNestedManyWithoutResponderInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
   ownedTeam?: Prisma.TeamCreateNestedOneWithoutOwnerInput
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
 }
@@ -513,6 +535,7 @@ export type UserUncheckedCreateWithoutRequestsInput = {
   playerOffers?: Prisma.PlayerOfferUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseUncheckedCreateNestedManyWithoutResponderInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   ownedTeam?: Prisma.TeamUncheckedCreateNestedOneWithoutOwnerInput
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
 }
@@ -544,6 +567,7 @@ export type UserUpdateWithoutRequestsInput = {
   playerOffers?: Prisma.PlayerOfferUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUpdateManyWithoutResponderNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
   ownedTeam?: Prisma.TeamUpdateOneWithoutOwnerNestedInput
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
 }
@@ -559,6 +583,7 @@ export type UserUncheckedUpdateWithoutRequestsInput = {
   playerOffers?: Prisma.PlayerOfferUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUncheckedUpdateManyWithoutResponderNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   ownedTeam?: Prisma.TeamUncheckedUpdateOneWithoutOwnerNestedInput
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -574,6 +599,7 @@ export type UserCreateWithoutRequestResponsesInput = {
   requests?: Prisma.RequestCreateNestedManyWithoutUserInput
   playerOffers?: Prisma.PlayerOfferCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
   ownedTeam?: Prisma.TeamCreateNestedOneWithoutOwnerInput
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
 }
@@ -589,6 +615,7 @@ export type UserUncheckedCreateWithoutRequestResponsesInput = {
   requests?: Prisma.RequestUncheckedCreateNestedManyWithoutUserInput
   playerOffers?: Prisma.PlayerOfferUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   ownedTeam?: Prisma.TeamUncheckedCreateNestedOneWithoutOwnerInput
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
 }
@@ -620,6 +647,7 @@ export type UserUpdateWithoutRequestResponsesInput = {
   requests?: Prisma.RequestUpdateManyWithoutUserNestedInput
   playerOffers?: Prisma.PlayerOfferUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
   ownedTeam?: Prisma.TeamUpdateOneWithoutOwnerNestedInput
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
 }
@@ -635,6 +663,7 @@ export type UserUncheckedUpdateWithoutRequestResponsesInput = {
   requests?: Prisma.RequestUncheckedUpdateManyWithoutUserNestedInput
   playerOffers?: Prisma.PlayerOfferUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   ownedTeam?: Prisma.TeamUncheckedUpdateOneWithoutOwnerNestedInput
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -650,6 +679,7 @@ export type UserCreateWithoutPlayerOffersInput = {
   requests?: Prisma.RequestCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseCreateNestedManyWithoutResponderInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
   ownedTeam?: Prisma.TeamCreateNestedOneWithoutOwnerInput
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
 }
@@ -665,6 +695,7 @@ export type UserUncheckedCreateWithoutPlayerOffersInput = {
   requests?: Prisma.RequestUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseUncheckedCreateNestedManyWithoutResponderInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   ownedTeam?: Prisma.TeamUncheckedCreateNestedOneWithoutOwnerInput
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
 }
@@ -696,6 +727,7 @@ export type UserUpdateWithoutPlayerOffersInput = {
   requests?: Prisma.RequestUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUpdateManyWithoutResponderNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
   ownedTeam?: Prisma.TeamUpdateOneWithoutOwnerNestedInput
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
 }
@@ -711,6 +743,7 @@ export type UserUncheckedUpdateWithoutPlayerOffersInput = {
   requests?: Prisma.RequestUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUncheckedUpdateManyWithoutResponderNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   ownedTeam?: Prisma.TeamUncheckedUpdateOneWithoutOwnerNestedInput
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -726,6 +759,7 @@ export type UserCreateWithoutNotificationsInput = {
   requests?: Prisma.RequestCreateNestedManyWithoutUserInput
   playerOffers?: Prisma.PlayerOfferCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseCreateNestedManyWithoutResponderInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
   ownedTeam?: Prisma.TeamCreateNestedOneWithoutOwnerInput
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
 }
@@ -741,6 +775,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   requests?: Prisma.RequestUncheckedCreateNestedManyWithoutUserInput
   playerOffers?: Prisma.PlayerOfferUncheckedCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseUncheckedCreateNestedManyWithoutResponderInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   ownedTeam?: Prisma.TeamUncheckedCreateNestedOneWithoutOwnerInput
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
 }
@@ -772,6 +807,7 @@ export type UserUpdateWithoutNotificationsInput = {
   requests?: Prisma.RequestUpdateManyWithoutUserNestedInput
   playerOffers?: Prisma.PlayerOfferUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUpdateManyWithoutResponderNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
   ownedTeam?: Prisma.TeamUpdateOneWithoutOwnerNestedInput
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
 }
@@ -787,6 +823,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   requests?: Prisma.RequestUncheckedUpdateManyWithoutUserNestedInput
   playerOffers?: Prisma.PlayerOfferUncheckedUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUncheckedUpdateManyWithoutResponderNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   ownedTeam?: Prisma.TeamUncheckedUpdateOneWithoutOwnerNestedInput
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -803,6 +840,7 @@ export type UserCreateWithoutOwnedTeamInput = {
   playerOffers?: Prisma.PlayerOfferCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseCreateNestedManyWithoutResponderInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
 }
 
@@ -818,6 +856,7 @@ export type UserUncheckedCreateWithoutOwnedTeamInput = {
   playerOffers?: Prisma.PlayerOfferUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseUncheckedCreateNestedManyWithoutResponderInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -849,6 +888,7 @@ export type UserUpdateWithoutOwnedTeamInput = {
   playerOffers?: Prisma.PlayerOfferUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUpdateManyWithoutResponderNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
 }
 
@@ -864,6 +904,7 @@ export type UserUncheckedUpdateWithoutOwnedTeamInput = {
   playerOffers?: Prisma.PlayerOfferUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUncheckedUpdateManyWithoutResponderNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -879,6 +920,7 @@ export type UserCreateWithoutTeamMembershipsInput = {
   playerOffers?: Prisma.PlayerOfferCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseCreateNestedManyWithoutResponderInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
   ownedTeam?: Prisma.TeamCreateNestedOneWithoutOwnerInput
 }
 
@@ -894,6 +936,7 @@ export type UserUncheckedCreateWithoutTeamMembershipsInput = {
   playerOffers?: Prisma.PlayerOfferUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseUncheckedCreateNestedManyWithoutResponderInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   ownedTeam?: Prisma.TeamUncheckedCreateNestedOneWithoutOwnerInput
 }
 
@@ -925,6 +968,7 @@ export type UserUpdateWithoutTeamMembershipsInput = {
   playerOffers?: Prisma.PlayerOfferUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUpdateManyWithoutResponderNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
   ownedTeam?: Prisma.TeamUpdateOneWithoutOwnerNestedInput
 }
 
@@ -940,7 +984,88 @@ export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
   playerOffers?: Prisma.PlayerOfferUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUncheckedUpdateManyWithoutResponderNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   ownedTeam?: Prisma.TeamUncheckedUpdateOneWithoutOwnerNestedInput
+}
+
+export type UserCreateWithoutBookingsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  firstName?: string | null
+  lastName?: string | null
+  requests?: Prisma.RequestCreateNestedManyWithoutUserInput
+  playerOffers?: Prisma.PlayerOfferCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  requestResponses?: Prisma.RequestResponseCreateNestedManyWithoutResponderInput
+  ownedTeam?: Prisma.TeamCreateNestedOneWithoutOwnerInput
+  teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutBookingsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  firstName?: string | null
+  lastName?: string | null
+  requests?: Prisma.RequestUncheckedCreateNestedManyWithoutUserInput
+  playerOffers?: Prisma.PlayerOfferUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  requestResponses?: Prisma.RequestResponseUncheckedCreateNestedManyWithoutResponderInput
+  ownedTeam?: Prisma.TeamUncheckedCreateNestedOneWithoutOwnerInput
+  teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutBookingsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutBookingsInput, Prisma.UserUncheckedCreateWithoutBookingsInput>
+}
+
+export type UserUpsertWithoutBookingsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutBookingsInput, Prisma.UserUncheckedUpdateWithoutBookingsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutBookingsInput, Prisma.UserUncheckedCreateWithoutBookingsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutBookingsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutBookingsInput, Prisma.UserUncheckedUpdateWithoutBookingsInput>
+}
+
+export type UserUpdateWithoutBookingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requests?: Prisma.RequestUpdateManyWithoutUserNestedInput
+  playerOffers?: Prisma.PlayerOfferUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  requestResponses?: Prisma.RequestResponseUpdateManyWithoutResponderNestedInput
+  ownedTeam?: Prisma.TeamUpdateOneWithoutOwnerNestedInput
+  teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutBookingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requests?: Prisma.RequestUncheckedUpdateManyWithoutUserNestedInput
+  playerOffers?: Prisma.PlayerOfferUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  requestResponses?: Prisma.RequestResponseUncheckedUpdateManyWithoutResponderNestedInput
+  ownedTeam?: Prisma.TeamUncheckedUpdateOneWithoutOwnerNestedInput
+  teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -953,6 +1078,7 @@ export type UserCountOutputType = {
   playerOffers: number
   notifications: number
   requestResponses: number
+  bookings: number
   teamMemberships: number
 }
 
@@ -961,6 +1087,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   playerOffers?: boolean | UserCountOutputTypeCountPlayerOffersArgs
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
   requestResponses?: boolean | UserCountOutputTypeCountRequestResponsesArgs
+  bookings?: boolean | UserCountOutputTypeCountBookingsArgs
   teamMemberships?: boolean | UserCountOutputTypeCountTeamMembershipsArgs
 }
 
@@ -1005,6 +1132,13 @@ export type UserCountOutputTypeCountRequestResponsesArgs<ExtArgs extends runtime
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountBookingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BookingWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountTeamMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.TeamMemberWhereInput
 }
@@ -1022,6 +1156,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   playerOffers?: boolean | Prisma.User$playerOffersArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   requestResponses?: boolean | Prisma.User$requestResponsesArgs<ExtArgs>
+  bookings?: boolean | Prisma.User$bookingsArgs<ExtArgs>
   ownedTeam?: boolean | Prisma.User$ownedTeamArgs<ExtArgs>
   teamMemberships?: boolean | Prisma.User$teamMembershipsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -1063,6 +1198,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   playerOffers?: boolean | Prisma.User$playerOffersArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   requestResponses?: boolean | Prisma.User$requestResponsesArgs<ExtArgs>
+  bookings?: boolean | Prisma.User$bookingsArgs<ExtArgs>
   ownedTeam?: boolean | Prisma.User$ownedTeamArgs<ExtArgs>
   teamMemberships?: boolean | Prisma.User$teamMembershipsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -1077,6 +1213,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     playerOffers: Prisma.$PlayerOfferPayload<ExtArgs>[]
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
     requestResponses: Prisma.$RequestResponsePayload<ExtArgs>[]
+    bookings: Prisma.$BookingPayload<ExtArgs>[]
     ownedTeam: Prisma.$TeamPayload<ExtArgs> | null
     teamMemberships: Prisma.$TeamMemberPayload<ExtArgs>[]
   }
@@ -1486,6 +1623,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   playerOffers<T extends Prisma.User$playerOffersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$playerOffersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlayerOfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   requestResponses<T extends Prisma.User$requestResponsesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$requestResponsesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RequestResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  bookings<T extends Prisma.User$bookingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$bookingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   ownedTeam<T extends Prisma.User$ownedTeamArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ownedTeamArgs<ExtArgs>>): Prisma.Prisma__TeamClient<runtime.Types.Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   teamMemberships<T extends Prisma.User$teamMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$teamMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -2010,6 +2148,30 @@ export type User$requestResponsesArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.RequestResponseScalarFieldEnum | Prisma.RequestResponseScalarFieldEnum[]
+}
+
+/**
+ * User.bookings
+ */
+export type User$bookingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Booking
+   */
+  select?: Prisma.BookingSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Booking
+   */
+  omit?: Prisma.BookingOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BookingInclude<ExtArgs> | null
+  where?: Prisma.BookingWhereInput
+  orderBy?: Prisma.BookingOrderByWithRelationInput | Prisma.BookingOrderByWithRelationInput[]
+  cursor?: Prisma.BookingWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BookingScalarFieldEnum | Prisma.BookingScalarFieldEnum[]
 }
 
 /**

@@ -1,21 +1,54 @@
 <a routerLink="/requests">← Back to Marketplace</a>
 
 <div *ngIf="request$ | async as req; else loading" class="card">
-  <h2>Request #{{ req.id }}</h2>
+  <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+    <div>
+      <h2 class="mb-1">Request #{{ req.id }}</h2>
+      <div class="d-flex gap-2 flex-wrap">
+        <span class="badge text-bg-secondary">{{ req.type }}</span>
+        <span class="badge text-bg-primary">{{ req.status }}</span>
+      </div>
+    </div>
+
+    <button
+      class="btn btn-primary"
+      type="button"
+      (click)="bookRequest(req)"
+      [disabled]="bookingLoading() || req.status !== 'OPEN'"
+    >
+      {{
+        bookingLoading()
+          ? 'Sending...'
+          : req.status === 'OPEN'
+            ? 'Book this request'
+            : 'Not available'
+      }}
+    </button>
+  </div>
+
+  <div *ngIf="success()" class="alert alert-success">
+    {{ success() }}
+  </div>
+
+  <div *ngIf="error()" class="alert alert-danger">
+    {{ error() }}
+  </div>
 
   <p><strong>Type:</strong> {{ req.type }}</p>
+  <p><strong>Status:</strong> {{ req.status }}</p>
   <p><strong>Position:</strong> {{ req.position }}</p>
   <p><strong>Skill:</strong> {{ req.skillLevel }}</p>
-  <p><strong>Pay:</strong> ${{ req.payAmount }}</p>
+  <p><strong>Pay:</strong> {{ req.payAmount === 0 ? 'Free' : '$' + req.payAmount }}</p>
 
   <p><strong>{{ nameLabel(req) }}:</strong> {{ nameValue(req) }}</p>
 
   <p><strong>Arena:</strong> {{ req.arena }}</p>
+  <p *ngIf="req.arenaAddress"><strong>Address:</strong> {{ req.arenaAddress }}</p>
   <p><strong>Time:</strong> {{ req.time }}</p>
 
   <p *ngIf="req.notes"><strong>Notes:</strong> {{ req.notes }}</p>
 </div>
 
 <ng-template #loading>
-  <p>Loading request…</p>
+  <p>Loading request...</p>
 </ng-template>

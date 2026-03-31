@@ -52,7 +52,7 @@ export class TeamRequestCreateComponent {
       type: RequestType.TEAM_NEEDS_PLAYER,
     };
 
-    this.http.post('http://localhost:3000/api/requests', payload).subscribe({
+    this.http.post('/api/requests', payload).subscribe({
       next: () => {
         this.router.navigateByUrl('/requests');
       },

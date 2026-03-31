@@ -1,3 +1,4 @@
+// apps/web/src/environments/environment.ts
 export const environment = {
-  apiBaseUrl: 'http://localhost:3000',
+  apiBaseUrl: '/api',
 };

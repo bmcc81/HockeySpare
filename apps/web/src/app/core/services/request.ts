@@ -20,4 +20,9 @@ export class RequestService {
   teamRequest(payload: Omit<SpareRequest, 'id' | 'type'>): Observable<SpareRequest> {
     return this.http.post<SpareRequest>(`${this.baseUrl}/api/requests`, payload);
   }
+
+   playerRequest(payload: Omit<SpareRequest, 'id' | 'type'>): Observable<SpareRequest> {
+    return this.http.post<SpareRequest>(`${this.baseUrl}/api/requests`, payload);
+  }
+
 }

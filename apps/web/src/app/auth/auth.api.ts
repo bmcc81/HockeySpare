@@ -32,7 +32,7 @@ export interface AuthResponse {
 @Injectable({ providedIn: 'root' })
 export class AuthApi {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:3000';
+  private baseUrl = '/api';
 
   register(body: RegisterRequest) {
     return this.http.post<RegisterResponse>(`${this.baseUrl}/api/auth/register`, body);

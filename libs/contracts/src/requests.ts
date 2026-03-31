@@ -44,7 +44,7 @@ export type PlayerNeedsTeamRequest = BaseRequest & {
 export type TeamNeedsPlayerRequest = BaseRequest & {
   type: RequestType.TEAM_NEEDS_PLAYER;
   teamName: string | null;
-  playerName: null;
+  playerName: string;
 };
 
 export type SpareRequest = PlayerNeedsTeamRequest | TeamNeedsPlayerRequest;

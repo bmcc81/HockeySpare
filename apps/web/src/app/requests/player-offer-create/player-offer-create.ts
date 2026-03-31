@@ -1,10 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { Position, SkillLevel, RequestType } from '@hockeyspare/contracts';
+import { Position, SkillLevel, RequestType, RequestStatus } from '@hockeyspare/contracts';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { NgbTimepickerModule, NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
+import { RequestApiService } from 'src/app/core/services/request-api';
 
 @Component({
   selector: 'app-player-offer-create',
@@ -17,6 +18,7 @@ export class PlayerOfferCreateComponent {
   private fb = inject(FormBuilder);
   private http = inject(HttpClient);
   private router = inject(Router);
+  private requestApi = inject(RequestApiService);
 
   positions = Object.values(Position).filter((v): v is Position => typeof v === 'string');
   skillLevels = Object.values(SkillLevel).filter((v): v is SkillLevel => typeof v === 'string');
@@ -41,12 +43,18 @@ export class PlayerOfferCreateComponent {
     const raw = this.form.getRawValue();
 
     const payload = {
-      ...raw,
+      playerName: raw.playerName ?? '',
+      position: raw.position ?? Position.FORWARD,
+      skillLevel: raw.skillLevel ?? SkillLevel.INTERMEDIATE,
+      payAmount: raw.payAmount ?? 0,
+      arena: raw.arena ?? '',
+      arenaAddress: raw.arenaAddress ?? '',
+      notes: raw.notes ?? '',
       time: this.formatTime(raw.time),
-      type: RequestType.PLAYER_NEEDS_TEAM,
+      status: RequestStatus.OPEN,
     };
 
-    this.http.post('http://localhost:3000/api/requests', payload).subscribe({
+    this.requestApi.createPlayerOffer(payload).subscribe({
       next: (res) => {
         console.log('Created offer:', res);
         this.router.navigateByUrl('/requests');

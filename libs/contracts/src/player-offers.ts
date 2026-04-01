@@ -9,7 +9,6 @@ export interface PlayerOffer {
   arenaAddress?: string;
   arena: string;
   time: string;
-  status: RequestStatus;
   notes?: string;
 }
 

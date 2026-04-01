@@ -50,8 +50,7 @@ export class PlayerOfferCreateComponent {
       arena: raw.arena ?? '',
       arenaAddress: raw.arenaAddress ?? '',
       notes: raw.notes ?? '',
-      time: this.formatTime(raw.time),
-      status: RequestStatus.OPEN,
+      time: this.formatTime(raw.time)
     };
 
     this.requestApi.createPlayerOffer(payload).subscribe({

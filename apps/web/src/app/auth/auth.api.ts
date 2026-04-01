@@ -35,10 +35,10 @@ export class AuthApi {
   private baseUrl = '/api';
 
   register(body: RegisterRequest) {
-    return this.http.post<RegisterResponse>(`${this.baseUrl}/api/auth/register`, body);
+    return this.http.post<RegisterResponse>(`/api/auth/register`, body);
   }
 
   login(body: LoginRequest) {
-    return this.http.post<AuthResponse>(`${this.baseUrl}/api/auth/login`, body);
+    return this.http.post<AuthResponse>(`/api/auth/login`, body);
   }
 }

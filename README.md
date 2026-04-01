@@ -24,7 +24,7 @@ Start-Process "$Env:ProgramFiles\Docker\Docker\Docker Desktop.exe"
 
 
 # How to deploy on rasberry Pi:
-1 - cd /opt/hockeyspare 
-2 - git pull 
-3 - pi@raspberrypi:/opt/hockeyspare $ npm --prefix apps/web run build -- --configuration production 
-4 - sudo rsync -av --delete /opt/hockeyspare/apps/web/dist/hockeyspare-web/browser/ /var/www/hockeyspare/browser/ 
+1 - cd /opt/hockeyspare <br>
+2 - git pull  <br>
+3 - pi@raspberrypi:/opt/hockeyspare $ npm --prefix apps/web run build -- --configuration production  <br>
+4 - sudo rsync -av --delete /opt/hockeyspare/apps/web/dist/hockeyspare-web/browser/ /var/www/hockeyspare/browser/ <br>

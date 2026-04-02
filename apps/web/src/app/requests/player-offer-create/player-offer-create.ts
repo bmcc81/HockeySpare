@@ -58,7 +58,7 @@ export class PlayerOfferCreateComponent {
         console.log('Created offer:', res);
         this.router.navigateByUrl('/requests');
       },
-      error: (err) => console.error(err),
+      error: (err) => console.error(err.error),
     });
   }
 

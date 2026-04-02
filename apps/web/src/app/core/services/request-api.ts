@@ -1,10 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, shareReplay, tap } from 'rxjs';
-import { SpareRequest, CreateRequestInput, PlayerOffer } from '@hockeyspare/contracts';
+import {
+  SpareRequest,
+  CreateRequestInput,
+  PlayerOffer,
+  CreatePlayerOfferInput,
+} from '@hockeyspare/contracts';
 
 export type CreateRequestPayload = CreateRequestInput;
-export type CreatePlayerOfferPayload = Omit<PlayerOffer, 'id'>;
+export type CreatePlayerOfferPayload = CreatePlayerOfferInput;
 
 @Injectable({ providedIn: 'root' })
 export class RequestApiService {

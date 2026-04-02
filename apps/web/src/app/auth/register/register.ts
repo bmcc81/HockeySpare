@@ -84,7 +84,7 @@ export class RegisterComponent {
       .subscribe({
         next: (res) => {
           localStorage.setItem('accessToken', res.accessToken);
-          this.router.navigateByUrl('/');
+          this.router.navigateByUrl('/login');
         },
         error: (err) => {
           const message = err?.error?.message;

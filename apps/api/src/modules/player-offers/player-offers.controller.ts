@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post, Param, ParseIntPipe } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param, ParseIntPipe, Req, UseGuards } from '@nestjs/common';
 import { PlayerOffersService } from './player-offers.service';
 import { CreatePlayerOfferDto } from './dto/create-player-offer.dto';
+import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 
 @Controller('player-offers')
 export class PlayerOffersController {
@@ -16,9 +17,9 @@ export class PlayerOffersController {
     return this.service.findOne(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() dto: CreatePlayerOfferDto) {
-    const devUserId = 'cmmmi08nm0000nkuadck34p7f';
-    return this.service.create(devUserId, dto);
+  async create(@Req() req: any, @Body() dto: CreatePlayerOfferDto) {
+    return this.service.create(req.user.id, dto);
   }
 }

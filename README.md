@@ -32,4 +32,21 @@ Start-Process "$Env:ProgramFiles\Docker\Docker\Docker Desktop.exe"
 
 
 # Reset Data in PostGres:
-npx prisma migrate reset
+
+<b>1 - Enter PostGres:</b>
+<br>
+sudo -u postgres psql<br>
+
+<b>2 - Then inside psql:</b>
+<br>
+DROP DATABASE hockeyspare;<br>
+CREATE DATABASE hockeyspare OWNER hockeyspare;<br>
+\q
+
+<b>3 - Then recreate your Prisma schema:</b>
+<br>
+cd /opt/hockeyspare/apps/api<br>
+npx prisma migrate deploy<br>
+<br>
+<b>4 - If you are using dev migrations:</b><br>
+npx prisma migrate dev<br>

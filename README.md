@@ -28,3 +28,8 @@ Start-Process "$Env:ProgramFiles\Docker\Docker\Docker Desktop.exe"
 2 - git pull  <br>
 3 - pi@raspberrypi:/opt/hockeyspare $ npm --prefix apps/web run build -- --configuration production  <br>
 4 - sudo rsync -av --delete /opt/hockeyspare/apps/web/dist/hockeyspare-web/browser/ /var/www/hockeyspare/browser/ <br>
+
+
+
+# Reset Data in PostGres:
+npx prisma migrate reset

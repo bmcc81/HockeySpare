@@ -30,6 +30,7 @@ export interface BaseRequest {
   payAmount: number | null;
   arena: string;
   arenaAddress: string | null;
+  date: string;
   time: string;
   status: RequestStatus;
   notes: string | null;
@@ -44,7 +45,7 @@ export type PlayerNeedsTeamRequest = BaseRequest & {
 export type TeamNeedsPlayerRequest = BaseRequest & {
   type: RequestType.TEAM_NEEDS_PLAYER;
   teamName: string | null;
-  playerName: string;
+  playerName: null;
 };
 
 export type SpareRequest = PlayerNeedsTeamRequest | TeamNeedsPlayerRequest;

@@ -49,6 +49,7 @@ export type RequestMinAggregateOutputType = {
   playerName: string | null
   skillLevel: $Enums.SkillLevel | null
   teamName: string | null
+  date: Date | null
   time: string | null
   type: $Enums.RequestType | null
   status: $Enums.RequestStatus | null
@@ -67,6 +68,7 @@ export type RequestMaxAggregateOutputType = {
   playerName: string | null
   skillLevel: $Enums.SkillLevel | null
   teamName: string | null
+  date: Date | null
   time: string | null
   type: $Enums.RequestType | null
   status: $Enums.RequestStatus | null
@@ -85,6 +87,7 @@ export type RequestCountAggregateOutputType = {
   playerName: number
   skillLevel: number
   teamName: number
+  date: number
   time: number
   type: number
   status: number
@@ -115,6 +118,7 @@ export type RequestMinAggregateInputType = {
   playerName?: true
   skillLevel?: true
   teamName?: true
+  date?: true
   time?: true
   type?: true
   status?: true
@@ -133,6 +137,7 @@ export type RequestMaxAggregateInputType = {
   playerName?: true
   skillLevel?: true
   teamName?: true
+  date?: true
   time?: true
   type?: true
   status?: true
@@ -151,6 +156,7 @@ export type RequestCountAggregateInputType = {
   playerName?: true
   skillLevel?: true
   teamName?: true
+  date?: true
   time?: true
   type?: true
   status?: true
@@ -256,6 +262,7 @@ export type RequestGroupByOutputType = {
   playerName: string | null
   skillLevel: $Enums.SkillLevel
   teamName: string | null
+  date: Date
   time: string
   type: $Enums.RequestType
   status: $Enums.RequestStatus
@@ -297,6 +304,7 @@ export type RequestWhereInput = {
   playerName?: Prisma.StringNullableFilter<"Request"> | string | null
   skillLevel?: Prisma.EnumSkillLevelFilter<"Request"> | $Enums.SkillLevel
   teamName?: Prisma.StringNullableFilter<"Request"> | string | null
+  date?: Prisma.DateTimeFilter<"Request"> | Date | string
   time?: Prisma.StringFilter<"Request"> | string
   type?: Prisma.EnumRequestTypeFilter<"Request"> | $Enums.RequestType
   status?: Prisma.EnumRequestStatusFilter<"Request"> | $Enums.RequestStatus
@@ -318,6 +326,7 @@ export type RequestOrderByWithRelationInput = {
   playerName?: Prisma.SortOrderInput | Prisma.SortOrder
   skillLevel?: Prisma.SortOrder
   teamName?: Prisma.SortOrderInput | Prisma.SortOrder
+  date?: Prisma.SortOrder
   time?: Prisma.SortOrder
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -342,6 +351,7 @@ export type RequestWhereUniqueInput = Prisma.AtLeast<{
   playerName?: Prisma.StringNullableFilter<"Request"> | string | null
   skillLevel?: Prisma.EnumSkillLevelFilter<"Request"> | $Enums.SkillLevel
   teamName?: Prisma.StringNullableFilter<"Request"> | string | null
+  date?: Prisma.DateTimeFilter<"Request"> | Date | string
   time?: Prisma.StringFilter<"Request"> | string
   type?: Prisma.EnumRequestTypeFilter<"Request"> | $Enums.RequestType
   status?: Prisma.EnumRequestStatusFilter<"Request"> | $Enums.RequestStatus
@@ -363,6 +373,7 @@ export type RequestOrderByWithAggregationInput = {
   playerName?: Prisma.SortOrderInput | Prisma.SortOrder
   skillLevel?: Prisma.SortOrder
   teamName?: Prisma.SortOrderInput | Prisma.SortOrder
+  date?: Prisma.SortOrder
   time?: Prisma.SortOrder
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -389,6 +400,7 @@ export type RequestScalarWhereWithAggregatesInput = {
   playerName?: Prisma.StringNullableWithAggregatesFilter<"Request"> | string | null
   skillLevel?: Prisma.EnumSkillLevelWithAggregatesFilter<"Request"> | $Enums.SkillLevel
   teamName?: Prisma.StringNullableWithAggregatesFilter<"Request"> | string | null
+  date?: Prisma.DateTimeWithAggregatesFilter<"Request"> | Date | string
   time?: Prisma.StringWithAggregatesFilter<"Request"> | string
   type?: Prisma.EnumRequestTypeWithAggregatesFilter<"Request"> | $Enums.RequestType
   status?: Prisma.EnumRequestStatusWithAggregatesFilter<"Request"> | $Enums.RequestStatus
@@ -405,6 +417,7 @@ export type RequestCreateInput = {
   playerName?: string | null
   skillLevel: $Enums.SkillLevel
   teamName?: string | null
+  date: Date | string
   time: string
   type: $Enums.RequestType
   status?: $Enums.RequestStatus
@@ -426,6 +439,7 @@ export type RequestUncheckedCreateInput = {
   playerName?: string | null
   skillLevel: $Enums.SkillLevel
   teamName?: string | null
+  date: Date | string
   time: string
   type: $Enums.RequestType
   status?: $Enums.RequestStatus
@@ -444,6 +458,7 @@ export type RequestUpdateInput = {
   playerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
   teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
@@ -465,6 +480,7 @@ export type RequestUncheckedUpdateInput = {
   playerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
   teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
@@ -485,6 +501,7 @@ export type RequestCreateManyInput = {
   playerName?: string | null
   skillLevel: $Enums.SkillLevel
   teamName?: string | null
+  date: Date | string
   time: string
   type: $Enums.RequestType
   status?: $Enums.RequestStatus
@@ -501,6 +518,7 @@ export type RequestUpdateManyMutationInput = {
   playerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
   teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
@@ -519,6 +537,7 @@ export type RequestUncheckedUpdateManyInput = {
   playerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
   teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
@@ -537,6 +556,7 @@ export type RequestCountOrderByAggregateInput = {
   playerName?: Prisma.SortOrder
   skillLevel?: Prisma.SortOrder
   teamName?: Prisma.SortOrder
+  date?: Prisma.SortOrder
   time?: Prisma.SortOrder
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -560,6 +580,7 @@ export type RequestMaxOrderByAggregateInput = {
   playerName?: Prisma.SortOrder
   skillLevel?: Prisma.SortOrder
   teamName?: Prisma.SortOrder
+  date?: Prisma.SortOrder
   time?: Prisma.SortOrder
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -578,6 +599,7 @@ export type RequestMinOrderByAggregateInput = {
   playerName?: Prisma.SortOrder
   skillLevel?: Prisma.SortOrder
   teamName?: Prisma.SortOrder
+  date?: Prisma.SortOrder
   time?: Prisma.SortOrder
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -728,6 +750,7 @@ export type RequestCreateWithoutResponsesInput = {
   playerName?: string | null
   skillLevel: $Enums.SkillLevel
   teamName?: string | null
+  date: Date | string
   time: string
   type: $Enums.RequestType
   status?: $Enums.RequestStatus
@@ -748,6 +771,7 @@ export type RequestUncheckedCreateWithoutResponsesInput = {
   playerName?: string | null
   skillLevel: $Enums.SkillLevel
   teamName?: string | null
+  date: Date | string
   time: string
   type: $Enums.RequestType
   status?: $Enums.RequestStatus
@@ -781,6 +805,7 @@ export type RequestUpdateWithoutResponsesInput = {
   playerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
   teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
@@ -801,6 +826,7 @@ export type RequestUncheckedUpdateWithoutResponsesInput = {
   playerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
   teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
@@ -818,6 +844,7 @@ export type RequestCreateWithoutUserInput = {
   playerName?: string | null
   skillLevel: $Enums.SkillLevel
   teamName?: string | null
+  date: Date | string
   time: string
   type: $Enums.RequestType
   status?: $Enums.RequestStatus
@@ -837,6 +864,7 @@ export type RequestUncheckedCreateWithoutUserInput = {
   playerName?: string | null
   skillLevel: $Enums.SkillLevel
   teamName?: string | null
+  date: Date | string
   time: string
   type: $Enums.RequestType
   status?: $Enums.RequestStatus
@@ -886,6 +914,7 @@ export type RequestScalarWhereInput = {
   playerName?: Prisma.StringNullableFilter<"Request"> | string | null
   skillLevel?: Prisma.EnumSkillLevelFilter<"Request"> | $Enums.SkillLevel
   teamName?: Prisma.StringNullableFilter<"Request"> | string | null
+  date?: Prisma.DateTimeFilter<"Request"> | Date | string
   time?: Prisma.StringFilter<"Request"> | string
   type?: Prisma.EnumRequestTypeFilter<"Request"> | $Enums.RequestType
   status?: Prisma.EnumRequestStatusFilter<"Request"> | $Enums.RequestStatus
@@ -902,6 +931,7 @@ export type RequestCreateWithoutBookingsInput = {
   playerName?: string | null
   skillLevel: $Enums.SkillLevel
   teamName?: string | null
+  date: Date | string
   time: string
   type: $Enums.RequestType
   status?: $Enums.RequestStatus
@@ -922,6 +952,7 @@ export type RequestUncheckedCreateWithoutBookingsInput = {
   playerName?: string | null
   skillLevel: $Enums.SkillLevel
   teamName?: string | null
+  date: Date | string
   time: string
   type: $Enums.RequestType
   status?: $Enums.RequestStatus
@@ -955,6 +986,7 @@ export type RequestUpdateWithoutBookingsInput = {
   playerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
   teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
@@ -975,6 +1007,7 @@ export type RequestUncheckedUpdateWithoutBookingsInput = {
   playerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
   teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
@@ -993,6 +1026,7 @@ export type RequestCreateManyUserInput = {
   playerName?: string | null
   skillLevel: $Enums.SkillLevel
   teamName?: string | null
+  date: Date | string
   time: string
   type: $Enums.RequestType
   status?: $Enums.RequestStatus
@@ -1009,6 +1043,7 @@ export type RequestUpdateWithoutUserInput = {
   playerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
   teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
@@ -1028,6 +1063,7 @@ export type RequestUncheckedUpdateWithoutUserInput = {
   playerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
   teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
@@ -1047,6 +1083,7 @@ export type RequestUncheckedUpdateManyWithoutUserInput = {
   playerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skillLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
   teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumRequestTypeFieldUpdateOperationsInput | $Enums.RequestType
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
@@ -1105,6 +1142,7 @@ export type RequestSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   playerName?: boolean
   skillLevel?: boolean
   teamName?: boolean
+  date?: boolean
   time?: boolean
   type?: boolean
   status?: boolean
@@ -1127,6 +1165,7 @@ export type RequestSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   playerName?: boolean
   skillLevel?: boolean
   teamName?: boolean
+  date?: boolean
   time?: boolean
   type?: boolean
   status?: boolean
@@ -1146,6 +1185,7 @@ export type RequestSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   playerName?: boolean
   skillLevel?: boolean
   teamName?: boolean
+  date?: boolean
   time?: boolean
   type?: boolean
   status?: boolean
@@ -1165,12 +1205,13 @@ export type RequestSelectScalar = {
   playerName?: boolean
   skillLevel?: boolean
   teamName?: boolean
+  date?: boolean
   time?: boolean
   type?: boolean
   status?: boolean
 }
 
-export type RequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "arena" | "notes" | "position" | "createdAt" | "updatedAt" | "arenaAddress" | "payAmount" | "playerName" | "skillLevel" | "teamName" | "time" | "type" | "status", ExtArgs["result"]["request"]>
+export type RequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "arena" | "notes" | "position" | "createdAt" | "updatedAt" | "arenaAddress" | "payAmount" | "playerName" | "skillLevel" | "teamName" | "date" | "time" | "type" | "status", ExtArgs["result"]["request"]>
 export type RequestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   bookings?: boolean | Prisma.Request$bookingsArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1204,6 +1245,7 @@ export type $RequestPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     playerName: string | null
     skillLevel: $Enums.SkillLevel
     teamName: string | null
+    date: Date
     time: string
     type: $Enums.RequestType
     status: $Enums.RequestStatus
@@ -1645,6 +1687,7 @@ export interface RequestFieldRefs {
   readonly playerName: Prisma.FieldRef<"Request", 'String'>
   readonly skillLevel: Prisma.FieldRef<"Request", 'SkillLevel'>
   readonly teamName: Prisma.FieldRef<"Request", 'String'>
+  readonly date: Prisma.FieldRef<"Request", 'DateTime'>
   readonly time: Prisma.FieldRef<"Request", 'String'>
   readonly type: Prisma.FieldRef<"Request", 'RequestType'>
   readonly status: Prisma.FieldRef<"Request", 'RequestStatus'>

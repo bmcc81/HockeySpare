@@ -11,6 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { TeamsModule } from './modules/teams/teams.module';
 import { BookingsModule } from './modules/bookings/bookings.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { BookingsModule } from './modules/bookings/bookings.module';
     PlayerOffersModule,
     NotificationsModule,
     TeamsModule,
-    BookingsModule
+    BookingsModule,
+    EmailModule,
   ],  
   controllers: [AppController],
   providers: [AppService],

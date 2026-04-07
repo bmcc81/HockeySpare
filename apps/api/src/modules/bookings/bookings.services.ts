@@ -7,18 +7,33 @@ import {
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingStatusDto } from './dto/update-booking-status.dto';
+import { EmailService } from '../../email/email.service';
 
 @Injectable()
 export class BookingsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly emailService: EmailService,
+  ) {}
 
-  async create(userId: string, requestId: number, dto: CreateBookingDto) {
+async create(userId: string, requestId: number, dto: CreateBookingDto) {
+  
     const request = await this.prisma.request.findUnique({
       where: { id: requestId },
       select: {
         id: true,
         userId: true,
         status: true,
+        teamName: true,
+        arena: true,
+        time: true,
+        user: {
+          select: {
+            email: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
       },
     });
 
@@ -34,7 +49,29 @@ export class BookingsService {
       throw new BadRequestException('This request is not open');
     }
 
-    return this.prisma.booking.create({
+    const existingBooking = await this.prisma.booking.findUnique({
+      where: {
+        requestId_userId: {
+          requestId,
+          userId,
+        },
+      },
+    });
+
+    if (existingBooking) {
+      throw new BadRequestException('You have already booked this request');
+    }
+
+    const bookingUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        email: true,
+        firstName: true,
+        lastName: true,
+      },
+    });
+
+    const booking = await this.prisma.booking.create({
       data: {
         requestId,
         userId,
@@ -42,6 +79,43 @@ export class BookingsService {
         status: 'PENDING',
       },
     });
+
+    if (request.user?.email) {
+      const bookedByName =
+        [bookingUser?.firstName, bookingUser?.lastName].filter(Boolean).join(' ') ||
+        bookingUser?.email ||
+        'A user';
+
+      const ownerName =
+        [request.user.firstName, request.user.lastName].filter(Boolean).join(' ') || '';
+
+      try {
+
+        console.log('BOOKING CREATED:', booking);
+        console.log('REQUEST OWNER EMAIL:', request.user?.email);
+        console.log('BOOKING USER:', bookingUser);
+        console.log('BOOKING EXISTSING USER:', existingBooking);
+
+        await this.emailService.sendBookingCreatedToRequestOwner({
+          to: request.user.email,
+          ownerName,
+          requestId: request.id,
+          teamName: request.teamName ?? null,
+          arena: request.arena ?? null,
+          time: request.time ?? null,
+          bookedByName,
+        });
+      } catch (error) {
+        console.error('Failed to send booking email:',  {
+          message: error?.message,
+          code: error?.code,
+          response: error?.response,
+          responseCode: error?.responseCode,
+        });
+      }
+    }
+
+    return booking;
   }
 
   async getMine(userId: string) {

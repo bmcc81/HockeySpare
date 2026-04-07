@@ -66,6 +66,16 @@
                 ></ngb-timepicker>
               </div>
 
+              <div class="mb-3">
+                <label for="date" class="form-label">Date</label>
+                <input
+                  id="date"
+                  type="date"
+                  class="form-control"
+                  formControlName="date"
+                />
+              </div>
+
               <div
                 class="invalid-feedback d-block"
                 *ngIf="form.controls.time.touched && form.controls.time.invalid"

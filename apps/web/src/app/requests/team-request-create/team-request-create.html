@@ -67,6 +67,11 @@
               >
                 <span *ngIf="form.controls.time.errors?.['required']">Time is required.</span>
               </div>
+
+              <div class="mb-3">
+                <label for="date" class="form-label">Date</label>
+                <input id="date" type="date" class="form-control" formControlName="date" />
+              </div>
             </div>
 
             <div class="col-12">

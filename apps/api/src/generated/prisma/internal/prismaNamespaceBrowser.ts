@@ -92,6 +92,7 @@ export const RequestScalarFieldEnum = {
   playerName: 'playerName',
   skillLevel: 'skillLevel',
   teamName: 'teamName',
+  date: 'date',
   time: 'time',
   type: 'type',
   status: 'status'

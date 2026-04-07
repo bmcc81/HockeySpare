@@ -21,6 +21,7 @@ model Request {
   playerName   String?
   skillLevel   SkillLevel
   teamName     String?
+  date         DateTime
   time         String
   type         RequestType
   status       RequestStatus @default(OPEN)

@@ -1,8 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { Position, SkillLevel, RequestType, RequestStatus } from '@hockeyspare/contracts';
-import { HttpClient } from '@angular/common/http';
+import { Position, SkillLevel } from '@hockeyspare/contracts';
 import { Router } from '@angular/router';
 import { NgbTimepickerModule, NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
 import { RequestApiService } from 'src/app/core/services/request-api';
@@ -16,7 +15,6 @@ import { RequestApiService } from 'src/app/core/services/request-api';
 })
 export class PlayerOfferCreateComponent {
   private fb = inject(FormBuilder);
-  private http = inject(HttpClient);
   private router = inject(Router);
   private requestApi = inject(RequestApiService);
 
@@ -30,6 +28,7 @@ export class PlayerOfferCreateComponent {
     payAmount: [20, [Validators.required, Validators.min(0)]],
     arena: ['', Validators.required],
     arenaAddress: ['', [Validators.maxLength(220)]],
+    date: ['', Validators.required],
     time: [{ hour: 20, minute: 30, second: 0 } as NgbTimeStruct, Validators.required],
     notes: [''],
   });
@@ -50,7 +49,8 @@ export class PlayerOfferCreateComponent {
       arena: raw.arena ?? '',
       arenaAddress: raw.arenaAddress ?? '',
       notes: raw.notes ?? '',
-      time: this.formatTime(raw.time)
+      date: raw.date ?? '',
+      time: this.formatTime(raw.time),
     };
 
     this.requestApi.createPlayerOffer(payload).subscribe({

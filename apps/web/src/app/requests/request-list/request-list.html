@@ -66,6 +66,7 @@
         <div class="meta">
           <div><strong>Team Name:</strong> {{ req.teamName || 'N/A' }}</div>
           <div><strong>Skill Level:</strong> {{ req.skillLevel | titlecase }}</div>
+          <div><strong>Date:</strong> {{ req.date | date:'EEE, MMM d, y' }}</div>
           <div><strong>Time:</strong> {{ req.time }}</div>
           <div *ngIf="req.notes"><strong>Notes:</strong> {{ req.notes }}</div>
 
@@ -122,6 +123,7 @@
         <div class="meta">
           <div><strong>Player Name:</strong> {{ offer.playerName }}</div>
           <div><strong>Skill Level:</strong> {{ offer.skillLevel | titlecase }}</div>
+          <div><strong>Date:</strong> {{ offer.date | date:'EEE, MMM d, y' }}</div>
           <div><strong>Time:</strong> {{ offer.time }}</div>
           <div *ngIf="offer.notes"><strong>Notes:</strong> {{ offer.notes }}</div>
 

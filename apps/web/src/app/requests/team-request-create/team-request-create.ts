@@ -1,10 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
 import { NgbTimepickerModule, NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
-import { Position, SkillLevel, RequestType } from '@hockeyspare/contracts';
+import { Position, SkillLevel, RequestType, type CreateRequestInput, } from '@hockeyspare/contracts';
+import { RequestApiService } from 'src/app/core/services/request-api';
 
 @Component({
   selector: 'app-team-request-create',
@@ -15,7 +15,7 @@ import { Position, SkillLevel, RequestType } from '@hockeyspare/contracts';
 })
 export class TeamRequestCreateComponent {
   private fb = inject(FormBuilder);
-  private http = inject(HttpClient);
+  private requestApi = inject(RequestApiService);
   private router = inject(Router);
 
   positions = Object.values(Position).filter((v): v is Position => typeof v === 'string');
@@ -32,6 +32,7 @@ export class TeamRequestCreateComponent {
     arena: ['', Validators.required],
     arenaAddress: ['', [Validators.maxLength(220)]],
     time: [{ hour: 20, minute: 30, second: 0 } as NgbTimeStruct, Validators.required],
+    date: ['', Validators.required],
     notes: [''],
   });
 
@@ -47,12 +48,20 @@ export class TeamRequestCreateComponent {
     const raw = this.form.getRawValue();
 
     const payload = {
-      ...raw,
-      time: this.formatTime(raw.time),
-      type: RequestType.TEAM_NEEDS_PLAYER,
-    };
+    type: RequestType.TEAM_NEEDS_PLAYER,
+    playerName: null,
+    teamName: raw.teamName ?? '',
+    position: raw.position ?? Position.FORWARD,
+    skillLevel: raw.skillLevel ?? SkillLevel.INTERMEDIATE,
+    payAmount: raw.payAmount ?? 0,
+    arena: raw.arena ?? '',
+    arenaAddress: raw.arenaAddress ?? null,
+    date: raw.date ?? '',
+    time: this.formatTime(raw.time),
+    notes: raw.notes ?? null,
+  } satisfies CreateRequestInput;
 
-    this.http.post('/api/requests', payload).subscribe({
+    this.requestApi.createRequest(payload).subscribe({
       next: () => {
         this.router.navigateByUrl('/requests');
       },

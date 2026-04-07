@@ -1,4 +1,12 @@
-import { IsEnum, IsInt, IsOptional, IsString, MaxLength, Min } from 'class-validator';
+import {
+  IsDateString,
+  IsEnum,
+  IsInt,
+  IsOptional,
+  IsString,
+  MaxLength,
+  Min,
+} from 'class-validator';
 import { RequestType, Position, SkillLevel } from '@hockeyspare/contracts';
 
 export class CreateRequestDto {
@@ -34,6 +42,9 @@ export class CreateRequestDto {
   @IsString()
   @MaxLength(220)
   arenaAddress?: string;
+
+  @IsDateString()
+  date!: string;
 
   @IsString()
   @MaxLength(80)

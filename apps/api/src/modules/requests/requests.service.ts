@@ -103,6 +103,7 @@ export class RequestsService {
         playerName: dto.playerName ?? null,
         arena: dto.arena,
         arenaAddress: dto.arenaAddress ?? null,
+        date: new Date(dto.date),
         time: dto.time,
         notes: dto.notes ?? null,
       },

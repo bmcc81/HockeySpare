@@ -8,6 +8,7 @@ export interface PlayerOffer {
   payAmount: number;
   arenaAddress?: string;
   arena: string;
+  date: string;
   time: string;
   status: RequestStatus;
   notes?: string;

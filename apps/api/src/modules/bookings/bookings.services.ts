@@ -91,11 +91,6 @@ async create(userId: string, requestId: number, dto: CreateBookingDto) {
 
       try {
 
-        console.log('BOOKING CREATED:', booking);
-        console.log('REQUEST OWNER EMAIL:', request.user?.email);
-        console.log('BOOKING USER:', bookingUser);
-        console.log('BOOKING EXISTSING USER:', existingBooking);
-
         await this.emailService.sendBookingCreatedToRequestOwner({
           to: request.user.email,
           ownerName,

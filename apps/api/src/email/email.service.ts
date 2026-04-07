@@ -53,8 +53,6 @@ export class EmailService {
   }) {
     const appUrl = this.config.get<string>('APP_URL') ?? 'http://localhost:4200';
     const reviewUrl = `${appUrl}/requests/${input.requestId}`;
-    
-    this.sendTestEmail('bmcc81@gmail.com');
 
     console.log('sendBookingCreatedToRequestOwner called ->', {
       to: input.to,

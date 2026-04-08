@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "incremental": false,
     "module": "Node16",
     "moduleResolution": "Node16",

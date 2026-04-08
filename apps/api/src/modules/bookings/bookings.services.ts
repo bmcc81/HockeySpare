@@ -8,6 +8,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingStatusDto } from './dto/update-booking-status.dto';
 import { EmailService } from '../../email/email.service';
+import { MailError } from '@hockeyspare/contracts';
 
 @Injectable()
 export class BookingsService {
@@ -101,7 +102,7 @@ async create(userId: string, requestId: number, dto: CreateBookingDto) {
           bookedByName,
         });
       } catch (error) {
-        const err = error as Record<string, unknown>;
+        const err = error as MailError;
         console.error('Failed to send booking email:',  {
           message: err?.message,
           code: err?.code,

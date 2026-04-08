@@ -101,11 +101,12 @@ async create(userId: string, requestId: number, dto: CreateBookingDto) {
           bookedByName,
         });
       } catch (error) {
+        const err = error as Record<string, unknown>;
         console.error('Failed to send booking email:',  {
-          message: error?.message,
-          code: error?.code,
-          response: error?.response,
-          responseCode: error?.responseCode,
+          message: err?.message,
+          code: err?.code,
+          response: err?.response,
+          responseCode: err?.responseCode,
         });
       }
     }

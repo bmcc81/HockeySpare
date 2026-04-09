@@ -52,19 +52,11 @@ export class EmailService {
     bookedByName?: string | null;
   }) {
     const appUrl = this.config.get<string>('APP_URL') ?? 'http://localhost:4200';
-    const reviewUrl = `${appUrl}/requests/${input.requestId}`;
+    const reviewUrl = `${appUrl}/bookings/incoming`;
 
     console.log('sendBookingCreatedToRequestOwner called ->', {
       to: input.to,
       requestId: input.requestId,
-    });
-
-    console.log('mail config ->', {
-      host: this.config.get<string>('MAIL_HOST'),
-      port: this.config.get<string>('MAIL_PORT'),
-      secure: this.config.get<string>('MAIL_SECURE'),
-      from: this.config.get<string>('MAIL_FROM'),
-      user: this.config.get<string>('MAIL_USER'),
     });
 
     const info = await this.transporter.sendMail({
@@ -73,9 +65,11 @@ export class EmailService {
       subject: `New booking for Request #${input.requestId}`,
       html: `
         <p>Hi ${input.ownerName || ''},</p>
-        <p>A user has booked your request.</p>
+        <p>The user: ${input.bookedByName} has booked your request. For the game at ${input.time || 'TBD'} on ${input.date || 'TBD'} at ${input.arena || 'TBD'}.</p>
         <p><strong>Request #${input.requestId}</strong></p>
         <p><a href="${reviewUrl}">Review request</a></p>
+        <p>If you confirm the booking, mark the request as filled.</p>
+        <p>Thanks,<br/>HockeySpare Team</p>
         `,
       text: [
         `Hi ${input.ownerName || ''},`,
@@ -94,6 +88,8 @@ export class EmailService {
         .filter(Boolean)
         .join('\n'),
     });
+
+    console.log('input', input);
 
     console.log('sendBookingCreatedToRequestOwner success ->', {
       messageId: info.messageId,

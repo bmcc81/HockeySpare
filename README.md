@@ -24,7 +24,7 @@ Start-Process "$Env:ProgramFiles\Docker\Docker\Docker Desktop.exe"
 
 
 # How to deploy on rasberry Pi:3
-1 - ssh pi@raspberrypi.local
+1 - ssh pi@raspberrypi.local <br>
 2 - cd /opt/hockeyspare <br>
 3 - git pull  <br>
 4 - pi@raspberrypi:/opt/hockeyspare $ npm --prefix apps/web run build -- --configuration production  <br>

@@ -22,7 +22,7 @@ npx prisma studio
 GET DOCKER DESKTOP RUNNING:
 Start-Process "$Env:ProgramFiles\Docker\Docker\Docker Desktop.exe"
 
-
+192.168.2.11
 # How to deploy on rasberry Pi:3
 1 - ssh pi@raspberrypi.local <br>
 2 - cd /opt/hockeyspare <br>

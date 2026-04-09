@@ -83,5 +83,11 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./matches/my-bookings/my-bookings').then(m => m.MyBookingsComponent),
   },
+  {
+    path: 'bookings/incoming',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./bookings/incoming-bookings/incoming-bookings').then(m => m.IncomingBookingsComponent),
+  },
   { path: '**', redirectTo: '' },
 ];

@@ -46,6 +46,7 @@ export class BookingsController {
 
   @Get('incoming')
   getIncoming(@Req() req: any) {
+    const userId = this.getUserId(req);
     return this.bookingsService.getForOwnedRequests(this.getUserId(req));
   }
 

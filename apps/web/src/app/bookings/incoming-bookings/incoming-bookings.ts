@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BookingsApiService, IncomingBooking } from 'src/app/core/services/bookings-api';
 
@@ -9,7 +9,7 @@ import { BookingsApiService, IncomingBooking } from 'src/app/core/services/booki
   templateUrl: './incoming-bookings.html',
   styleUrl: './incoming-bookings.scss',
 })
-export class IncomingBookingsComponent {
+export class IncomingBookingsComponent implements OnInit {
   private readonly bookingsApi = inject(BookingsApiService);
 
   bookings: IncomingBooking[] = [];

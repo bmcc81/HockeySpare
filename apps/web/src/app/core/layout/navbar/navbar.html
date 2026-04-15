@@ -51,13 +51,16 @@
           >
             Messages
           </a>
-          <a 
+
+          <a
             routerLink="/my-team"
             routerLinkActive="active"
             class="nav-link"
             (click)="closeAll()"
           >
-            My Team</a>
+            My Team
+          </a>
+
           <a
             routerLink="/my-bookings"
             routerLinkActive="active"
@@ -119,7 +122,7 @@
             (click)="toggleAccount()"
           >
             @if (authState.isLoggedIn()) {
-              Account
+              {{ shortDisplayName() }}
             } @else {
               Sign In
             }
@@ -129,6 +132,10 @@
           @if (accountOpen()) {
             <div class="dropdown-panel dropdown-panel-right">
               @if (authState.isLoggedIn()) {
+                <div class="dropdown-user">
+                  Signed in as <strong>{{ displayName() }}</strong>
+                </div>
+
                 <a
                   routerLink="/profile/player"
                   class="dropdown-link"

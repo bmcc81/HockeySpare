@@ -91,7 +91,6 @@ async create(userId: string, requestId: number, dto: CreateBookingDto) {
         [request.user.firstName, request.user.lastName].filter(Boolean).join(' ') || '';
 
       try {
-
         await this.emailService.sendBookingCreatedToRequestOwner({
           to: request.user.email,
           ownerName,
@@ -126,7 +125,9 @@ async create(userId: string, requestId: number, dto: CreateBookingDto) {
   }
 
   async getForOwnedRequests(userId: string) {
-    return this.prisma.booking.findMany({
+    console.log('getForOwnedRequests start', userId);
+
+    const result = this.prisma.booking.findMany({
       where: {
         request: {
           userId,
@@ -145,6 +146,8 @@ async create(userId: string, requestId: number, dto: CreateBookingDto) {
         },
       },
     });
+
+    return result;
   }
 
   async updateStatus(userId: string, bookingId: string, dto: UpdateBookingStatusDto) {

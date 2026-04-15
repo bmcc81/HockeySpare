@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, inject, signal } from '@angular/core';
+import { Component, HostListener, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthStateService } from '../../../auth/auth-state.service';
 
@@ -18,6 +18,21 @@ export class NavbarComponent {
   actionsOpen = signal(false);
   accountOpen = signal(false);
   scrolled = signal(false);
+
+  displayName = computed(() => {
+    const user = this.authState.user();
+    if (!user) return '';
+
+    const fullName = `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim();
+    return fullName || user.email;
+  });
+
+  shortDisplayName = computed(() => {
+    const user = this.authState.user();
+    if (!user) return '';
+
+    return user.firstName?.trim() || this.displayName();
+  });
 
   toggleMobile(): void {
     const next = !this.mobileOpen();

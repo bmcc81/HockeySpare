@@ -51,8 +51,18 @@ export class EmailService {
     time?: string | null;
     bookedByName?: string | null;
   }) {
-    const appUrl = this.config.get<string>('APP_URL') ?? 'http://localhost:4200';
+
+    const nodeEnv = this.config.get<string>('NODE_ENV');
+    const defaultAppUrl =
+      nodeEnv === 'production'
+        ? 'https://hockeyspare.webinkgraphics.com'
+        : 'http://localhost:4200';
+
+    const appUrl = this.config.get<string>('APP_URL') ?? defaultAppUrl;
     const reviewUrl = `${appUrl}/bookings/incoming`;
+
+    console.log('NODE_ENV ->', nodeEnv);
+    console.log('APP_URL ->', appUrl);
 
     console.log('sendBookingCreatedToRequestOwner called ->', {
       to: input.to,

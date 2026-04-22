@@ -7,6 +7,7 @@ import {
   TeamService,
   TeamGame,
   TeamGameAvailabilityStatus,
+  PlayerStat,
 } from '../../core/services/team';
 
 @Component({
@@ -27,6 +28,7 @@ export class MyTeamComponent implements OnInit {
   availabilitySavingGameId: string | null = null;
   availabilityComposerGameId: string | null = null;
   availabilityComposerStatus: TeamGameAvailabilityStatus | null = null;
+  myStats: PlayerStat[] = [];
 
   availabilityForm = this.fb.group({
     note: ['', [Validators.maxLength(500)]],
@@ -56,6 +58,7 @@ export class MyTeamComponent implements OnInit {
 
   ngOnInit(): void {
     this.reload();
+    this.loadMyStats();
   }
 
   get regulars(): TeamMember[] {
@@ -73,6 +76,19 @@ export class MyTeamComponent implements OnInit {
   get canManageTeam(): boolean {
     return !!this.team?.canManageTeam;
   }
+
+  loadMyStats() {
+    this.teamApi.getMyStats().subscribe({
+      next: (stats) => {
+        this.myStats = stats ?? [];
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.warn('Could not load player stats:', err);
+      },
+    });
+  }
+
   openAvailabilityComposer(
     gameId: string,
     status: TeamGameAvailabilityStatus,
@@ -157,6 +173,7 @@ export class MyTeamComponent implements OnInit {
 
         this.loading = false;
         this.error = '';
+        this.loadMyStats();
         this.cdr.detectChanges();
       },
       error: (err) => {

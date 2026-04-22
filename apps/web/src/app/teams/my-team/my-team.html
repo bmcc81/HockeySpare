@@ -304,6 +304,46 @@
         </div>
       </div>
 
+      <div class="card panel-card mb-4">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="panel-title mb-0">My Stats</h3>
+            <span class="badge rounded-pill text-bg-secondary">
+              {{ myStats.length }}
+            </span>
+          </div>
+
+          <div *ngIf="myStats.length; else noStatsTpl" class="table-responsive">
+            <table class="table align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Season</th>
+                  <th>Team</th>
+                  <th>GP</th>
+                  <th>G</th>
+                  <th>A</th>
+                  <th>PIM</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let stat of myStats">
+                  <td>{{ stat.season || 'N/A' }}</td>
+                  <td>{{ stat.team?.name || 'N/A' }}</td>
+                  <td>{{ stat.gamesPlayed }}</td>
+                  <td>{{ stat.goals }}</td>
+                  <td>{{ stat.assists }}</td>
+                  <td>{{ stat.penaltyMins }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <ng-template #noStatsTpl>
+            <div class="text-secondary">No stats recorded yet.</div>
+          </ng-template>
+        </div>
+      </div>
+
       <div class="card panel-card">
         <div class="card-body">
           <h3 class="panel-title mb-3">Upcoming Games</h3>

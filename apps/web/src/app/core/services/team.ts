@@ -82,6 +82,24 @@ export interface TeamGame {
   availabilities: TeamGameAvailability[];
 }
 
+export interface PlayerStat {
+  id: string;
+  season: string | null;
+  gamesPlayed: number;
+  goals: number;
+  assists: number;
+  penaltyMins: number;
+  team: {
+    id: string;
+    name: string;
+  };
+  league?: {
+    id: string;
+    name: string;
+    season?: string | null;
+  } | null;
+}
+
 @Injectable({ providedIn: 'root' })
 export class TeamService {
   private http = inject(HttpClient);
@@ -135,5 +153,9 @@ export class TeamService {
 
   notifyGame(gameId: string, memberIds?: string[]) {
     return this.http.post(`/api/my-team/games/${gameId}/notify`, { memberIds });
+  }
+
+  getMyStats() {
+    return this.http.get<PlayerStat[]>('/api/my-team/stats/me');
   }
 }

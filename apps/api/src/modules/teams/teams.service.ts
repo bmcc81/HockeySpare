@@ -394,4 +394,79 @@ export class TeamsService {
       },
     });
   }
+
+  async getMyStats(userId: string) {
+    return this.prisma.playerStat.findMany({
+      where: { userId },
+      include: {
+        team: true,
+        league: true,
+      },
+      orderBy: [{ season: 'desc' }, { updatedAt: 'desc' }],
+    });
+  }
+
+  async upsertMemberStats(
+    managerUserId: string,
+    memberId: string,
+    dto: {
+      season: string;
+      gamesPlayed: number;
+      goals: number;
+      assists: number;
+      penaltyMins: number;
+    },
+  ) {
+    const team = await this.getManagedTeam(managerUserId);
+
+    const member = await this.prisma.teamMember.findFirst({
+      where: {
+        id: memberId,
+        teamId: team.id,
+        isActive: true,
+      },
+      select: {
+        id: true,
+        displayName: true,
+        userId: true,
+      },
+    });
+
+    if (!member) {
+      throw new NotFoundException('Team member not found');
+    }
+
+    if (!member.userId) {
+      throw new NotFoundException(
+        'This team member is not linked to a user account',
+      );
+    }
+
+    return this.prisma.playerStat.upsert({
+      where: {
+        userId_teamId_season: {
+          userId: member.userId,
+          teamId: team.id,
+          season: dto.season,
+        },
+      },
+      update: {
+        leagueId: team.leagueId ?? null,
+        gamesPlayed: dto.gamesPlayed,
+        goals: dto.goals,
+        assists: dto.assists,
+        penaltyMins: dto.penaltyMins,
+      },
+      create: {
+        userId: member.userId,
+        teamId: team.id,
+        leagueId: team.leagueId ?? undefined,
+        season: dto.season,
+        gamesPlayed: dto.gamesPlayed,
+        goals: dto.goals,
+        assists: dto.assists,
+        penaltyMins: dto.penaltyMins,
+      },
+    });
+  }
 }

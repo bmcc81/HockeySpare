@@ -16,6 +16,7 @@ import { CreateTeamMemberDto } from './dto/create-team-member.dto';
 import { CreateTeamGameDto } from './dto/create-team-game.dto';
 import { NotifyTeamGameDto } from './dto/notify-team-game.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';  
+import { RespondToGameDto } from './dto/respond-to-game.dto';
 
 @Controller('my-team')
 @UseGuards(JwtAuthGuard)
@@ -64,5 +65,27 @@ export class TeamsController {
     @Body() dto: NotifyTeamGameDto,
   ) {
     return this.teamsService.notifyGame(this.getUserId(req), gameId, dto);
+  }
+
+  @Post('games/:gameId/availability')
+  respondToGame(
+    @Req() req: any,
+    @Param('gameId') gameId: string,
+    @Body() dto: RespondToGameDto,
+  ) {
+    return this.teamsService.respondToGame(
+      req.user.sub,
+      gameId,
+      dto.status,
+      dto.note,
+    );
+  }
+
+  @Get('games/:gameId/availability')
+  getGameAvailability(
+    @Req() req: any,
+    @Param('gameId') gameId: string,
+  ) {
+    return this.teamsService.getGameAvailability(req.user.sub, gameId);
   }
 }

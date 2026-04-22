@@ -1,7 +1,13 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TeamMember, MyTeamResponse, TeamService } from '../../core/services/team';
+import {
+  TeamMember,
+  MyTeamResponse,
+  TeamService,
+  TeamGame,
+  TeamGameAvailabilityStatus,
+} from '../../core/services/team';
 
 @Component({
   selector: 'app-my-team',
@@ -18,6 +24,13 @@ export class MyTeamComponent implements OnInit {
   loading = false;
   error = '';
   team: MyTeamResponse | null = null;
+  availabilitySavingGameId: string | null = null;
+  availabilityComposerGameId: string | null = null;
+  availabilityComposerStatus: TeamGameAvailabilityStatus | null = null;
+
+  availabilityForm = this.fb.group({
+    note: ['', [Validators.maxLength(500)]],
+  });
 
   teamForm = this.fb.group({
     name: ['', [Validators.required, Validators.maxLength(80)]],
@@ -53,6 +66,76 @@ export class MyTeamComponent implements OnInit {
     return this.team?.members.filter((m) => m.memberType === 'SPARE') ?? [];
   }
 
+  get myRole(): 'PLAYER' | 'CAPTAIN' | 'GENERAL_MANAGER' | null {
+    return this.team?.myMembership?.role ?? null;
+  }
+
+  get canManageTeam(): boolean {
+    return !!this.team?.canManageTeam;
+  }
+  openAvailabilityComposer(
+    gameId: string,
+    status: TeamGameAvailabilityStatus,
+    existingNote = '',
+  ) {
+    this.availabilityComposerGameId = gameId;
+    this.availabilityComposerStatus = status;
+
+    const defaultNote =
+      status === 'NEED_SPARE'
+        ? existingNote || 'I can’t make it and need a spare.'
+        : existingNote || '';
+
+    this.availabilityForm.patchValue({
+      note: defaultNote,
+    });
+  }
+
+  cancelAvailabilityComposer() {
+    this.availabilityComposerGameId = null;
+    this.availabilityComposerStatus = null;
+    this.availabilityForm.reset({
+      note: '',
+    });
+  }
+
+  availabilityComposerTitle(): string {
+    switch (this.availabilityComposerStatus) {
+      case 'UNAVAILABLE':
+        return 'Can’t make it';
+      case 'NEED_SPARE':
+        return 'Need a spare';
+      default:
+        return 'Game response';
+    }
+  }
+
+  saveAvailabilityResponse() {
+    if (!this.availabilityComposerGameId || !this.availabilityComposerStatus) {
+      return;
+    }
+
+    const gameId = this.availabilityComposerGameId;
+    const status = this.availabilityComposerStatus;
+    const note = this.availabilityForm.getRawValue().note?.trim() || undefined;
+
+    this.availabilitySavingGameId = gameId;
+    this.error = '';
+
+    this.teamApi.respondToGame(gameId, { status, note }).subscribe({
+      next: () => {
+        this.availabilitySavingGameId = null;
+        this.cancelAvailabilityComposer();
+        this.reload();
+      },
+      error: () => {
+        this.availabilitySavingGameId = null;
+        this.error = 'Could not update your game status.';
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
   reload() {
     this.loading = true;
     this.error = '';
@@ -64,6 +147,8 @@ export class MyTeamComponent implements OnInit {
           ...team,
           members: team?.members ?? [],
           games: team?.games ?? [],
+          myMembership: team?.myMembership ?? null,
+          canManageTeam: !!team?.canManageTeam,
         };
 
         this.teamForm.patchValue({
@@ -84,6 +169,11 @@ export class MyTeamComponent implements OnInit {
   }
 
   saveTeamName() {
+    if (!this.canManageTeam) {
+      this.error = 'You do not have permission to update this team.';
+      return;
+    }
+
     if (this.teamForm.invalid) {
       this.teamForm.markAllAsTouched();
       return;
@@ -91,17 +181,24 @@ export class MyTeamComponent implements OnInit {
 
     const raw = this.teamForm.getRawValue();
 
-    this.teamApi.updateMyTeam({
-      name: raw.name ?? '',
-    }).subscribe({
-      next: () => this.reload(),
-      error: () => {
-        this.error = 'Could not save team name.';
-      },
-    });
+    this.teamApi
+      .updateMyTeam({
+        name: raw.name ?? '',
+      })
+      .subscribe({
+        next: () => this.reload(),
+        error: () => {
+          this.error = 'Could not save team name.';
+        },
+      });
   }
 
   addMember() {
+    if (!this.canManageTeam) {
+      this.error = 'You do not have permission to add players.';
+      return;
+    }
+
     if (this.memberForm.invalid) {
       this.memberForm.markAllAsTouched();
       return;
@@ -139,6 +236,11 @@ export class MyTeamComponent implements OnInit {
   }
 
   removeMember(memberId: string) {
+    if (!this.canManageTeam) {
+      this.error = 'You do not have permission to remove players.';
+      return;
+    }
+
     this.teamApi.removeMember(memberId).subscribe({
       next: () => this.reload(),
       error: () => {
@@ -148,6 +250,11 @@ export class MyTeamComponent implements OnInit {
   }
 
   createGame() {
+    if (!this.canManageTeam) {
+      this.error = 'You do not have permission to create games.';
+      return;
+    }
+
     if (this.gameForm.invalid) {
       this.gameForm.markAllAsTouched();
       return;
@@ -181,11 +288,111 @@ export class MyTeamComponent implements OnInit {
   }
 
   notifyGame(gameId: string) {
+    if (!this.canManageTeam) {
+      this.error = 'You do not have permission to notify the team.';
+      return;
+    }
+
     this.teamApi.notifyGame(gameId).subscribe({
       next: () => this.reload(),
       error: () => {
         this.error = 'Could not send notifications.';
       },
     });
+  }
+
+  getMyAvailability(game: TeamGame): TeamGameAvailabilityStatus | null {
+    const memberId = this.team?.myMembership?.id;
+    if (!memberId) return null;
+
+    return (
+      game.availabilities?.find((a) => a.memberId === memberId)?.status ?? null
+    );
+  }
+
+  getMyAvailabilityNote(game: TeamGame): string {
+    const memberId = this.team?.myMembership?.id;
+    if (!memberId) return '';
+
+    return (
+      game.availabilities?.find((a) => a.memberId === memberId)?.note ?? ''
+    );
+  }
+
+  availabilityLabel(status: TeamGameAvailabilityStatus | null): string {
+    switch (status) {
+      case 'AVAILABLE':
+        return 'Available';
+      case 'UNAVAILABLE':
+        return 'Can’t make it';
+      case 'NEED_SPARE':
+        return 'Need spare';
+      default:
+        return 'No response yet';
+    }
+  }
+
+  availabilityCount(
+    game: TeamGame,
+    status: TeamGameAvailabilityStatus,
+  ): number {
+    return game.availabilities?.filter((a) => a.status === status).length ?? 0;
+  }
+
+  availabilityBadgeClass(status: TeamGameAvailabilityStatus | null): string {
+    switch (status) {
+      case 'AVAILABLE':
+        return 'text-bg-success';
+      case 'UNAVAILABLE':
+        return 'text-bg-warning';
+      case 'NEED_SPARE':
+        return 'text-bg-danger';
+      default:
+        return 'text-bg-secondary';
+    }
+  }
+
+  setGameAvailability(
+    gameId: string,
+    status: TeamGameAvailabilityStatus,
+    note?: string,
+  ) {
+    this.availabilitySavingGameId = gameId;
+    this.error = '';
+
+    this.teamApi.respondToGame(gameId, { status, note }).subscribe({
+      next: () => {
+        this.availabilitySavingGameId = null;
+        this.reload();
+      },
+      error: () => {
+        this.availabilitySavingGameId = null;
+        this.error = 'Could not update your game status.';
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  markAvailable(gameId: string) {
+    this.cancelAvailabilityComposer();
+    this.setGameAvailability(gameId, 'AVAILABLE', '');
+  }
+
+  markUnavailable(gameId: string) {
+    const game = this.team?.games.find((g) => g.id === gameId);
+    this.openAvailabilityComposer(
+      gameId,
+      'UNAVAILABLE',
+      game ? this.getMyAvailabilityNote(game) : '',
+    );
+  }
+
+  requestSpare(gameId: string) {
+    const game = this.team?.games.find((g) => g.id === gameId);
+    this.openAvailabilityComposer(
+      gameId,
+      'NEED_SPARE',
+      game ? this.getMyAvailabilityNote(game) : '',
+    );
   }
 }

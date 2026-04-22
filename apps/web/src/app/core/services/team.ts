@@ -15,6 +15,24 @@ export interface TeamMember {
   notifyByEmail: boolean;
 }
 
+export type TeamRole = 'PLAYER' | 'CAPTAIN' | 'GENERAL_MANAGER';
+
+export interface MyMembership {
+  id: string;
+  role: TeamRole;
+  memberType: 'REGULAR' | 'SPARE';
+  position: 'GOALIE' | 'DEFENSE' | 'FORWARD' | null;
+}
+
+export interface MyTeamResponse {
+  id: string;
+  name: string;
+  members: TeamMember[];
+  games: TeamGame[];
+  myMembership?: MyMembership | null;
+  canManageTeam?: boolean;
+}
+
 export interface TeamGameInvite {
   id: string;
   status: 'PENDING' | 'SENT' | 'CONFIRMED' | 'DECLINED';
@@ -36,6 +54,32 @@ export interface MyTeamResponse {
   name: string;
   members: TeamMember[];
   games: TeamGame[];
+}
+
+export type TeamGameAvailabilityStatus =
+  | 'AVAILABLE'
+  | 'UNAVAILABLE'
+  | 'NEED_SPARE';
+
+export interface TeamGameAvailability {
+  id: string;
+  gameId: string;
+  memberId: string;
+  status: TeamGameAvailabilityStatus;
+  note?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  member: TeamMember;
+}
+
+export interface TeamGame {
+  id: string;
+  title: string;
+  startsAt: string;
+  arena?: string | null;
+  opponent?: string | null;
+  notes?: string | null;
+  availabilities: TeamGameAvailability[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -70,6 +114,13 @@ export class TeamService {
 
   removeMember(memberId: string) {
     return this.http.delete(`/api/my-team/members/${memberId}`);
+  }
+
+  respondToGame(
+    gameId: string,
+    payload: { status: TeamGameAvailabilityStatus; note?: string },
+  ) {
+    return this.http.post(`/api/my-team/games/${gameId}/availability`, payload);
   }
 
   createGame(payload: {

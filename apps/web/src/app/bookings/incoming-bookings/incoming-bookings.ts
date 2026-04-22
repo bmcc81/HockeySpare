@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BookingsApiService, IncomingBooking } from 'src/app/core/services/bookings-api';
+import { BookingsApiService, IncomingBooking } from '../../core/services/bookings-api';
 
 @Component({
   selector: 'app-incoming-bookings',

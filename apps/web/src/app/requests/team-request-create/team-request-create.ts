@@ -4,7 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { NgbTimepickerModule, NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
 import { Position, SkillLevel, RequestType, type CreateRequestInput, } from '@hockeyspare/contracts';
-import { RequestApiService } from 'src/app/core/services/request-api';
+import { RequestApiService } from '../../core/services/request-api';
 
 @Component({
   selector: 'app-team-request-create',

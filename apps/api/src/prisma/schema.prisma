@@ -8,45 +8,9 @@ datasource db {
   provider = "postgresql"
 }
 
-model Request {
-  id           Int           @id @default(autoincrement())
-  userId       String
-  arena        String
-  notes        String?
-  position     Position
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  arenaAddress String?
-  payAmount    Int?
-  playerName   String?
-  skillLevel   SkillLevel
-  teamName     String?
-  date         DateTime
-  time         String
-  type         RequestType
-  status       RequestStatus @default(OPEN)
-  bookings     Booking[]
-
-  user      User              @relation("UserRequests", fields: [userId], references: [id], onDelete: Cascade)
-  responses RequestResponse[]
-
-  @@index([type])
-  @@index([position, skillLevel])
-  @@index([userId, status])
-}
-
-model RequestResponse {
-  id              Int            @id @default(autoincrement())
-  requestId       Int
-  responderUserId String
-  message         String?
-  status          ResponseStatus @default(PENDING)
-  createdAt       DateTime       @default(now())
-
-  request   Request @relation(fields: [requestId], references: [id], onDelete: Cascade)
-  responder User    @relation(fields: [responderUserId], references: [id], onDelete: Cascade)
-
-  @@index([requestId, responderUserId])
+enum AppRole {
+  USER
+  ADMIN
 }
 
 enum ResponseStatus {
@@ -55,45 +19,22 @@ enum ResponseStatus {
   DECLINED
 }
 
-model PlayerOffer {
-  id           Int         @id @default(autoincrement())
-  userId       String
-  arena        String
-  notes        String?
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  arenaAddress String?
-  payAmount    Int?
-  playerName   String
-  time         String
-  position     Position
-  skillLevel   SkillLevel
-  status       OfferStatus @default(OPEN)
-
-  user User @relation("UserOffers", fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([position, skillLevel])
-  @@index([userId, status])
+enum TeamRole {
+  PLAYER
+  CAPTAIN
+  GENERAL_MANAGER
 }
 
-model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
-  passwordHash String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  firstName    String?
-  lastName     String?
+enum LeagueRole {
+  PLAYER
+  TEAM_MANAGER
+  LEAGUE_MANAGER
+}
 
-  requests         Request[]         @relation("UserRequests")
-  playerOffers     PlayerOffer[]     @relation("UserOffers")
-  notifications    Notification[]
-  requestResponses RequestResponse[]
-
-  bookings         Booking[]
-
-  ownedTeam        Team?             @relation("OwnedTeam")
-  teamMemberships  TeamMember[]      @relation("UserTeamMemberships")
+enum TeamGameAvailabilityStatus {
+  AVAILABLE
+  UNAVAILABLE
+  NEED_SPARE
 }
 
 enum RequestType {
@@ -135,6 +76,226 @@ enum NotificationType {
   TEAM_GAME_REMINDER
 }
 
+enum TeamMemberType {
+  REGULAR
+  SPARE
+}
+
+enum TeamGameInviteStatus {
+  PENDING
+  SENT
+  CONFIRMED
+  DECLINED
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  DECLINED
+  CANCELLED
+}
+
+model Request {
+  id           Int           @id @default(autoincrement())
+  userId       String
+  arena        String
+  notes        String?
+  position     Position
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  arenaAddress String?
+  payAmount    Int?
+  playerName   String?
+  skillLevel   SkillLevel
+  teamName     String?
+  date         DateTime
+  time         String
+  type         RequestType
+  status       RequestStatus @default(OPEN)
+
+  user      User              @relation("UserRequests", fields: [userId], references: [id], onDelete: Cascade)
+  responses RequestResponse[]
+  bookings  Booking[]
+
+  @@index([type])
+  @@index([position, skillLevel])
+  @@index([userId, status])
+}
+
+model RequestResponse {
+  id              Int            @id @default(autoincrement())
+  requestId       Int
+  responderUserId String
+  message         String?
+  status          ResponseStatus @default(PENDING)
+  createdAt       DateTime       @default(now())
+
+  request   Request @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  responder User    @relation(fields: [responderUserId], references: [id], onDelete: Cascade)
+
+  @@index([requestId, responderUserId])
+}
+
+model PlayerOffer {
+  id           Int         @id @default(autoincrement())
+  userId       String
+  arena        String
+  notes        String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  arenaAddress String?
+  payAmount    Int?
+  playerName   String
+  time         String
+  position     Position
+  skillLevel   SkillLevel
+  status       OfferStatus @default(OPEN)
+
+  user User @relation("UserOffers", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([position, skillLevel])
+  @@index([userId, status])
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  firstName    String?
+  lastName     String?
+  appRole      AppRole  @default(USER)
+
+  requests         Request[]         @relation("UserRequests")
+  playerOffers     PlayerOffer[]     @relation("UserOffers")
+  notifications    Notification[]
+  requestResponses RequestResponse[]
+  bookings         Booking[]
+
+  createdTeams      Team[]         @relation("CreatedTeams")
+  teamMemberships   TeamMember[]   @relation("UserTeamMemberships")
+  leagueMemberships LeagueMember[]
+  playerStats       PlayerStat[]
+}
+
+model League {
+  id        String   @id @default(cuid())
+  name      String
+  season    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  teams       Team[]
+  members     LeagueMember[]
+  playerStats PlayerStat[]
+}
+
+model LeagueMember {
+  id        String     @id @default(cuid())
+  leagueId  String
+  userId    String
+  role      LeagueRole @default(PLAYER)
+  createdAt DateTime   @default(now())
+
+  league League @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([leagueId, userId])
+  @@index([leagueId, role])
+}
+
+model Team {
+  id          String   @id @default(cuid())
+  name        String
+  createdById String?  @map("ownerId")
+  leagueId    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  createdBy   User?        @relation("CreatedTeams", fields: [createdById], references: [id], onDelete: SetNull)
+  league      League?      @relation(fields: [leagueId], references: [id], onDelete: SetNull)
+  members     TeamMember[]
+  games       TeamGame[]
+  playerStats PlayerStat[]
+
+  @@index([leagueId])
+}
+
+model TeamMember {
+  id            String         @id @default(cuid())
+  teamId        String
+  userId        String?
+  displayName   String
+  email         String?
+  phone         String?
+  position      Position?
+  memberType    TeamMemberType
+  role          TeamRole       @default(PLAYER)
+  notifyByApp   Boolean        @default(true)
+  notifyByEmail Boolean        @default(false)
+  isActive      Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  team           Team                   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user           User?                  @relation("UserTeamMemberships", fields: [userId], references: [id], onDelete: SetNull)
+  invites        TeamGameInvite[]
+  availabilities TeamGameAvailability[]
+
+  @@index([teamId, memberType])
+  @@index([teamId, role])
+}
+
+model TeamGame {
+  id        String   @id @default(cuid())
+  teamId    String
+  title     String
+  startsAt  DateTime
+  arena     String?
+  opponent  String?
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  team           Team                   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  invites        TeamGameInvite[]
+  availabilities TeamGameAvailability[]
+
+  @@index([teamId, startsAt])
+}
+
+model TeamGameInvite {
+  id          String               @id @default(cuid())
+  gameId      String
+  memberId    String
+  status      TeamGameInviteStatus @default(PENDING)
+  sentAt      DateTime?
+  respondedAt DateTime?
+  createdAt   DateTime             @default(now())
+
+  game   TeamGame   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  member TeamMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([gameId, memberId])
+}
+
+model TeamGameAvailability {
+  id        String                     @id @default(cuid())
+  gameId    String
+  memberId  String
+  status    TeamGameAvailabilityStatus @default(AVAILABLE)
+  note      String?
+  createdAt DateTime                   @default(now())
+  updatedAt DateTime                   @updatedAt
+
+  game   TeamGame   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  member TeamMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([gameId, memberId])
+  @@index([gameId, status])
+}
+
 model Notification {
   id        String           @id @default(cuid())
   userId    String
@@ -151,102 +312,38 @@ model Notification {
   @@index([userId, isRead, createdAt])
 }
 
-enum TeamMemberType {
-  REGULAR
-  SPARE
-}
-
-enum TeamGameInviteStatus {
-  PENDING
-  SENT
-  CONFIRMED
-  DECLINED
-}
-
-model Team {
-  id        String       @id @default(cuid())
-  ownerId   String       @unique
-  name      String
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
-
-  owner     User         @relation("OwnedTeam", fields: [ownerId], references: [id], onDelete: Cascade)
-  members   TeamMember[]
-  games     TeamGame[]
-}
-
-model TeamMember {
-  id            String           @id @default(cuid())
-  teamId        String
-  userId        String?
-  displayName   String
-  email         String?
-  phone         String?
-  position      Position?
-  memberType    TeamMemberType
-  notifyByApp   Boolean          @default(true)
-  notifyByEmail Boolean          @default(false)
-  isActive      Boolean          @default(true)
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
-
-  team          Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  user          User?            @relation("UserTeamMemberships", fields: [userId], references: [id], onDelete: SetNull)
-  invites       TeamGameInvite[]
-
-  @@index([teamId, memberType])
-}
-
-model TeamGame {
-  id        String           @id @default(cuid())
-  teamId    String
-  title     String
-  startsAt  DateTime
-  arena     String?
-  opponent  String?
-  notes     String?
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
-
-  team      Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  invites   TeamGameInvite[]
-
-  @@index([teamId, startsAt])
-}
-
-model TeamGameInvite {
-  id          String                @id @default(cuid())
-  gameId      String
-  memberId    String
-  status      TeamGameInviteStatus  @default(PENDING)
-  sentAt      DateTime?
-  respondedAt DateTime?
-  createdAt   DateTime              @default(now())
-
-  game        TeamGame              @relation(fields: [gameId], references: [id], onDelete: Cascade)
-  member      TeamMember            @relation(fields: [memberId], references: [id], onDelete: Cascade)
-
-  @@unique([gameId, memberId])
-}
-
-enum BookingStatus {
-  PENDING
-  CONFIRMED
-  DECLINED
-  CANCELLED
-}
-
 model Booking {
-  id         String        @id @default(cuid())
-  requestId  Int
-  userId     String
-  status     BookingStatus @default(PENDING)
-  message    String?
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
+  id        String        @id @default(cuid())
+  requestId Int
+  userId    String
+  status    BookingStatus @default(PENDING)
+  message   String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
 
-  request    Request       @relation(fields: [requestId], references: [id], onDelete: Cascade)
-  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  request Request @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([requestId, userId])
+}
+
+model PlayerStat {
+  id          String   @id @default(cuid())
+  userId      String
+  teamId      String
+  leagueId    String?
+  season      String?
+  gamesPlayed Int      @default(0)
+  goals       Int      @default(0)
+  assists     Int      @default(0)
+  penaltyMins Int      @default(0)
+  updatedAt   DateTime @updatedAt
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team   Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  league League? @relation(fields: [leagueId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, teamId, season])
+  @@index([teamId])
+  @@index([leagueId])
 }

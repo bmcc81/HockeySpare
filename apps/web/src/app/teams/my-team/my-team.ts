@@ -35,6 +35,8 @@ export class MyTeamComponent implements OnInit {
   statsLoadingMemberId: string | null = null;
   statsSeasonHasRecord: boolean | null = null;
 
+  linkingMemberId: string | null = null;
+
   statForm = this.fb.group({
     season: [
       `${new Date().getFullYear()}-${new Date().getFullYear() + 1}`,
@@ -571,5 +573,38 @@ export class MyTeamComponent implements OnInit {
 
   canEditStats(player: TeamMember): boolean {
     return !!player.userId;
+  }
+
+  linkPlayerAccount(player: TeamMember) {
+    if (!this.canManageTeam) {
+      this.error = 'You do not have permission to link player accounts.';
+      return;
+    }
+
+    if (player.userId) {
+      return;
+    }
+
+    if (!player.email) {
+      this.error = 'This player needs an email before they can be linked.';
+      return;
+    }
+
+    this.linkingMemberId = player.id;
+    this.error = '';
+
+    this.teamApi.linkMemberToUser(player.id).subscribe({
+      next: () => {
+        this.linkingMemberId = null;
+        this.reload();
+      },
+      error: (err) => {
+        this.linkingMemberId = null;
+        this.error =
+          err?.error?.message ||
+          'Could not link this player to an app account.';
+        this.cdr.detectChanges();
+      },
+    });
   }
 }

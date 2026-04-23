@@ -236,6 +236,17 @@
                     <td class="text-end" *ngIf="canManageTeam">
                       <div class="d-flex justify-content-end gap-2 flex-wrap">
                         <button
+                          *ngIf="!player.userId"
+                          class="btn btn-sm btn-outline-primary"
+                          type="button"
+                          (click)="linkPlayerAccount(player)"
+                          [disabled]="linkingMemberId === player.id"
+                          [title]="player.email ? 'Link this player to an existing app account' : 'This player needs an email first'"
+                        >
+                          Link
+                        </button>
+
+                        <button
                           class="btn btn-sm btn-outline-secondary"
                           type="button"
                           (click)="openStatEditor(player.id)"
@@ -258,7 +269,9 @@
                         *ngIf="!canEditStats(player)"
                         class="text-secondary small mt-1"
                       >
-                        Link this player to an app account to manage stats.
+                        {{ player.email ? 'Link this player to an app account to
+                        manage stats.' : 'Add an email to link this player to an
+                        app account.' }}
                       </div>
                     </td>
                   </tr>

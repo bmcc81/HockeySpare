@@ -406,6 +406,56 @@ export class TeamsService {
     });
   }
 
+  async linkMemberToUser(managerUserId: string, memberId: string) {
+    const team = await this.getManagedTeam(managerUserId);
+
+    const member = await this.prisma.teamMember.findFirst({
+      where: {
+        id: memberId,
+        teamId: team.id,
+        isActive: true,
+      },
+      select: {
+        id: true,
+        email: true,
+        userId: true,
+        displayName: true,
+      },
+    });
+
+    if (!member) {
+      throw new NotFoundException('Team member not found');
+    }
+
+    if (member.userId) {
+      return this.prisma.teamMember.findUnique({
+        where: { id: member.id },
+      });
+    }
+
+    if (!member.email) {
+      throw new NotFoundException('This player does not have an email to link');
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: { email: member.email },
+      select: { id: true, email: true },
+    });
+
+    if (!user) {
+      throw new NotFoundException(
+        'No app user exists with this player email yet',
+      );
+    }
+
+    return this.prisma.teamMember.update({
+      where: { id: member.id },
+      data: {
+        userId: user.id,
+      },
+    });
+  }
+
   async getMemberStats(
     managerUserId: string,
     memberId: string,

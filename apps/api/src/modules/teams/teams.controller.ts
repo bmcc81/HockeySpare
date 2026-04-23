@@ -110,4 +110,9 @@ export class TeamsController {
   ) {
     return this.teamsService.getMemberStats(req.user.sub, memberId, season);
   }
+
+  @Post('members/:memberId/link-user')
+  linkMemberToUser(@Req() req: any, @Param('memberId') memberId: string) {
+    return this.teamsService.linkMemberToUser(req.user.sub, memberId);
+  }
 }

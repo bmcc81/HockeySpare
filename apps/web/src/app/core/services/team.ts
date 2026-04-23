@@ -163,6 +163,10 @@ export class TeamService {
     return this.http.get<PlayerStat[]>('/api/my-team/stats/me');
   }
 
+  linkMemberToUser(memberId: string) {
+    return this.http.post(`/api/my-team/members/${memberId}/link-user`, {});
+  }
+
   upsertMemberStats(
     memberId: string,
     payload: {

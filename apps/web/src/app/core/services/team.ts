@@ -6,13 +6,17 @@ export type TeamMemberType = 'REGULAR' | 'SPARE';
 
 export interface TeamMember {
   id: string;
+  teamId: string;
+  userId?: string | null;
   displayName: string;
   email?: string | null;
   phone?: string | null;
-  position?: string | null;
-  memberType: TeamMemberType;
-  notifyByApp: boolean;
-  notifyByEmail: boolean;
+  position?: 'GOALIE' | 'DEFENSE' | 'FORWARD' | null;
+  memberType: 'REGULAR' | 'SPARE';
+  role?: 'PLAYER' | 'CAPTAIN' | 'GENERAL_MANAGER';
+  notifyByApp?: boolean;
+  notifyByEmail?: boolean;
+  isActive?: boolean;
 }
 
 export type TeamRole = 'PLAYER' | 'CAPTAIN' | 'GENERAL_MANAGER';
@@ -173,9 +177,18 @@ export class TeamService {
   }
 
   getMemberStats(memberId: string, season?: string) {
-    const query = season ? `?season=${encodeURIComponent(season)}` : '';
+    const params = new URLSearchParams();
+
+    if (season) {
+      params.set('season', season);
+    }
+
+    params.set('_ts', Date.now().toString());
+
+    const query = params.toString();
+
     return this.http.get<PlayerStat | null>(
-      `/api/my-team/stats/member/${memberId}${query}`,
+      `/api/my-team/stats/member/${memberId}?${query}`,
     );
   }
 }

@@ -33,6 +33,7 @@ export class MyTeamComponent implements OnInit {
   statEditorMemberId: string | null = null;
   statsSavingMemberId: string | null = null;
   statsLoadingMemberId: string | null = null;
+  statsSeasonHasRecord: boolean | null = null;
 
   statForm = this.fb.group({
     season: [
@@ -74,6 +75,15 @@ export class MyTeamComponent implements OnInit {
   ngOnInit(): void {
     this.reload();
     this.loadMyStats();
+
+    this.statForm.controls.season.valueChanges.subscribe((season) => {
+      if (!this.statEditorMemberId) return;
+
+      const normalizedSeason = (season ?? '').trim();
+      if (!normalizedSeason) return;
+
+      this.loadMemberStatsIntoForm(this.statEditorMemberId, normalizedSeason);
+    });
   }
 
   get regulars(): TeamMember[] {
@@ -104,30 +114,46 @@ export class MyTeamComponent implements OnInit {
     });
   }
 
-  openStatEditor(memberId: string) {
-    this.statEditorMemberId = memberId;
+  private defaultSeason(): string {
+    const year = new Date().getFullYear();
+    return `${year}-${year + 1}`;
+  }
+
+  loadMemberStatsIntoForm(memberId: string, season?: string) {
     this.statsLoadingMemberId = memberId;
+    this.statsSeasonHasRecord = null;
+    this.error = '';
 
-    this.statForm.reset({
-      season: `${new Date().getFullYear()}-${new Date().getFullYear() + 1}`,
-      gamesPlayed: 0,
-      goals: 0,
-      assists: 0,
-      penaltyMins: 0,
-    });
+    const fallbackSeason = season || this.defaultSeason();
 
-    this.teamApi.getMemberStats(memberId).subscribe({
+    this.teamApi.getMemberStats(memberId, season).subscribe({
       next: (stat) => {
         if (stat) {
-          this.statForm.patchValue({
-            season:
-              stat.season ??
-              `${new Date().getFullYear()}-${new Date().getFullYear() + 1}`,
-            gamesPlayed: stat.gamesPlayed ?? 0,
-            goals: stat.goals ?? 0,
-            assists: stat.assists ?? 0,
-            penaltyMins: stat.penaltyMins ?? 0,
-          });
+          this.statsSeasonHasRecord = true;
+
+          this.statForm.patchValue(
+            {
+              season: stat.season ?? fallbackSeason,
+              gamesPlayed: stat.gamesPlayed ?? 0,
+              goals: stat.goals ?? 0,
+              assists: stat.assists ?? 0,
+              penaltyMins: stat.penaltyMins ?? 0,
+            },
+            { emitEvent: false },
+          );
+        } else {
+          this.statsSeasonHasRecord = false;
+
+          this.statForm.patchValue(
+            {
+              season: fallbackSeason,
+              gamesPlayed: 0,
+              goals: 0,
+              assists: 0,
+              penaltyMins: 0,
+            },
+            { emitEvent: false },
+          );
         }
 
         this.statsLoadingMemberId = null;
@@ -135,17 +161,44 @@ export class MyTeamComponent implements OnInit {
       },
       error: () => {
         this.statsLoadingMemberId = null;
+        this.statsSeasonHasRecord = null;
         this.error = 'Could not load player stats.';
         this.cdr.detectChanges();
       },
     });
   }
 
+  openStatEditor(memberId: string) {
+    const player = this.regulars.find((p) => p.id === memberId);
+
+    if (!player?.userId) {
+      this.error =
+        'This player is not linked to an app account, so stats cannot be managed yet.';
+      return;
+    }
+
+    this.statEditorMemberId = memberId;
+    this.statsSeasonHasRecord = null;
+
+    this.statForm.reset({
+      season: this.defaultSeason(),
+      gamesPlayed: 0,
+      goals: 0,
+      assists: 0,
+      penaltyMins: 0,
+    });
+
+    this.loadMemberStatsIntoForm(memberId);
+  }
+
   cancelStatEditor() {
     this.statEditorMemberId = null;
     this.statsSavingMemberId = null;
+    this.statsLoadingMemberId = null;
+    this.statsSeasonHasRecord = null;
+
     this.statForm.reset({
-      season: `${new Date().getFullYear()}-${new Date().getFullYear() + 1}`,
+      season: this.defaultSeason(),
       gamesPlayed: 0,
       goals: 0,
       assists: 0,
@@ -514,5 +567,9 @@ export class MyTeamComponent implements OnInit {
       'NEED_SPARE',
       game ? this.getMyAvailabilityNote(game) : '',
     );
+  }
+
+  canEditStats(player: TeamMember): boolean {
+    return !!player.userId;
   }
 }

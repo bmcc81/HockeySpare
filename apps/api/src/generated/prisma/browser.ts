@@ -58,6 +58,11 @@ export type Team = Prisma.TeamModel
  */
 export type TeamMember = Prisma.TeamMemberModel
 /**
+ * Model PlayerStat
+ * 
+ */
+export type PlayerStat = Prisma.PlayerStatModel
+/**
  * Model TeamGame
  * 
  */
@@ -82,8 +87,3 @@ export type Notification = Prisma.NotificationModel
  * 
  */
 export type Booking = Prisma.BookingModel
-/**
- * Model PlayerStat
- * 
- */
-export type PlayerStat = Prisma.PlayerStatModel

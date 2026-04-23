@@ -395,17 +395,6 @@ export class TeamsService {
     });
   }
 
-  async getMyStats(userId: string) {
-    return this.prisma.playerStat.findMany({
-      where: { userId },
-      include: {
-        team: true,
-        league: true,
-      },
-      orderBy: [{ season: 'desc' }, { updatedAt: 'desc' }],
-    });
-  }
-
   async linkMemberToUser(managerUserId: string, memberId: string) {
     const team = await this.getManagedTeam(managerUserId);
 
@@ -444,7 +433,7 @@ export class TeamsService {
 
     if (!user) {
       throw new NotFoundException(
-        'No app user exists with this player email yet',
+        'No registered app account was found for this email. Ask the player to sign up first, or update the roster email to match their account.',
       );
     }
 
@@ -471,7 +460,6 @@ export class TeamsService {
       },
       select: {
         id: true,
-        userId: true,
       },
     });
 
@@ -479,18 +467,11 @@ export class TeamsService {
       throw new NotFoundException('Team member not found');
     }
 
-    if (!member.userId) {
-      throw new NotFoundException(
-        'This team member is not linked to a user account',
-      );
-    }
-
     if (season) {
       return this.prisma.playerStat.findUnique({
         where: {
-          userId_teamId_season: {
-            userId: member.userId,
-            teamId: team.id,
+          memberId_season: {
+            memberId: member.id,
             season,
           },
         },
@@ -499,8 +480,7 @@ export class TeamsService {
 
     return this.prisma.playerStat.findFirst({
       where: {
-        userId: member.userId,
-        teamId: team.id,
+        memberId: member.id,
       },
       orderBy: [{ season: 'desc' }, { updatedAt: 'desc' }],
     });
@@ -527,7 +507,6 @@ export class TeamsService {
       },
       select: {
         id: true,
-        displayName: true,
         userId: true,
       },
     });
@@ -536,21 +515,16 @@ export class TeamsService {
       throw new NotFoundException('Team member not found');
     }
 
-    if (!member.userId) {
-      throw new NotFoundException(
-        'This team member is not linked to a user account',
-      );
-    }
-
     return this.prisma.playerStat.upsert({
       where: {
-        userId_teamId_season: {
-          userId: member.userId,
-          teamId: team.id,
+        memberId_season: {
+          memberId: member.id,
           season: dto.season,
         },
       },
       update: {
+        userId: member.userId ?? null,
+        teamId: team.id,
         leagueId: team.leagueId ?? null,
         gamesPlayed: dto.gamesPlayed,
         goals: dto.goals,
@@ -558,7 +532,8 @@ export class TeamsService {
         penaltyMins: dto.penaltyMins,
       },
       create: {
-        userId: member.userId,
+        memberId: member.id,
+        userId: member.userId ?? undefined,
         teamId: team.id,
         leagueId: team.leagueId ?? undefined,
         season: dto.season,
@@ -567,6 +542,22 @@ export class TeamsService {
         assists: dto.assists,
         penaltyMins: dto.penaltyMins,
       },
+    });
+  }
+
+  async getMyStats(userId: string) {
+    return this.prisma.playerStat.findMany({
+      where: {
+        member: {
+          userId,
+        },
+      },
+      include: {
+        team: true,
+        league: true,
+        member: true,
+      },
+      orderBy: [{ season: 'desc' }, { updatedAt: 'desc' }],
     });
   }
 }

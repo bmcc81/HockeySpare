@@ -59,12 +59,12 @@ export const ModelName = {
   LeagueMember: 'LeagueMember',
   Team: 'Team',
   TeamMember: 'TeamMember',
+  PlayerStat: 'PlayerStat',
   TeamGame: 'TeamGame',
   TeamGameInvite: 'TeamGameInvite',
   TeamGameAvailability: 'TeamGameAvailability',
   Notification: 'Notification',
-  Booking: 'Booking',
-  PlayerStat: 'PlayerStat'
+  Booking: 'Booking'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -204,6 +204,23 @@ export const TeamMemberScalarFieldEnum = {
 export type TeamMemberScalarFieldEnum = (typeof TeamMemberScalarFieldEnum)[keyof typeof TeamMemberScalarFieldEnum]
 
 
+export const PlayerStatScalarFieldEnum = {
+  id: 'id',
+  memberId: 'memberId',
+  userId: 'userId',
+  teamId: 'teamId',
+  leagueId: 'leagueId',
+  season: 'season',
+  gamesPlayed: 'gamesPlayed',
+  goals: 'goals',
+  assists: 'assists',
+  penaltyMins: 'penaltyMins',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PlayerStatScalarFieldEnum = (typeof PlayerStatScalarFieldEnum)[keyof typeof PlayerStatScalarFieldEnum]
+
+
 export const TeamGameScalarFieldEnum = {
   id: 'id',
   teamId: 'teamId',
@@ -271,22 +288,6 @@ export const BookingScalarFieldEnum = {
 } as const
 
 export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
-
-
-export const PlayerStatScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  teamId: 'teamId',
-  leagueId: 'leagueId',
-  season: 'season',
-  gamesPlayed: 'gamesPlayed',
-  goals: 'goals',
-  assists: 'assists',
-  penaltyMins: 'penaltyMins',
-  updatedAt: 'updatedAt'
-} as const
-
-export type PlayerStatScalarFieldEnum = (typeof PlayerStatScalarFieldEnum)[keyof typeof PlayerStatScalarFieldEnum]
 
 
 export const SortOrder = {

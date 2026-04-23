@@ -465,20 +465,6 @@ export type TeamUpdateOneRequiredWithoutMembersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TeamUpdateToOneWithWhereWithoutMembersInput, Prisma.TeamUpdateWithoutMembersInput>, Prisma.TeamUncheckedUpdateWithoutMembersInput>
 }
 
-export type TeamCreateNestedOneWithoutGamesInput = {
-  create?: Prisma.XOR<Prisma.TeamCreateWithoutGamesInput, Prisma.TeamUncheckedCreateWithoutGamesInput>
-  connectOrCreate?: Prisma.TeamCreateOrConnectWithoutGamesInput
-  connect?: Prisma.TeamWhereUniqueInput
-}
-
-export type TeamUpdateOneRequiredWithoutGamesNestedInput = {
-  create?: Prisma.XOR<Prisma.TeamCreateWithoutGamesInput, Prisma.TeamUncheckedCreateWithoutGamesInput>
-  connectOrCreate?: Prisma.TeamCreateOrConnectWithoutGamesInput
-  upsert?: Prisma.TeamUpsertWithoutGamesInput
-  connect?: Prisma.TeamWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.TeamUpdateToOneWithWhereWithoutGamesInput, Prisma.TeamUpdateWithoutGamesInput>, Prisma.TeamUncheckedUpdateWithoutGamesInput>
-}
-
 export type TeamCreateNestedOneWithoutPlayerStatsInput = {
   create?: Prisma.XOR<Prisma.TeamCreateWithoutPlayerStatsInput, Prisma.TeamUncheckedCreateWithoutPlayerStatsInput>
   connectOrCreate?: Prisma.TeamCreateOrConnectWithoutPlayerStatsInput
@@ -491,6 +477,20 @@ export type TeamUpdateOneRequiredWithoutPlayerStatsNestedInput = {
   upsert?: Prisma.TeamUpsertWithoutPlayerStatsInput
   connect?: Prisma.TeamWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.TeamUpdateToOneWithWhereWithoutPlayerStatsInput, Prisma.TeamUpdateWithoutPlayerStatsInput>, Prisma.TeamUncheckedUpdateWithoutPlayerStatsInput>
+}
+
+export type TeamCreateNestedOneWithoutGamesInput = {
+  create?: Prisma.XOR<Prisma.TeamCreateWithoutGamesInput, Prisma.TeamUncheckedCreateWithoutGamesInput>
+  connectOrCreate?: Prisma.TeamCreateOrConnectWithoutGamesInput
+  connect?: Prisma.TeamWhereUniqueInput
+}
+
+export type TeamUpdateOneRequiredWithoutGamesNestedInput = {
+  create?: Prisma.XOR<Prisma.TeamCreateWithoutGamesInput, Prisma.TeamUncheckedCreateWithoutGamesInput>
+  connectOrCreate?: Prisma.TeamCreateOrConnectWithoutGamesInput
+  upsert?: Prisma.TeamUpsertWithoutGamesInput
+  connect?: Prisma.TeamWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TeamUpdateToOneWithWhereWithoutGamesInput, Prisma.TeamUpdateWithoutGamesInput>, Prisma.TeamUncheckedUpdateWithoutGamesInput>
 }
 
 export type TeamCreateWithoutCreatedByInput = {
@@ -661,66 +661,6 @@ export type TeamUncheckedUpdateWithoutMembersInput = {
   playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutTeamNestedInput
 }
 
-export type TeamCreateWithoutGamesInput = {
-  id?: string
-  name: string
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedTeamsInput
-  league?: Prisma.LeagueCreateNestedOneWithoutTeamsInput
-  members?: Prisma.TeamMemberCreateNestedManyWithoutTeamInput
-  playerStats?: Prisma.PlayerStatCreateNestedManyWithoutTeamInput
-}
-
-export type TeamUncheckedCreateWithoutGamesInput = {
-  id?: string
-  name: string
-  createdById?: string | null
-  leagueId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  members?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutTeamInput
-  playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutTeamInput
-}
-
-export type TeamCreateOrConnectWithoutGamesInput = {
-  where: Prisma.TeamWhereUniqueInput
-  create: Prisma.XOR<Prisma.TeamCreateWithoutGamesInput, Prisma.TeamUncheckedCreateWithoutGamesInput>
-}
-
-export type TeamUpsertWithoutGamesInput = {
-  update: Prisma.XOR<Prisma.TeamUpdateWithoutGamesInput, Prisma.TeamUncheckedUpdateWithoutGamesInput>
-  create: Prisma.XOR<Prisma.TeamCreateWithoutGamesInput, Prisma.TeamUncheckedCreateWithoutGamesInput>
-  where?: Prisma.TeamWhereInput
-}
-
-export type TeamUpdateToOneWithWhereWithoutGamesInput = {
-  where?: Prisma.TeamWhereInput
-  data: Prisma.XOR<Prisma.TeamUpdateWithoutGamesInput, Prisma.TeamUncheckedUpdateWithoutGamesInput>
-}
-
-export type TeamUpdateWithoutGamesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdBy?: Prisma.UserUpdateOneWithoutCreatedTeamsNestedInput
-  league?: Prisma.LeagueUpdateOneWithoutTeamsNestedInput
-  members?: Prisma.TeamMemberUpdateManyWithoutTeamNestedInput
-  playerStats?: Prisma.PlayerStatUpdateManyWithoutTeamNestedInput
-}
-
-export type TeamUncheckedUpdateWithoutGamesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  leagueId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  members?: Prisma.TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
-  playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutTeamNestedInput
-}
-
 export type TeamCreateWithoutPlayerStatsInput = {
   id?: string
   name: string
@@ -779,6 +719,66 @@ export type TeamUncheckedUpdateWithoutPlayerStatsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   members?: Prisma.TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
   games?: Prisma.TeamGameUncheckedUpdateManyWithoutTeamNestedInput
+}
+
+export type TeamCreateWithoutGamesInput = {
+  id?: string
+  name: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedTeamsInput
+  league?: Prisma.LeagueCreateNestedOneWithoutTeamsInput
+  members?: Prisma.TeamMemberCreateNestedManyWithoutTeamInput
+  playerStats?: Prisma.PlayerStatCreateNestedManyWithoutTeamInput
+}
+
+export type TeamUncheckedCreateWithoutGamesInput = {
+  id?: string
+  name: string
+  createdById?: string | null
+  leagueId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  members?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutTeamInput
+  playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutTeamInput
+}
+
+export type TeamCreateOrConnectWithoutGamesInput = {
+  where: Prisma.TeamWhereUniqueInput
+  create: Prisma.XOR<Prisma.TeamCreateWithoutGamesInput, Prisma.TeamUncheckedCreateWithoutGamesInput>
+}
+
+export type TeamUpsertWithoutGamesInput = {
+  update: Prisma.XOR<Prisma.TeamUpdateWithoutGamesInput, Prisma.TeamUncheckedUpdateWithoutGamesInput>
+  create: Prisma.XOR<Prisma.TeamCreateWithoutGamesInput, Prisma.TeamUncheckedCreateWithoutGamesInput>
+  where?: Prisma.TeamWhereInput
+}
+
+export type TeamUpdateToOneWithWhereWithoutGamesInput = {
+  where?: Prisma.TeamWhereInput
+  data: Prisma.XOR<Prisma.TeamUpdateWithoutGamesInput, Prisma.TeamUncheckedUpdateWithoutGamesInput>
+}
+
+export type TeamUpdateWithoutGamesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedTeamsNestedInput
+  league?: Prisma.LeagueUpdateOneWithoutTeamsNestedInput
+  members?: Prisma.TeamMemberUpdateManyWithoutTeamNestedInput
+  playerStats?: Prisma.PlayerStatUpdateManyWithoutTeamNestedInput
+}
+
+export type TeamUncheckedUpdateWithoutGamesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  leagueId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  members?: Prisma.TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+  playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamCreateManyCreatedByInput = {

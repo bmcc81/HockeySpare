@@ -88,11 +88,16 @@ export interface TeamGame {
 
 export interface PlayerStat {
   id: string;
-  season: string | null;
+  memberId: string;
+  userId?: string | null;
+  teamId: string;
+  leagueId?: string | null;
+  season: string;
   gamesPlayed: number;
   goals: number;
   assists: number;
   penaltyMins: number;
+  updatedAt: string;
   team: {
     id: string;
     name: string;
@@ -102,6 +107,10 @@ export interface PlayerStat {
     name: string;
     season?: string | null;
   } | null;
+  member?: {
+    id: string;
+    displayName: string;
+  };
 }
 
 @Injectable({ providedIn: 'root' })
@@ -189,10 +198,8 @@ export class TeamService {
 
     params.set('_ts', Date.now().toString());
 
-    const query = params.toString();
-
     return this.http.get<PlayerStat | null>(
-      `/api/my-team/stats/member/${memberId}?${query}`,
+      `/api/my-team/stats/member/${memberId}?${params.toString()}`,
     );
   }
 }

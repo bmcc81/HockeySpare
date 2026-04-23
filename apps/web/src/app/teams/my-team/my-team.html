@@ -236,22 +236,9 @@
                     <td class="text-end" *ngIf="canManageTeam">
                       <div class="d-flex justify-content-end gap-2 flex-wrap">
                         <button
-                          *ngIf="!player.userId"
-                          class="btn btn-sm btn-outline-primary"
-                          type="button"
-                          (click)="linkPlayerAccount(player)"
-                          [disabled]="linkingMemberId === player.id"
-                          [title]="player.email ? 'Link this player to an existing app account' : 'This player needs an email first'"
-                        >
-                          Link
-                        </button>
-
-                        <button
                           class="btn btn-sm btn-outline-secondary"
                           type="button"
                           (click)="openStatEditor(player.id)"
-                          [disabled]="!canEditStats(player)"
-                          [title]="canEditStats(player) ? 'Edit player stats' : 'Link this player to an app account first'"
                         >
                           Stats
                         </button>
@@ -264,20 +251,15 @@
                           Remove
                         </button>
                       </div>
-
-                      <div
-                        *ngIf="!canEditStats(player)"
-                        class="text-secondary small mt-1"
-                      >
-                        {{ player.email ? 'Link this player to an app account to
-                        manage stats.' : 'Add an email to link this player to an
-                        app account.' }}
-                      </div>
                     </td>
                   </tr>
 
                   <tr *ngIf="canManageTeam && statEditorMemberId === player.id">
                     <td colspan="4" class="bg-transparent">
+                      <div class="fw-semibold mb-2">
+                        Editing stats for {{ statEditorPlayerName() }}
+                      </div>
+
                       <div
                         *ngIf="statsLoadingMemberId === player.id"
                         class="text-secondary small mb-2"
@@ -410,19 +392,135 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let player of spares">
-                  <td>{{ player.displayName }}</td>
-                  <td>{{ player.email || player.phone || 'No contact' }}</td>
-                  <td>{{ player.position || 'N/A' }}</td>
-                  <td class="text-end" *ngIf="canManageTeam">
-                    <button
-                      class="btn btn-sm btn-outline-danger"
-                      (click)="removeMember(player.id)"
-                    >
-                      Remove
-                    </button>
-                  </td>
-                </tr>
+                <ng-container *ngFor="let player of spares">
+                  <tr>
+                    <td>{{ player.displayName }}</td>
+                    <td>{{ player.email || player.phone || 'No contact' }}</td>
+                    <td>{{ player.position || 'N/A' }}</td>
+                    <td class="text-end" *ngIf="canManageTeam">
+                      <div class="d-flex justify-content-end gap-2 flex-wrap">
+                        <button
+                          class="btn btn-sm btn-outline-secondary"
+                          type="button"
+                          (click)="openStatEditor(player.id)"
+                        >
+                          Stats
+                        </button>
+
+                        <button
+                          class="btn btn-sm btn-outline-danger"
+                          type="button"
+                          (click)="removeMember(player.id)"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr *ngIf="canManageTeam && statEditorMemberId === player.id">
+                    <td colspan="4" class="bg-transparent">
+                      <div class="fw-semibold mb-2">
+                        Editing stats for {{ statEditorPlayerName() }}
+                      </div>
+
+                      <div
+                        *ngIf="statsLoadingMemberId === player.id"
+                        class="text-secondary small mb-2"
+                      >
+                        Loading existing stats...
+                      </div>
+
+                      <div
+                        *ngIf="statsLoadingMemberId !== player.id && statsSeasonHasRecord === true"
+                        class="alert alert-info py-2 mb-2"
+                      >
+                        Existing stats found for this season. Saving will update
+                        them.
+                      </div>
+
+                      <div
+                        *ngIf="statsLoadingMemberId !== player.id && statsSeasonHasRecord === false"
+                        class="alert alert-secondary py-2 mb-2"
+                      >
+                        No stats found for this season yet. Saving will create a
+                        new record.
+                      </div>
+
+                      <form
+                        [formGroup]="statForm"
+                        (ngSubmit)="saveMemberStats(player.id)"
+                        class="row g-2 align-items-end mt-1"
+                      >
+                        <div class="col-12 col-md-3">
+                          <label class="form-label">Season</label>
+                          <input
+                            class="form-control"
+                            formControlName="season"
+                            placeholder="2026-2027"
+                          />
+                        </div>
+
+                        <div class="col-6 col-md-2">
+                          <label class="form-label">GP</label>
+                          <input
+                            class="form-control"
+                            type="number"
+                            formControlName="gamesPlayed"
+                          />
+                        </div>
+
+                        <div class="col-6 col-md-2">
+                          <label class="form-label">G</label>
+                          <input
+                            class="form-control"
+                            type="number"
+                            formControlName="goals"
+                          />
+                        </div>
+
+                        <div class="col-6 col-md-2">
+                          <label class="form-label">A</label>
+                          <input
+                            class="form-control"
+                            type="number"
+                            formControlName="assists"
+                          />
+                        </div>
+
+                        <div class="col-6 col-md-2">
+                          <label class="form-label">PIM</label>
+                          <input
+                            class="form-control"
+                            type="number"
+                            formControlName="penaltyMins"
+                          />
+                        </div>
+
+                        <div class="col-12 col-md-1 d-flex gap-2">
+                          <button
+                            class="btn btn-primary btn-sm w-100"
+                            type="submit"
+                            [disabled]="statsSavingMemberId === player.id"
+                          >
+                            Save
+                          </button>
+                        </div>
+
+                        <div class="col-12">
+                          <button
+                            class="btn btn-outline-secondary btn-sm"
+                            type="button"
+                            (click)="cancelStatEditor()"
+                            [disabled]="statsSavingMemberId === player.id"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </form>
+                    </td>
+                  </tr>
+                </ng-container>
 
                 <tr *ngIf="spares.length === 0">
                   <td
@@ -447,33 +545,131 @@
             </span>
           </div>
 
-          <div *ngIf="myStats.length; else noStatsTpl" class="table-responsive">
-            <table class="table align-middle mb-0">
+          <form [formGroup]="statsFilterForm" class="row g-2 mb-3">
+            <div class="col-12 col-md-5">
+              <input
+                class="form-control"
+                formControlName="season"
+                placeholder="Filter by season"
+              />
+            </div>
+
+            <div class="col-12 col-md-5">
+              <input
+                class="form-control"
+                formControlName="team"
+                placeholder="Filter by team"
+              />
+            </div>
+
+            <div class="col-12 col-md-2">
+              <button
+                class="btn btn-outline-secondary w-100"
+                type="button"
+                (click)="clearStatsFilters()"
+              >
+                Clear
+              </button>
+            </div>
+          </form>
+
+          <ng-container *ngIf="filteredAndSortedMyStats.length; else noStatsTpl">
+            <table class="table align-middle mb-0 my-stats-table">
               <thead>
                 <tr>
-                  <th>Season</th>
-                  <th>Team</th>
-                  <th>GP</th>
-                  <th>G</th>
-                  <th>A</th>
-                  <th>PIM</th>
+                  <th>
+                    <button
+                      class="btn btn-link btn-sm p-0 text-decoration-none text-reset fw-semibold"
+                      type="button"
+                      (click)="setStatsSort('player')"
+                    >
+                      Player {{ statsSortIcon('player') }}
+                    </button>
+                  </th>
+                  <th>
+                    <button
+                      class="btn btn-link btn-sm p-0 text-decoration-none text-reset fw-semibold"
+                      type="button"
+                      (click)="setStatsSort('season')"
+                    >
+                      Season {{ statsSortIcon('season') }}
+                    </button>
+                  </th>
+                  <th>
+                    <button
+                      class="btn btn-link btn-sm p-0 text-decoration-none text-reset fw-semibold"
+                      type="button"
+                      (click)="setStatsSort('team')"
+                    >
+                      Team {{ statsSortIcon('team') }}
+                    </button>
+                  </th>
+                  <th>
+                    <button
+                      class="btn btn-link btn-sm p-0 text-decoration-none text-reset fw-semibold"
+                      type="button"
+                      (click)="setStatsSort('gamesPlayed')"
+                    >
+                      GP {{ statsSortIcon('gamesPlayed') }}
+                    </button>
+                  </th>
+                  <th>
+                    <button
+                      class="btn btn-link btn-sm p-0 text-decoration-none text-reset fw-semibold"
+                      type="button"
+                      (click)="setStatsSort('goals')"
+                    >
+                      G {{ statsSortIcon('goals') }}
+                    </button>
+                  </th>
+                  <th>
+                    <button
+                      class="btn btn-link btn-sm p-0 text-decoration-none text-reset fw-semibold"
+                      type="button"
+                      (click)="setStatsSort('assists')"
+                    >
+                      A {{ statsSortIcon('assists') }}
+                    </button>
+                  </th>
+                  <th>
+                    <button
+                      class="btn btn-link btn-sm p-0 text-decoration-none text-reset fw-semibold"
+                      type="button"
+                      (click)="setStatsSort('points')"
+                    >
+                      PTS {{ statsSortIcon('points') }}
+                    </button>
+                  </th>
+                  <th>
+                    <button
+                      class="btn btn-link btn-sm p-0 text-decoration-none text-reset fw-semibold"
+                      type="button"
+                      (click)="setStatsSort('penaltyMins')"
+                    >
+                      PIM {{ statsSortIcon('penaltyMins') }}
+                    </button>
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let stat of myStats">
-                  <td>{{ stat.season || 'N/A' }}</td>
-                  <td>{{ stat.team.name || 'N/A' }}</td>
+                <tr *ngFor="let stat of filteredAndSortedMyStats">
+                  <td>{{ stat.member?.displayName || 'N/A' }}</td>
+                  <td>{{ stat.season }}</td>
+                  <td>{{ stat.team.name }}</td>
                   <td>{{ stat.gamesPlayed }}</td>
                   <td>{{ stat.goals }}</td>
                   <td>{{ stat.assists }}</td>
+                  <td>{{ stat.goals + stat.assists }}</td>
                   <td>{{ stat.penaltyMins }}</td>
                 </tr>
               </tbody>
             </table>
-          </div>
+          </ng-container>
 
           <ng-template #noStatsTpl>
-            <div class="text-secondary">No stats recorded yet.</div>
+            <div class="text-secondary">
+              {{ myStats.length ? 'No stats match your filters.' : 'No stats recorded yet.' }}
+            </div>
           </ng-template>
         </div>
       </div>

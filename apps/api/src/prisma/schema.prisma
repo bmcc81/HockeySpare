@@ -242,9 +242,34 @@ model TeamMember {
   user           User?                  @relation("UserTeamMemberships", fields: [userId], references: [id], onDelete: SetNull)
   invites        TeamGameInvite[]
   availabilities TeamGameAvailability[]
+  playerStats    PlayerStat[]
 
   @@index([teamId, memberType])
   @@index([teamId, role])
+}
+
+model PlayerStat {
+  id          String   @id @default(cuid())
+  memberId    String
+  userId      String?
+  teamId      String
+  leagueId    String?
+  season      String
+  gamesPlayed Int      @default(0)
+  goals       Int      @default(0)
+  assists     Int      @default(0)
+  penaltyMins Int      @default(0)
+  updatedAt   DateTime @updatedAt
+
+  member TeamMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  user   User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  team   Team       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  league League?    @relation(fields: [leagueId], references: [id], onDelete: SetNull)
+
+  @@unique([memberId, season])
+  @@index([teamId])
+  @@index([leagueId])
+  @@index([userId])
 }
 
 model TeamGame {
@@ -325,25 +350,4 @@ model Booking {
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([requestId, userId])
-}
-
-model PlayerStat {
-  id          String   @id @default(cuid())
-  userId      String
-  teamId      String
-  leagueId    String?
-  season      String?
-  gamesPlayed Int      @default(0)
-  goals       Int      @default(0)
-  assists     Int      @default(0)
-  penaltyMins Int      @default(0)
-  updatedAt   DateTime @updatedAt
-
-  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  team   Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  league League? @relation(fields: [leagueId], references: [id], onDelete: SetNull)
-
-  @@unique([userId, teamId, season])
-  @@index([teamId])
-  @@index([leagueId])
 }

@@ -392,12 +392,12 @@ export const ModelName = {
   LeagueMember: 'LeagueMember',
   Team: 'Team',
   TeamMember: 'TeamMember',
+  PlayerStat: 'PlayerStat',
   TeamGame: 'TeamGame',
   TeamGameInvite: 'TeamGameInvite',
   TeamGameAvailability: 'TeamGameAvailability',
   Notification: 'Notification',
-  Booking: 'Booking',
-  PlayerStat: 'PlayerStat'
+  Booking: 'Booking'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -413,7 +413,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "request" | "requestResponse" | "playerOffer" | "user" | "league" | "leagueMember" | "team" | "teamMember" | "teamGame" | "teamGameInvite" | "teamGameAvailability" | "notification" | "booking" | "playerStat"
+    modelProps: "request" | "requestResponse" | "playerOffer" | "user" | "league" | "leagueMember" | "team" | "teamMember" | "playerStat" | "teamGame" | "teamGameInvite" | "teamGameAvailability" | "notification" | "booking"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1009,6 +1009,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PlayerStat: {
+      payload: Prisma.$PlayerStatPayload<ExtArgs>
+      fields: Prisma.PlayerStatFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PlayerStatFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlayerStatPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PlayerStatFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlayerStatPayload>
+        }
+        findFirst: {
+          args: Prisma.PlayerStatFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlayerStatPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PlayerStatFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlayerStatPayload>
+        }
+        findMany: {
+          args: Prisma.PlayerStatFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlayerStatPayload>[]
+        }
+        create: {
+          args: Prisma.PlayerStatCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlayerStatPayload>
+        }
+        createMany: {
+          args: Prisma.PlayerStatCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PlayerStatCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlayerStatPayload>[]
+        }
+        delete: {
+          args: Prisma.PlayerStatDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlayerStatPayload>
+        }
+        update: {
+          args: Prisma.PlayerStatUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlayerStatPayload>
+        }
+        deleteMany: {
+          args: Prisma.PlayerStatDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PlayerStatUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PlayerStatUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlayerStatPayload>[]
+        }
+        upsert: {
+          args: Prisma.PlayerStatUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlayerStatPayload>
+        }
+        aggregate: {
+          args: Prisma.PlayerStatAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePlayerStat>
+        }
+        groupBy: {
+          args: Prisma.PlayerStatGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlayerStatGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PlayerStatCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlayerStatCountAggregateOutputType> | number
+        }
+      }
+    }
     TeamGame: {
       payload: Prisma.$TeamGamePayload<ExtArgs>
       fields: Prisma.TeamGameFieldRefs
@@ -1379,80 +1453,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    PlayerStat: {
-      payload: Prisma.$PlayerStatPayload<ExtArgs>
-      fields: Prisma.PlayerStatFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.PlayerStatFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlayerStatPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.PlayerStatFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlayerStatPayload>
-        }
-        findFirst: {
-          args: Prisma.PlayerStatFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlayerStatPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.PlayerStatFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlayerStatPayload>
-        }
-        findMany: {
-          args: Prisma.PlayerStatFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlayerStatPayload>[]
-        }
-        create: {
-          args: Prisma.PlayerStatCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlayerStatPayload>
-        }
-        createMany: {
-          args: Prisma.PlayerStatCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.PlayerStatCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlayerStatPayload>[]
-        }
-        delete: {
-          args: Prisma.PlayerStatDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlayerStatPayload>
-        }
-        update: {
-          args: Prisma.PlayerStatUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlayerStatPayload>
-        }
-        deleteMany: {
-          args: Prisma.PlayerStatDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.PlayerStatUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.PlayerStatUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlayerStatPayload>[]
-        }
-        upsert: {
-          args: Prisma.PlayerStatUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlayerStatPayload>
-        }
-        aggregate: {
-          args: Prisma.PlayerStatAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregatePlayerStat>
-        }
-        groupBy: {
-          args: Prisma.PlayerStatGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.PlayerStatGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.PlayerStatCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.PlayerStatCountAggregateOutputType> | number
-        }
-      }
-    }
   }
 } & {
   other: {
@@ -1613,6 +1613,23 @@ export const TeamMemberScalarFieldEnum = {
 export type TeamMemberScalarFieldEnum = (typeof TeamMemberScalarFieldEnum)[keyof typeof TeamMemberScalarFieldEnum]
 
 
+export const PlayerStatScalarFieldEnum = {
+  id: 'id',
+  memberId: 'memberId',
+  userId: 'userId',
+  teamId: 'teamId',
+  leagueId: 'leagueId',
+  season: 'season',
+  gamesPlayed: 'gamesPlayed',
+  goals: 'goals',
+  assists: 'assists',
+  penaltyMins: 'penaltyMins',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PlayerStatScalarFieldEnum = (typeof PlayerStatScalarFieldEnum)[keyof typeof PlayerStatScalarFieldEnum]
+
+
 export const TeamGameScalarFieldEnum = {
   id: 'id',
   teamId: 'teamId',
@@ -1680,22 +1697,6 @@ export const BookingScalarFieldEnum = {
 } as const
 
 export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
-
-
-export const PlayerStatScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  teamId: 'teamId',
-  leagueId: 'leagueId',
-  season: 'season',
-  gamesPlayed: 'gamesPlayed',
-  goals: 'goals',
-  assists: 'assists',
-  penaltyMins: 'penaltyMins',
-  updatedAt: 'updatedAt'
-} as const
-
-export type PlayerStatScalarFieldEnum = (typeof PlayerStatScalarFieldEnum)[keyof typeof PlayerStatScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -2120,12 +2121,12 @@ export type GlobalOmitConfig = {
   leagueMember?: Prisma.LeagueMemberOmit
   team?: Prisma.TeamOmit
   teamMember?: Prisma.TeamMemberOmit
+  playerStat?: Prisma.PlayerStatOmit
   teamGame?: Prisma.TeamGameOmit
   teamGameInvite?: Prisma.TeamGameInviteOmit
   teamGameAvailability?: Prisma.TeamGameAvailabilityOmit
   notification?: Prisma.NotificationOmit
   booking?: Prisma.BookingOmit
-  playerStat?: Prisma.PlayerStatOmit
 }
 
 /* Types for Logging */

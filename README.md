@@ -1,157 +1,215 @@
 # HockeySpare
 
-App	                  Where to run	  Command
-Backend (NestJS)	    apps/api	      npm run start:dev
-Frontend (Angular)	  apps/web	      ng serve -o
+HockeySpare is a hockey team and league management app built with:
 
-✔ Backend running? http://localhost:3000/requests
+- **Backend:** NestJS
+- **Frontend:** Angular
+- **Database:** PostgreSQL with Prisma
 
-✔ Frontend running? http://localhost:4200
+---
 
-✔ CORS enabled? <br> <br>
+## Run the app locally
 
-# What each role should do 
-<br>
+| App | Folder | Command |
+|---|---|---|
+| Backend (NestJS) | `apps/api` | `npm run start:dev` |
+| Frontend (Angular) | `apps/web` | `ng serve -o` |
 
-# Player <br>
+## Local URLs
 
-A normal logged-in player can: <br>
+- **Backend:** `http://localhost:3000`
+- **Frontend:** `http://localhost:4200`
 
-- view their stats <br>
-- view team schedule <br>
-- see upcoming games <br>
-- message the team <br>
-- mark themselves unavailable for a game <br>
-- send a message to the captain/GM saying they need a spare <br>
+## Checks
 
-# Captain <br>
+- Backend running: `http://localhost:3000/requests`
+- Frontend running: `http://localhost:4200`
+- CORS enabled: make sure the frontend origin is allowed in the backend config
 
-# Captain can do everything a player can, plus: <br>
+---
 
-- receive player absence messages <br>
-- manage roster for their team <br>
-- confirm lineups <br>
-- request a spare <br>
-- communicate with players <br>
+## Roles and permissions
 
-# General Manager <br>
+### Player
 
-# GM can do everything a captain can, plus: <br>
+A normal logged-in player can:
 
-- create and edit schedules <br>
-- manage teams and rosters <br>
-- assign captains <br>
-- update team stats <br>
-- oversee team bookings/spares <br>
+- View their stats
+- View team schedule
+- See upcoming games
+- Message the team
+- Mark themselves unavailable for a game
+- Send a message to the captain or GM saying they need a spare
 
-# League Manager <br> <br>
+### Captain
 
-This is the better role for “manage a league”: <br> <br>
+A captain can do everything a player can, plus:
 
-- create season schedules <br>
-- manage standings <br>
-- update league-wide statistics <br>
-- manage teams inside the league <br>
+- Receive player absence messages
+- Manage roster for their team
+- Confirm lineups
+- Request a spare
+- Communicate with players
 
-----------------
-# Work Flow
+### General Manager
 
-# That gives you this exact workflow:
+A GM can do everything a captain can, plus:
 
-1 - Player opens upcoming game <br>
-2 - Clicks Can’t make it <br>
-3 - Optionally writes a note <br>
-4 - Chooses Need spare <br>
-5 - Captain/GM gets notified <br>
-6 - System can auto-create a spare request <br>
+- Create and edit schedules
+- Manage teams and rosters
+- Assign captains
+- Update team stats
+- Oversee team bookings and spares
 
-Backend permission approach <br> <br>
+### League Manager
 
-In NestJS, you can protect endpoints by membership role, not just logged-in status. <br> <br>
+This is the better role for managing a league.
 
-# Examples: <br> <br>
+A league manager can:
 
-POST /teams/:id/schedule → captain or GM <br>
-POST /leagues/:id/games → league manager <br>
-PATCH /games/:id/stats → captain, GM, or league manager <br>
-POST /games/:id/availability → any team player in that game <br>
-POST /games/:id/request-spare → captain or GM <br> <br>
+- Create season schedules
+- Manage standings
+- Update league-wide statistics
+- Manage teams inside the league
 
-# Frontend behavior
+---
 
-When logged in, show different dashboard sections based on the user’s memberships. <br> <br>
+## Workflow
 
-<b>Player dashboard</b> <br>
-- My schedule <br>
-- My statsMy schedule <br>
-- My schedule <br>
-- Team chat/messages <br>
-- Upcoming games <br>
-- My schedule <br> <br>
+This gives you the following workflow:
 
-<b>Captain dashboard</b> <br>
-- Team lineup <br>
-- Missing players <br>
-- Spare requests <br>
-- Messages from players <br>
+1. Player opens an upcoming game
+2. Clicks **Can’t make it**
+3. Optionally writes a note
+4. Chooses **Need spare**
+5. Captain or GM gets notified
+6. System can auto-create a spare request
 
-<b>GM dashboard</b> <br>
-- Team management <br>
-- Schedule editor <br>
-- Stats updates <br>
-- League/team overview <br> <br>
+---
 
-<b>League manager dashboard</b> <br>
-- League schedule <br>
-- Standings <br>
-- Team registration <br>
-- Stat administration <br> <br>
+## Backend permission approach
 
-For HockeySpare, I would implement these first: <br>
+In NestJS, you can protect endpoints by **membership role**, not just logged-in status.
 
-PLAYER <br>
-CAPTAIN <br>
-GENERAL_MANAGER <br>
-LEAGUE_MANAGER <br>
+### Examples
 
-Stored in membership tables, not directly as one role on User. <br>
+- `POST /teams/:id/schedule` → captain or GM
+- `POST /leagues/:id/games` → league manager
+- `PATCH /games/:id/stats` → captain, GM, or league manager
+- `POST /games/:id/availability` → any team player in that game
+- `POST /games/:id/request-spare` → captain or GM
 
------------------
-In order to view the database: <br>
+---
 
-cd apps\api <br> <br>
+## Frontend behavior
 
-npx prisma studio <br> <br>
+When logged in, show different dashboard sections based on the user’s memberships.
 
-GET DOCKER DESKTOP RUNNING:
-Start-Process "$Env:ProgramFiles\Docker\Docker\Docker Desktop.exe"
+### Player dashboard
 
-192.168.2.11
-# How to deploy on rasberry Pi:3
-1 - ssh pi@raspberrypi.local <br>
-2 - cd /opt/hockeyspare <br>
-3 - git pull  <br>
-4 - pi@raspberrypi:/opt/hockeyspare $ npm --prefix apps/web run build -- --configuration production  <br>
-5 - sudo rsync -av --delete /opt/hockeyspare/apps/web/dist/hockeyspare-web/browser/ /var/www/hockeyspare/browser/ <br>
+- My schedule
+- My stats
+- Team chat / messages
+- Upcoming games
+
+### Captain dashboard
+
+- Team lineup
+- Missing players
+- Spare requests
+- Messages from players
+
+### GM dashboard
+
+- Team management
+- Schedule editor
+- Stats updates
+- League / team overview
+
+### League manager dashboard
+
+- League schedule
+- Standings
+- Team registration
+- Stat administration
+
+---
+
+## Recommended first roles to implement
+
+For HockeySpare, implement these first:
+
+- `PLAYER`
+- `CAPTAIN`
+- `GENERAL_MANAGER`
+- `LEAGUE_MANAGER`
+
+Store these in **membership tables**, not directly as a single role on `User`.
+
+---
+
+## View the database
+
+To open Prisma Studio:
+
+```bash
+cd apps/api
+npx prisma studio
 
 
+## Raspberry Pi deployment
 
-# Reset Data in PostGres:
+Pi IP:
+`192.168.2.11`
 
-<b>1 - Enter PostGres:</b>
-<br>
-sudo -u postgres psql<br>
+### Quick deploy
 
-<b>2 - Then inside psql:</b>
-<br>
-DROP DATABASE hockeyspare;<br>
-CREATE DATABASE hockeyspare OWNER hockeyspare;<br>
-\q
+1. SSH into the Pi
 
-<b>3 - Then recreate your Prisma schema:</b>
-<br>
-cd /opt/hockeyspare/apps/api<br>
-npx prisma migrate deploy<br>
-<br>
-<b>4 - If you are using dev migrations:</b><br>
-npx prisma migrate dev<br>
+```bash
+ssh pi@raspberrypi.local
+
+
+Go to the project folder
+
+
+cd /opt/hockeyspare
+
+
+Pull the latest code
+
+
+git checkout maingit pull origin mainnpm install
+
+
+Build the frontend
+
+
+npm --prefix apps/web run build -- --configuration production
+
+
+Deploy the frontend to Nginx
+
+
+sudo rsync -av --delete /opt/hockeyspare/apps/web/dist/hockeyspare-web/browser/ /var/www/hockeyspare/browser/sudo nginx -tsudo systemctl reload nginx
+
+If you also changed the backend
+cd /opt/hockeyspare/apps/apinpm installnpm run buildsudo systemctl restart hockeyspare-apisudo systemctl status hockeyspare-api --no-pager
+
+If Prisma schema changed
+cd /opt/hockeyspare/apps/apinpx prisma migrate deploy
+If you are using dev migrations instead:
+npx prisma migrate dev
+
+Test the deployment
+curl -I http://127.0.0.1curl -I https://hockeyspare.webinkgraphics.com
+
+If the site does not update right away
+Hard refresh in the browser:
+Ctrl + F5
+
+If something fails on the Pi
+Run these commands and check the output:
+cd /opt/hockeyspare/apps/web && npm run buildsudo systemctl status hockeyspare-api --no-pagersudo nginx -t
+If you want the **full README with this section merged in**, I’ll format the whole file as one polished version.
+

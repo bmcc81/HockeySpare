@@ -30,6 +30,21 @@ export class MyTeamComponent implements OnInit {
   availabilityComposerStatus: TeamGameAvailabilityStatus | null = null;
   myStats: PlayerStat[] = [];
 
+  statEditorMemberId: string | null = null;
+  statsSavingMemberId: string | null = null;
+  statsLoadingMemberId: string | null = null;
+
+  statForm = this.fb.group({
+    season: [
+      `${new Date().getFullYear()}-${new Date().getFullYear() + 1}`,
+      Validators.required,
+    ],
+    gamesPlayed: [0, [Validators.required, Validators.min(0)]],
+    goals: [0, [Validators.required, Validators.min(0)]],
+    assists: [0, [Validators.required, Validators.min(0)]],
+    penaltyMins: [0, [Validators.required, Validators.min(0)]],
+  });
+
   availabilityForm = this.fb.group({
     note: ['', [Validators.maxLength(500)]],
   });
@@ -87,6 +102,94 @@ export class MyTeamComponent implements OnInit {
         console.warn('Could not load player stats:', err);
       },
     });
+  }
+
+  openStatEditor(memberId: string) {
+    this.statEditorMemberId = memberId;
+    this.statsLoadingMemberId = memberId;
+
+    this.statForm.reset({
+      season: `${new Date().getFullYear()}-${new Date().getFullYear() + 1}`,
+      gamesPlayed: 0,
+      goals: 0,
+      assists: 0,
+      penaltyMins: 0,
+    });
+
+    this.teamApi.getMemberStats(memberId).subscribe({
+      next: (stat) => {
+        if (stat) {
+          this.statForm.patchValue({
+            season:
+              stat.season ??
+              `${new Date().getFullYear()}-${new Date().getFullYear() + 1}`,
+            gamesPlayed: stat.gamesPlayed ?? 0,
+            goals: stat.goals ?? 0,
+            assists: stat.assists ?? 0,
+            penaltyMins: stat.penaltyMins ?? 0,
+          });
+        }
+
+        this.statsLoadingMemberId = null;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.statsLoadingMemberId = null;
+        this.error = 'Could not load player stats.';
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  cancelStatEditor() {
+    this.statEditorMemberId = null;
+    this.statsSavingMemberId = null;
+    this.statForm.reset({
+      season: `${new Date().getFullYear()}-${new Date().getFullYear() + 1}`,
+      gamesPlayed: 0,
+      goals: 0,
+      assists: 0,
+      penaltyMins: 0,
+    });
+  }
+
+  saveMemberStats(memberId: string) {
+    if (!this.canManageTeam) {
+      this.error = 'You do not have permission to update stats.';
+      return;
+    }
+
+    if (this.statForm.invalid) {
+      this.statForm.markAllAsTouched();
+      return;
+    }
+
+    const raw = this.statForm.getRawValue();
+
+    this.statsSavingMemberId = memberId;
+    this.error = '';
+
+    this.teamApi
+      .upsertMemberStats(memberId, {
+        season: raw.season ?? '',
+        gamesPlayed: Number(raw.gamesPlayed ?? 0),
+        goals: Number(raw.goals ?? 0),
+        assists: Number(raw.assists ?? 0),
+        penaltyMins: Number(raw.penaltyMins ?? 0),
+      })
+      .subscribe({
+        next: () => {
+          this.statsSavingMemberId = null;
+          this.cancelStatEditor();
+          this.loadMyStats();
+          this.reload();
+        },
+        error: () => {
+          this.statsSavingMemberId = null;
+          this.error = 'Could not save player stats.';
+          this.cdr.detectChanges();
+        },
+      });
   }
 
   openAvailabilityComposer(

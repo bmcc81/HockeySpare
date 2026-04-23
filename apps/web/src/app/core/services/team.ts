@@ -158,4 +158,24 @@ export class TeamService {
   getMyStats() {
     return this.http.get<PlayerStat[]>('/api/my-team/stats/me');
   }
+
+  upsertMemberStats(
+    memberId: string,
+    payload: {
+      season: string;
+      gamesPlayed: number;
+      goals: number;
+      assists: number;
+      penaltyMins: number;
+    },
+  ) {
+    return this.http.post(`/api/my-team/stats/member/${memberId}`, payload);
+  }
+
+  getMemberStats(memberId: string, season?: string) {
+    const query = season ? `?season=${encodeURIComponent(season)}` : '';
+    return this.http.get<PlayerStat | null>(
+      `/api/my-team/stats/member/${memberId}${query}`,
+    );
+  }
 }

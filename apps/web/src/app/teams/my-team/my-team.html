@@ -212,9 +212,9 @@
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h3 class="panel-title mb-0">Regular Players</h3>
-            <span class="badge rounded-pill text-bg-primary"
-              >{{ regulars.length }}</span
-            >
+            <span class="badge rounded-pill text-bg-primary">
+              {{ regulars.length }}
+            </span>
           </div>
 
           <div class="table-responsive">
@@ -228,19 +228,113 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let player of regulars">
-                  <td>{{ player.displayName }}</td>
-                  <td>{{ player.email || player.phone || 'No contact' }}</td>
-                  <td>{{ player.position || 'N/A' }}</td>
-                  <td class="text-end" *ngIf="canManageTeam">
-                    <button
-                      class="btn btn-sm btn-outline-danger"
-                      (click)="removeMember(player.id)"
-                    >
-                      Remove
-                    </button>
-                  </td>
-                </tr>
+                <ng-container *ngFor="let player of regulars">
+                  <tr>
+                    <td>{{ player.displayName }}</td>
+                    <td>{{ player.email || player.phone || 'No contact' }}</td>
+                    <td>{{ player.position || 'N/A' }}</td>
+                    <td class="text-end" *ngIf="canManageTeam">
+                      <div class="d-flex justify-content-end gap-2 flex-wrap">
+                        <button
+                          class="btn btn-sm btn-outline-secondary"
+                          type="button"
+                          (click)="openStatEditor(player.id)"
+                        >
+                          Stats
+                        </button>
+
+                        <button
+                          class="btn btn-sm btn-outline-danger"
+                          type="button"
+                          (click)="removeMember(player.id)"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr *ngIf="canManageTeam && statEditorMemberId === player.id">
+                    <td colspan="4" class="bg-transparent">
+                      <div
+                        *ngIf="statsLoadingMemberId === player.id"
+                        class="text-secondary small mb-2"
+                      >
+                        Loading existing stats...
+                      </div>
+                      <form
+                        [formGroup]="statForm"
+                        (ngSubmit)="saveMemberStats(player.id)"
+                        class="row g-2 align-items-end mt-1"
+                      >
+                        <div class="col-12 col-md-3">
+                          <label class="form-label">Season</label>
+                          <input
+                            class="form-control"
+                            formControlName="season"
+                          />
+                        </div>
+
+                        <div class="col-6 col-md-2">
+                          <label class="form-label">GP</label>
+                          <input
+                            class="form-control"
+                            type="number"
+                            formControlName="gamesPlayed"
+                          />
+                        </div>
+
+                        <div class="col-6 col-md-2">
+                          <label class="form-label">G</label>
+                          <input
+                            class="form-control"
+                            type="number"
+                            formControlName="goals"
+                          />
+                        </div>
+
+                        <div class="col-6 col-md-2">
+                          <label class="form-label">A</label>
+                          <input
+                            class="form-control"
+                            type="number"
+                            formControlName="assists"
+                          />
+                        </div>
+
+                        <div class="col-6 col-md-2">
+                          <label class="form-label">PIM</label>
+                          <input
+                            class="form-control"
+                            type="number"
+                            formControlName="penaltyMins"
+                          />
+                        </div>
+
+                        <div class="col-12 col-md-1 d-flex gap-2">
+                          <button
+                            class="btn btn-primary btn-sm w-100"
+                            type="submit"
+                            [disabled]="statsSavingMemberId === player.id"
+                          >
+                            Save
+                          </button>
+                        </div>
+
+                        <div class="col-12">
+                          <button
+                            class="btn btn-outline-secondary btn-sm"
+                            type="button"
+                            (click)="cancelStatEditor()"
+                            [disabled]="statsSavingMemberId === player.id"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </form>
+                    </td>
+                  </tr>
+                </ng-container>
 
                 <tr *ngIf="regulars.length === 0">
                   <td
@@ -260,9 +354,9 @@
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h3 class="panel-title mb-0">Spares</h3>
-            <span class="badge rounded-pill text-bg-info"
-              >{{ spares.length }}</span
-            >
+            <span class="badge rounded-pill text-bg-info">
+              {{ spares.length }}
+            </span>
           </div>
 
           <div class="table-responsive">
@@ -361,8 +455,8 @@
                       {{ game.startsAt | date:'medium' }}
                       <span *ngIf="game.arena"> • {{ game.arena }}</span>
                       <span *ngIf="game.opponent">
-                        • vs {{ game.opponent }}</span
-                      >
+                        • vs {{ game.opponent }}
+                      </span>
                     </div>
 
                     <div class="game-meta" *ngIf="game.invites.length">
@@ -375,10 +469,9 @@
                         *ngIf="availabilityLabel(getMyAvailability(game)) as statusLabel"
                       >
                         <strong
-                          [class.text-danger]="statusLabel === 'No response yet'"
+                          [class.text-danger]="statusLabel === 'No response yet' || statusLabel === 'Need spare'"
                           [class.text-success]="statusLabel === 'Available'"
                           [class.text-warning]="statusLabel === 'Can’t make it'"
-                          [class.text-info]="statusLabel === 'Need spare'"
                         >
                           {{ statusLabel }}
                         </strong>

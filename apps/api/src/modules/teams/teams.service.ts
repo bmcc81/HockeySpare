@@ -406,6 +406,56 @@ export class TeamsService {
     });
   }
 
+  async getMemberStats(
+    managerUserId: string,
+    memberId: string,
+    season?: string,
+  ) {
+    const team = await this.getManagedTeam(managerUserId);
+
+    const member = await this.prisma.teamMember.findFirst({
+      where: {
+        id: memberId,
+        teamId: team.id,
+        isActive: true,
+      },
+      select: {
+        id: true,
+        userId: true,
+      },
+    });
+
+    if (!member) {
+      throw new NotFoundException('Team member not found');
+    }
+
+    if (!member.userId) {
+      throw new NotFoundException(
+        'This team member is not linked to a user account',
+      );
+    }
+
+    if (season) {
+      return this.prisma.playerStat.findUnique({
+        where: {
+          userId_teamId_season: {
+            userId: member.userId,
+            teamId: team.id,
+            season,
+          },
+        },
+      });
+    }
+
+    return this.prisma.playerStat.findFirst({
+      where: {
+        userId: member.userId,
+        teamId: team.id,
+      },
+      orderBy: [{ season: 'desc' }, { updatedAt: 'desc' }],
+    });
+  }
+
   async upsertMemberStats(
     managerUserId: string,
     memberId: string,

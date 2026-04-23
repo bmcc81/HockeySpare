@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Patch,
   Req,
   UnauthorizedException,
@@ -99,5 +100,14 @@ export class TeamsController {
     @Body() dto: UpsertPlayerStatDto,
   ) {
     return this.teamsService.upsertMemberStats(req.user.sub, memberId, dto);
+  }
+
+  @Get('stats/member/:memberId')
+  getMemberStats(
+    @Req() req: any,
+    @Param('memberId') memberId: string,
+    @Query('season') season?: string,
+  ) {
+    return this.teamsService.getMemberStats(req.user.sub, memberId, season);
   }
 }

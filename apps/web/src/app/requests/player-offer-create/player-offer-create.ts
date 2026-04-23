@@ -4,7 +4,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Position, SkillLevel } from '@hockeyspare/contracts';
 import { Router } from '@angular/router';
 import { NgbTimepickerModule, NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
-import { RequestApiService } from 'src/app/core/services/request-api';
+import { RequestApiService } from '../../core/services/request-api';
 
 @Component({
   selector: 'app-player-offer-create',

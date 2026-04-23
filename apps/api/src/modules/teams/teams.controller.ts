@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Patch,
   Req,
   UnauthorizedException,
@@ -15,7 +16,9 @@ import { TeamsService } from './teams.service';
 import { CreateTeamMemberDto } from './dto/create-team-member.dto';
 import { CreateTeamGameDto } from './dto/create-team-game.dto';
 import { NotifyTeamGameDto } from './dto/notify-team-game.dto';
-import { UpdateTeamDto } from './dto/update-team.dto';  
+import { UpdateTeamDto } from './dto/update-team.dto';
+import { RespondToGameDto } from './dto/respond-to-game.dto';
+import { UpsertPlayerStatDto } from './dto/upsert-player-stat.dto';
 
 @Controller('my-team')
 @UseGuards(JwtAuthGuard)
@@ -64,5 +67,52 @@ export class TeamsController {
     @Body() dto: NotifyTeamGameDto,
   ) {
     return this.teamsService.notifyGame(this.getUserId(req), gameId, dto);
+  }
+
+  @Post('games/:gameId/availability')
+  respondToGame(
+    @Req() req: any,
+    @Param('gameId') gameId: string,
+    @Body() dto: RespondToGameDto,
+  ) {
+    return this.teamsService.respondToGame(
+      req.user.sub,
+      gameId,
+      dto.status,
+      dto.note,
+    );
+  }
+
+  @Get('games/:gameId/availability')
+  getGameAvailability(@Req() req: any, @Param('gameId') gameId: string) {
+    return this.teamsService.getGameAvailability(req.user.sub, gameId);
+  }
+
+  @Get('stats/me')
+  getMyStats(@Req() req: any) {
+    return this.teamsService.getMyStats(req.user.sub);
+  }
+
+  @Post('stats/member/:memberId')
+  upsertMemberStats(
+    @Req() req: any,
+    @Param('memberId') memberId: string,
+    @Body() dto: UpsertPlayerStatDto,
+  ) {
+    return this.teamsService.upsertMemberStats(req.user.sub, memberId, dto);
+  }
+
+  @Get('stats/member/:memberId')
+  getMemberStats(
+    @Req() req: any,
+    @Param('memberId') memberId: string,
+    @Query('season') season?: string,
+  ) {
+    return this.teamsService.getMemberStats(req.user.sub, memberId, season);
+  }
+
+  @Post('members/:memberId/link-user')
+  linkMemberToUser(@Req() req: any, @Param('memberId') memberId: string) {
+    return this.teamsService.linkMemberToUser(req.user.sub, memberId);
   }
 }

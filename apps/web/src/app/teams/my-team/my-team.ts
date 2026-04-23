@@ -1,7 +1,14 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TeamMember, MyTeamResponse, TeamService } from '../../core/services/team';
+import {
+  TeamMember,
+  MyTeamResponse,
+  TeamService,
+  TeamGame,
+  TeamGameAvailabilityStatus,
+  PlayerStat,
+} from '../../core/services/team';
 
 @Component({
   selector: 'app-my-team',
@@ -18,6 +25,16 @@ export class MyTeamComponent implements OnInit {
   loading = false;
   error = '';
   team: MyTeamResponse | null = null;
+  myStats: PlayerStat[] = [];
+
+  availabilitySavingGameId: string | null = null;
+  availabilityComposerGameId: string | null = null;
+  availabilityComposerStatus: TeamGameAvailabilityStatus | null = null;
+
+  statEditorMemberId: string | null = null;
+  statsSavingMemberId: string | null = null;
+  statsLoadingMemberId: string | null = null;
+  statsSeasonHasRecord: boolean | null = null;
 
   teamForm = this.fb.group({
     name: ['', [Validators.required, Validators.maxLength(80)]],
@@ -41,8 +58,137 @@ export class MyTeamComponent implements OnInit {
     notes: [''],
   });
 
+  availabilityForm = this.fb.group({
+    note: ['', [Validators.maxLength(500)]],
+  });
+
+  statForm = this.fb.group({
+    season: [
+      `${new Date().getFullYear()}-${new Date().getFullYear() + 1}`,
+      Validators.required,
+    ],
+    gamesPlayed: [0, [Validators.required, Validators.min(0)]],
+    goals: [0, [Validators.required, Validators.min(0)]],
+    assists: [0, [Validators.required, Validators.min(0)]],
+    penaltyMins: [0, [Validators.required, Validators.min(0)]],
+  });
+
+  statsFilterForm = this.fb.group({
+    season: [''],
+    team: [''],
+  });
+
+  statsSortKey:
+    | 'player'
+    | 'season'
+    | 'team'
+    | 'gamesPlayed'
+    | 'goals'
+    | 'assists'
+    | 'points'
+    | 'penaltyMins' = 'season';
+
+  statsSortDirection: 'asc' | 'desc' = 'desc';
+  get filteredAndSortedMyStats(): PlayerStat[] {
+    const seasonFilter = (this.statsFilterForm.get('season')?.value ?? '')
+      .trim()
+      .toLowerCase();
+
+    const teamFilter = (this.statsFilterForm.get('team')?.value ?? '')
+      .trim()
+      .toLowerCase();
+
+    const filtered = this.myStats.filter((stat: PlayerStat) => {
+      const matchesSeason =
+        !seasonFilter || stat.season.toLowerCase().includes(seasonFilter);
+
+      const matchesTeam =
+        !teamFilter || stat.team.name.toLowerCase().includes(teamFilter);
+
+      return matchesSeason && matchesTeam;
+    });
+
+    return [...filtered].sort((a: PlayerStat, b: PlayerStat) => {
+      const dir = this.statsSortDirection === 'asc' ? 1 : -1;
+
+      const aPoints = a.goals + a.assists;
+      const bPoints = b.goals + b.assists;
+
+      const aPlayer = a.member?.displayName ?? '';
+      const bPlayer = b.member?.displayName ?? '';
+
+      switch (this.statsSortKey) {
+        case 'player':
+          return aPlayer.localeCompare(bPlayer) * dir;
+        case 'season':
+          return a.season.localeCompare(b.season) * dir;
+        case 'team':
+          return a.team.name.localeCompare(b.team.name) * dir;
+        case 'gamesPlayed':
+          return (a.gamesPlayed - b.gamesPlayed) * dir;
+        case 'goals':
+          return (a.goals - b.goals) * dir;
+        case 'assists':
+          return (a.assists - b.assists) * dir;
+        case 'points':
+          return (aPoints - bPoints) * dir;
+        case 'penaltyMins':
+          return (a.penaltyMins - b.penaltyMins) * dir;
+        default:
+          return 0;
+      }
+    });
+  }
+
+  setStatsSort(
+    key:
+      | 'player'
+      | 'season'
+      | 'team'
+      | 'gamesPlayed'
+      | 'goals'
+      | 'assists'
+      | 'points'
+      | 'penaltyMins',
+  ) {
+    if (this.statsSortKey === key) {
+      this.statsSortDirection =
+        this.statsSortDirection === 'asc' ? 'desc' : 'asc';
+      return;
+    }
+
+    this.statsSortKey = key;
+    this.statsSortDirection =
+      key === 'player' || key === 'team' ? 'asc' : 'desc';
+  }
+
+  statsSortIcon(
+    key:
+      | 'player'
+      | 'season'
+      | 'team'
+      | 'gamesPlayed'
+      | 'goals'
+      | 'assists'
+      | 'points'
+      | 'penaltyMins',
+  ): string {
+    if (this.statsSortKey !== key) return '↕';
+    return this.statsSortDirection === 'asc' ? '↑' : '↓';
+  }
+
   ngOnInit(): void {
     this.reload();
+    this.loadMyStats();
+
+    this.statForm.controls.season.valueChanges.subscribe((season) => {
+      if (!this.statEditorMemberId) return;
+
+      const normalizedSeason = (season ?? '').trim();
+      if (!normalizedSeason) return;
+
+      this.loadMemberStatsIntoForm(this.statEditorMemberId, normalizedSeason);
+    });
   }
 
   get regulars(): TeamMember[] {
@@ -51,6 +197,19 @@ export class MyTeamComponent implements OnInit {
 
   get spares(): TeamMember[] {
     return this.team?.members.filter((m) => m.memberType === 'SPARE') ?? [];
+  }
+
+  get myRole(): 'PLAYER' | 'CAPTAIN' | 'GENERAL_MANAGER' | null {
+    return this.team?.myMembership?.role ?? null;
+  }
+
+  get canManageTeam(): boolean {
+    return !!this.team?.canManageTeam;
+  }
+
+  private defaultSeason(): string {
+    const year = new Date().getFullYear();
+    return `${year}-${year + 1}`;
   }
 
   reload() {
@@ -64,6 +223,8 @@ export class MyTeamComponent implements OnInit {
           ...team,
           members: team?.members ?? [],
           games: team?.games ?? [],
+          myMembership: team?.myMembership ?? null,
+          canManageTeam: !!team?.canManageTeam,
         };
 
         this.teamForm.patchValue({
@@ -72,6 +233,7 @@ export class MyTeamComponent implements OnInit {
 
         this.loading = false;
         this.error = '';
+        this.loadMyStats();
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -83,7 +245,24 @@ export class MyTeamComponent implements OnInit {
     });
   }
 
+  loadMyStats() {
+    this.teamApi.getMyStats().subscribe({
+      next: (stats) => {
+        this.myStats = stats ?? [];
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.warn('Could not load player stats:', err);
+      },
+    });
+  }
+
   saveTeamName() {
+    if (!this.canManageTeam) {
+      this.error = 'You do not have permission to update this team.';
+      return;
+    }
+
     if (this.teamForm.invalid) {
       this.teamForm.markAllAsTouched();
       return;
@@ -91,17 +270,24 @@ export class MyTeamComponent implements OnInit {
 
     const raw = this.teamForm.getRawValue();
 
-    this.teamApi.updateMyTeam({
-      name: raw.name ?? '',
-    }).subscribe({
-      next: () => this.reload(),
-      error: () => {
-        this.error = 'Could not save team name.';
-      },
-    });
+    this.teamApi
+      .updateMyTeam({
+        name: raw.name ?? '',
+      })
+      .subscribe({
+        next: () => this.reload(),
+        error: () => {
+          this.error = 'Could not save team name.';
+        },
+      });
   }
 
   addMember() {
+    if (!this.canManageTeam) {
+      this.error = 'You do not have permission to add players.';
+      return;
+    }
+
     if (this.memberForm.invalid) {
       this.memberForm.markAllAsTouched();
       return;
@@ -139,6 +325,11 @@ export class MyTeamComponent implements OnInit {
   }
 
   removeMember(memberId: string) {
+    if (!this.canManageTeam) {
+      this.error = 'You do not have permission to remove players.';
+      return;
+    }
+
     this.teamApi.removeMember(memberId).subscribe({
       next: () => this.reload(),
       error: () => {
@@ -148,6 +339,11 @@ export class MyTeamComponent implements OnInit {
   }
 
   createGame() {
+    if (!this.canManageTeam) {
+      this.error = 'You do not have permission to create games.';
+      return;
+    }
+
     if (this.gameForm.invalid) {
       this.gameForm.markAllAsTouched();
       return;
@@ -181,11 +377,309 @@ export class MyTeamComponent implements OnInit {
   }
 
   notifyGame(gameId: string) {
+    if (!this.canManageTeam) {
+      this.error = 'You do not have permission to notify the team.';
+      return;
+    }
+
     this.teamApi.notifyGame(gameId).subscribe({
       next: () => this.reload(),
       error: () => {
         this.error = 'Could not send notifications.';
       },
+    });
+  }
+
+  getMyAvailability(game: TeamGame): TeamGameAvailabilityStatus | null {
+    const memberId = this.team?.myMembership?.id;
+    if (!memberId) return null;
+
+    return (
+      game.availabilities?.find((a) => a.memberId === memberId)?.status ?? null
+    );
+  }
+
+  getMyAvailabilityNote(game: TeamGame): string {
+    const memberId = this.team?.myMembership?.id;
+    if (!memberId) return '';
+
+    return (
+      game.availabilities?.find((a) => a.memberId === memberId)?.note ?? ''
+    );
+  }
+
+  availabilityLabel(status: TeamGameAvailabilityStatus | null): string {
+    switch (status) {
+      case 'AVAILABLE':
+        return 'Available';
+      case 'UNAVAILABLE':
+        return 'Can’t make it';
+      case 'NEED_SPARE':
+        return 'Need spare';
+      default:
+        return 'No response yet';
+    }
+  }
+
+  availabilityBadgeClass(status: TeamGameAvailabilityStatus | null): string {
+    switch (status) {
+      case 'AVAILABLE':
+        return 'text-bg-success';
+      case 'UNAVAILABLE':
+        return 'text-bg-warning';
+      case 'NEED_SPARE':
+        return 'text-bg-danger';
+      default:
+        return 'text-bg-secondary';
+    }
+  }
+
+  availabilityCount(
+    game: TeamGame,
+    status: TeamGameAvailabilityStatus,
+  ): number {
+    return game.availabilities?.filter((a) => a.status === status).length ?? 0;
+  }
+
+  setGameAvailability(
+    gameId: string,
+    status: TeamGameAvailabilityStatus,
+    note?: string,
+  ) {
+    this.availabilitySavingGameId = gameId;
+    this.error = '';
+
+    this.teamApi.respondToGame(gameId, { status, note }).subscribe({
+      next: () => {
+        this.availabilitySavingGameId = null;
+        this.reload();
+      },
+      error: () => {
+        this.availabilitySavingGameId = null;
+        this.error = 'Could not update your game status.';
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  markAvailable(gameId: string) {
+    this.cancelAvailabilityComposer();
+    this.setGameAvailability(gameId, 'AVAILABLE');
+  }
+
+  markUnavailable(gameId: string) {
+    const game = this.team?.games.find((g) => g.id === gameId);
+    this.openAvailabilityComposer(
+      gameId,
+      'UNAVAILABLE',
+      game ? this.getMyAvailabilityNote(game) : '',
+    );
+  }
+
+  requestSpare(gameId: string) {
+    const game = this.team?.games.find((g) => g.id === gameId);
+    this.openAvailabilityComposer(
+      gameId,
+      'NEED_SPARE',
+      game ? this.getMyAvailabilityNote(game) : '',
+    );
+  }
+
+  openAvailabilityComposer(
+    gameId: string,
+    status: TeamGameAvailabilityStatus,
+    existingNote = '',
+  ) {
+    this.availabilityComposerGameId = gameId;
+    this.availabilityComposerStatus = status;
+
+    const defaultNote =
+      status === 'NEED_SPARE'
+        ? existingNote || 'I can’t make it and need a spare.'
+        : existingNote || '';
+
+    this.availabilityForm.patchValue({
+      note: defaultNote,
+    });
+  }
+
+  cancelAvailabilityComposer() {
+    this.availabilityComposerGameId = null;
+    this.availabilityComposerStatus = null;
+    this.availabilityForm.reset({
+      note: '',
+    });
+  }
+
+  availabilityComposerTitle(): string {
+    switch (this.availabilityComposerStatus) {
+      case 'UNAVAILABLE':
+        return 'Can’t make it';
+      case 'NEED_SPARE':
+        return 'Need a spare';
+      default:
+        return 'Game response';
+    }
+  }
+
+  saveAvailabilityResponse() {
+    if (!this.availabilityComposerGameId || !this.availabilityComposerStatus) {
+      return;
+    }
+
+    const gameId = this.availabilityComposerGameId;
+    const status = this.availabilityComposerStatus;
+    const note = this.availabilityForm.getRawValue().note?.trim() || undefined;
+
+    this.availabilitySavingGameId = gameId;
+    this.error = '';
+
+    this.teamApi.respondToGame(gameId, { status, note }).subscribe({
+      next: () => {
+        this.availabilitySavingGameId = null;
+        this.cancelAvailabilityComposer();
+        this.reload();
+      },
+      error: () => {
+        this.availabilitySavingGameId = null;
+        this.error = 'Could not update your game status.';
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  loadMemberStatsIntoForm(memberId: string, season?: string) {
+    this.statsLoadingMemberId = memberId;
+    this.statsSeasonHasRecord = null;
+    this.error = '';
+
+    const fallbackSeason = season || this.defaultSeason();
+
+    this.teamApi.getMemberStats(memberId, season).subscribe({
+      next: (stat) => {
+        if (stat) {
+          this.statsSeasonHasRecord = true;
+
+          this.statForm.patchValue(
+            {
+              season: stat.season ?? fallbackSeason,
+              gamesPlayed: stat.gamesPlayed ?? 0,
+              goals: stat.goals ?? 0,
+              assists: stat.assists ?? 0,
+              penaltyMins: stat.penaltyMins ?? 0,
+            },
+            { emitEvent: false },
+          );
+        } else {
+          this.statsSeasonHasRecord = false;
+
+          this.statForm.patchValue(
+            {
+              season: fallbackSeason,
+              gamesPlayed: 0,
+              goals: 0,
+              assists: 0,
+              penaltyMins: 0,
+            },
+            { emitEvent: false },
+          );
+        }
+
+        this.statsLoadingMemberId = null;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.statsLoadingMemberId = null;
+        this.statsSeasonHasRecord = null;
+        this.error = 'Could not load player stats.';
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  openStatEditor(memberId: string) {
+    this.statEditorMemberId = memberId;
+    this.statsSeasonHasRecord = null;
+
+    this.statForm.reset({
+      season: this.defaultSeason(),
+      gamesPlayed: 0,
+      goals: 0,
+      assists: 0,
+      penaltyMins: 0,
+    });
+
+    this.loadMemberStatsIntoForm(memberId);
+  }
+
+  cancelStatEditor() {
+    this.statEditorMemberId = null;
+    this.statsSavingMemberId = null;
+    this.statsLoadingMemberId = null;
+    this.statsSeasonHasRecord = null;
+
+    this.statForm.reset({
+      season: this.defaultSeason(),
+      gamesPlayed: 0,
+      goals: 0,
+      assists: 0,
+      penaltyMins: 0,
+    });
+  }
+
+  saveMemberStats(memberId: string) {
+    if (!this.canManageTeam) {
+      this.error = 'You do not have permission to update stats.';
+      return;
+    }
+
+    if (this.statForm.invalid) {
+      this.statForm.markAllAsTouched();
+      return;
+    }
+
+    const raw = this.statForm.getRawValue();
+
+    this.statsSavingMemberId = memberId;
+    this.error = '';
+
+    this.teamApi
+      .upsertMemberStats(memberId, {
+        season: raw.season ?? '',
+        gamesPlayed: Number(raw.gamesPlayed ?? 0),
+        goals: Number(raw.goals ?? 0),
+        assists: Number(raw.assists ?? 0),
+        penaltyMins: Number(raw.penaltyMins ?? 0),
+      })
+      .subscribe({
+        next: () => {
+          this.statsSavingMemberId = null;
+          this.cancelStatEditor();
+          this.loadMyStats();
+          this.reload();
+        },
+        error: () => {
+          this.statsSavingMemberId = null;
+          this.error = 'Could not save player stats.';
+          this.cdr.detectChanges();
+        },
+      });
+  }
+
+  statEditorPlayerName(): string {
+    if (!this.statEditorMemberId) return 'Player';
+
+    const player =
+      this.regulars.find((p) => p.id === this.statEditorMemberId) ??
+      this.spares.find((p) => p.id === this.statEditorMemberId);
+
+    return player?.displayName ?? 'Player';
+  }
+
+  clearStatsFilters() {
+    this.statsFilterForm.reset({
+      season: '',
+      team: '',
     });
   }
 }

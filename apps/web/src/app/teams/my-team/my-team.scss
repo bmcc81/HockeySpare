@@ -71,3 +71,16 @@
 .card {
   color: #fff;
 }
+
+.my-stats-table {
+  width: 100%;
+  table-layout: auto;
+}
+
+.my-stats-table th .btn {
+  font: inherit;
+}
+
+.my-stats-table th {
+  white-space: nowrap;
+}

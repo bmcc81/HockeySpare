@@ -38,10 +38,15 @@ export type PlayerOffer = Prisma.PlayerOfferModel
  */
 export type User = Prisma.UserModel
 /**
- * Model Notification
+ * Model League
  * 
  */
-export type Notification = Prisma.NotificationModel
+export type League = Prisma.LeagueModel
+/**
+ * Model LeagueMember
+ * 
+ */
+export type LeagueMember = Prisma.LeagueMemberModel
 /**
  * Model Team
  * 
@@ -53,6 +58,11 @@ export type Team = Prisma.TeamModel
  */
 export type TeamMember = Prisma.TeamMemberModel
 /**
+ * Model PlayerStat
+ * 
+ */
+export type PlayerStat = Prisma.PlayerStatModel
+/**
  * Model TeamGame
  * 
  */
@@ -62,6 +72,16 @@ export type TeamGame = Prisma.TeamGameModel
  * 
  */
 export type TeamGameInvite = Prisma.TeamGameInviteModel
+/**
+ * Model TeamGameAvailability
+ * 
+ */
+export type TeamGameAvailability = Prisma.TeamGameAvailabilityModel
+/**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel
 /**
  * Model Booking
  * 

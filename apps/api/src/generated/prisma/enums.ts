@@ -9,6 +9,14 @@
 * 🟢 You can import this file directly.
 */
 
+export const AppRole = {
+  USER: 'USER',
+  ADMIN: 'ADMIN'
+} as const
+
+export type AppRole = (typeof AppRole)[keyof typeof AppRole]
+
+
 export const ResponseStatus = {
   PENDING: 'PENDING',
   ACCEPTED: 'ACCEPTED',
@@ -16,6 +24,33 @@ export const ResponseStatus = {
 } as const
 
 export type ResponseStatus = (typeof ResponseStatus)[keyof typeof ResponseStatus]
+
+
+export const TeamRole = {
+  PLAYER: 'PLAYER',
+  CAPTAIN: 'CAPTAIN',
+  GENERAL_MANAGER: 'GENERAL_MANAGER'
+} as const
+
+export type TeamRole = (typeof TeamRole)[keyof typeof TeamRole]
+
+
+export const LeagueRole = {
+  PLAYER: 'PLAYER',
+  TEAM_MANAGER: 'TEAM_MANAGER',
+  LEAGUE_MANAGER: 'LEAGUE_MANAGER'
+} as const
+
+export type LeagueRole = (typeof LeagueRole)[keyof typeof LeagueRole]
+
+
+export const TeamGameAvailabilityStatus = {
+  AVAILABLE: 'AVAILABLE',
+  UNAVAILABLE: 'UNAVAILABLE',
+  NEED_SPARE: 'NEED_SPARE'
+} as const
+
+export type TeamGameAvailabilityStatus = (typeof TeamGameAvailabilityStatus)[keyof typeof TeamGameAvailabilityStatus]
 
 
 export const RequestType = {

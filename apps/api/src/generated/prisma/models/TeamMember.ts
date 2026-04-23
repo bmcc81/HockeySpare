@@ -33,6 +33,7 @@ export type TeamMemberMinAggregateOutputType = {
   phone: string | null
   position: $Enums.Position | null
   memberType: $Enums.TeamMemberType | null
+  role: $Enums.TeamRole | null
   notifyByApp: boolean | null
   notifyByEmail: boolean | null
   isActive: boolean | null
@@ -49,6 +50,7 @@ export type TeamMemberMaxAggregateOutputType = {
   phone: string | null
   position: $Enums.Position | null
   memberType: $Enums.TeamMemberType | null
+  role: $Enums.TeamRole | null
   notifyByApp: boolean | null
   notifyByEmail: boolean | null
   isActive: boolean | null
@@ -65,6 +67,7 @@ export type TeamMemberCountAggregateOutputType = {
   phone: number
   position: number
   memberType: number
+  role: number
   notifyByApp: number
   notifyByEmail: number
   isActive: number
@@ -83,6 +86,7 @@ export type TeamMemberMinAggregateInputType = {
   phone?: true
   position?: true
   memberType?: true
+  role?: true
   notifyByApp?: true
   notifyByEmail?: true
   isActive?: true
@@ -99,6 +103,7 @@ export type TeamMemberMaxAggregateInputType = {
   phone?: true
   position?: true
   memberType?: true
+  role?: true
   notifyByApp?: true
   notifyByEmail?: true
   isActive?: true
@@ -115,6 +120,7 @@ export type TeamMemberCountAggregateInputType = {
   phone?: true
   position?: true
   memberType?: true
+  role?: true
   notifyByApp?: true
   notifyByEmail?: true
   isActive?: true
@@ -204,6 +210,7 @@ export type TeamMemberGroupByOutputType = {
   phone: string | null
   position: $Enums.Position | null
   memberType: $Enums.TeamMemberType
+  role: $Enums.TeamRole
   notifyByApp: boolean
   notifyByEmail: boolean
   isActive: boolean
@@ -241,6 +248,7 @@ export type TeamMemberWhereInput = {
   phone?: Prisma.StringNullableFilter<"TeamMember"> | string | null
   position?: Prisma.EnumPositionNullableFilter<"TeamMember"> | $Enums.Position | null
   memberType?: Prisma.EnumTeamMemberTypeFilter<"TeamMember"> | $Enums.TeamMemberType
+  role?: Prisma.EnumTeamRoleFilter<"TeamMember"> | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFilter<"TeamMember"> | boolean
   notifyByEmail?: Prisma.BoolFilter<"TeamMember"> | boolean
   isActive?: Prisma.BoolFilter<"TeamMember"> | boolean
@@ -249,6 +257,8 @@ export type TeamMemberWhereInput = {
   team?: Prisma.XOR<Prisma.TeamScalarRelationFilter, Prisma.TeamWhereInput>
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   invites?: Prisma.TeamGameInviteListRelationFilter
+  availabilities?: Prisma.TeamGameAvailabilityListRelationFilter
+  playerStats?: Prisma.PlayerStatListRelationFilter
 }
 
 export type TeamMemberOrderByWithRelationInput = {
@@ -260,6 +270,7 @@ export type TeamMemberOrderByWithRelationInput = {
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   position?: Prisma.SortOrderInput | Prisma.SortOrder
   memberType?: Prisma.SortOrder
+  role?: Prisma.SortOrder
   notifyByApp?: Prisma.SortOrder
   notifyByEmail?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -268,6 +279,8 @@ export type TeamMemberOrderByWithRelationInput = {
   team?: Prisma.TeamOrderByWithRelationInput
   user?: Prisma.UserOrderByWithRelationInput
   invites?: Prisma.TeamGameInviteOrderByRelationAggregateInput
+  availabilities?: Prisma.TeamGameAvailabilityOrderByRelationAggregateInput
+  playerStats?: Prisma.PlayerStatOrderByRelationAggregateInput
 }
 
 export type TeamMemberWhereUniqueInput = Prisma.AtLeast<{
@@ -282,6 +295,7 @@ export type TeamMemberWhereUniqueInput = Prisma.AtLeast<{
   phone?: Prisma.StringNullableFilter<"TeamMember"> | string | null
   position?: Prisma.EnumPositionNullableFilter<"TeamMember"> | $Enums.Position | null
   memberType?: Prisma.EnumTeamMemberTypeFilter<"TeamMember"> | $Enums.TeamMemberType
+  role?: Prisma.EnumTeamRoleFilter<"TeamMember"> | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFilter<"TeamMember"> | boolean
   notifyByEmail?: Prisma.BoolFilter<"TeamMember"> | boolean
   isActive?: Prisma.BoolFilter<"TeamMember"> | boolean
@@ -290,6 +304,8 @@ export type TeamMemberWhereUniqueInput = Prisma.AtLeast<{
   team?: Prisma.XOR<Prisma.TeamScalarRelationFilter, Prisma.TeamWhereInput>
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   invites?: Prisma.TeamGameInviteListRelationFilter
+  availabilities?: Prisma.TeamGameAvailabilityListRelationFilter
+  playerStats?: Prisma.PlayerStatListRelationFilter
 }, "id">
 
 export type TeamMemberOrderByWithAggregationInput = {
@@ -301,6 +317,7 @@ export type TeamMemberOrderByWithAggregationInput = {
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   position?: Prisma.SortOrderInput | Prisma.SortOrder
   memberType?: Prisma.SortOrder
+  role?: Prisma.SortOrder
   notifyByApp?: Prisma.SortOrder
   notifyByEmail?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -323,6 +340,7 @@ export type TeamMemberScalarWhereWithAggregatesInput = {
   phone?: Prisma.StringNullableWithAggregatesFilter<"TeamMember"> | string | null
   position?: Prisma.EnumPositionNullableWithAggregatesFilter<"TeamMember"> | $Enums.Position | null
   memberType?: Prisma.EnumTeamMemberTypeWithAggregatesFilter<"TeamMember"> | $Enums.TeamMemberType
+  role?: Prisma.EnumTeamRoleWithAggregatesFilter<"TeamMember"> | $Enums.TeamRole
   notifyByApp?: Prisma.BoolWithAggregatesFilter<"TeamMember"> | boolean
   notifyByEmail?: Prisma.BoolWithAggregatesFilter<"TeamMember"> | boolean
   isActive?: Prisma.BoolWithAggregatesFilter<"TeamMember"> | boolean
@@ -337,6 +355,7 @@ export type TeamMemberCreateInput = {
   phone?: string | null
   position?: $Enums.Position | null
   memberType: $Enums.TeamMemberType
+  role?: $Enums.TeamRole
   notifyByApp?: boolean
   notifyByEmail?: boolean
   isActive?: boolean
@@ -345,6 +364,8 @@ export type TeamMemberCreateInput = {
   team: Prisma.TeamCreateNestedOneWithoutMembersInput
   user?: Prisma.UserCreateNestedOneWithoutTeamMembershipsInput
   invites?: Prisma.TeamGameInviteCreateNestedManyWithoutMemberInput
+  availabilities?: Prisma.TeamGameAvailabilityCreateNestedManyWithoutMemberInput
+  playerStats?: Prisma.PlayerStatCreateNestedManyWithoutMemberInput
 }
 
 export type TeamMemberUncheckedCreateInput = {
@@ -356,12 +377,15 @@ export type TeamMemberUncheckedCreateInput = {
   phone?: string | null
   position?: $Enums.Position | null
   memberType: $Enums.TeamMemberType
+  role?: $Enums.TeamRole
   notifyByApp?: boolean
   notifyByEmail?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   invites?: Prisma.TeamGameInviteUncheckedCreateNestedManyWithoutMemberInput
+  availabilities?: Prisma.TeamGameAvailabilityUncheckedCreateNestedManyWithoutMemberInput
+  playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type TeamMemberUpdateInput = {
@@ -371,6 +395,7 @@ export type TeamMemberUpdateInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
   memberType?: Prisma.EnumTeamMemberTypeFieldUpdateOperationsInput | $Enums.TeamMemberType
+  role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -379,6 +404,8 @@ export type TeamMemberUpdateInput = {
   team?: Prisma.TeamUpdateOneRequiredWithoutMembersNestedInput
   user?: Prisma.UserUpdateOneWithoutTeamMembershipsNestedInput
   invites?: Prisma.TeamGameInviteUpdateManyWithoutMemberNestedInput
+  availabilities?: Prisma.TeamGameAvailabilityUpdateManyWithoutMemberNestedInput
+  playerStats?: Prisma.PlayerStatUpdateManyWithoutMemberNestedInput
 }
 
 export type TeamMemberUncheckedUpdateInput = {
@@ -390,12 +417,15 @@ export type TeamMemberUncheckedUpdateInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
   memberType?: Prisma.EnumTeamMemberTypeFieldUpdateOperationsInput | $Enums.TeamMemberType
+  role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   invites?: Prisma.TeamGameInviteUncheckedUpdateManyWithoutMemberNestedInput
+  availabilities?: Prisma.TeamGameAvailabilityUncheckedUpdateManyWithoutMemberNestedInput
+  playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type TeamMemberCreateManyInput = {
@@ -407,6 +437,7 @@ export type TeamMemberCreateManyInput = {
   phone?: string | null
   position?: $Enums.Position | null
   memberType: $Enums.TeamMemberType
+  role?: $Enums.TeamRole
   notifyByApp?: boolean
   notifyByEmail?: boolean
   isActive?: boolean
@@ -421,6 +452,7 @@ export type TeamMemberUpdateManyMutationInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
   memberType?: Prisma.EnumTeamMemberTypeFieldUpdateOperationsInput | $Enums.TeamMemberType
+  role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -437,6 +469,7 @@ export type TeamMemberUncheckedUpdateManyInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
   memberType?: Prisma.EnumTeamMemberTypeFieldUpdateOperationsInput | $Enums.TeamMemberType
+  role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -463,6 +496,7 @@ export type TeamMemberCountOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   position?: Prisma.SortOrder
   memberType?: Prisma.SortOrder
+  role?: Prisma.SortOrder
   notifyByApp?: Prisma.SortOrder
   notifyByEmail?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -479,6 +513,7 @@ export type TeamMemberMaxOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   position?: Prisma.SortOrder
   memberType?: Prisma.SortOrder
+  role?: Prisma.SortOrder
   notifyByApp?: Prisma.SortOrder
   notifyByEmail?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -495,6 +530,7 @@ export type TeamMemberMinOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   position?: Prisma.SortOrder
   memberType?: Prisma.SortOrder
+  role?: Prisma.SortOrder
   notifyByApp?: Prisma.SortOrder
   notifyByEmail?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -599,6 +635,28 @@ export type EnumTeamMemberTypeFieldUpdateOperationsInput = {
   set?: $Enums.TeamMemberType
 }
 
+export type EnumTeamRoleFieldUpdateOperationsInput = {
+  set?: $Enums.TeamRole
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
+export type TeamMemberCreateNestedOneWithoutPlayerStatsInput = {
+  create?: Prisma.XOR<Prisma.TeamMemberCreateWithoutPlayerStatsInput, Prisma.TeamMemberUncheckedCreateWithoutPlayerStatsInput>
+  connectOrCreate?: Prisma.TeamMemberCreateOrConnectWithoutPlayerStatsInput
+  connect?: Prisma.TeamMemberWhereUniqueInput
+}
+
+export type TeamMemberUpdateOneRequiredWithoutPlayerStatsNestedInput = {
+  create?: Prisma.XOR<Prisma.TeamMemberCreateWithoutPlayerStatsInput, Prisma.TeamMemberUncheckedCreateWithoutPlayerStatsInput>
+  connectOrCreate?: Prisma.TeamMemberCreateOrConnectWithoutPlayerStatsInput
+  upsert?: Prisma.TeamMemberUpsertWithoutPlayerStatsInput
+  connect?: Prisma.TeamMemberWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TeamMemberUpdateToOneWithWhereWithoutPlayerStatsInput, Prisma.TeamMemberUpdateWithoutPlayerStatsInput>, Prisma.TeamMemberUncheckedUpdateWithoutPlayerStatsInput>
+}
+
 export type TeamMemberCreateNestedOneWithoutInvitesInput = {
   create?: Prisma.XOR<Prisma.TeamMemberCreateWithoutInvitesInput, Prisma.TeamMemberUncheckedCreateWithoutInvitesInput>
   connectOrCreate?: Prisma.TeamMemberCreateOrConnectWithoutInvitesInput
@@ -613,6 +671,20 @@ export type TeamMemberUpdateOneRequiredWithoutInvitesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TeamMemberUpdateToOneWithWhereWithoutInvitesInput, Prisma.TeamMemberUpdateWithoutInvitesInput>, Prisma.TeamMemberUncheckedUpdateWithoutInvitesInput>
 }
 
+export type TeamMemberCreateNestedOneWithoutAvailabilitiesInput = {
+  create?: Prisma.XOR<Prisma.TeamMemberCreateWithoutAvailabilitiesInput, Prisma.TeamMemberUncheckedCreateWithoutAvailabilitiesInput>
+  connectOrCreate?: Prisma.TeamMemberCreateOrConnectWithoutAvailabilitiesInput
+  connect?: Prisma.TeamMemberWhereUniqueInput
+}
+
+export type TeamMemberUpdateOneRequiredWithoutAvailabilitiesNestedInput = {
+  create?: Prisma.XOR<Prisma.TeamMemberCreateWithoutAvailabilitiesInput, Prisma.TeamMemberUncheckedCreateWithoutAvailabilitiesInput>
+  connectOrCreate?: Prisma.TeamMemberCreateOrConnectWithoutAvailabilitiesInput
+  upsert?: Prisma.TeamMemberUpsertWithoutAvailabilitiesInput
+  connect?: Prisma.TeamMemberWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TeamMemberUpdateToOneWithWhereWithoutAvailabilitiesInput, Prisma.TeamMemberUpdateWithoutAvailabilitiesInput>, Prisma.TeamMemberUncheckedUpdateWithoutAvailabilitiesInput>
+}
+
 export type TeamMemberCreateWithoutUserInput = {
   id?: string
   displayName: string
@@ -620,6 +692,7 @@ export type TeamMemberCreateWithoutUserInput = {
   phone?: string | null
   position?: $Enums.Position | null
   memberType: $Enums.TeamMemberType
+  role?: $Enums.TeamRole
   notifyByApp?: boolean
   notifyByEmail?: boolean
   isActive?: boolean
@@ -627,6 +700,8 @@ export type TeamMemberCreateWithoutUserInput = {
   updatedAt?: Date | string
   team: Prisma.TeamCreateNestedOneWithoutMembersInput
   invites?: Prisma.TeamGameInviteCreateNestedManyWithoutMemberInput
+  availabilities?: Prisma.TeamGameAvailabilityCreateNestedManyWithoutMemberInput
+  playerStats?: Prisma.PlayerStatCreateNestedManyWithoutMemberInput
 }
 
 export type TeamMemberUncheckedCreateWithoutUserInput = {
@@ -637,12 +712,15 @@ export type TeamMemberUncheckedCreateWithoutUserInput = {
   phone?: string | null
   position?: $Enums.Position | null
   memberType: $Enums.TeamMemberType
+  role?: $Enums.TeamRole
   notifyByApp?: boolean
   notifyByEmail?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   invites?: Prisma.TeamGameInviteUncheckedCreateNestedManyWithoutMemberInput
+  availabilities?: Prisma.TeamGameAvailabilityUncheckedCreateNestedManyWithoutMemberInput
+  playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type TeamMemberCreateOrConnectWithoutUserInput = {
@@ -683,6 +761,7 @@ export type TeamMemberScalarWhereInput = {
   phone?: Prisma.StringNullableFilter<"TeamMember"> | string | null
   position?: Prisma.EnumPositionNullableFilter<"TeamMember"> | $Enums.Position | null
   memberType?: Prisma.EnumTeamMemberTypeFilter<"TeamMember"> | $Enums.TeamMemberType
+  role?: Prisma.EnumTeamRoleFilter<"TeamMember"> | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFilter<"TeamMember"> | boolean
   notifyByEmail?: Prisma.BoolFilter<"TeamMember"> | boolean
   isActive?: Prisma.BoolFilter<"TeamMember"> | boolean
@@ -697,6 +776,7 @@ export type TeamMemberCreateWithoutTeamInput = {
   phone?: string | null
   position?: $Enums.Position | null
   memberType: $Enums.TeamMemberType
+  role?: $Enums.TeamRole
   notifyByApp?: boolean
   notifyByEmail?: boolean
   isActive?: boolean
@@ -704,6 +784,8 @@ export type TeamMemberCreateWithoutTeamInput = {
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutTeamMembershipsInput
   invites?: Prisma.TeamGameInviteCreateNestedManyWithoutMemberInput
+  availabilities?: Prisma.TeamGameAvailabilityCreateNestedManyWithoutMemberInput
+  playerStats?: Prisma.PlayerStatCreateNestedManyWithoutMemberInput
 }
 
 export type TeamMemberUncheckedCreateWithoutTeamInput = {
@@ -714,12 +796,15 @@ export type TeamMemberUncheckedCreateWithoutTeamInput = {
   phone?: string | null
   position?: $Enums.Position | null
   memberType: $Enums.TeamMemberType
+  role?: $Enums.TeamRole
   notifyByApp?: boolean
   notifyByEmail?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   invites?: Prisma.TeamGameInviteUncheckedCreateNestedManyWithoutMemberInput
+  availabilities?: Prisma.TeamGameAvailabilityUncheckedCreateNestedManyWithoutMemberInput
+  playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type TeamMemberCreateOrConnectWithoutTeamInput = {
@@ -748,13 +833,14 @@ export type TeamMemberUpdateManyWithWhereWithoutTeamInput = {
   data: Prisma.XOR<Prisma.TeamMemberUpdateManyMutationInput, Prisma.TeamMemberUncheckedUpdateManyWithoutTeamInput>
 }
 
-export type TeamMemberCreateWithoutInvitesInput = {
+export type TeamMemberCreateWithoutPlayerStatsInput = {
   id?: string
   displayName: string
   email?: string | null
   phone?: string | null
   position?: $Enums.Position | null
   memberType: $Enums.TeamMemberType
+  role?: $Enums.TeamRole
   notifyByApp?: boolean
   notifyByEmail?: boolean
   isActive?: boolean
@@ -762,6 +848,100 @@ export type TeamMemberCreateWithoutInvitesInput = {
   updatedAt?: Date | string
   team: Prisma.TeamCreateNestedOneWithoutMembersInput
   user?: Prisma.UserCreateNestedOneWithoutTeamMembershipsInput
+  invites?: Prisma.TeamGameInviteCreateNestedManyWithoutMemberInput
+  availabilities?: Prisma.TeamGameAvailabilityCreateNestedManyWithoutMemberInput
+}
+
+export type TeamMemberUncheckedCreateWithoutPlayerStatsInput = {
+  id?: string
+  teamId: string
+  userId?: string | null
+  displayName: string
+  email?: string | null
+  phone?: string | null
+  position?: $Enums.Position | null
+  memberType: $Enums.TeamMemberType
+  role?: $Enums.TeamRole
+  notifyByApp?: boolean
+  notifyByEmail?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  invites?: Prisma.TeamGameInviteUncheckedCreateNestedManyWithoutMemberInput
+  availabilities?: Prisma.TeamGameAvailabilityUncheckedCreateNestedManyWithoutMemberInput
+}
+
+export type TeamMemberCreateOrConnectWithoutPlayerStatsInput = {
+  where: Prisma.TeamMemberWhereUniqueInput
+  create: Prisma.XOR<Prisma.TeamMemberCreateWithoutPlayerStatsInput, Prisma.TeamMemberUncheckedCreateWithoutPlayerStatsInput>
+}
+
+export type TeamMemberUpsertWithoutPlayerStatsInput = {
+  update: Prisma.XOR<Prisma.TeamMemberUpdateWithoutPlayerStatsInput, Prisma.TeamMemberUncheckedUpdateWithoutPlayerStatsInput>
+  create: Prisma.XOR<Prisma.TeamMemberCreateWithoutPlayerStatsInput, Prisma.TeamMemberUncheckedCreateWithoutPlayerStatsInput>
+  where?: Prisma.TeamMemberWhereInput
+}
+
+export type TeamMemberUpdateToOneWithWhereWithoutPlayerStatsInput = {
+  where?: Prisma.TeamMemberWhereInput
+  data: Prisma.XOR<Prisma.TeamMemberUpdateWithoutPlayerStatsInput, Prisma.TeamMemberUncheckedUpdateWithoutPlayerStatsInput>
+}
+
+export type TeamMemberUpdateWithoutPlayerStatsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+  memberType?: Prisma.EnumTeamMemberTypeFieldUpdateOperationsInput | $Enums.TeamMemberType
+  role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
+  notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  team?: Prisma.TeamUpdateOneRequiredWithoutMembersNestedInput
+  user?: Prisma.UserUpdateOneWithoutTeamMembershipsNestedInput
+  invites?: Prisma.TeamGameInviteUpdateManyWithoutMemberNestedInput
+  availabilities?: Prisma.TeamGameAvailabilityUpdateManyWithoutMemberNestedInput
+}
+
+export type TeamMemberUncheckedUpdateWithoutPlayerStatsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  teamId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+  memberType?: Prisma.EnumTeamMemberTypeFieldUpdateOperationsInput | $Enums.TeamMemberType
+  role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
+  notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  invites?: Prisma.TeamGameInviteUncheckedUpdateManyWithoutMemberNestedInput
+  availabilities?: Prisma.TeamGameAvailabilityUncheckedUpdateManyWithoutMemberNestedInput
+}
+
+export type TeamMemberCreateWithoutInvitesInput = {
+  id?: string
+  displayName: string
+  email?: string | null
+  phone?: string | null
+  position?: $Enums.Position | null
+  memberType: $Enums.TeamMemberType
+  role?: $Enums.TeamRole
+  notifyByApp?: boolean
+  notifyByEmail?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  team: Prisma.TeamCreateNestedOneWithoutMembersInput
+  user?: Prisma.UserCreateNestedOneWithoutTeamMembershipsInput
+  availabilities?: Prisma.TeamGameAvailabilityCreateNestedManyWithoutMemberInput
+  playerStats?: Prisma.PlayerStatCreateNestedManyWithoutMemberInput
 }
 
 export type TeamMemberUncheckedCreateWithoutInvitesInput = {
@@ -773,11 +953,14 @@ export type TeamMemberUncheckedCreateWithoutInvitesInput = {
   phone?: string | null
   position?: $Enums.Position | null
   memberType: $Enums.TeamMemberType
+  role?: $Enums.TeamRole
   notifyByApp?: boolean
   notifyByEmail?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  availabilities?: Prisma.TeamGameAvailabilityUncheckedCreateNestedManyWithoutMemberInput
+  playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type TeamMemberCreateOrConnectWithoutInvitesInput = {
@@ -803,6 +986,7 @@ export type TeamMemberUpdateWithoutInvitesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
   memberType?: Prisma.EnumTeamMemberTypeFieldUpdateOperationsInput | $Enums.TeamMemberType
+  role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -810,6 +994,8 @@ export type TeamMemberUpdateWithoutInvitesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   team?: Prisma.TeamUpdateOneRequiredWithoutMembersNestedInput
   user?: Prisma.UserUpdateOneWithoutTeamMembershipsNestedInput
+  availabilities?: Prisma.TeamGameAvailabilityUpdateManyWithoutMemberNestedInput
+  playerStats?: Prisma.PlayerStatUpdateManyWithoutMemberNestedInput
 }
 
 export type TeamMemberUncheckedUpdateWithoutInvitesInput = {
@@ -821,11 +1007,106 @@ export type TeamMemberUncheckedUpdateWithoutInvitesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
   memberType?: Prisma.EnumTeamMemberTypeFieldUpdateOperationsInput | $Enums.TeamMemberType
+  role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  availabilities?: Prisma.TeamGameAvailabilityUncheckedUpdateManyWithoutMemberNestedInput
+  playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutMemberNestedInput
+}
+
+export type TeamMemberCreateWithoutAvailabilitiesInput = {
+  id?: string
+  displayName: string
+  email?: string | null
+  phone?: string | null
+  position?: $Enums.Position | null
+  memberType: $Enums.TeamMemberType
+  role?: $Enums.TeamRole
+  notifyByApp?: boolean
+  notifyByEmail?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  team: Prisma.TeamCreateNestedOneWithoutMembersInput
+  user?: Prisma.UserCreateNestedOneWithoutTeamMembershipsInput
+  invites?: Prisma.TeamGameInviteCreateNestedManyWithoutMemberInput
+  playerStats?: Prisma.PlayerStatCreateNestedManyWithoutMemberInput
+}
+
+export type TeamMemberUncheckedCreateWithoutAvailabilitiesInput = {
+  id?: string
+  teamId: string
+  userId?: string | null
+  displayName: string
+  email?: string | null
+  phone?: string | null
+  position?: $Enums.Position | null
+  memberType: $Enums.TeamMemberType
+  role?: $Enums.TeamRole
+  notifyByApp?: boolean
+  notifyByEmail?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  invites?: Prisma.TeamGameInviteUncheckedCreateNestedManyWithoutMemberInput
+  playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutMemberInput
+}
+
+export type TeamMemberCreateOrConnectWithoutAvailabilitiesInput = {
+  where: Prisma.TeamMemberWhereUniqueInput
+  create: Prisma.XOR<Prisma.TeamMemberCreateWithoutAvailabilitiesInput, Prisma.TeamMemberUncheckedCreateWithoutAvailabilitiesInput>
+}
+
+export type TeamMemberUpsertWithoutAvailabilitiesInput = {
+  update: Prisma.XOR<Prisma.TeamMemberUpdateWithoutAvailabilitiesInput, Prisma.TeamMemberUncheckedUpdateWithoutAvailabilitiesInput>
+  create: Prisma.XOR<Prisma.TeamMemberCreateWithoutAvailabilitiesInput, Prisma.TeamMemberUncheckedCreateWithoutAvailabilitiesInput>
+  where?: Prisma.TeamMemberWhereInput
+}
+
+export type TeamMemberUpdateToOneWithWhereWithoutAvailabilitiesInput = {
+  where?: Prisma.TeamMemberWhereInput
+  data: Prisma.XOR<Prisma.TeamMemberUpdateWithoutAvailabilitiesInput, Prisma.TeamMemberUncheckedUpdateWithoutAvailabilitiesInput>
+}
+
+export type TeamMemberUpdateWithoutAvailabilitiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+  memberType?: Prisma.EnumTeamMemberTypeFieldUpdateOperationsInput | $Enums.TeamMemberType
+  role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
+  notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  team?: Prisma.TeamUpdateOneRequiredWithoutMembersNestedInput
+  user?: Prisma.UserUpdateOneWithoutTeamMembershipsNestedInput
+  invites?: Prisma.TeamGameInviteUpdateManyWithoutMemberNestedInput
+  playerStats?: Prisma.PlayerStatUpdateManyWithoutMemberNestedInput
+}
+
+export type TeamMemberUncheckedUpdateWithoutAvailabilitiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  teamId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+  memberType?: Prisma.EnumTeamMemberTypeFieldUpdateOperationsInput | $Enums.TeamMemberType
+  role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
+  notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  invites?: Prisma.TeamGameInviteUncheckedUpdateManyWithoutMemberNestedInput
+  playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type TeamMemberCreateManyUserInput = {
@@ -836,6 +1117,7 @@ export type TeamMemberCreateManyUserInput = {
   phone?: string | null
   position?: $Enums.Position | null
   memberType: $Enums.TeamMemberType
+  role?: $Enums.TeamRole
   notifyByApp?: boolean
   notifyByEmail?: boolean
   isActive?: boolean
@@ -850,6 +1132,7 @@ export type TeamMemberUpdateWithoutUserInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
   memberType?: Prisma.EnumTeamMemberTypeFieldUpdateOperationsInput | $Enums.TeamMemberType
+  role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -857,6 +1140,8 @@ export type TeamMemberUpdateWithoutUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   team?: Prisma.TeamUpdateOneRequiredWithoutMembersNestedInput
   invites?: Prisma.TeamGameInviteUpdateManyWithoutMemberNestedInput
+  availabilities?: Prisma.TeamGameAvailabilityUpdateManyWithoutMemberNestedInput
+  playerStats?: Prisma.PlayerStatUpdateManyWithoutMemberNestedInput
 }
 
 export type TeamMemberUncheckedUpdateWithoutUserInput = {
@@ -867,12 +1152,15 @@ export type TeamMemberUncheckedUpdateWithoutUserInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
   memberType?: Prisma.EnumTeamMemberTypeFieldUpdateOperationsInput | $Enums.TeamMemberType
+  role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   invites?: Prisma.TeamGameInviteUncheckedUpdateManyWithoutMemberNestedInput
+  availabilities?: Prisma.TeamGameAvailabilityUncheckedUpdateManyWithoutMemberNestedInput
+  playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type TeamMemberUncheckedUpdateManyWithoutUserInput = {
@@ -883,6 +1171,7 @@ export type TeamMemberUncheckedUpdateManyWithoutUserInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
   memberType?: Prisma.EnumTeamMemberTypeFieldUpdateOperationsInput | $Enums.TeamMemberType
+  role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -898,6 +1187,7 @@ export type TeamMemberCreateManyTeamInput = {
   phone?: string | null
   position?: $Enums.Position | null
   memberType: $Enums.TeamMemberType
+  role?: $Enums.TeamRole
   notifyByApp?: boolean
   notifyByEmail?: boolean
   isActive?: boolean
@@ -912,6 +1202,7 @@ export type TeamMemberUpdateWithoutTeamInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
   memberType?: Prisma.EnumTeamMemberTypeFieldUpdateOperationsInput | $Enums.TeamMemberType
+  role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -919,6 +1210,8 @@ export type TeamMemberUpdateWithoutTeamInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutTeamMembershipsNestedInput
   invites?: Prisma.TeamGameInviteUpdateManyWithoutMemberNestedInput
+  availabilities?: Prisma.TeamGameAvailabilityUpdateManyWithoutMemberNestedInput
+  playerStats?: Prisma.PlayerStatUpdateManyWithoutMemberNestedInput
 }
 
 export type TeamMemberUncheckedUpdateWithoutTeamInput = {
@@ -929,12 +1222,15 @@ export type TeamMemberUncheckedUpdateWithoutTeamInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
   memberType?: Prisma.EnumTeamMemberTypeFieldUpdateOperationsInput | $Enums.TeamMemberType
+  role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   invites?: Prisma.TeamGameInviteUncheckedUpdateManyWithoutMemberNestedInput
+  availabilities?: Prisma.TeamGameAvailabilityUncheckedUpdateManyWithoutMemberNestedInput
+  playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type TeamMemberUncheckedUpdateManyWithoutTeamInput = {
@@ -945,6 +1241,7 @@ export type TeamMemberUncheckedUpdateManyWithoutTeamInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
   memberType?: Prisma.EnumTeamMemberTypeFieldUpdateOperationsInput | $Enums.TeamMemberType
+  role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -959,10 +1256,14 @@ export type TeamMemberUncheckedUpdateManyWithoutTeamInput = {
 
 export type TeamMemberCountOutputType = {
   invites: number
+  availabilities: number
+  playerStats: number
 }
 
 export type TeamMemberCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   invites?: boolean | TeamMemberCountOutputTypeCountInvitesArgs
+  availabilities?: boolean | TeamMemberCountOutputTypeCountAvailabilitiesArgs
+  playerStats?: boolean | TeamMemberCountOutputTypeCountPlayerStatsArgs
 }
 
 /**
@@ -982,6 +1283,20 @@ export type TeamMemberCountOutputTypeCountInvitesArgs<ExtArgs extends runtime.Ty
   where?: Prisma.TeamGameInviteWhereInput
 }
 
+/**
+ * TeamMemberCountOutputType without action
+ */
+export type TeamMemberCountOutputTypeCountAvailabilitiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TeamGameAvailabilityWhereInput
+}
+
+/**
+ * TeamMemberCountOutputType without action
+ */
+export type TeamMemberCountOutputTypeCountPlayerStatsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PlayerStatWhereInput
+}
+
 
 export type TeamMemberSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -992,6 +1307,7 @@ export type TeamMemberSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   phone?: boolean
   position?: boolean
   memberType?: boolean
+  role?: boolean
   notifyByApp?: boolean
   notifyByEmail?: boolean
   isActive?: boolean
@@ -1000,6 +1316,8 @@ export type TeamMemberSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
   user?: boolean | Prisma.TeamMember$userArgs<ExtArgs>
   invites?: boolean | Prisma.TeamMember$invitesArgs<ExtArgs>
+  availabilities?: boolean | Prisma.TeamMember$availabilitiesArgs<ExtArgs>
+  playerStats?: boolean | Prisma.TeamMember$playerStatsArgs<ExtArgs>
   _count?: boolean | Prisma.TeamMemberCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["teamMember"]>
 
@@ -1012,6 +1330,7 @@ export type TeamMemberSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   phone?: boolean
   position?: boolean
   memberType?: boolean
+  role?: boolean
   notifyByApp?: boolean
   notifyByEmail?: boolean
   isActive?: boolean
@@ -1030,6 +1349,7 @@ export type TeamMemberSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   phone?: boolean
   position?: boolean
   memberType?: boolean
+  role?: boolean
   notifyByApp?: boolean
   notifyByEmail?: boolean
   isActive?: boolean
@@ -1048,6 +1368,7 @@ export type TeamMemberSelectScalar = {
   phone?: boolean
   position?: boolean
   memberType?: boolean
+  role?: boolean
   notifyByApp?: boolean
   notifyByEmail?: boolean
   isActive?: boolean
@@ -1055,11 +1376,13 @@ export type TeamMemberSelectScalar = {
   updatedAt?: boolean
 }
 
-export type TeamMemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "teamId" | "userId" | "displayName" | "email" | "phone" | "position" | "memberType" | "notifyByApp" | "notifyByEmail" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["teamMember"]>
+export type TeamMemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "teamId" | "userId" | "displayName" | "email" | "phone" | "position" | "memberType" | "role" | "notifyByApp" | "notifyByEmail" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["teamMember"]>
 export type TeamMemberInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
   user?: boolean | Prisma.TeamMember$userArgs<ExtArgs>
   invites?: boolean | Prisma.TeamMember$invitesArgs<ExtArgs>
+  availabilities?: boolean | Prisma.TeamMember$availabilitiesArgs<ExtArgs>
+  playerStats?: boolean | Prisma.TeamMember$playerStatsArgs<ExtArgs>
   _count?: boolean | Prisma.TeamMemberCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TeamMemberIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1077,6 +1400,8 @@ export type $TeamMemberPayload<ExtArgs extends runtime.Types.Extensions.Internal
     team: Prisma.$TeamPayload<ExtArgs>
     user: Prisma.$UserPayload<ExtArgs> | null
     invites: Prisma.$TeamGameInvitePayload<ExtArgs>[]
+    availabilities: Prisma.$TeamGameAvailabilityPayload<ExtArgs>[]
+    playerStats: Prisma.$PlayerStatPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1087,6 +1412,7 @@ export type $TeamMemberPayload<ExtArgs extends runtime.Types.Extensions.Internal
     phone: string | null
     position: $Enums.Position | null
     memberType: $Enums.TeamMemberType
+    role: $Enums.TeamRole
     notifyByApp: boolean
     notifyByEmail: boolean
     isActive: boolean
@@ -1489,6 +1815,8 @@ export interface Prisma__TeamMemberClient<T, Null = never, ExtArgs extends runti
   team<T extends Prisma.TeamDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TeamDefaultArgs<ExtArgs>>): Prisma.Prisma__TeamClient<runtime.Types.Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   user<T extends Prisma.TeamMember$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TeamMember$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   invites<T extends Prisma.TeamMember$invitesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TeamMember$invitesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamGameInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  availabilities<T extends Prisma.TeamMember$availabilitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TeamMember$availabilitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamGameAvailabilityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  playerStats<T extends Prisma.TeamMember$playerStatsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TeamMember$playerStatsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlayerStatPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1526,6 +1854,7 @@ export interface TeamMemberFieldRefs {
   readonly phone: Prisma.FieldRef<"TeamMember", 'String'>
   readonly position: Prisma.FieldRef<"TeamMember", 'Position'>
   readonly memberType: Prisma.FieldRef<"TeamMember", 'TeamMemberType'>
+  readonly role: Prisma.FieldRef<"TeamMember", 'TeamRole'>
   readonly notifyByApp: Prisma.FieldRef<"TeamMember", 'Boolean'>
   readonly notifyByEmail: Prisma.FieldRef<"TeamMember", 'Boolean'>
   readonly isActive: Prisma.FieldRef<"TeamMember", 'Boolean'>
@@ -1972,6 +2301,54 @@ export type TeamMember$invitesArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.TeamGameInviteScalarFieldEnum | Prisma.TeamGameInviteScalarFieldEnum[]
+}
+
+/**
+ * TeamMember.availabilities
+ */
+export type TeamMember$availabilitiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TeamGameAvailability
+   */
+  select?: Prisma.TeamGameAvailabilitySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TeamGameAvailability
+   */
+  omit?: Prisma.TeamGameAvailabilityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TeamGameAvailabilityInclude<ExtArgs> | null
+  where?: Prisma.TeamGameAvailabilityWhereInput
+  orderBy?: Prisma.TeamGameAvailabilityOrderByWithRelationInput | Prisma.TeamGameAvailabilityOrderByWithRelationInput[]
+  cursor?: Prisma.TeamGameAvailabilityWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TeamGameAvailabilityScalarFieldEnum | Prisma.TeamGameAvailabilityScalarFieldEnum[]
+}
+
+/**
+ * TeamMember.playerStats
+ */
+export type TeamMember$playerStatsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PlayerStat
+   */
+  select?: Prisma.PlayerStatSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PlayerStat
+   */
+  omit?: Prisma.PlayerStatOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlayerStatInclude<ExtArgs> | null
+  where?: Prisma.PlayerStatWhereInput
+  orderBy?: Prisma.PlayerStatOrderByWithRelationInput | Prisma.PlayerStatOrderByWithRelationInput[]
+  cursor?: Prisma.PlayerStatWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PlayerStatScalarFieldEnum | Prisma.PlayerStatScalarFieldEnum[]
 }
 
 /**

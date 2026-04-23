@@ -55,11 +55,15 @@ export const ModelName = {
   RequestResponse: 'RequestResponse',
   PlayerOffer: 'PlayerOffer',
   User: 'User',
-  Notification: 'Notification',
+  League: 'League',
+  LeagueMember: 'LeagueMember',
   Team: 'Team',
   TeamMember: 'TeamMember',
+  PlayerStat: 'PlayerStat',
   TeamGame: 'TeamGame',
   TeamGameInvite: 'TeamGameInvite',
+  TeamGameAvailability: 'TeamGameAvailability',
+  Notification: 'Notification',
   Booking: 'Booking'
 } as const
 
@@ -139,31 +143,40 @@ export const UserScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   firstName: 'firstName',
-  lastName: 'lastName'
+  lastName: 'lastName',
+  appRole: 'appRole'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
-export const NotificationScalarFieldEnum = {
+export const LeagueScalarFieldEnum = {
   id: 'id',
+  name: 'name',
+  season: 'season',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LeagueScalarFieldEnum = (typeof LeagueScalarFieldEnum)[keyof typeof LeagueScalarFieldEnum]
+
+
+export const LeagueMemberScalarFieldEnum = {
+  id: 'id',
+  leagueId: 'leagueId',
   userId: 'userId',
-  type: 'type',
-  title: 'title',
-  body: 'body',
-  link: 'link',
-  isRead: 'isRead',
-  metadata: 'metadata',
+  role: 'role',
   createdAt: 'createdAt'
 } as const
 
-export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
+export type LeagueMemberScalarFieldEnum = (typeof LeagueMemberScalarFieldEnum)[keyof typeof LeagueMemberScalarFieldEnum]
 
 
 export const TeamScalarFieldEnum = {
   id: 'id',
-  ownerId: 'ownerId',
   name: 'name',
+  createdById: 'createdById',
+  leagueId: 'leagueId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -180,6 +193,7 @@ export const TeamMemberScalarFieldEnum = {
   phone: 'phone',
   position: 'position',
   memberType: 'memberType',
+  role: 'role',
   notifyByApp: 'notifyByApp',
   notifyByEmail: 'notifyByEmail',
   isActive: 'isActive',
@@ -188,6 +202,23 @@ export const TeamMemberScalarFieldEnum = {
 } as const
 
 export type TeamMemberScalarFieldEnum = (typeof TeamMemberScalarFieldEnum)[keyof typeof TeamMemberScalarFieldEnum]
+
+
+export const PlayerStatScalarFieldEnum = {
+  id: 'id',
+  memberId: 'memberId',
+  userId: 'userId',
+  teamId: 'teamId',
+  leagueId: 'leagueId',
+  season: 'season',
+  gamesPlayed: 'gamesPlayed',
+  goals: 'goals',
+  assists: 'assists',
+  penaltyMins: 'penaltyMins',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PlayerStatScalarFieldEnum = (typeof PlayerStatScalarFieldEnum)[keyof typeof PlayerStatScalarFieldEnum]
 
 
 export const TeamGameScalarFieldEnum = {
@@ -216,6 +247,34 @@ export const TeamGameInviteScalarFieldEnum = {
 } as const
 
 export type TeamGameInviteScalarFieldEnum = (typeof TeamGameInviteScalarFieldEnum)[keyof typeof TeamGameInviteScalarFieldEnum]
+
+
+export const TeamGameAvailabilityScalarFieldEnum = {
+  id: 'id',
+  gameId: 'gameId',
+  memberId: 'memberId',
+  status: 'status',
+  note: 'note',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TeamGameAvailabilityScalarFieldEnum = (typeof TeamGameAvailabilityScalarFieldEnum)[keyof typeof TeamGameAvailabilityScalarFieldEnum]
+
+
+export const NotificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  title: 'title',
+  body: 'body',
+  link: 'link',
+  isRead: 'isRead',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
 
 
 export const BookingScalarFieldEnum = {

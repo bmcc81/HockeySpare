@@ -179,7 +179,7 @@ cd /opt/hockeyspare
 Pull the latest code
 
 
-git checkout maingit pull origin mainnpm install
+git checkout main git pull origin main npm install
 
 
 Build the frontend
@@ -194,10 +194,10 @@ Deploy the frontend to Nginx
 sudo rsync -av --delete /opt/hockeyspare/apps/web/dist/hockeyspare-web/browser/ /var/www/hockeyspare/browser/sudo nginx -tsudo systemctl reload nginx
 
 If you also changed the backend
-cd /opt/hockeyspare/apps/apinpm installnpm run buildsudo systemctl restart hockeyspare-apisudo systemctl status hockeyspare-api --no-pager
+cd /opt/hockeyspare/apps/api npm install npm run buildsudo systemctl restart hockeyspare-api sudo systemctl status hockeyspare-api --no-pager
 
 If Prisma schema changed
-cd /opt/hockeyspare/apps/apinpx prisma migrate deploy
+cd /opt/hockeyspare/apps/api npx prisma migrate deploy
 If you are using dev migrations instead:
 npx prisma migrate dev
 

@@ -191,7 +191,7 @@ npm --prefix apps/web run build -- --configuration production
 Deploy the frontend to Nginx
 
 
-sudo rsync -av --delete /opt/hockeyspare/apps/web/dist/hockeyspare-web/browser/ /var/www/hockeyspare/browser/sudo nginx -tsudo systemctl reload nginx
+sudo rsync -av --delete /opt/hockeyspare/apps/web/dist/hockeyspare-web/browser/ /var/www/hockeyspare/browser/sudo nginx -t sudo systemctl reload nginx
 
 If you also changed the backend
 cd /opt/hockeyspare/apps/api npm install npm run buildsudo systemctl restart hockeyspare-api sudo systemctl status hockeyspare-api --no-pager
@@ -211,5 +211,4 @@ Ctrl + F5
 If something fails on the Pi
 Run these commands and check the output:
 cd /opt/hockeyspare/apps/web && npm run buildsudo systemctl status hockeyspare-api --no-pagersudo nginx -t
-If you want the **full README with this section merged in**, I’ll format the whole file as one polished version.
 

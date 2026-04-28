@@ -191,10 +191,19 @@ npm --prefix apps/web run build -- --configuration production
 Deploy the frontend to Nginx
 
 
-sudo rsync -av --delete /opt/hockeyspare/apps/web/dist/hockeyspare-web/browser/ /var/www/hockeyspare/browser/sudo nginx -t sudo systemctl reload nginx
+sudo rsync -av --delete /opt/hockeyspare/apps/web/dist/hockeyspare-web/browser/ /var/www/hockeyspare/browser/
+sudo nginx -t
+sudo systemctl reload nginx
+
+Check the time stamps to see update:
+ls -l /opt/hockeyspare/apps/web/dist/hockeyspare-web/browser/index.html
+ls -l /var/www/hockeyspare/browser/index.html
 
 If you also changed the backend
-cd /opt/hockeyspare/apps/api npm install npm run buildsudo systemctl restart hockeyspare-api sudo systemctl status hockeyspare-api --no-pager
+cd /opt/hockeyspare/apps/api 
+npm install npm run build
+sudo systemctl restart hockeyspare-api
+sudo systemctl status hockeyspare-api --no-pager
 
 If Prisma schema changed
 cd /opt/hockeyspare/apps/api npx prisma migrate deploy

@@ -21,6 +21,51 @@
     {{ error() }}
   </div>
 
+  <div *ngIf="!loading() && leagues().length > 0" class="filters-card">
+    <div class="row g-2 align-items-end">
+      <div class="col-12 col-md-6">
+        <label class="form-label" for="leagueSearch">Search leagues</label>
+        <input
+          id="leagueSearch"
+          type="text"
+          class="form-control"
+          placeholder="Search by league name or season"
+          [value]="leagueSearch()"
+          (input)="setLeagueSearch($event)"
+        />
+      </div>
+
+      <div class="col-12 col-md-4">
+        <label class="form-label" for="seasonFilter">Season</label>
+        <select
+          id="seasonFilter"
+          class="form-select"
+          [value]="seasonFilter()"
+          (change)="setSeasonFilter($event)"
+        >
+          <option value="">All seasons</option>
+          <option *ngFor="let season of seasons()" [value]="season">
+            {{ season }}
+          </option>
+        </select>
+      </div>
+
+      <div class="col-12 col-md-2">
+        <button
+          type="button"
+          class="btn btn-outline-secondary w-100"
+          (click)="clearFilters()"
+        >
+          Clear
+        </button>
+      </div>
+    </div>
+
+    <div class="text-secondary mt-3">
+      Showing {{ filteredLeagues().length }} of {{ leagues().length }} leagues
+    </div>
+  </div>
+
   <div *ngIf="!loading() && leagues().length === 0" class="state-card">
     <h2>No leagues yet</h2>
     <p>Create your first league to start adding teams.</p>
@@ -29,10 +74,24 @@
     </a>
   </div>
 
-  <div class="league-grid" *ngIf="!loading() && leagues().length > 0">
+  <div
+    *ngIf="!loading() && leagues().length > 0 && filteredLeagues().length === 0"
+    class="state-card"
+  >
+    <h2>No leagues match your filters</h2>
+    <p>Try changing the search or season filter.</p>
+    <button type="button" class="btn btn-outline-secondary" (click)="clearFilters()">
+      Clear Filters
+    </button>
+  </div>
+
+  <div
+    class="league-grid"
+    *ngIf="!loading() && filteredLeagues().length > 0"
+  >
     <a
       class="league-card"
-      *ngFor="let league of leagues(); trackBy: trackByLeagueId"
+      *ngFor="let league of filteredLeagues(); trackBy: trackByLeagueId"
       [routerLink]="['/leagues', league.id]"
     >
       <div>

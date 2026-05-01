@@ -146,6 +146,7 @@ model PlayerOffer {
   arenaAddress String?
   payAmount    Int?
   playerName   String
+  date         DateTime
   time         String
   position     Position
   skillLevel   SkillLevel

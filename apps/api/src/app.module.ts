@@ -12,6 +12,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
 import { TeamsModule } from './modules/teams/teams.module';
 import { BookingsModule } from './modules/bookings/bookings.module';
 import { EmailModule } from './email/email.module';
+import { LeaguesModule } from './leagues/leagues.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { EmailModule } from './email/email.module';
     TeamsModule,
     BookingsModule,
     EmailModule,
+    LeaguesModule,
   ],  
   controllers: [AppController],
   providers: [AppService],

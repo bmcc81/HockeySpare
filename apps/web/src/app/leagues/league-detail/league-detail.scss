@@ -1,0 +1,119 @@
+.league-detail-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: #0d6efd;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.hero-card,
+.panel,
+.state-card {
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 1.25rem;
+  background: #fff;
+  padding: 1.5rem;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.hero-card {
+  margin-bottom: 1rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #0d6efd;
+}
+
+h1,
+h2 {
+  margin: 0;
+  font-weight: 800;
+}
+
+.subtitle {
+  color: #64748b;
+  margin: 0.5rem 0 0;
+}
+
+.content-grid,
+.games-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.8fr);
+  gap: 1rem;
+}
+
+.games-grid {
+  margin-top: 1rem;
+}
+
+.team-list,
+.game-list {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.team-row,
+.game-row {
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 0.9rem;
+  padding: 1rem;
+  background: #f8fafc;
+}
+
+.team-row p,
+.game-row p {
+  margin: 0.25rem 0 0;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.game-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.game-meta span {
+  display: inline-flex;
+  border-radius: 999px;
+  background: #e2e8f0;
+  color: #334155;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.game-notes {
+  margin-top: 0.75rem !important;
+}
+
+.empty {
+  margin-top: 1rem;
+  color: #64748b;
+}
+
+.form-error {
+  margin-top: 0.35rem;
+  color: #dc3545;
+  font-size: 0.875rem;
+}
+
+@media (max-width: 800px) {
+  .content-grid,
+  .games-grid {
+    grid-template-columns: 1fr;
+  }
+}

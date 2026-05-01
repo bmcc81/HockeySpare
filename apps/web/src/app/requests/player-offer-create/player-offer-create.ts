@@ -55,7 +55,6 @@ export class PlayerOfferCreateComponent {
 
     this.requestApi.createPlayerOffer(payload).subscribe({
       next: (res) => {
-        console.log('Created offer:', res);
         this.router.navigateByUrl('/requests');
       },
       error: (err) => console.error(err.error),

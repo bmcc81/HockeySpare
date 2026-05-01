@@ -125,7 +125,6 @@ async create(userId: string, requestId: number, dto: CreateBookingDto) {
   }
 
   async getForOwnedRequests(userId: string) {
-    console.log('getForOwnedRequests start', userId);
 
     const result = this.prisma.booking.findMany({
       where: {

@@ -1,0 +1,50 @@
+<section class="league-page">
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">League Manager</p>
+      <h1>My Leagues</h1>
+      <p class="subtitle">
+        Create leagues, manage teams, and organize your hockey season.
+      </p>
+    </div>
+
+    <a routerLink="/leagues/new" class="btn btn-primary">
+      Create League
+    </a>
+  </div>
+
+  <div *ngIf="loading()" class="state-card">
+    Loading leagues...
+  </div>
+
+  <div *ngIf="error()" class="alert alert-danger">
+    {{ error() }}
+  </div>
+
+  <div *ngIf="!loading() && leagues().length === 0" class="state-card">
+    <h2>No leagues yet</h2>
+    <p>Create your first league to start adding teams.</p>
+    <a routerLink="/leagues/new" class="btn btn-primary">
+      Create League
+    </a>
+  </div>
+
+  <div class="league-grid" *ngIf="!loading() && leagues().length > 0">
+    <a
+      class="league-card"
+      *ngFor="let league of leagues(); trackBy: trackByLeagueId"
+      [routerLink]="['/leagues', league.id]"
+    >
+      <div>
+        <h2>{{ league.name }}</h2>
+        <p *ngIf="league.season">{{ league.season }}</p>
+        <p *ngIf="!league.season">No season set</p>
+      </div>
+
+      <div class="meta">
+        <span>{{ league.teams?.length ?? 0 }} teams</span>
+        <span>{{ league.members?.length ?? 0 }} members</span>
+      </div>
+    </a>
+  </div>
+</section>

@@ -144,45 +144,50 @@ export class TeamsService {
   async getMyTeam(userId: string) {
     const team = await this.getUserTeam(userId);
 
-    const [teamData, myMembership] = await Promise.all([
-      this.prisma.team.findFirst({
-        where: { id: team.id },
-        include: {
-          members: {
-            where: { isActive: true },
-            orderBy: [{ memberType: 'asc' }, { displayName: 'asc' }],
+    const teamData = await this.prisma.team.findFirst({
+      where: { id: team.id },
+      include: {
+        league: true,
+        members: {
+          where: { isActive: true },
+          orderBy: [{ memberType: 'asc' }, { displayName: 'asc' }],
+        },
+        games: {
+          where: {
+            startsAt: {
+              gte: new Date(),
+            },
           },
-          games: {
-            orderBy: { startsAt: 'asc' },
-            include: {
-              invites: {
-                include: {
-                  member: true,
-                },
+          orderBy: { startsAt: 'asc' },
+          include: {
+            invites: {
+              include: {
+                member: true,
               },
-              availabilities: {
-                include: {
-                  member: true,
-                },
+            },
+            availabilities: {
+              include: {
+                member: true,
               },
             },
           },
         },
-      }),
-      this.prisma.teamMember.findFirst({
-        where: {
-          teamId: team.id,
-          userId,
-          isActive: true,
-        },
-        select: {
-          id: true,
-          role: true,
-          memberType: true,
-          position: true,
-        },
-      }),
-    ]);
+      },
+    });
+
+    const myMembership = await this.prisma.teamMember.findFirst({
+      where: {
+        teamId: team.id,
+        userId,
+        isActive: true,
+      },
+      select: {
+        id: true,
+        role: true,
+        memberType: true,
+        position: true,
+      },
+    });
 
     return {
       ...teamData,

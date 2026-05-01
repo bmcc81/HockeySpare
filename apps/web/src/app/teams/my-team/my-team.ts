@@ -10,6 +10,22 @@ import {
   PlayerStat,
 } from '../../core/services/team';
 
+type UpcomingGame = {
+  id: string;
+  title: string;
+  startsAt: string;
+  arena: string | null;
+  opponent: string | null;
+  notes: string | null;
+  teamId?: string;
+  teamName?: string;
+  leagueId?: string;
+  leagueName?: string;
+  source: 'MY_TEAM' | 'LEAGUE';
+  invites: any[];
+  availabilities: any[];
+};
+
 @Component({
   selector: 'app-my-team',
   standalone: true,
@@ -36,6 +52,10 @@ export class MyTeamComponent implements OnInit {
   statsLoadingMemberId: string | null = null;
   statsSeasonHasRecord: boolean | null = null;
 
+  upcomingGames: UpcomingGame[] = [];
+  upcomingGamesLoading = false;
+  upcomingGamesError: string | null = null;
+
   teamForm = this.fb.group({
     name: ['', [Validators.required, Validators.maxLength(80)]],
   });
@@ -48,14 +68,6 @@ export class MyTeamComponent implements OnInit {
     memberType: ['REGULAR' as 'REGULAR' | 'SPARE', Validators.required],
     notifyByApp: [true],
     notifyByEmail: [false],
-  });
-
-  gameForm = this.fb.group({
-    title: ['League Game', Validators.required],
-    startsAt: ['', Validators.required],
-    arena: [''],
-    opponent: [''],
-    notes: [''],
   });
 
   availabilityForm = this.fb.group({
@@ -207,14 +219,27 @@ export class MyTeamComponent implements OnInit {
     return !!this.team?.canManageTeam;
   }
 
+  private sortUpcomingGames(games: UpcomingGame[]): UpcomingGame[] {
+    const now = Date.now();
+
+    return games
+      .filter((game) => new Date(game.startsAt).getTime() >= now)
+      .sort(
+        (a, b) =>
+          new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime(),
+      );
+  }
+
   private defaultSeason(): string {
     const year = new Date().getFullYear();
     return `${year}-${year + 1}`;
   }
 
-  reload() {
+  reload(): void {
     this.loading = true;
     this.error = '';
+    this.upcomingGames = [];
+    this.upcomingGamesError = null;
     this.cdr.detectChanges();
 
     this.teamApi.getMyTeam().subscribe({
@@ -233,13 +258,17 @@ export class MyTeamComponent implements OnInit {
 
         this.loading = false;
         this.error = '';
+
         this.loadMyStats();
+        this.loadUpcomingGames();
+
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Could not load team page:', err);
         this.error = 'Could not load your team.';
         this.loading = false;
+        this.upcomingGames = [];
         this.cdr.detectChanges();
       },
     });
@@ -338,44 +367,6 @@ export class MyTeamComponent implements OnInit {
     });
   }
 
-  createGame() {
-    if (!this.canManageTeam) {
-      this.error = 'You do not have permission to create games.';
-      return;
-    }
-
-    if (this.gameForm.invalid) {
-      this.gameForm.markAllAsTouched();
-      return;
-    }
-
-    const raw = this.gameForm.getRawValue();
-
-    this.teamApi
-      .createGame({
-        title: raw.title ?? 'League Game',
-        startsAt: new Date(raw.startsAt ?? '').toISOString(),
-        arena: raw.arena ?? '',
-        opponent: raw.opponent ?? '',
-        notes: raw.notes ?? '',
-      })
-      .subscribe({
-        next: () => {
-          this.gameForm.reset({
-            title: 'League Game',
-            startsAt: '',
-            arena: '',
-            opponent: '',
-            notes: '',
-          });
-          this.reload();
-        },
-        error: () => {
-          this.error = 'Could not create game.';
-        },
-      });
-  }
-
   notifyGame(gameId: string) {
     if (!this.canManageTeam) {
       this.error = 'You do not have permission to notify the team.';
@@ -432,6 +423,44 @@ export class MyTeamComponent implements OnInit {
       default:
         return 'text-bg-secondary';
     }
+  }
+
+  private mapMyTeamGames(): UpcomingGame[] {
+    const teamAsAny = this.team as any;
+
+    return (this.team?.games ?? []).map((game: any) => ({
+      id: game.id,
+      title: game.title,
+      startsAt: game.startsAt,
+      arena: game.arena ?? null,
+      opponent: game.opponent ?? null,
+      notes: game.notes ?? null,
+      teamId: game.teamId,
+      teamName: this.team?.name ?? undefined,
+      leagueId: teamAsAny?.league?.id ?? undefined,
+      leagueName: teamAsAny?.league?.name ?? undefined,
+      source: 'MY_TEAM',
+      invites: game.invites ?? [],
+      availabilities: game.availabilities ?? [],
+    }));
+  }
+
+  private loadUpcomingGames(): void {
+    this.upcomingGamesLoading = false;
+    this.upcomingGamesError = null;
+    this.upcomingGames = this.sortUpcomingGames(this.mapMyTeamGames());
+    this.cdr.detectChanges();
+  }
+
+  trackByUpcomingGameId(
+    _index: number,
+    game: { id: string; source?: string },
+  ): string {
+    return `${game.source ?? 'MY_TEAM'}-${game.id}`;
+  }
+
+  canRespondToGame(game: { source?: string }): boolean {
+    return game.source !== 'LEAGUE';
   }
 
   availabilityCount(

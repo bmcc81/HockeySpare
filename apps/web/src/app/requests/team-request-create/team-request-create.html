@@ -5,37 +5,96 @@
         <div class="request-card">
           <div class="text-center mb-4">
             <h2 class="request-title">Create Team Request</h2>
-            <p class="request-subtitle mb-0">Post a player need on HockeySpare</p>
+            <p class="request-subtitle mb-0">
+              Post a player need on HockeySpare
+            </p>
           </div>
 
           <form [formGroup]="form" (ngSubmit)="submit()" class="row g-3">
-            <div class="mb-3">
-              <label class="form-label">Team name</label>
-              <input
-                type="text"
-                class="form-control"
+            <div class="col-12">
+              <label class="form-label" for="teamName">Team</label>
+
+              <select
+                id="teamName"
+                class="form-select custom-input"
                 formControlName="teamName"
-                placeholder="Enter team name"
-              />
+              >
+                <option value="" disabled>Select a team</option>
+
+                <option *ngFor="let team of teams" [value]="team.name">
+                  {{ team.name }}
+                </option>
+              </select>
+
+              <div class="text-secondary small mt-2" *ngIf="teamsLoading">
+                Loading teams...
+              </div>
+
+              <div
+                class="invalid-feedback d-block"
+                *ngIf="form.controls.teamName.touched && form.controls.teamName.invalid"
+              >
+                Team is required.
+              </div>
+
+              <div
+                class="text-secondary small mt-2"
+                *ngIf="!teamsLoading && teams.length === 0"
+              >
+                No teams found. Create your team first from the My Team screen.
+                <a routerLink="/my-team">Go to My Team</a>
+              </div>
+
+              <div class="alert alert-warning mt-2 mb-0" *ngIf="teamsError">
+                {{ teamsError }}
+              </div>
             </div>
+
             <div class="col-12 col-md-6">
               <label for="position" class="form-label">Position Needed</label>
-              <select id="position" formControlName="position" class="form-select custom-input">
+
+              <select
+                id="position"
+                formControlName="position"
+                class="form-select custom-input"
+              >
                 <option value="" disabled>Select position</option>
                 <option *ngFor="let p of positions" [value]="p">{{ p }}</option>
               </select>
+
+              <div
+                class="invalid-feedback d-block"
+                *ngIf="form.controls.position.touched && form.controls.position.invalid"
+              >
+                Position is required.
+              </div>
             </div>
 
             <div class="col-12 col-md-6">
               <label for="skillLevel" class="form-label">Skill Level</label>
-              <select id="skillLevel" formControlName="skillLevel" class="form-select custom-input">
+
+              <select
+                id="skillLevel"
+                formControlName="skillLevel"
+                class="form-select custom-input"
+              >
                 <option value="" disabled>Select skill level</option>
-                <option *ngFor="let s of skillLevels" [value]="s">{{ s }}</option>
+                <option *ngFor="let s of skillLevels" [value]="s">
+                  {{ s }}
+                </option>
               </select>
+
+              <div
+                class="invalid-feedback d-block"
+                *ngIf="form.controls.skillLevel.touched && form.controls.skillLevel.invalid"
+              >
+                Skill level is required.
+              </div>
             </div>
 
             <div class="col-12 col-md-6">
               <label for="payAmount" class="form-label">Pay Amount</label>
+
               <input
                 id="payAmount"
                 type="number"
@@ -43,9 +102,34 @@
                 class="form-control custom-input"
                 placeholder="40"
               />
+
+              <div
+                class="invalid-feedback d-block"
+                *ngIf="form.controls.payAmount.touched && form.controls.payAmount.invalid"
+              >
+                Enter a valid pay amount.
+              </div>
             </div>
 
             <div class="col-12 col-md-6">
+              <label for="date" class="form-label">Date</label>
+
+              <input
+                id="date"
+                type="date"
+                class="form-control custom-input"
+                formControlName="date"
+              />
+
+              <div
+                class="invalid-feedback d-block"
+                *ngIf="form.controls.date.touched && form.controls.date.invalid"
+              >
+                Date is required.
+              </div>
+            </div>
+
+            <div class="col-12">
               <label class="form-label">Time</label>
 
               <div
@@ -65,17 +149,13 @@
                 class="invalid-feedback d-block"
                 *ngIf="form.controls.time.touched && form.controls.time.invalid"
               >
-                <span *ngIf="form.controls.time.errors?.['required']">Time is required.</span>
-              </div>
-
-              <div class="mb-3">
-                <label for="date" class="form-label">Date</label>
-                <input id="date" type="date" class="form-control" formControlName="date" />
+                Time is required.
               </div>
             </div>
 
             <div class="col-12">
               <label for="arena" class="form-label">Arena</label>
+
               <input
                 id="arena"
                 type="text"
@@ -83,10 +163,18 @@
                 class="form-control custom-input"
                 placeholder="Arena name"
               />
+
+              <div
+                class="invalid-feedback d-block"
+                *ngIf="form.controls.arena.touched && form.controls.arena.invalid"
+              >
+                Arena is required.
+              </div>
             </div>
 
             <div class="col-12">
               <label for="arenaAddress" class="form-label">Arena Address</label>
+
               <input
                 id="arenaAddress"
                 type="text"
@@ -94,10 +182,18 @@
                 class="form-control custom-input"
                 placeholder="123 Main St, Vaudreuil-Dorion, QC"
               />
+
+              <div
+                class="invalid-feedback d-block"
+                *ngIf="form.controls.arenaAddress.touched && form.controls.arenaAddress.invalid"
+              >
+                Arena address must be 220 characters or less.
+              </div>
             </div>
 
             <div class="col-12">
               <label for="notes" class="form-label">Notes</label>
+
               <textarea
                 id="notes"
                 formControlName="notes"
@@ -113,14 +209,19 @@
             </div>
 
             <div class="col-12 mt-4">
-              <button type="submit" class="btn submit-btn w-100" [disabled]="loading || form.invalid">
+              <button
+                type="submit"
+                class="btn submit-btn w-100"
+                [disabled]="loading || form.invalid"
+              >
                 {{ loading ? 'Creating Request...' : 'Create Team Request' }}
               </button>
             </div>
           </form>
 
           <div class="text-center form-footer mt-4">
-            Looking to join a team instead? <a routerLink="/requests/player/new">Post a player offer</a>
+            Looking to join a team instead?
+            <a routerLink="/requests/player/new">Post a player offer</a>
           </div>
         </div>
       </div>

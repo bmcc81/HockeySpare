@@ -31,6 +31,9 @@
   </div>
 
   <div class="list" *ngIf="vm$ | async as vm">
+
+    <h2 class="section-title" [appInView]="40">Team Requests</h2>
+
     <p class="muted" *ngIf="vm.requests.length === 0">No requests match your filters.</p>
 
     <article

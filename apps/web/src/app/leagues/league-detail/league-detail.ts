@@ -35,6 +35,11 @@ export class LeagueDetailComponent {
   teamError = signal<string | null>(null);
   gameError = signal<string | null>(null);
 
+  teamSearch = signal('');
+  scheduleSearch = signal('');
+  scheduleTeamId = signal('');
+  scheduleView = signal<'ALL' | 'UPCOMING' | 'PAST'>('UPCOMING');
+
   teamForm = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
   });
@@ -69,6 +74,46 @@ export class LeagueDetailComponent {
       teamName: this.teamNameById().get(game.teamId) ?? 'Unknown team',
     })),
   );
+
+  filteredTeams = computed(() => {
+    const search = this.teamSearch().trim().toLowerCase();
+
+    if (!search) {
+      return this.teams();
+    }
+
+    return this.teams().filter((team) =>
+      team.name.toLowerCase().includes(search),
+    );
+  });
+
+  filteredGameRows = computed(() => {
+    const search = this.scheduleSearch().trim().toLowerCase();
+    const teamId = this.scheduleTeamId();
+    const view = this.scheduleView();
+    const now = Date.now();
+
+    return this.gameRows().filter((game) => {
+      const gameTime = new Date(game.startsAt).getTime();
+
+      const matchesTeam = !teamId || game.teamId === teamId;
+
+      const matchesSearch =
+        !search ||
+        game.title.toLowerCase().includes(search) ||
+        game.teamName.toLowerCase().includes(search) ||
+        (game.opponent ?? '').toLowerCase().includes(search) ||
+        (game.arena ?? '').toLowerCase().includes(search) ||
+        (game.notes ?? '').toLowerCase().includes(search);
+
+      const matchesView =
+        view === 'ALL' ||
+        (view === 'UPCOMING' && gameTime >= now) ||
+        (view === 'PAST' && gameTime < now);
+
+      return matchesTeam && matchesSearch && matchesView;
+    });
+  });
 
   load(): void {
     if (!this.leagueId) {
@@ -212,5 +257,35 @@ export class LeagueDetailComponent {
     return [...games].sort(
       (a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime(),
     );
+  }
+
+  setTeamSearch(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.teamSearch.set(input.value);
+  }
+
+  setScheduleSearch(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.scheduleSearch.set(input.value);
+  }
+
+  setScheduleTeamId(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    this.scheduleTeamId.set(select.value);
+  }
+
+  setScheduleView(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    this.scheduleView.set(select.value as 'ALL' | 'UPCOMING' | 'PAST');
+  }
+
+  clearTeamFilters(): void {
+    this.teamSearch.set('');
+  }
+
+  clearScheduleFilters(): void {
+    this.scheduleSearch.set('');
+    this.scheduleTeamId.set('');
+    this.scheduleView.set('UPCOMING');
   }
 }

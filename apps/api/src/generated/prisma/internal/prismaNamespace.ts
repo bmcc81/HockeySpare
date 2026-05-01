@@ -1536,6 +1536,7 @@ export const PlayerOfferScalarFieldEnum = {
   arenaAddress: 'arenaAddress',
   payAmount: 'payAmount',
   playerName: 'playerName',
+  date: 'date',
   time: 'time',
   position: 'position',
   skillLevel: 'skillLevel',

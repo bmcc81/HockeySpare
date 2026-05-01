@@ -1,4 +1,4 @@
-import { IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';
+import { IsDateString, IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';
 import { Position, SkillLevel } from '@hockeyspare/contracts';
 
 export class CreatePlayerOfferDto {
@@ -11,20 +11,25 @@ export class CreatePlayerOfferDto {
   @IsEnum(SkillLevel)
   skillLevel!: SkillLevel;
 
+  @IsOptional()
   @IsInt()
   @Min(0)
-  payAmount!: number;
+  payAmount?: number | null;
 
   @IsString()
   arena!: string;
 
+  @IsOptional()
   @IsString()
-  arenaAddress!: string;
-
-  @IsString()
-  time!: string;
+  arenaAddress?: string | null;
 
   @IsOptional()
   @IsString()
-  notes?: string;
+  notes?: string | null;
+
+  @IsDateString()
+  date!: string;
+
+  @IsString()
+  time!: string;
 }

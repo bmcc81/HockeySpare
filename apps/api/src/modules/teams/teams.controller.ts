@@ -19,6 +19,7 @@ import { NotifyTeamGameDto } from './dto/notify-team-game.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { RespondToGameDto } from './dto/respond-to-game.dto';
 import { UpsertPlayerStatDto } from './dto/upsert-player-stat.dto';
+import { CreateMyTeamDto } from './dto/create-my-team.dto';
 
 @Controller('my-team')
 @UseGuards(JwtAuthGuard)
@@ -40,6 +41,16 @@ export class TeamsController {
     return this.teamsService.getMyTeam(this.getUserId(req));
   }
 
+  @Post()
+  createMyTeam(@Req() req: any, @Body() dto: CreateMyTeamDto) {
+    return this.teamsService.createMyTeam(this.getUserId(req), dto);
+  }
+
+  @Patch()
+  updateMyTeam(@Req() req: any, @Body() dto: UpdateTeamDto) {
+    return this.teamsService.updateMyTeam(this.getUserId(req), dto);
+  }
+
   @Post('members')
   addMember(@Req() req: any, @Body() dto: CreateTeamMemberDto) {
     return this.teamsService.addMember(this.getUserId(req), dto);
@@ -53,11 +64,6 @@ export class TeamsController {
   @Post('games')
   createGame(@Req() req: any, @Body() dto: CreateTeamGameDto) {
     return this.teamsService.createGame(this.getUserId(req), dto);
-  }
-
-  @Patch()
-  updateMyTeam(@Req() req: any, @Body() dto: UpdateTeamDto) {
-    return this.teamsService.updateMyTeam(this.getUserId(req), dto);
   }
 
   @Post('games/:gameId/notify')
@@ -76,7 +82,7 @@ export class TeamsController {
     @Body() dto: RespondToGameDto,
   ) {
     return this.teamsService.respondToGame(
-      req.user.sub,
+      this.getUserId(req),
       gameId,
       dto.status,
       dto.note,
@@ -85,12 +91,12 @@ export class TeamsController {
 
   @Get('games/:gameId/availability')
   getGameAvailability(@Req() req: any, @Param('gameId') gameId: string) {
-    return this.teamsService.getGameAvailability(req.user.sub, gameId);
+    return this.teamsService.getGameAvailability(this.getUserId(req), gameId);
   }
 
   @Get('stats/me')
   getMyStats(@Req() req: any) {
-    return this.teamsService.getMyStats(req.user.sub);
+    return this.teamsService.getMyStats(this.getUserId(req));
   }
 
   @Post('stats/member/:memberId')
@@ -99,7 +105,11 @@ export class TeamsController {
     @Param('memberId') memberId: string,
     @Body() dto: UpsertPlayerStatDto,
   ) {
-    return this.teamsService.upsertMemberStats(req.user.sub, memberId, dto);
+    return this.teamsService.upsertMemberStats(
+      this.getUserId(req),
+      memberId,
+      dto,
+    );
   }
 
   @Get('stats/member/:memberId')
@@ -108,11 +118,15 @@ export class TeamsController {
     @Param('memberId') memberId: string,
     @Query('season') season?: string,
   ) {
-    return this.teamsService.getMemberStats(req.user.sub, memberId, season);
+    return this.teamsService.getMemberStats(
+      this.getUserId(req),
+      memberId,
+      season,
+    );
   }
 
   @Post('members/:memberId/link-user')
   linkMemberToUser(@Req() req: any, @Param('memberId') memberId: string) {
-    return this.teamsService.linkMemberToUser(req.user.sub, memberId);
+    return this.teamsService.linkMemberToUser(this.getUserId(req), memberId);
   }
 }

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -14,6 +15,7 @@ import { CreateTeamMemberDto } from './dto/create-team-member.dto';
 import { CreateTeamGameDto } from './dto/create-team-game.dto';
 import { NotifyTeamGameDto } from './dto/notify-team-game.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
+import { CreateMyTeamDto } from './dto/create-my-team.dto';
 
 @Injectable()
 export class TeamsService {
@@ -564,5 +566,55 @@ export class TeamsService {
       },
       orderBy: [{ season: 'desc' }, { updatedAt: 'desc' }],
     });
+  }
+
+  async createMyTeam(userId: string, dto: CreateMyTeamDto) {
+    const existingMembership = await this.prisma.teamMember.findFirst({
+      where: {
+        userId,
+        isActive: true,
+      },
+      include: {
+        team: true,
+      },
+    });
+
+    if (existingMembership) {
+      throw new BadRequestException('You are already on a team.');
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found.');
+    }
+
+    const displayName =
+      `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim() || user.email;
+
+    await this.prisma.team.create({
+      data: {
+        name: dto.name.trim(),
+        createdById: userId,
+        members: {
+          create: {
+            userId,
+            displayName,
+            email: user.email,
+            role: 'GENERAL_MANAGER',
+            memberType: 'REGULAR',
+            notifyByApp: true,
+            notifyByEmail: false,
+            isActive: true,
+          },
+        },
+      },
+    });
+
+    return this.getMyTeam(userId);
   }
 }

@@ -31,7 +31,6 @@ export class BookingsApiService {
   constructor(private readonly http: HttpClient) {}
 
   getIncoming(): Observable<IncomingBooking[]> {
-    console.log('GET /api/bookings/incoming called');
     return this.http.get<IncomingBooking[]>('/api/bookings/incoming');
   }
 

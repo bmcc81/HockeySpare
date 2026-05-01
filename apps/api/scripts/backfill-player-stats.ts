@@ -27,7 +27,6 @@ async function main() {
     });
 
     if (!member) {
-      console.log(`No TeamMember found for stat ${stat.id}`);
       continue;
     }
 
@@ -36,7 +35,6 @@ async function main() {
       data: { memberId: member.id },
     });
 
-    console.log(`Updated stat ${stat.id} -> member ${member.id}`);
   }
 }
 

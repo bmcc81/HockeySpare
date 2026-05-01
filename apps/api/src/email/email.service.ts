@@ -19,26 +19,16 @@ export class EmailService {
   }
 
   async sendTestEmail(to: string) {
-    console.log('sendTestEmail ->', { to });
-
     const info = await this.transporter.sendMail({
       from: this.config.get<string>('MAIL_FROM'),
       to,
       subject: 'Test email',
       text: 'This is a test from HockeySpare.',
     });
-
-    console.log('sendTestEmail success ->', {
-      messageId: info.messageId,
-      accepted: info.accepted,
-      rejected: info.rejected,
-      response: info.response,
-    });
   }
 
   async verifyConnection() {
     const ok = await this.transporter.verify();
-    console.log('SMTP verify ->', ok);
   }
 
   async sendBookingCreatedToRequestOwner(input: {
@@ -51,7 +41,6 @@ export class EmailService {
     time?: string | null;
     bookedByName?: string | null;
   }) {
-
     const nodeEnv = this.config.get<string>('NODE_ENV');
     const defaultAppUrl =
       nodeEnv === 'production'
@@ -60,14 +49,6 @@ export class EmailService {
 
     const appUrl = this.config.get<string>('APP_URL') ?? defaultAppUrl;
     const reviewUrl = `${appUrl}/bookings/incoming`;
-
-    console.log('NODE_ENV ->', nodeEnv);
-    console.log('APP_URL ->', appUrl);
-
-    console.log('sendBookingCreatedToRequestOwner called ->', {
-      to: input.to,
-      requestId: input.requestId,
-    });
 
     const info = await this.transporter.sendMail({
       from: this.config.get<string>('MAIL_FROM'),
@@ -97,15 +78,6 @@ export class EmailService {
       ]
         .filter(Boolean)
         .join('\n'),
-    });
-
-    console.log('input', input);
-
-    console.log('sendBookingCreatedToRequestOwner success ->', {
-      messageId: info.messageId,
-      accepted: info.accepted,
-      rejected: info.rejected,
-      response: info.response,
     });
   }
 }

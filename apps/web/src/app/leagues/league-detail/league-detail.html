@@ -1,0 +1,203 @@
+<section class="league-detail-page">
+  <a routerLink="/leagues" class="back-link">← Back to leagues</a>
+
+  <div *ngIf="loading()" class="state-card">Loading league...</div>
+
+  <div *ngIf="error()" class="alert alert-danger">{{ error() }}</div>
+
+  <ng-container *ngIf="!loading() && league() as league">
+    <div class="hero-card">
+      <p class="eyebrow">League</p>
+      <h1>{{ league.name }}</h1>
+      <p class="subtitle">{{ league.season || 'No season set' }}</p>
+    </div>
+
+    <div class="content-grid">
+      <div class="panel">
+        <h2>Teams</h2>
+
+        <div *ngIf="teams().length === 0" class="empty">
+          No teams added yet.
+        </div>
+
+        <div class="team-list" *ngIf="teams().length > 0">
+          <div
+            class="team-row"
+            *ngFor="let team of teams(); trackBy: trackByTeamId"
+          >
+            <div>
+              <strong>{{ team.name }}</strong>
+              <p>{{ team.games?.length ?? 0 }} games scheduled</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Add Team</h2>
+
+        <div *ngIf="teamError()" class="alert alert-danger">
+          {{ teamError() }}
+        </div>
+
+        <form [formGroup]="teamForm" (ngSubmit)="addTeam()">
+          <div class="mb-3">
+            <label class="form-label" for="teamName">Team name</label>
+            <input
+              id="teamName"
+              type="text"
+              class="form-control"
+              formControlName="name"
+              placeholder="Vaudreuil Vikings"
+            />
+
+            <div
+              class="form-error"
+              *ngIf="teamForm.controls.name.touched && teamForm.controls.name.invalid"
+            >
+              Team name is required.
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="savingTeam()"
+          >
+            {{ savingTeam() ? 'Adding...' : 'Add Team' }}
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="games-grid">
+      <div class="panel">
+        <h2>Schedule</h2>
+
+        <div *ngIf="gameRows().length === 0" class="empty">
+          No games scheduled yet.
+        </div>
+
+        <div class="game-list" *ngIf="gameRows().length > 0">
+          <div
+            class="game-row"
+            *ngFor="let game of gameRows(); trackBy: trackGameById"
+          >
+            <div>
+              <strong>{{ game.title }}</strong>
+              <p>{{ game.teamName }}</p>
+              <p>{{ game.startsAt | date: 'EEE, MMM d, y, h:mm a' }}</p>
+            </div>
+
+            <div class="game-meta">
+              <span *ngIf="game.arena">{{ game.arena }}</span>
+              <span *ngIf="game.opponent">vs {{ game.opponent }}</span>
+            </div>
+
+            <p class="game-notes" *ngIf="game.notes">{{ game.notes }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Add Game</h2>
+
+        <div *ngIf="gameError()" class="alert alert-danger">
+          {{ gameError() }}
+        </div>
+
+        <div *ngIf="teams().length === 0" class="empty">
+          Add a team before scheduling games.
+        </div>
+
+        <form
+          *ngIf="teams().length > 0"
+          [formGroup]="gameForm"
+          (ngSubmit)="addGame()"
+        >
+          <div class="mb-3">
+            <label class="form-label" for="gameTeam">Team</label>
+            <select id="gameTeam" class="form-select" formControlName="teamId">
+              <option value="">Select a team</option>
+              <option
+                *ngFor="let team of teams(); trackBy: trackByTeamId"
+                [value]="team.id"
+              >
+                {{ team.name }}
+              </option>
+            </select>
+
+            <div
+              class="form-error"
+              *ngIf="gameForm.controls.teamId.touched && gameForm.controls.teamId.invalid"
+            >
+              Team is required.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="startsAt">Start time</label>
+            <input
+              id="startsAt"
+              type="datetime-local"
+              class="form-control"
+              formControlName="startsAt"
+            />
+
+            <div
+              class="form-error"
+              *ngIf="gameForm.controls.startsAt.touched && gameForm.controls.startsAt.invalid"
+            >
+              Start time is required.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="arena">Arena</label>
+            <input
+              id="arena"
+              type="text"
+              class="form-control"
+              formControlName="arena"
+              placeholder="Vaudreuil Arena"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="opponent">Opponent</label>
+
+            <select
+              id="opponent"
+              class="form-select"
+              formControlName="opponent"
+            >
+              <option value="">Select an opponent</option>
+              <option *ngFor="let team of teams(); trackBy: trackByTeamId" [value]="team.name">
+                {{ team.name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label" for="notes">Notes</label>
+            <textarea
+              id="notes"
+              class="form-control"
+              rows="3"
+              formControlName="notes"
+              placeholder="Bring white jerseys"
+            ></textarea>
+          </div>
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="savingGame()"
+          >
+            {{ savingGame() ? 'Adding...' : 'Add Game' }}
+          </button>
+        </form>
+      </div>
+    </div>
+  </ng-container>
+</section>

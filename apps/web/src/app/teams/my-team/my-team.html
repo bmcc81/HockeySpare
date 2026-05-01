@@ -4,14 +4,17 @@
   >
     <div>
       <h1 class="mb-1">{{ team?.name || 'My Team' }}</h1>
+
       <p class="text-secondary mb-1">
         <ng-container *ngIf="canManageTeam; else playerSummary">
           Manage your regular players, spares, and upcoming games.
         </ng-container>
+
         <ng-template #playerSummary>
           View your team, schedule, and upcoming games.
         </ng-template>
       </p>
+
       <p class="mb-0">
         <span class="badge rounded-pill text-bg-dark">
           Role: {{ myRole || 'PLAYER' }}
@@ -32,7 +35,7 @@
 
       <div class="stat-card">
         <div class="stat-label">Games</div>
-        <div class="stat-value">{{ team?.games?.length || 0 }}</div>
+        <div class="stat-value">{{ upcomingGames.length }}</div>
       </div>
     </div>
   </div>
@@ -52,12 +55,13 @@
               class="d-grid gap-3"
             >
               <div>
-                <label for="team-name" class="form-label">Team name</label>
+                <label for="team-name" class="form-label">Edit Team name</label>
+
                 <input
                   id="team-name"
                   class="form-control"
                   formControlName="name"
-                  placeholder="Enter team name"
+                  placeholder="Edit team name"
                 />
               </div>
 
@@ -66,7 +70,7 @@
                 type="submit"
                 [disabled]="teamForm.invalid"
               >
-                Save team name
+                Edit existing team name
               </button>
             </form>
           </ng-container>
@@ -94,12 +98,14 @@
               formControlName="displayName"
               placeholder="Player name"
             />
+
             <input
               id="member-email"
               class="form-control"
               formControlName="email"
               placeholder="Email"
             />
+
             <input
               id="member-phone"
               class="form-control"
@@ -111,7 +117,6 @@
               id="member-position"
               class="form-select"
               formControlName="position"
-              placeholder="Position"
             >
               <option value="FORWARD">Forward</option>
               <option value="DEFENSE">Defense</option>
@@ -151,60 +156,6 @@
           </form>
         </div>
       </div>
-
-      <div class="card panel-card" *ngIf="canManageTeam">
-        <div class="card-body">
-          <h3 class="panel-title">Add Game</h3>
-
-          <form
-            [formGroup]="gameForm"
-            (ngSubmit)="createGame()"
-            class="d-grid gap-3"
-          >
-            <select
-              id="game-title"
-              class="form-select"
-              formControlName="title"
-              placeholder="Game title"
-              name="Game Title"
-            >
-              <option value="League Game">League Game</option>
-              <option value="Playoff Game">Playoff Game</option>
-              <option value="Exhibition Game">Exhibition Game</option>
-            </select>
-
-            <input
-              id="game-starts-at"
-              class="form-control"
-              type="datetime-local"
-              formControlName="startsAt"
-            />
-            <input
-              id="game-arena"
-              class="form-control"
-              formControlName="arena"
-              placeholder="Arena"
-            />
-            <input
-              id="game-opponent"
-              class="form-control"
-              formControlName="opponent"
-              placeholder="Opponent"
-            />
-            <textarea
-              id="game-notes"
-              class="form-control"
-              rows="3"
-              formControlName="notes"
-              placeholder="Notes"
-            ></textarea>
-
-            <button class="btn btn-outline-light" type="submit">
-              Create game
-            </button>
-          </form>
-        </div>
-      </div>
     </div>
 
     <div class="col-12 col-xl-8">
@@ -212,8 +163,13 @@
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h3 class="panel-title mb-0">Regular Players</h3>
+
+
+            <span>
+              Number of regular players:
             <span class="badge rounded-pill text-bg-primary">
               {{ regulars.length }}
+            </span>
             </span>
           </div>
 
@@ -227,12 +183,14 @@
                   <th *ngIf="canManageTeam"></th>
                 </tr>
               </thead>
+
               <tbody>
                 <ng-container *ngFor="let player of regulars">
                   <tr>
                     <td>{{ player.displayName }}</td>
                     <td>{{ player.email || player.phone || 'No contact' }}</td>
                     <td>{{ player.position || 'N/A' }}</td>
+
                     <td class="text-end" *ngIf="canManageTeam">
                       <div class="d-flex justify-content-end gap-2 flex-wrap">
                         <button
@@ -268,7 +226,10 @@
                       </div>
 
                       <div
-                        *ngIf="statsLoadingMemberId !== player.id && statsSeasonHasRecord === true"
+                        *ngIf="
+                          statsLoadingMemberId !== player.id &&
+                          statsSeasonHasRecord === true
+                        "
                         class="alert alert-info py-2 mb-2"
                       >
                         Existing stats found for this season. Saving will update
@@ -276,7 +237,10 @@
                       </div>
 
                       <div
-                        *ngIf="statsLoadingMemberId !== player.id && statsSeasonHasRecord === false"
+                        *ngIf="
+                          statsLoadingMemberId !== player.id &&
+                          statsSeasonHasRecord === false
+                        "
                         class="alert alert-secondary py-2 mb-2"
                       >
                         No stats found for this season yet. Saving will create a
@@ -376,8 +340,12 @@
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h3 class="panel-title mb-0">Spares</h3>
-            <span class="badge rounded-pill text-bg-info">
-              {{ spares.length }}
+
+            <span>
+              Number of spares:
+              <span class="badge rounded-pill text-bg-info">
+                {{ spares.length }}
+              </span>
             </span>
           </div>
 
@@ -391,12 +359,14 @@
                   <th *ngIf="canManageTeam"></th>
                 </tr>
               </thead>
+
               <tbody>
                 <ng-container *ngFor="let player of spares">
                   <tr>
                     <td>{{ player.displayName }}</td>
                     <td>{{ player.email || player.phone || 'No contact' }}</td>
                     <td>{{ player.position || 'N/A' }}</td>
+
                     <td class="text-end" *ngIf="canManageTeam">
                       <div class="d-flex justify-content-end gap-2 flex-wrap">
                         <button
@@ -432,7 +402,10 @@
                       </div>
 
                       <div
-                        *ngIf="statsLoadingMemberId !== player.id && statsSeasonHasRecord === true"
+                        *ngIf="
+                          statsLoadingMemberId !== player.id &&
+                          statsSeasonHasRecord === true
+                        "
                         class="alert alert-info py-2 mb-2"
                       >
                         Existing stats found for this season. Saving will update
@@ -440,7 +413,10 @@
                       </div>
 
                       <div
-                        *ngIf="statsLoadingMemberId !== player.id && statsSeasonHasRecord === false"
+                        *ngIf="
+                          statsLoadingMemberId !== player.id &&
+                          statsSeasonHasRecord === false
+                        "
                         class="alert alert-secondary py-2 mb-2"
                       >
                         No stats found for this season yet. Saving will create a
@@ -540,8 +516,12 @@
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h3 class="panel-title mb-0">My Stats</h3>
-            <span class="badge rounded-pill text-bg-secondary">
-              {{ myStats.length }}
+
+            <span>
+              Total number of players:
+              <span class="badge rounded-pill text-bg-secondary">
+                {{ myStats.length }}
+              </span>
             </span>
           </div>
 
@@ -573,7 +553,9 @@
             </div>
           </form>
 
-          <ng-container *ngIf="filteredAndSortedMyStats.length; else noStatsTpl">
+          <ng-container
+            *ngIf="filteredAndSortedMyStats.length; else noStatsTpl"
+          >
             <table class="table align-middle mb-0 my-stats-table">
               <thead>
                 <tr>
@@ -586,6 +568,7 @@
                       Player {{ statsSortIcon('player') }}
                     </button>
                   </th>
+
                   <th>
                     <button
                       class="btn btn-link btn-sm p-0 text-decoration-none text-reset fw-semibold"
@@ -595,6 +578,7 @@
                       Season {{ statsSortIcon('season') }}
                     </button>
                   </th>
+
                   <th>
                     <button
                       class="btn btn-link btn-sm p-0 text-decoration-none text-reset fw-semibold"
@@ -604,6 +588,7 @@
                       Team {{ statsSortIcon('team') }}
                     </button>
                   </th>
+
                   <th>
                     <button
                       class="btn btn-link btn-sm p-0 text-decoration-none text-reset fw-semibold"
@@ -613,6 +598,7 @@
                       GP {{ statsSortIcon('gamesPlayed') }}
                     </button>
                   </th>
+
                   <th>
                     <button
                       class="btn btn-link btn-sm p-0 text-decoration-none text-reset fw-semibold"
@@ -622,6 +608,7 @@
                       G {{ statsSortIcon('goals') }}
                     </button>
                   </th>
+
                   <th>
                     <button
                       class="btn btn-link btn-sm p-0 text-decoration-none text-reset fw-semibold"
@@ -631,6 +618,7 @@
                       A {{ statsSortIcon('assists') }}
                     </button>
                   </th>
+
                   <th>
                     <button
                       class="btn btn-link btn-sm p-0 text-decoration-none text-reset fw-semibold"
@@ -640,6 +628,7 @@
                       PTS {{ statsSortIcon('points') }}
                     </button>
                   </th>
+
                   <th>
                     <button
                       class="btn btn-link btn-sm p-0 text-decoration-none text-reset fw-semibold"
@@ -651,6 +640,7 @@
                   </th>
                 </tr>
               </thead>
+
               <tbody>
                 <tr *ngFor="let stat of filteredAndSortedMyStats">
                   <td>{{ stat.member?.displayName || 'N/A' }}</td>
@@ -668,7 +658,8 @@
 
           <ng-template #noStatsTpl>
             <div class="text-secondary">
-              {{ myStats.length ? 'No stats match your filters.' : 'No stats recorded yet.' }}
+              {{ myStats.length ? 'No stats match your filters.' : 'No stats
+              recorded yet.' }}
             </div>
           </ng-template>
         </div>
@@ -676,10 +667,30 @@
 
       <div class="card panel-card">
         <div class="card-body">
-          <h3 class="panel-title mb-3">Upcoming Games</h3>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="panel-title mb-0">Upcoming Games</h3>
 
-          <div class="game-list">
-            <div class="game-item" *ngFor="let game of team?.games">
+            <span class="badge rounded-pill text-bg-secondary">
+              {{ upcomingGames.length }}
+            </span>
+          </div>
+
+          <div *ngIf="upcomingGamesLoading" class="text-secondary mb-3">
+            Loading upcoming games...
+          </div>
+
+          <div *ngIf="upcomingGamesError" class="alert alert-warning">
+            {{ upcomingGamesError }}
+          </div>
+
+          <div
+            class="game-list"
+            *ngIf="!upcomingGamesLoading && upcomingGames.length"
+          >
+            <div
+              class="game-item"
+              *ngFor="let game of upcomingGames; trackBy: trackByUpcomingGameId"
+            >
               <div class="w-100">
                 <div
                   class="d-flex justify-content-between align-items-start gap-3 flex-wrap"
@@ -688,11 +699,15 @@
                     <div class="game-title">{{ game.title }}</div>
 
                     <div class="game-meta">
-                      {{ game.startsAt | date:'medium' }}
+                      {{ game.startsAt | date: 'medium' }}
                       <span *ngIf="game.arena"> • {{ game.arena }}</span>
                       <span *ngIf="game.opponent">
                         • vs {{ game.opponent }}
                       </span>
+                    </div>
+
+                    <div class="game-meta" *ngIf="game.leagueName">
+                      League: {{ game.leagueName }}
                     </div>
 
                     <div class="game-meta" *ngIf="game.invites.length">
@@ -701,11 +716,18 @@
 
                     <div class="game-meta mt-1">
                       Your status:
+
                       <ng-container
-                        *ngIf="availabilityLabel(getMyAvailability(game)) as statusLabel"
+                        *ngIf="
+                          availabilityLabel(getMyAvailability(game)) as
+                          statusLabel
+                        "
                       >
                         <strong
-                          [class.text-danger]="statusLabel === 'No response yet' || statusLabel === 'Need spare'"
+                          [class.text-danger]="
+                            statusLabel === 'No response yet' ||
+                            statusLabel === 'Need spare'
+                          "
                           [class.text-success]="statusLabel === 'Available'"
                           [class.text-warning]="statusLabel === 'Can’t make it'"
                         >
@@ -752,6 +774,7 @@
                       class="btn btn-primary btn-sm"
                       type="button"
                       (click)="notifyGame(game.id)"
+                      [disabled]="availabilitySavingGameId === game.id"
                     >
                       Notify team
                     </button>
@@ -808,9 +831,11 @@
                   <span class="badge text-bg-success">
                     Available: {{ availabilityCount(game, 'AVAILABLE') }}
                   </span>
+
                   <span class="badge text-bg-warning">
                     Unavailable: {{ availabilityCount(game, 'UNAVAILABLE') }}
                   </span>
+
                   <span class="badge text-bg-danger">
                     Need spare: {{ availabilityCount(game, 'NEED_SPARE') }}
                   </span>
@@ -822,6 +847,7 @@
                     class="mb-2"
                   >
                     <strong>{{ response.member.displayName }}</strong>
+
                     <span
                       class="badge ms-2"
                       [ngClass]="availabilityBadgeClass(response.status)"
@@ -836,10 +862,13 @@
                 </div>
               </div>
             </div>
+          </div>
 
-            <div *ngIf="!team?.games?.length" class="text-secondary">
-              No games scheduled yet.
-            </div>
+          <div
+            *ngIf="!upcomingGamesLoading && !upcomingGames.length"
+            class="text-secondary"
+          >
+            No games scheduled yet.
           </div>
         </div>
       </div>

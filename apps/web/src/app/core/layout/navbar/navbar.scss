@@ -3,9 +3,36 @@
 }
 
 .dropdown-user {
-  padding: 0.75rem 1rem;
+  padding: 0.75rem 1rem 0.5rem;
   font-size: 0.9rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid #e6edf7;
+}
+
+.dropdown-role {
+  display: inline-flex;
+  align-items: center;
+  margin: 0.35rem 1rem 0.75rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.badge-gm {
+  background-color: #f0f4ff;
+  color: #2f80ed;
+}
+
+.badge-captain {
+  background-color: #ecfeff;
+  color: #0891b2;
+}
+
+.badge-player {
+  background-color: #eff6ff;
+  color: #0d6efd;
 }
 
 .site-header {
@@ -18,11 +45,7 @@
 }
 
 .site-header.scrolled {
-  padding-top: 0;
-}
-
-.site-header.scrolled {
-  padding-top: 0.75rem;
+  box-shadow: 0 4px 16px rgba(18, 38, 63, 0.08);
 }
 
 .nav-shell {
@@ -74,7 +97,10 @@
   height: 2px;
   background: #30465f;
   border-radius: 999px;
-  transition: transform 0.2s ease, opacity 0.2s ease, top 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease,
+    top 0.2s ease;
 }
 
 .mobile-toggle span:nth-child(1) {
@@ -89,16 +115,16 @@
   top: 31px;
 }
 
-.mobile-toggle[aria-expanded='true'] span:nth-child(1) {
+.mobile-toggle[aria-expanded="true"] span:nth-child(1) {
   top: 23px;
   transform: rotate(45deg);
 }
 
-.mobile-toggle[aria-expanded='true'] span:nth-child(2) {
+.mobile-toggle[aria-expanded="true"] span:nth-child(2) {
   opacity: 0;
 }
 
-.mobile-toggle[aria-expanded='true'] span:nth-child(3) {
+.mobile-toggle[aria-expanded="true"] span:nth-child(3) {
   top: 23px;
   transform: rotate(-45deg);
 }
@@ -140,8 +166,7 @@
   transition:
     background-color 0.2s ease,
     border-color 0.2s ease,
-    color 0.2s ease,
-    box-shadow 0.2s ease;
+    color 0.2s ease
 }
 
 .nav-link:hover,
@@ -188,7 +213,7 @@
   border: 1px solid #dbe6f2;
   border-radius: 18px;
   background: #ffffff;
-  box-shadow: 0 18px 40px rgba(18, 38, 63, 0.12);
+  box-shadow: 0 8px 22px rgba(18, 38, 63, 0.1);
   display: grid;
   gap: 0.25rem;
 }
@@ -214,7 +239,10 @@
   text-align: left;
   text-decoration: none;
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .dropdown-link:hover,
@@ -240,10 +268,8 @@
   text-decoration: none;
   white-space: nowrap;
   transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+    transform 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .cta:hover {

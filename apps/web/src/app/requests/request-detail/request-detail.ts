@@ -50,7 +50,6 @@ export class RequestDetailComponent {
         this.bookingLoading.set(false);
       },
       error: (err) => {
-        console.log('booking error callback fired', err);
         this.error.set(err?.error?.message || 'Could not create booking.');
         this.success.set('');
         this.bookingLoading.set(false);

@@ -63,8 +63,29 @@ export const routes: Routes = [
     path: 'my-team',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./teams/my-team/my-team').then((m) => m.MyTeamComponent),
+      import('./teams/my-team/my-team').then(m => m.MyTeamComponent),
   },
+
+  // League routes
+  {
+    path: 'leagues',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./leagues/leagues-list/leagues-list').then(m => m.LeaguesListComponent),
+  },
+  {
+    path: 'leagues/new',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./leagues/create-league/create-league').then(m => m.CreateLeagueComponent),
+  },
+  {
+    path: 'leagues/:id',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./leagues/league-detail/league-detail').then(m => m.LeagueDetailComponent),
+  },
+
   {
     path: 'messages',
     canActivate: [authGuard],

@@ -43,73 +43,90 @@
         </a>
 
         @if (authState.isLoggedIn()) {
-          <a
-            routerLink="/messages"
-            routerLinkActive="active"
-            class="nav-link"
-            (click)="closeAll()"
-          >
-            Messages
-          </a>
+        <a
+          routerLink="/messages"
+          routerLinkActive="active"
+          class="nav-link"
+          (click)="closeAll()"
+        >
+          Messages
+        </a>
 
-          <a
-            routerLink="/my-team"
-            routerLinkActive="active"
-            class="nav-link"
-            (click)="closeAll()"
-          >
-            My Team
-          </a>
+        <a
+          routerLink="/leagues"
+          routerLinkActive="active"
+          class="nav-link"
+          (click)="closeAll()"
+        >
+          My League
+        </a>
 
-          <a
-            routerLink="/my-bookings"
-            routerLinkActive="active"
-            class="nav-link"
-            (click)="closeAll()"
-          >
-            My Bookings
-          </a>
+        <a
+          routerLink="/my-team"
+          routerLinkActive="active"
+          class="nav-link"
+          (click)="closeAll()"
+        >
+          My Team
+        </a>
 
-          <a
-            routerLink="/bookings/incoming"
-            routerLinkActive="active"
-            class="nav-link"
-            (click)="closeAll()"
-          >
-            Incoming Bookings
-          </a>
+        <a
+          routerLink="/my-bookings"
+          routerLinkActive="active"
+          class="nav-link"
+          (click)="closeAll()"
+        >
+          My Bookings
+        </a>
 
-          <div class="nav-dropdown">
-            <button
-              type="button"
-              class="nav-link nav-button"
-              [class.active]="actionsOpen()"
-              (click)="toggleActions()"
+        <a
+          routerLink="/bookings/incoming"
+          routerLinkActive="active"
+          class="nav-link"
+          (click)="closeAll()"
+        >
+          Incoming Bookings
+        </a>
+
+        <div class="nav-dropdown">
+          <button
+            type="button"
+            class="nav-link nav-button"
+            [class.active]="actionsOpen()"
+            (click)="toggleActions()"
+          >
+            Post
+            <span class="chevron" [class.open]="actionsOpen()"></span>
+          </button>
+
+          @if (actionsOpen()) {
+          <div class="dropdown-panel">
+            <a
+              routerLink="/requests/team/new"
+              class="dropdown-link"
+              (click)="closeAll()"
             >
-              Post
-              <span class="chevron" [class.open]="actionsOpen()"></span>
-            </button>
+              + Team Request
+            </a>
 
-            @if (actionsOpen()) {
-              <div class="dropdown-panel">
-                <a
-                  routerLink="/requests/team/new"
-                  class="dropdown-link"
-                  (click)="closeAll()"
-                >
-                  + Team Request
-                </a>
+            <a
+              routerLink="/requests/player/new"
+              class="dropdown-link"
+              (click)="closeAll()"
+            >
+              + Player Offer
+            </a>
 
-                <a
-                  routerLink="/requests/player/new"
-                  class="dropdown-link"
-                  (click)="closeAll()"
-                >
-                  + Player Offer
-                </a>
-              </div>
-            }
+            <a
+              routerLink="/leagues/new"
+              class="dropdown-link"
+              (click)="closeAll()"
+            >
+              + League
+            </a>
           </div>
+          }
+        </div>
         }
       </div>
 
@@ -121,81 +138,72 @@
             [class.active]="accountOpen()"
             (click)="toggleAccount()"
           >
-            @if (authState.isLoggedIn()) {
-              {{ shortDisplayName() }}
-            } @else {
-              Sign In
+            @if (authState.isLoggedIn()) { {{ displayName() }} } @else { Sign In
             }
             <span class="chevron" [class.open]="accountOpen()"></span>
           </button>
 
           @if (accountOpen()) {
-            <div class="dropdown-panel dropdown-panel-right">
-              @if (authState.isLoggedIn()) {
-                <div class="dropdown-user">
-                  Signed in as <strong>{{ displayName() }}</strong>
-                </div>
-
-                <a
-                  routerLink="/profile/player"
-                  class="dropdown-link"
-                  (click)="closeAll()"
-                >
-                  Player Profile
-                </a>
-
-                <a
-                  routerLink="/profile/team"
-                  class="dropdown-link"
-                  (click)="closeAll()"
-                >
-                  Team Profile
-                </a>
-
-                <button
-                  type="button"
-                  class="dropdown-link dropdown-button"
-                  (click)="logout()"
-                >
-                  Logout
-                </button>
-              } @else {
-                <a
-                  routerLink="/login"
-                  class="dropdown-link"
-                  (click)="closeAll()"
-                >
-                  Login
-                </a>
-
-                <a
-                  routerLink="/register"
-                  class="dropdown-link"
-                  (click)="closeAll()"
-                >
-                  Register
-                </a>
-              }
+          <div class="dropdown-panel dropdown-panel-right">
+            @if (authState.isLoggedIn()) {
+            <div class="dropdown-user">
+              Signed in as <strong>{{ displayName() }}</strong>
             </div>
+
+            @if (role()) {
+            <div class="dropdown-role" [ngClass]="roleClass()">
+              {{ role() }}
+            </div>
+            }
+
+            <a
+              routerLink="/profile/player"
+              class="dropdown-link"
+              (click)="closeAll()"
+            >
+              Player Profile
+            </a>
+
+            <a
+              routerLink="/profile/team"
+              class="dropdown-link"
+              (click)="closeAll()"
+            >
+              Team Profile
+            </a>
+
+            <button
+              type="button"
+              class="dropdown-link dropdown-button"
+              (click)="logout()"
+            >
+              Logout
+            </button>
+            } @else {
+            <a routerLink="/login" class="dropdown-link" (click)="closeAll()">
+              Login
+            </a>
+
+            <a
+              routerLink="/register"
+              class="dropdown-link"
+              (click)="closeAll()"
+            >
+              Register
+            </a>
+            }
+          </div>
           }
         </div>
 
         @if (authState.isLoggedIn()) {
-          <a
-            routerLink="/requests/team/new"
-            class="cta"
-            (click)="closeAll()"
-          >
-            Post Request
-          </a>
+        <a routerLink="/requests/team/new" class="cta" (click)="closeAll()">
+          Post Request
+        </a>
         } @else {
-          <a
-            routerLink="/register"
-            class="cta"
-            (click)="closeAll()"
-          >
-            Join Now
-          </a>
+        <a routerLink="/register" class="cta" (click)="closeAll()">
+          Join Now
+        </a>
         }
       </div>
     </div>

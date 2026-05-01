@@ -14,16 +14,53 @@
 
     <div class="content-grid">
       <div class="panel">
-        <h2>Teams</h2>
+        <div
+          class="d-flex justify-content-between align-items-center gap-3 flex-wrap mb-3"
+        >
+          <h2 class="mb-0">Teams</h2>
+
+          <span class="badge text-bg-secondary">
+            {{ filteredTeams().length }} / {{ teams().length }}
+          </span>
+        </div>
+
+        <div class="row g-2 mb-3">
+          <div class="col-12 col-md-8">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Search teams..."
+              [value]="teamSearch()"
+              (input)="setTeamSearch($event)"
+            />
+          </div>
+
+          <div class="col-12 col-md-4">
+            <button
+              type="button"
+              class="btn btn-outline-secondary w-100"
+              (click)="clearTeamFilters()"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
 
         <div *ngIf="teams().length === 0" class="empty">
           No teams added yet.
         </div>
 
-        <div class="team-list" *ngIf="teams().length > 0">
+        <div
+          *ngIf="teams().length > 0 && filteredTeams().length === 0"
+          class="empty"
+        >
+          No teams match your filter.
+        </div>
+
+        <div class="team-list" *ngIf="filteredTeams().length > 0">
           <div
             class="team-row"
-            *ngFor="let team of teams(); trackBy: trackByTeamId"
+            *ngFor="let team of filteredTeams(); trackBy: trackByTeamId"
           >
             <div>
               <strong>{{ team.name }}</strong>
@@ -72,16 +109,81 @@
 
     <div class="games-grid">
       <div class="panel">
-        <h2>Schedule</h2>
+        <div
+          class="d-flex justify-content-between align-items-center gap-3 flex-wrap mb-3"
+        >
+          <h2 class="mb-0">Schedule</h2>
+
+          <span class="badge text-bg-secondary">
+            {{ filteredGameRows().length }} / {{ gameRows().length }}
+          </span>
+        </div>
+
+        <div class="row g-2 mb-3">
+          <div class="col-12 col-md-4">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Search games, arena, opponent..."
+              [value]="scheduleSearch()"
+              (input)="setScheduleSearch($event)"
+            />
+          </div>
+
+          <div class="col-12 col-md-3">
+            <select
+              class="form-select"
+              [value]="scheduleTeamId()"
+              (change)="setScheduleTeamId($event)"
+            >
+              <option value="">All teams</option>
+              <option
+                *ngFor="let team of teams(); trackBy: trackByTeamId"
+                [value]="team.id"
+              >
+                {{ team.name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <select
+              class="form-select"
+              [value]="scheduleView()"
+              (change)="setScheduleView($event)"
+            >
+              <option value="UPCOMING">Upcoming</option>
+              <option value="PAST">Past</option>
+              <option value="ALL">All games</option>
+            </select>
+          </div>
+
+          <div class="col-12 col-md-2">
+            <button
+              type="button"
+              class="btn btn-outline-secondary w-100"
+              (click)="clearScheduleFilters()"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
 
         <div *ngIf="gameRows().length === 0" class="empty">
           No games scheduled yet.
         </div>
 
-        <div class="game-list" *ngIf="gameRows().length > 0">
+        <div
+          *ngIf="gameRows().length > 0 && filteredGameRows().length === 0"
+          class="empty"
+        >
+          No games match your filters.
+        </div>
+
+        <div class="game-list" *ngIf="filteredGameRows().length > 0">
           <div
             class="game-row"
-            *ngFor="let game of gameRows(); trackBy: trackGameById"
+            *ngFor="let game of filteredGameRows(); trackBy: trackGameById"
           >
             <div>
               <strong>{{ game.title }}</strong>
@@ -172,7 +274,10 @@
               formControlName="opponent"
             >
               <option value="">Select an opponent</option>
-              <option *ngFor="let team of teams(); trackBy: trackByTeamId" [value]="team.name">
+              <option
+                *ngFor="let team of teams(); trackBy: trackByTeamId"
+                [value]="team.name"
+              >
                 {{ team.name }}
               </option>
             </select>

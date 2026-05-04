@@ -221,3 +221,10 @@ If something fails on the Pi
 Run these commands and check the output:
 cd /opt/hockeyspare/apps/web && npm run buildsudo systemctl status hockeyspare-api --no-pagersudo nginx -t
 
+New user registers
+→ appRole USER
+→ AuthService checks if their email exists on a roster
+→ if yes, links them to that TeamMember
+→ if no, /api/my-team returns 404
+→ frontend shows “Create your team”
+→ creating a team makes them GENERAL_MANAGER

@@ -104,7 +104,8 @@ export const NotificationType = {
   REQUEST_RESPONSE: 'REQUEST_RESPONSE',
   REQUEST_ACCEPTED: 'REQUEST_ACCEPTED',
   REQUEST_DECLINED: 'REQUEST_DECLINED',
-  TEAM_GAME_REMINDER: 'TEAM_GAME_REMINDER'
+  TEAM_GAME_REMINDER: 'TEAM_GAME_REMINDER',
+  TEAM_MEMBER_ADDED: 'TEAM_MEMBER_ADDED'
 } as const
 
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]

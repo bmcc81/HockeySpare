@@ -74,6 +74,7 @@ enum NotificationType {
   REQUEST_ACCEPTED
   REQUEST_DECLINED
   TEAM_GAME_REMINDER
+  TEAM_MEMBER_ADDED
 }
 
 enum TeamMemberType {

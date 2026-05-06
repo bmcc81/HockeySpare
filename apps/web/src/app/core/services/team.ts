@@ -6,8 +6,10 @@ import {
   TeamGameAvailabilityStatus,
   TeamMemberType,
   PlayerStat,
+  TeamMember
 } from '@hockeyspare/contracts';
 
+export type AssignableTeamRole = 'PLAYER' | 'CAPTAIN';
 
 @Injectable({ providedIn: 'root' })
 export class TeamService {
@@ -102,4 +104,11 @@ export class TeamService {
       `/api/my-team/stats/member/${memberId}?${params.toString()}`,
     );
   }
+
+  updateMemberRole(memberId: string, role: AssignableTeamRole) {
+  return this.http.patch<TeamMember>(
+    `/api/my-team/members/${memberId}/role`,
+    { role },
+  );
+}
 }

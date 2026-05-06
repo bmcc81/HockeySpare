@@ -20,6 +20,7 @@ import { UpdateTeamDto } from './dto/update-team.dto';
 import { RespondToGameDto } from './dto/respond-to-game.dto';
 import { UpsertPlayerStatDto } from './dto/upsert-player-stat.dto';
 import { CreateMyTeamDto } from './dto/create-my-team.dto';
+import { UpdateTeamMemberRoleDto } from './dto/update-team-member-role.dto';
 
 @Controller('my-team')
 @UseGuards(JwtAuthGuard)
@@ -59,6 +60,19 @@ export class TeamsController {
   @Delete('members/:memberId')
   removeMember(@Req() req: any, @Param('memberId') memberId: string) {
     return this.teamsService.removeMember(this.getUserId(req), memberId);
+  }
+
+  @Patch('members/:memberId/role')
+  updateMemberRole(
+    @Req() req: any,
+    @Param('memberId') memberId: string,
+    @Body() dto: UpdateTeamMemberRoleDto,
+  ) {
+    return this.teamsService.updateMemberRole(
+      this.getUserId(req),
+      memberId,
+      dto,
+    );
   }
 
   @Post('games')

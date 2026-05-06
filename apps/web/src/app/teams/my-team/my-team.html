@@ -1,7 +1,5 @@
 <section class="my-team-page container py-4" *ngIf="!loading; else loadingTpl">
-  <div *ngIf="error" class="alert alert-danger">
-    {{ error }}
-  </div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
   <ng-container *ngIf="team; else createTeamTpl">
     <div
@@ -157,15 +155,17 @@
                 <span class="form-check-label">Notify by email</span>
               </label>
 
-              <button class="btn btn-primary" type="submit">
-                Add player
-              </button>
+              <button class="btn btn-primary" type="submit">Add player</button>
             </form>
           </div>
         </div>
       </div>
 
       <div class="col-12 col-xl-8">
+        <div *ngIf="roleError()" class="alert alert-danger">
+          {{ roleError() }}
+        </div>
+
         <div class="card panel-card mb-4">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -193,12 +193,54 @@
                 <tbody>
                   <ng-container *ngFor="let player of regulars">
                     <tr>
-                      <td>{{ player.displayName }}</td>
-                      <td>{{ player.email || player.phone || 'No contact' }}</td>
+                      <td>
+                        <div class="fw-semibold">
+                          {{ player.displayName }}
+                        </div>
+
+                        <span
+                          *ngIf="player.role === 'CAPTAIN'"
+                          class="badge text-bg-primary mt-1"
+                        >
+                          Captain
+                        </span>
+
+                        <span
+                          *ngIf="player.role === 'GENERAL_MANAGER'"
+                          class="badge text-bg-dark mt-1"
+                        >
+                          General Manager
+                        </span>
+                      </td>
+
+                      <td>
+                        {{ player.email || player.phone || 'No contact' }}
+                      </td>
+
                       <td>{{ player.position || 'N/A' }}</td>
 
                       <td class="text-end" *ngIf="canManageTeam">
                         <div class="d-flex justify-content-end gap-2 flex-wrap">
+                          <button
+                            *ngIf="canAssignCaptains() && player.role === 'PLAYER'"
+                            class="btn btn-sm btn-outline-primary"
+                            type="button"
+                            [disabled]="savingRoleMemberId() === player.id"
+                            (click)="makeCaptain(player)"
+                          >
+                            {{ savingRoleMemberId() === player.id ? 'Updating...' : 'Make Captain' }}
+                          </button>
+
+                          <button
+                            *ngIf="canAssignCaptains() && player.role === 'CAPTAIN'"
+                            class="btn btn-sm btn-outline-secondary"
+                            type="button"
+                            [disabled]="savingRoleMemberId() === player.id"
+                            (click)="removeCaptain(player)"
+                          >
+                            {{ savingRoleMemberId() === player.id ? 'Updating...' : 'Remove Captain' }}
+                          </button>
+
                           <button
                             class="btn btn-sm btn-outline-secondary"
                             type="button"
@@ -218,7 +260,9 @@
                       </td>
                     </tr>
 
-                    <tr *ngIf="canManageTeam && statEditorMemberId === player.id">
+                    <tr
+                      *ngIf="canManageTeam && statEditorMemberId === player.id"
+                    >
                       <td colspan="4" class="bg-transparent">
                         <div class="fw-semibold mb-2">
                           Editing stats for {{ statEditorPlayerName() }}
@@ -238,7 +282,8 @@
                           "
                           class="alert alert-info py-2 mb-2"
                         >
-                          Existing stats found for this season. Saving will update them.
+                          Existing stats found for this season. Saving will
+                          update them.
                         </div>
 
                         <div
@@ -248,7 +293,8 @@
                           "
                           class="alert alert-secondary py-2 mb-2"
                         >
-                          No stats found for this season yet. Saving will create a new record.
+                          No stats found for this season yet. Saving will create
+                          a new record.
                         </div>
 
                         <form
@@ -367,12 +413,54 @@
                 <tbody>
                   <ng-container *ngFor="let player of spares">
                     <tr>
-                      <td>{{ player.displayName }}</td>
-                      <td>{{ player.email || player.phone || 'No contact' }}</td>
+                      <td>
+                        <div class="fw-semibold">
+                          {{ player.displayName }}
+                        </div>
+
+                        <span
+                          *ngIf="player.role === 'CAPTAIN'"
+                          class="badge text-bg-primary mt-1"
+                        >
+                          Captain
+                        </span>
+
+                        <span
+                          *ngIf="player.role === 'GENERAL_MANAGER'"
+                          class="badge text-bg-dark mt-1"
+                        >
+                          General Manager
+                        </span>
+                      </td>
+
+                      <td>
+                        {{ player.email || player.phone || 'No contact' }}
+                      </td>
+
                       <td>{{ player.position || 'N/A' }}</td>
 
                       <td class="text-end" *ngIf="canManageTeam">
                         <div class="d-flex justify-content-end gap-2 flex-wrap">
+                          <button
+                            *ngIf="canAssignCaptains() && player.role === 'PLAYER'"
+                            class="btn btn-sm btn-outline-primary"
+                            type="button"
+                            [disabled]="savingRoleMemberId() === player.id"
+                            (click)="makeCaptain(player)"
+                          >
+                            {{ savingRoleMemberId() === player.id ? 'Updating...' : 'Make Captain' }}
+                          </button>
+
+                          <button
+                            *ngIf="canAssignCaptains() && player.role === 'CAPTAIN'"
+                            class="btn btn-sm btn-outline-secondary"
+                            type="button"
+                            [disabled]="savingRoleMemberId() === player.id"
+                            (click)="removeCaptain(player)"
+                          >
+                            {{ savingRoleMemberId() === player.id ? 'Updating...' : 'Remove Captain' }}
+                          </button>
+
                           <button
                             class="btn btn-sm btn-outline-secondary"
                             type="button"
@@ -392,7 +480,9 @@
                       </td>
                     </tr>
 
-                    <tr *ngIf="canManageTeam && statEditorMemberId === player.id">
+                    <tr
+                      *ngIf="canManageTeam && statEditorMemberId === player.id"
+                    >
                       <td colspan="4" class="bg-transparent">
                         <div class="fw-semibold mb-2">
                           Editing stats for {{ statEditorPlayerName() }}
@@ -412,7 +502,8 @@
                           "
                           class="alert alert-info py-2 mb-2"
                         >
-                          Existing stats found for this season. Saving will update them.
+                          Existing stats found for this season. Saving will
+                          update them.
                         </div>
 
                         <div
@@ -422,7 +513,8 @@
                           "
                           class="alert alert-secondary py-2 mb-2"
                         >
-                          No stats found for this season yet. Saving will create a new record.
+                          No stats found for this season yet. Saving will create
+                          a new record.
                         </div>
 
                         <form
@@ -555,7 +647,9 @@
               </div>
             </form>
 
-            <ng-container *ngIf="filteredAndSortedMyStats.length; else noStatsTpl">
+            <ng-container
+              *ngIf="filteredAndSortedMyStats.length; else noStatsTpl"
+            >
               <table class="table align-middle mb-0 my-stats-table">
                 <thead>
                   <tr>
@@ -658,11 +752,7 @@
 
             <ng-template #noStatsTpl>
               <div class="text-secondary">
-                {{
-                  myStats.length
-                    ? 'No stats match your filters.'
-                    : 'No stats recorded yet.'
-                }}
+                {{ myStats.length ? 'No stats match your filters.' : 'No stats recorded yet.' }}
               </div>
             </ng-template>
           </div>
@@ -704,7 +794,9 @@
                       <div class="game-meta">
                         {{ game.startsAt | date: 'medium' }}
                         <span *ngIf="game.arena"> • {{ game.arena }}</span>
-                        <span *ngIf="game.opponent"> • vs {{ game.opponent }}</span>
+                        <span *ngIf="game.opponent">
+                          • vs {{ game.opponent }}</span
+                        >
                       </div>
 
                       <div class="game-meta" *ngIf="game.leagueName">
@@ -736,7 +828,10 @@
                         </ng-container>
                       </div>
 
-                      <div class="game-meta" *ngIf="getMyAvailabilityNote(game)">
+                      <div
+                        class="game-meta"
+                        *ngIf="getMyAvailabilityNote(game)"
+                      >
                         Note: {{ getMyAvailabilityNote(game) }}
                       </div>
                     </div>

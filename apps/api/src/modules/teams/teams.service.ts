@@ -17,6 +17,7 @@ import { NotifyTeamGameDto } from './dto/notify-team-game.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { CreateMyTeamDto } from './dto/create-my-team.dto';
 import { EmailService } from '../email/email.service';
+import { UpdateTeamMemberRoleDto } from './dto/update-team-member-role.dto';
 
 @Injectable()
 export class TeamsService {
@@ -648,5 +649,55 @@ export class TeamsService {
     });
 
     return this.getMyTeam(userId);
+  }
+
+  async updateMemberRole(
+    userId: string,
+    memberId: string,
+    dto: UpdateTeamMemberRoleDto,
+  ) {
+    const targetMember = await this.prisma.teamMember.findUnique({
+      where: {
+        id: memberId,
+      },
+    });
+
+    if (!targetMember || !targetMember.isActive) {
+      throw new NotFoundException('Team member not found');
+    }
+
+    const currentUserMembership = await this.prisma.teamMember.findFirst({
+      where: {
+        userId,
+        teamId: targetMember.teamId,
+        isActive: true,
+        role: 'GENERAL_MANAGER',
+      },
+    });
+
+    if (!currentUserMembership) {
+      throw new ForbiddenException(
+        'Only a General Manager can assign team roles.',
+      );
+    }
+
+    if (currentUserMembership.id === targetMember.id) {
+      throw new BadRequestException('You cannot change your own role.');
+    }
+
+    if (targetMember.role === 'GENERAL_MANAGER') {
+      throw new BadRequestException(
+        'You cannot change another General Manager role.',
+      );
+    }
+
+    return this.prisma.teamMember.update({
+      where: {
+        id: memberId,
+      },
+      data: {
+        role: dto.role,
+      },
+    });
   }
 }

@@ -36,7 +36,44 @@ export class TeamsService {
     return fullName || user.email;
   }
 
+  private async linkPendingTeamMembershipsByEmail(
+    userId: string,
+  ): Promise<void> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        id: true,
+        email: true,
+      },
+    });
+
+    if (!user?.email) {
+      return;
+    }
+
+    const email = user.email.trim().toLowerCase();
+
+    await this.prisma.teamMember.updateMany({
+      where: {
+        userId: null,
+        isActive: true,
+        email: {
+          equals: email,
+          mode: 'insensitive',
+        },
+      },
+      data: {
+        userId: user.id,
+        email,
+      },
+    });
+  }
+
   private async getUserTeam(userId: string) {
+    await this.linkPendingTeamMembershipsByEmail(userId);
+
     const membership = await this.prisma.teamMember.findFirst({
       where: {
         userId,
@@ -58,6 +95,8 @@ export class TeamsService {
   }
 
   private async getManagedTeam(userId: string) {
+    await this.linkPendingTeamMembershipsByEmail(userId);
+
     const managerMembership = await this.prisma.teamMember.findFirst({
       where: {
         userId,
@@ -97,26 +136,21 @@ export class TeamsService {
     throw new NotFoundException('No team found.');
   }
 
-  async updateMyTeam(userId: string, dto: UpdateTeamDto) {
-    const team = await this.getManagedTeam(userId);
-
-    return this.prisma.team.update({
-      where: { id: team.id },
-      data: {
-        name: dto.name,
-      },
-    });
-  }
-
   async getMyTeam(userId: string) {
+    await this.linkPendingTeamMembershipsByEmail(userId);
+
     const team = await this.getUserTeam(userId);
 
     const teamData = await this.prisma.team.findFirst({
-      where: { id: team.id },
+      where: {
+        id: team.id,
+      },
       include: {
         league: true,
         members: {
-          where: { isActive: true },
+          where: {
+            isActive: true,
+          },
           orderBy: [{ memberType: 'asc' }, { displayName: 'asc' }],
         },
         games: {
@@ -125,7 +159,9 @@ export class TeamsService {
               gte: new Date(),
             },
           },
-          orderBy: { startsAt: 'asc' },
+          orderBy: {
+            startsAt: 'asc',
+          },
           include: {
             invites: {
               include: {
@@ -141,6 +177,10 @@ export class TeamsService {
         },
       },
     });
+
+    if (!teamData) {
+      throw new NotFoundException('No team found.');
+    }
 
     const myMembership = await this.prisma.teamMember.findFirst({
       where: {
@@ -160,20 +200,48 @@ export class TeamsService {
       ...teamData,
       myMembership,
       canManageTeam:
-        myMembership?.role === 'CAPTAIN' ||
-        myMembership?.role === 'GENERAL_MANAGER',
+        myMembership?.role === TeamRole.CAPTAIN ||
+        myMembership?.role === TeamRole.GENERAL_MANAGER,
     };
+  }
+
+  async updateMyTeam(userId: string, dto: UpdateTeamDto) {
+    const team = await this.getManagedTeam(userId);
+
+    return this.prisma.team.update({
+      where: {
+        id: team.id,
+      },
+      data: {
+        name: dto.name.trim(),
+      },
+    });
   }
 
   async addMember(userId: string, dto: CreateTeamMemberDto) {
     const team = await this.getManagedTeam(userId);
 
+    const displayName = dto.displayName.trim();
+    const email = dto.email?.trim().toLowerCase() || null;
+    const phone = dto.phone?.trim() || null;
+
+    if (!displayName) {
+      throw new BadRequestException('Player name is required.');
+    }
+
     let linkedUserId: string | undefined;
 
-    if (dto.email) {
-      const existingUser = await this.prisma.user.findUnique({
-        where: { email: dto.email },
-        select: { id: true },
+    if (email) {
+      const existingUser = await this.prisma.user.findFirst({
+        where: {
+          email: {
+            equals: email,
+            mode: 'insensitive',
+          },
+        },
+        select: {
+          id: true,
+        },
       });
 
       linkedUserId = existingUser?.id;
@@ -183,16 +251,56 @@ export class TeamsService {
       data: {
         teamId: team.id,
         userId: linkedUserId,
-        displayName: dto.displayName,
-        email: dto.email,
-        phone: dto.phone,
+        displayName,
+        email,
+        phone,
         position: dto.position,
         memberType: dto.memberType,
         role: TeamRole.PLAYER,
         notifyByApp: dto.notifyByApp ?? true,
         notifyByEmail: dto.notifyByEmail ?? false,
+        isActive: true,
       },
     });
+  }
+
+  async removeMember(userId: string, memberId: string) {
+    const team = await this.getManagedTeam(userId);
+
+    const member = await this.prisma.teamMember.findFirst({
+      where: {
+        id: memberId,
+        teamId: team.id,
+        isActive: true,
+      },
+    });
+
+    if (!member) {
+      throw new NotFoundException('Team member not found');
+    }
+
+    if (member.userId === userId) {
+      throw new BadRequestException(
+        'You cannot remove yourself from the team.',
+      );
+    }
+
+    if (member.role === TeamRole.GENERAL_MANAGER) {
+      throw new BadRequestException('You cannot remove a General Manager.');
+    }
+
+    await this.prisma.teamMember.update({
+      where: {
+        id: memberId,
+      },
+      data: {
+        isActive: false,
+      },
+    });
+
+    return {
+      success: true,
+    };
   }
 
   async createGame(userId: string, dto: CreateTeamGameDto) {
@@ -201,11 +309,11 @@ export class TeamsService {
     return this.prisma.teamGame.create({
       data: {
         teamId: team.id,
-        title: dto.title,
+        title: dto.title.trim(),
         startsAt: new Date(dto.startsAt),
-        arena: dto.arena,
-        opponent: dto.opponent,
-        notes: dto.notes,
+        arena: dto.arena?.trim() || null,
+        opponent: dto.opponent?.trim() || null,
+        notes: dto.notes?.trim() || null,
       },
     });
   }
@@ -278,27 +386,18 @@ export class TeamsService {
     };
   }
 
-  async removeMember(userId: string, memberId: string) {
-    const team = await this.getManagedTeam(userId);
-
-    await this.prisma.teamMember.deleteMany({
-      where: {
-        id: memberId,
-        teamId: team.id,
-      },
-    });
-
-    return { success: true };
-  }
-
   async respondToGame(
     userId: string,
     gameId: string,
     status: 'AVAILABLE' | 'UNAVAILABLE' | 'NEED_SPARE',
     note?: string,
   ) {
+    await this.linkPendingTeamMembershipsByEmail(userId);
+
     const game = await this.prisma.teamGame.findUnique({
-      where: { id: gameId },
+      where: {
+        id: gameId,
+      },
       include: {
         team: true,
       },
@@ -372,15 +471,6 @@ export class TeamsService {
       const appUrl = process.env.APP_URL ?? 'http://localhost:4200';
       const gameUrl = `${appUrl}/my-team`;
 
-      console.log('Availability email debug', {
-        status,
-        gameId,
-        teamId: game.teamId,
-        responder: member.displayName,
-        managersFound: managers.length,
-        managerEmails: managers.map((manager) => manager.user?.email),
-      });
-
       await Promise.allSettled(
         managers
           .filter((manager) => !!manager.user?.email)
@@ -392,16 +482,16 @@ export class TeamsService {
                 note ? ` Note: ${note}` : ''
               }`,
               html: `
-            <p><strong>${member.displayName}</strong> ${statusLabel} for:</p>
-            <p><strong>${game.title}</strong></p>
-            <p><strong>Team:</strong> ${game.team.name}</p>
-            <p><strong>Arena:</strong> ${game.arena}</p>
-            <p><strong>Date:</strong> ${game.startsAt.toLocaleString()}</p>
-            ${note ? `<p><strong>Note:</strong> ${note}</p>` : ''}
-            <p>
-              <a href="${gameUrl}">Open HockeySpare</a>
-            </p>
-          `,
+                <p><strong>${member.displayName}</strong> ${statusLabel} for:</p>
+                <p><strong>${game.title}</strong></p>
+                <p><strong>Team:</strong> ${game.team.name}</p>
+                <p><strong>Arena:</strong> ${game.arena ?? 'N/A'}</p>
+                <p><strong>Date:</strong> ${game.startsAt.toLocaleString()}</p>
+                ${note ? `<p><strong>Note:</strong> ${note}</p>` : ''}
+                <p>
+                  <a href="${gameUrl}">Open HockeySpare</a>
+                </p>
+              `,
             }),
           ),
       );
@@ -425,7 +515,9 @@ export class TeamsService {
     }
 
     return this.prisma.teamGameAvailability.findMany({
-      where: { gameId },
+      where: {
+        gameId,
+      },
       include: {
         member: true,
       },
@@ -458,7 +550,9 @@ export class TeamsService {
 
     if (member.userId) {
       return this.prisma.teamMember.findUnique({
-        where: { id: member.id },
+        where: {
+          id: member.id,
+        },
       });
     }
 
@@ -466,9 +560,19 @@ export class TeamsService {
       throw new NotFoundException('This player does not have an email to link');
     }
 
-    const user = await this.prisma.user.findUnique({
-      where: { email: member.email },
-      select: { id: true, email: true },
+    const email = member.email.trim().toLowerCase();
+
+    const user = await this.prisma.user.findFirst({
+      where: {
+        email: {
+          equals: email,
+          mode: 'insensitive',
+        },
+      },
+      select: {
+        id: true,
+        email: true,
+      },
     });
 
     if (!user) {
@@ -478,9 +582,12 @@ export class TeamsService {
     }
 
     return this.prisma.teamMember.update({
-      where: { id: member.id },
+      where: {
+        id: member.id,
+      },
       data: {
         userId: user.id,
+        email,
       },
     });
   }
@@ -586,6 +693,8 @@ export class TeamsService {
   }
 
   async getMyStats(userId: string) {
+    await this.linkPendingTeamMembershipsByEmail(userId);
+
     return this.prisma.playerStat.findMany({
       where: {
         member: {
@@ -602,6 +711,8 @@ export class TeamsService {
   }
 
   async createMyTeam(userId: string, dto: CreateMyTeamDto) {
+    await this.linkPendingTeamMembershipsByEmail(userId);
+
     const existingMembership = await this.prisma.teamMember.findFirst({
       where: {
         userId,
@@ -626,8 +737,7 @@ export class TeamsService {
       throw new NotFoundException('User not found.');
     }
 
-    const displayName =
-      `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim() || user.email;
+    const displayName = this.buildDisplayName(user);
 
     await this.prisma.team.create({
       data: {
@@ -637,7 +747,7 @@ export class TeamsService {
           create: {
             userId,
             displayName,
-            email: user.email,
+            email: user.email.trim().toLowerCase(),
             role: TeamRole.GENERAL_MANAGER,
             memberType: TeamMemberType.REGULAR,
             notifyByApp: true,
@@ -671,7 +781,7 @@ export class TeamsService {
         userId,
         teamId: targetMember.teamId,
         isActive: true,
-        role: 'GENERAL_MANAGER',
+        role: TeamRole.GENERAL_MANAGER,
       },
     });
 
@@ -685,7 +795,7 @@ export class TeamsService {
       throw new BadRequestException('You cannot change your own role.');
     }
 
-    if (targetMember.role === 'GENERAL_MANAGER') {
+    if (targetMember.role === TeamRole.GENERAL_MANAGER) {
       throw new BadRequestException(
         'You cannot change another General Manager role.',
       );
@@ -698,6 +808,25 @@ export class TeamsService {
       data: {
         role: dto.role,
       },
+    });
+  }
+
+  async getTeamStats(userId: string) {
+    const team = await this.getUserTeam(userId);
+
+    return this.prisma.playerStat.findMany({
+      where: {
+        teamId: team.id,
+        member: {
+          isActive: true,
+        },
+      },
+      include: {
+        team: true,
+        league: true,
+        member: true,
+      },
+      orderBy: [{ season: 'desc' }, { updatedAt: 'desc' }],
     });
   }
 }

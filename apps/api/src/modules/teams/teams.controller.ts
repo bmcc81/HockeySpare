@@ -108,6 +108,11 @@ export class TeamsController {
     return this.teamsService.getGameAvailability(this.getUserId(req), gameId);
   }
 
+  @Get('stats/team')
+  getTeamStats(@Req() req: any) {
+    return this.teamsService.getTeamStats(this.getUserId(req));
+  }
+
   @Get('stats/me')
   getMyStats(@Req() req: any) {
     return this.teamsService.getMyStats(this.getUserId(req));

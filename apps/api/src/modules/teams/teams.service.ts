@@ -53,9 +53,9 @@ export class TeamsService {
       return;
     }
 
-    const email = user.email.trim().toLowerCase();
+    const email = user.email.trim();
 
-    await this.prisma.teamMember.updateMany({
+    const pendingMemberships = await this.prisma.teamMember.findMany({
       where: {
         userId: null,
         isActive: true,
@@ -64,11 +64,43 @@ export class TeamsService {
           mode: 'insensitive',
         },
       },
-      data: {
-        userId: user.id,
-        email,
+      include: {
+        team: true,
       },
     });
+
+    if (!pendingMemberships.length) {
+      return;
+    }
+
+    await this.prisma.teamMember.updateMany({
+      where: {
+        id: {
+          in: pendingMemberships.map((membership) => membership.id),
+        },
+      },
+      data: {
+        userId: user.id,
+      },
+    });
+
+    const inAppNotifications = pendingMemberships
+      .filter((membership) => membership.notifyByApp)
+      .map((membership) => ({
+        userId: user.id,
+        type: NotificationType.TEAM_MEMBER_ADDED,
+        title: `You've been added to ${membership.team.name}`,
+        body: `${membership.team.name} added you to their roster.`,
+        link: '/my-team',
+        metadata: {
+          teamId: membership.teamId,
+          memberId: membership.id,
+        },
+      }));
+
+    if (inAppNotifications.length) {
+      await this.notifications.createMany(inAppNotifications);
+    }
   }
 
   private async getUserTeam(userId: string) {
@@ -222,32 +254,21 @@ export class TeamsService {
     const team = await this.getManagedTeam(userId);
 
     const displayName = dto.displayName.trim();
-    const email = dto.email?.trim().toLowerCase() || null;
+    const email = dto.email?.trim() || null;
     const phone = dto.phone?.trim() || null;
-
-    if (!displayName) {
-      throw new BadRequestException('Player name is required.');
-    }
 
     let linkedUserId: string | undefined;
 
     if (email) {
-      const existingUser = await this.prisma.user.findFirst({
-        where: {
-          email: {
-            equals: email,
-            mode: 'insensitive',
-          },
-        },
-        select: {
-          id: true,
-        },
+      const existingUser = await this.prisma.user.findUnique({
+        where: { email },
+        select: { id: true },
       });
 
       linkedUserId = existingUser?.id;
     }
 
-    return this.prisma.teamMember.create({
+    const member = await this.prisma.teamMember.create({
       data: {
         teamId: team.id,
         userId: linkedUserId,
@@ -259,9 +280,91 @@ export class TeamsService {
         role: TeamRole.PLAYER,
         notifyByApp: dto.notifyByApp ?? true,
         notifyByEmail: dto.notifyByEmail ?? false,
-        isActive: true,
       },
     });
+
+    await this.notifyPlayerAddedToTeam({
+      teamId: team.id,
+      teamName: team.name,
+      memberId: member.id,
+      memberUserId: member.userId,
+      memberEmail: member.email,
+      memberName: member.displayName,
+      memberType: member.memberType,
+      notifyByApp: member.notifyByApp,
+      notifyByEmail: member.notifyByEmail,
+    });
+
+    return member;
+  }
+
+  private async notifyPlayerAddedToTeam(args: {
+    teamId: string;
+    teamName: string;
+    memberId: string;
+    memberUserId: string | null;
+    memberEmail: string | null;
+    memberName: string;
+    memberType: TeamMemberType;
+    notifyByApp: boolean;
+    notifyByEmail: boolean;
+  }): Promise<void> {
+    const appUrl = process.env.APP_URL ?? 'http://localhost:4200';
+    const myTeamUrl = `${appUrl}/my-team`;
+    const registerUserLink = `${appUrl}/register`;
+
+    const tasks: Promise<unknown>[] = [];
+
+    if (args.notifyByApp && args.memberUserId) {
+      tasks.push(
+        this.notifications.createMany([
+          {
+            userId: args.memberUserId,
+            type: NotificationType.TEAM_MEMBER_ADDED,
+            title: `You've been added to ${args.teamName}`,
+            body: `${args.teamName} added you to their roster.`,
+            link: '/my-team',
+            metadata: {
+              teamId: args.teamId,
+              memberId: args.memberId,
+            },
+          },
+        ]),
+      );
+    }
+
+    if (args.notifyByEmail && args.memberEmail) {
+      const memberTypeLabel =
+        args.memberType === TeamMemberType.SPARE ? 'spare' : 'regular player';
+
+      tasks.push(
+        this.emailService.sendMail({
+          to: args.memberEmail,
+          subject: `You've been added to ${args.teamName}`,
+          text: `Hi ${args.memberName}, you have been added to ${args.teamName} as a ${memberTypeLabel}. Open HockeySpare: ${myTeamUrl}`,
+          html: `
+          <p>Hi <strong>${args.memberName}</strong>,</p>
+          <p>You have been added to <strong>${args.teamName}</strong> as a ${memberTypeLabel}.</p>
+          <p>If you are not already registered, please <a href="${registerUserLink}">create an account</a>.</p>
+          <p>You will then be able to view your team schedule and view team statistics.</p>
+          <p>
+            <a href="${myTeamUrl}">Open HockeySpare</a>
+          </p>
+        `,
+        }),
+      );
+    }
+
+    if (!tasks.length) {
+      return;
+    }
+
+    const results = await Promise.allSettled(tasks);
+    const failed = results.filter((result) => result.status === 'rejected');
+
+    if (failed.length) {
+      console.warn('One or more player-added notifications failed', failed);
+    }
   }
 
   async removeMember(userId: string, memberId: string) {

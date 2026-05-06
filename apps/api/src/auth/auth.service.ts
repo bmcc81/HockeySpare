@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { PrismaService } from '../prisma/prisma.service';
@@ -15,8 +19,13 @@ export class AuthService {
   async register(dto: RegisterDto) {
     const email = dto.email.trim().toLowerCase();
 
-    const existing = await this.prisma.user.findUnique({ where: { email } });
-    if (existing) throw new ConflictException('Email already in use');
+    const existing = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (existing) {
+      throw new ConflictException('Email already in use');
+    }
 
     const passwordHash = await bcrypt.hash(dto.password, 12);
 
@@ -26,6 +35,7 @@ export class AuthService {
         passwordHash,
         firstName: dto.firstName?.trim() || null,
         lastName: dto.lastName?.trim() || null,
+        appRole: 'USER',
       },
       select: {
         id: true,
@@ -35,6 +45,8 @@ export class AuthService {
         createdAt: true,
       },
     });
+
+    await this.linkPendingTeamMemberships(user.id, user.email);
 
     const accessToken = await this.jwt.signAsync(
       { sub: user.id, email: user.email },
@@ -55,7 +67,10 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const passwordMatches = await bcrypt.compare(dto.password, user.passwordHash);
+    const passwordMatches = await bcrypt.compare(
+      dto.password,
+      user.passwordHash,
+    );
 
     if (!passwordMatches) {
       throw new UnauthorizedException('Invalid credentials');
@@ -76,5 +91,24 @@ export class AuthService {
         createdAt: user.createdAt,
       },
     };
+  }
+
+  private async linkPendingTeamMemberships(
+    userId: string,
+    email: string,
+  ): Promise<void> {
+    await this.prisma.teamMember.updateMany({
+      where: {
+        email: {
+          equals: email,
+          mode: 'insensitive',
+        },
+        userId: null,
+        isActive: true,
+      },
+      data: {
+        userId,
+      },
+    });
   }
 }

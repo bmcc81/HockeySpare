@@ -52,6 +52,8 @@ export class MyTeamComponent implements OnInit {
   statsLoadingMemberId: string | null = null;
   statsSeasonHasRecord: boolean | null = null;
 
+  creatingTeam = false;
+
   upcomingGames: UpcomingGame[] = [];
   upcomingGamesLoading = false;
   upcomingGamesError: string | null = null;
@@ -265,6 +267,16 @@ export class MyTeamComponent implements OnInit {
         this.cdr.detectChanges();
       },
       error: (err) => {
+        if (err?.status === 404) {
+          this.team = null;
+          this.loading = false;
+          this.error = '';
+          this.upcomingGames = [];
+          this.upcomingGamesError = null;
+          this.cdr.detectChanges();
+          return;
+        }
+
         console.error('Could not load team page:', err);
         this.error = 'Could not load your team.';
         this.loading = false;
@@ -284,6 +296,35 @@ export class MyTeamComponent implements OnInit {
         console.warn('Could not load player stats:', err);
       },
     });
+  }
+
+  createMyTeam(): void {
+    if (this.teamForm.invalid || this.creatingTeam) {
+      this.teamForm.markAllAsTouched();
+      return;
+    }
+
+    const raw = this.teamForm.getRawValue();
+    const name = raw.name?.trim() ?? '';
+
+    this.creatingTeam = true;
+    this.error = '';
+
+    this.teamApi
+      .createMyTeam({
+        name,
+      })
+      .subscribe({
+        next: () => {
+          this.creatingTeam = false;
+          this.reload();
+        },
+        error: (err) => {
+          this.creatingTeam = false;
+          this.error = err?.error?.message || 'Could not create your team.';
+          this.cdr.detectChanges();
+        },
+      });
   }
 
   saveTeamName() {

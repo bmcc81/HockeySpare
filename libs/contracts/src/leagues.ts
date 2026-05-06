@@ -1,4 +1,4 @@
-export type LeagueRole = 'PLAYER' | 'TEAM_MANAGER' | 'LEAGUE_MANAGER';
+export type LeagueRole = "PLAYER" | "TEAM_MANAGER" | "LEAGUE_MANAGER";
 
 export interface LeagueDto {
   id: string;
@@ -31,7 +31,123 @@ export interface TeamDto {
   createdAt: string;
   updatedAt: string;
   games?: TeamGameDto[];
+  members?: TeamMember[];
 }
+
+export interface TeamMember {
+  id: string;
+  teamId: string;
+  userId?: string | null;
+  displayName: string;
+  email?: string | null;
+  phone?: string | null;
+  position?: "GOALIE" | "DEFENSE" | "FORWARD" | null;
+  memberType: TeamMemberType;
+  role?: TeamRole;
+  notifyByApp?: boolean;
+  notifyByEmail?: boolean;
+  isActive?: boolean;
+}
+
+export type TeamMemberType = "REGULAR" | "SPARE";
+export type TeamRole = "PLAYER" | "CAPTAIN" | "GENERAL_MANAGER";
+
+export type TeamGameAvailabilityStatus =
+  | "AVAILABLE"
+  | "UNAVAILABLE"
+  | "NEED_SPARE";
+
+export interface MyMembership {
+  id: string;
+  role: TeamRole;
+  memberType: TeamMemberType;
+  position: "GOALIE" | "DEFENSE" | "FORWARD" | null;
+}
+
+export interface TeamGameInvite {
+  id: string;
+  status: "PENDING" | "SENT" | "CONFIRMED" | "DECLINED";
+  member: TeamMember;
+}
+
+export interface TeamGameAvailability {
+  id: string;
+  gameId: string;
+  memberId: string;
+  status: TeamGameAvailabilityStatus;
+  note?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  member: TeamMember;
+}
+
+export interface TeamGame {
+  id: string;
+  title: string;
+  startsAt: string;
+  arena?: string | null;
+  opponent?: string | null;
+  notes?: string | null;
+  invites: TeamGameInvite[];
+  availabilities: TeamGameAvailability[];
+}
+
+export interface MyTeamResponse {
+  id: string;
+  name: string;
+  members: TeamMember[];
+  games: TeamGame[];
+  myMembership?: MyMembership | null;
+  canManageTeam?: boolean;
+  league?: {
+    id: string;
+    name: string;
+    season?: string | null;
+  } | null;
+}
+
+export interface PlayerStat {
+  id: string;
+  memberId: string;
+  userId?: string | null;
+  teamId: string;
+  leagueId?: string | null;
+  season: string;
+  gamesPlayed: number;
+  goals: number;
+  assists: number;
+  penaltyMins: number;
+  updatedAt: string;
+  team: {
+    id: string;
+    name: string;
+  };
+  league?: {
+    id: string;
+    name: string;
+    season?: string | null;
+  } | null;
+  member?: {
+    id: string;
+    displayName: string;
+  };
+}
+
+export type UpcomingGame = {
+  id: string;
+  title: string;
+  startsAt: string;
+  arena: string | null;
+  opponent: string | null;
+  notes: string | null;
+  teamId?: string;
+  teamName?: string;
+  leagueId?: string;
+  leagueName?: string;
+  source: 'MY_TEAM' | 'LEAGUE';
+  invites: any[];
+  availabilities: any[];
+};
 
 export interface CreateLeagueTeamInput {
   name: string;

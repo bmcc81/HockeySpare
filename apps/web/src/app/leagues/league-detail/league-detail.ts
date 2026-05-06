@@ -61,8 +61,23 @@ export class LeagueDetailComponent {
   }
 
   canManageTeams = computed(() => {
-    const role = this.authState.user()?.role;
-    return role === 'CAPTAIN' || role === 'GENERAL_MANAGER';
+    const userId = this.authState.user()?.id;
+    const league = this.league();
+
+    if (!userId || !league) {
+      return false;
+    }
+
+    return (
+      league.teams?.some((team) =>
+        team.members?.some(
+          (member) =>
+            member.userId === userId &&
+            member.isActive !== false &&
+            (member.role === 'CAPTAIN' || member.role === 'GENERAL_MANAGER'),
+        ),
+      ) ?? false
+    );
   });
 
   teamNameById = computed(() => {
@@ -217,7 +232,6 @@ export class LeagueDetailComponent {
   }
 
   addGame(): void {
-
     if (!this.canManageTeams()) {
       this.gameError.set('You do not have permission to manage games.');
       return;

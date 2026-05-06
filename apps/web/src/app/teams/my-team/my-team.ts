@@ -1,7 +1,20 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  ChangeDetectorRef,
+  signal
+} from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MyTeamResponse, TeamMember, TeamGame, TeamGameAvailabilityStatus, UpcomingGame, PlayerStat } from '@hockeyspare/contracts';
+import {
+  MyTeamResponse,
+  TeamMember,
+  TeamGame,
+  TeamGameAvailabilityStatus,
+  UpcomingGame,
+  PlayerStat,
+} from '@hockeyspare/contracts';
 import { TeamService } from '../../core/services/team';
 
 @Component({
@@ -35,6 +48,9 @@ export class MyTeamComponent implements OnInit {
   upcomingGames: UpcomingGame[] = [];
   upcomingGamesLoading = false;
   upcomingGamesError: string | null = null;
+
+  savingRoleMemberId = signal<string | null>(null);
+  roleError = signal<string | null>(null);
 
   teamForm = this.fb.group({
     name: ['', [Validators.required, Validators.maxLength(80)]],
@@ -728,6 +744,54 @@ export class MyTeamComponent implements OnInit {
     this.statsFilterForm.reset({
       season: '',
       team: '',
+    });
+  }
+
+  canAssignCaptains(): boolean {
+    return this.myRole === 'GENERAL_MANAGER';
+  }
+
+  makeCaptain(member: TeamMember): void {
+    if (!this.canAssignCaptains() || this.savingRoleMemberId()) {
+      return;
+    }
+
+    this.savingRoleMemberId.set(member.id);
+    this.roleError.set(null);
+
+    this.teamApi.updateMemberRole(member.id, 'CAPTAIN').subscribe({
+      next: () => {
+        this.savingRoleMemberId.set(null);
+        this.reload();
+      },
+      error: (err) => {
+        this.roleError.set(err?.error?.message || 'Could not assign Captain.');
+        this.savingRoleMemberId.set(null);
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  removeCaptain(member: TeamMember): void {
+    if (!this.canAssignCaptains() || this.savingRoleMemberId()) {
+      return;
+    }
+
+    this.savingRoleMemberId.set(member.id);
+    this.roleError.set(null);
+
+    this.teamApi.updateMemberRole(member.id, 'PLAYER').subscribe({
+      next: () => {
+        this.savingRoleMemberId.set(null);
+        this.reload();
+      },
+      error: (err) => {
+        this.roleError.set(
+          err?.error?.message || 'Could not remove Captain role.',
+        );
+        this.savingRoleMemberId.set(null);
+        this.cdr.detectChanges();
+      },
     });
   }
 }

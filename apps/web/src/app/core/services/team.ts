@@ -6,7 +6,7 @@ import {
   TeamGameAvailabilityStatus,
   TeamMemberType,
   PlayerStat,
-  TeamMember
+  TeamMember,
 } from '@hockeyspare/contracts';
 
 export type AssignableTeamRole = 'PLAYER' | 'CAPTAIN';
@@ -31,6 +31,10 @@ export class TeamService {
 
   updateMyTeam(input: { name: string }) {
     return this.http.patch('/api/my-team', input);
+  }
+
+  getTeamStats() {
+    return this.http.get<PlayerStat[]>('/api/my-team/stats/team');
   }
 
   addMember(payload: {
@@ -106,9 +110,9 @@ export class TeamService {
   }
 
   updateMemberRole(memberId: string, role: AssignableTeamRole) {
-  return this.http.patch<TeamMember>(
-    `/api/my-team/members/${memberId}/role`,
-    { role },
-  );
-}
+    return this.http.patch<TeamMember>(
+      `/api/my-team/members/${memberId}/role`,
+      { role },
+    );
+  }
 }

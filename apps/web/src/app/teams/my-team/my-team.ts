@@ -3,7 +3,7 @@ import {
   OnInit,
   inject,
   ChangeDetectorRef,
-  signal
+  signal,
 } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -97,6 +97,7 @@ export class MyTeamComponent implements OnInit {
     | 'penaltyMins' = 'season';
 
   statsSortDirection: 'asc' | 'desc' = 'desc';
+
   get filteredAndSortedMyStats(): PlayerStat[] {
     const seasonFilter = (this.statsFilterForm.get('season')?.value ?? '')
       .trim()
@@ -281,7 +282,9 @@ export class MyTeamComponent implements OnInit {
   }
 
   loadMyStats() {
-    this.teamApi.getMyStats().subscribe({
+    const statsRequest = this.teamApi.getTeamStats();
+
+    statsRequest.subscribe({
       next: (stats) => {
         this.myStats = stats ?? [];
         this.cdr.detectChanges();

@@ -3,6 +3,12 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export type TeamMemberType = 'REGULAR' | 'SPARE';
+export type TeamRole = 'PLAYER' | 'CAPTAIN' | 'GENERAL_MANAGER';
+
+export type TeamGameAvailabilityStatus =
+  | 'AVAILABLE'
+  | 'UNAVAILABLE'
+  | 'NEED_SPARE';
 
 export interface TeamMember {
   id: string;
@@ -12,29 +18,18 @@ export interface TeamMember {
   email?: string | null;
   phone?: string | null;
   position?: 'GOALIE' | 'DEFENSE' | 'FORWARD' | null;
-  memberType: 'REGULAR' | 'SPARE';
-  role?: 'PLAYER' | 'CAPTAIN' | 'GENERAL_MANAGER';
+  memberType: TeamMemberType;
+  role?: TeamRole;
   notifyByApp?: boolean;
   notifyByEmail?: boolean;
   isActive?: boolean;
 }
 
-export type TeamRole = 'PLAYER' | 'CAPTAIN' | 'GENERAL_MANAGER';
-
 export interface MyMembership {
   id: string;
   role: TeamRole;
-  memberType: 'REGULAR' | 'SPARE';
+  memberType: TeamMemberType;
   position: 'GOALIE' | 'DEFENSE' | 'FORWARD' | null;
-}
-
-export interface MyTeamResponse {
-  id: string;
-  name: string;
-  members: TeamMember[];
-  games: TeamGame[];
-  myMembership?: MyMembership | null;
-  canManageTeam?: boolean;
 }
 
 export interface TeamGameInvite {
@@ -42,28 +37,6 @@ export interface TeamGameInvite {
   status: 'PENDING' | 'SENT' | 'CONFIRMED' | 'DECLINED';
   member: TeamMember;
 }
-
-export interface TeamGame {
-  id: string;
-  title: string;
-  startsAt: string;
-  arena?: string | null;
-  opponent?: string | null;
-  notes?: string | null;
-  invites: TeamGameInvite[];
-}
-
-export interface MyTeamResponse {
-  id: string;
-  name: string;
-  members: TeamMember[];
-  games: TeamGame[];
-}
-
-export type TeamGameAvailabilityStatus =
-  | 'AVAILABLE'
-  | 'UNAVAILABLE'
-  | 'NEED_SPARE';
 
 export interface TeamGameAvailability {
   id: string;
@@ -83,7 +56,22 @@ export interface TeamGame {
   arena?: string | null;
   opponent?: string | null;
   notes?: string | null;
+  invites: TeamGameInvite[];
   availabilities: TeamGameAvailability[];
+}
+
+export interface MyTeamResponse {
+  id: string;
+  name: string;
+  members: TeamMember[];
+  games: TeamGame[];
+  myMembership?: MyMembership | null;
+  canManageTeam?: boolean;
+  league?: {
+    id: string;
+    name: string;
+    season?: string | null;
+  } | null;
 }
 
 export interface PlayerStat {
@@ -125,6 +113,10 @@ export class TeamService {
       }),
       params: new HttpParams().set('_ts', Date.now().toString()),
     });
+  }
+
+  createMyTeam(payload: { name: string }): Observable<MyTeamResponse> {
+    return this.http.post<MyTeamResponse>('/api/my-team', payload);
   }
 
   updateMyTeam(input: { name: string }) {

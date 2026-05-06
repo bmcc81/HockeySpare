@@ -16,12 +16,14 @@ import { CreateTeamGameDto } from './dto/create-team-game.dto';
 import { NotifyTeamGameDto } from './dto/notify-team-game.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { CreateMyTeamDto } from './dto/create-my-team.dto';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class TeamsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly notifications: NotificationsService,
+    private readonly emailService: EmailService,
   ) {}
 
   private buildDisplayName(user: {
@@ -31,44 +33,6 @@ export class TeamsService {
   }): string {
     const fullName = `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim();
     return fullName || user.email;
-  }
-
-  private async createDefaultTeamForUser(userId: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-      },
-    });
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    const displayName = this.buildDisplayName(user);
-    const teamName = user.firstName ? `${user.firstName}'s Team` : 'My Team';
-
-    return this.prisma.team.create({
-      data: {
-        createdById: userId,
-        name: teamName,
-        members: {
-          create: {
-            userId,
-            displayName,
-            email: user.email,
-            memberType: TeamMemberType.REGULAR,
-            role: TeamRole.GENERAL_MANAGER,
-            notifyByApp: true,
-            notifyByEmail: false,
-            isActive: true,
-          },
-        },
-      },
-    });
   }
 
   private async getUserTeam(userId: string) {
@@ -85,11 +49,11 @@ export class TeamsService {
       },
     });
 
-    if (membership) {
-      return membership.team;
+    if (!membership) {
+      throw new NotFoundException('No team found.');
     }
 
-    return this.createDefaultTeamForUser(userId);
+    return membership.team;
   }
 
   private async getManagedTeam(userId: string) {
@@ -129,7 +93,7 @@ export class TeamsService {
       );
     }
 
-    return this.createDefaultTeamForUser(userId);
+    throw new NotFoundException('No team found.');
   }
 
   async updateMyTeam(userId: string, dto: UpdateTeamDto) {
@@ -334,7 +298,9 @@ export class TeamsService {
   ) {
     const game = await this.prisma.teamGame.findUnique({
       where: { id: gameId },
-      include: { team: true },
+      include: {
+        team: true,
+      },
     });
 
     if (!game) {
@@ -347,13 +313,16 @@ export class TeamsService {
         userId,
         isActive: true,
       },
+      include: {
+        user: true,
+      },
     });
 
     if (!member) {
       throw new NotFoundException('Team member not found for this user');
     }
 
-    return this.prisma.teamGameAvailability.upsert({
+    const response = await this.prisma.teamGameAvailability.upsert({
       where: {
         gameId_memberId: {
           gameId,
@@ -375,6 +344,69 @@ export class TeamsService {
         game: true,
       },
     });
+
+    const shouldEmailManagers =
+      status === 'UNAVAILABLE' || status === 'NEED_SPARE';
+
+    if (shouldEmailManagers) {
+      const managers = await this.prisma.teamMember.findMany({
+        where: {
+          teamId: game.teamId,
+          isActive: true,
+          userId: {
+            not: null,
+          },
+          role: {
+            in: [TeamRole.CAPTAIN, TeamRole.GENERAL_MANAGER],
+          },
+        },
+        include: {
+          user: true,
+        },
+      });
+
+      const statusLabel =
+        status === 'NEED_SPARE' ? 'needs a spare' : 'can’t make it';
+
+      const appUrl = process.env.APP_URL ?? 'http://localhost:4200';
+      const gameUrl = `${appUrl}/my-team`;
+
+      console.log('Availability email debug', {
+        status,
+        gameId,
+        teamId: game.teamId,
+        responder: member.displayName,
+        managersFound: managers.length,
+        managerEmails: managers.map((manager) => manager.user?.email),
+      });
+
+      await Promise.allSettled(
+        managers
+          .filter((manager) => !!manager.user?.email)
+          .map((manager) =>
+            this.emailService.sendMail({
+              to: manager.user!.email,
+              subject: `${member.displayName} ${statusLabel} for ${game.title} on ${game.startsAt.toLocaleString()} at ${game.arena}`,
+              text: `${member.displayName} ${statusLabel} for ${game.title}.${
+                note ? ` Note: ${note}` : ''
+              }`,
+              html: `
+            <p><strong>${member.displayName}</strong> ${statusLabel} for:</p>
+            <p><strong>${game.title}</strong></p>
+            <p><strong>Team:</strong> ${game.team.name}</p>
+            <p><strong>Arena:</strong> ${game.arena}</p>
+            <p><strong>Date:</strong> ${game.startsAt.toLocaleString()}</p>
+            ${note ? `<p><strong>Note:</strong> ${note}</p>` : ''}
+            <p>
+              <a href="${gameUrl}">Open HockeySpare</a>
+            </p>
+          `,
+            }),
+          ),
+      );
+    }
+
+    return response;
   }
 
   async getGameAvailability(userId: string, gameId: string) {
@@ -605,10 +637,10 @@ export class TeamsService {
             userId,
             displayName,
             email: user.email,
-            role: 'GENERAL_MANAGER',
-            memberType: 'REGULAR',
+            role: TeamRole.GENERAL_MANAGER,
+            memberType: TeamMemberType.REGULAR,
             notifyByApp: true,
-            notifyByEmail: false,
+            notifyByEmail: true,
             isActive: true,
           },
         },

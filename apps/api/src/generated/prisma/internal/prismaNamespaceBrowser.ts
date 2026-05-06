@@ -178,6 +178,7 @@ export const TeamScalarFieldEnum = {
   name: 'name',
   createdById: 'createdById',
   leagueId: 'leagueId',
+  joinCode: 'joinCode',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

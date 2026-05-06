@@ -6,6 +6,7 @@ export interface AuthUser {
   firstName: string | null;
   lastName: string | null;
   createdAt: string;
+  role: 'PLAYER' | 'CAPTAIN' | 'GENERAL_MANAGER';
 }
 
 export interface AuthSession {

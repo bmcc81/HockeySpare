@@ -8,6 +8,7 @@ import {
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { LeagueDto, TeamDto, TeamGameDto } from '@hockeyspare/contracts';
 import { LeaguesApiService } from '../../core/services/leagues-api.service';
+import { AuthStateService } from '../../auth/auth-state.service';
 
 @Component({
   selector: 'app-league-detail',
@@ -20,6 +21,7 @@ export class LeagueDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly leaguesApi = inject(LeaguesApiService);
+  private readonly authState = inject(AuthStateService);
 
   leagueId = this.route.snapshot.paramMap.get('id') ?? '';
 
@@ -57,6 +59,11 @@ export class LeagueDetailComponent {
     this.setupAutoGameTitle();
     this.load();
   }
+
+  canManageTeams = computed(() => {
+    const role = this.authState.user()?.role;
+    return role === 'CAPTAIN' || role === 'GENERAL_MANAGER';
+  });
 
   teamNameById = computed(() => {
     const map = new Map<string, string>();
@@ -143,6 +150,11 @@ export class LeagueDetailComponent {
   }
 
   addTeam(): void {
+    if (!this.canManageTeams()) {
+      this.teamError.set('You do not have permission to manage teams.');
+      return;
+    }
+
     if (this.teamForm.invalid || this.savingTeam()) {
       this.teamForm.markAllAsTouched();
       return;
@@ -205,6 +217,12 @@ export class LeagueDetailComponent {
   }
 
   addGame(): void {
+
+    if (!this.canManageTeams()) {
+      this.gameError.set('You do not have permission to manage games.');
+      return;
+    }
+
     if (this.gameForm.invalid || this.savingGame()) {
       this.gameForm.markAllAsTouched();
       return;

@@ -76,34 +76,40 @@
         <div *ngIf="teamError()" class="alert alert-danger">
           {{ teamError() }}
         </div>
+        <div *ngIf="canManageTeams(); else noTeamPermission">
+          <form [formGroup]="teamForm" (ngSubmit)="addTeam()">
+            <div class="mb-3">
+              <label class="form-label" for="teamName">Team name</label>
+              <input
+                id="teamName"
+                type="text"
+                class="form-control"
+                formControlName="name"
+                placeholder="Vaudreuil Vikings"
+              />
 
-        <form [formGroup]="teamForm" (ngSubmit)="addTeam()">
-          <div class="mb-3">
-            <label class="form-label" for="teamName">Team name</label>
-            <input
-              id="teamName"
-              type="text"
-              class="form-control"
-              formControlName="name"
-              placeholder="Vaudreuil Vikings"
-            />
-
-            <div
-              class="form-error"
-              *ngIf="teamForm.controls.name.touched && teamForm.controls.name.invalid"
-            >
-              Team name is required.
+              <div
+                class="form-error"
+                *ngIf="teamForm.controls.name.touched && teamForm.controls.name.invalid"
+              >
+                Team name is required.
+              </div>
             </div>
-          </div>
 
-          <button
-            type="submit"
-            class="btn btn-primary"
-            [disabled]="savingTeam()"
-          >
-            {{ savingTeam() ? 'Adding...' : 'Add Team' }}
-          </button>
-        </form>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="savingTeam()"
+            >
+              {{ savingTeam() ? 'Adding...' : 'Add Team' }}
+            </button>
+          </form>
+        </div>
+        <ng-template #noTeamPermission>
+          <div class="empty">
+            Only a General Manager or Captain can add a team.
+          </div>
+        </ng-template>
       </div>
     </div>
 
@@ -201,7 +207,7 @@
         </div>
       </div>
 
-      <div class="panel">
+      <div class="panel" *ngIf="canManageTeams(); else noGamePermission">
         <h2>Add Game</h2>
 
         <div *ngIf="gameError()" class="alert alert-danger">
@@ -303,6 +309,15 @@
           </button>
         </form>
       </div>
+
+      <ng-template #noGamePermission>
+        <div class="panel">
+          <h2>Add Game</h2>
+          <div class="empty">
+            Only a General Manager or Captain can add games.
+          </div>
+        </div>
+      </ng-template>
     </div>
   </ng-container>
 </section>

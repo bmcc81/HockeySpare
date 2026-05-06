@@ -29,6 +29,7 @@ export type TeamMinAggregateOutputType = {
   name: string | null
   createdById: string | null
   leagueId: string | null
+  joinCode: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -38,6 +39,7 @@ export type TeamMaxAggregateOutputType = {
   name: string | null
   createdById: string | null
   leagueId: string | null
+  joinCode: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -47,6 +49,7 @@ export type TeamCountAggregateOutputType = {
   name: number
   createdById: number
   leagueId: number
+  joinCode: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -58,6 +61,7 @@ export type TeamMinAggregateInputType = {
   name?: true
   createdById?: true
   leagueId?: true
+  joinCode?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -67,6 +71,7 @@ export type TeamMaxAggregateInputType = {
   name?: true
   createdById?: true
   leagueId?: true
+  joinCode?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -76,6 +81,7 @@ export type TeamCountAggregateInputType = {
   name?: true
   createdById?: true
   leagueId?: true
+  joinCode?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -158,6 +164,7 @@ export type TeamGroupByOutputType = {
   name: string
   createdById: string | null
   leagueId: string | null
+  joinCode: string | null
   createdAt: Date
   updatedAt: Date
   _count: TeamCountAggregateOutputType | null
@@ -188,6 +195,7 @@ export type TeamWhereInput = {
   name?: Prisma.StringFilter<"Team"> | string
   createdById?: Prisma.StringNullableFilter<"Team"> | string | null
   leagueId?: Prisma.StringNullableFilter<"Team"> | string | null
+  joinCode?: Prisma.StringNullableFilter<"Team"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Team"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Team"> | Date | string
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -202,6 +210,7 @@ export type TeamOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   leagueId?: Prisma.SortOrderInput | Prisma.SortOrder
+  joinCode?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdBy?: Prisma.UserOrderByWithRelationInput
@@ -213,6 +222,7 @@ export type TeamOrderByWithRelationInput = {
 
 export type TeamWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  joinCode?: string
   AND?: Prisma.TeamWhereInput | Prisma.TeamWhereInput[]
   OR?: Prisma.TeamWhereInput[]
   NOT?: Prisma.TeamWhereInput | Prisma.TeamWhereInput[]
@@ -226,13 +236,14 @@ export type TeamWhereUniqueInput = Prisma.AtLeast<{
   members?: Prisma.TeamMemberListRelationFilter
   games?: Prisma.TeamGameListRelationFilter
   playerStats?: Prisma.PlayerStatListRelationFilter
-}, "id">
+}, "id" | "joinCode">
 
 export type TeamOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   leagueId?: Prisma.SortOrderInput | Prisma.SortOrder
+  joinCode?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.TeamCountOrderByAggregateInput
@@ -248,6 +259,7 @@ export type TeamScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Team"> | string
   createdById?: Prisma.StringNullableWithAggregatesFilter<"Team"> | string | null
   leagueId?: Prisma.StringNullableWithAggregatesFilter<"Team"> | string | null
+  joinCode?: Prisma.StringNullableWithAggregatesFilter<"Team"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Team"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Team"> | Date | string
 }
@@ -255,6 +267,7 @@ export type TeamScalarWhereWithAggregatesInput = {
 export type TeamCreateInput = {
   id?: string
   name: string
+  joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedTeamsInput
@@ -269,6 +282,7 @@ export type TeamUncheckedCreateInput = {
   name: string
   createdById?: string | null
   leagueId?: string | null
+  joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   members?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutTeamInput
@@ -279,6 +293,7 @@ export type TeamUncheckedCreateInput = {
 export type TeamUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneWithoutCreatedTeamsNestedInput
@@ -293,6 +308,7 @@ export type TeamUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   leagueId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   members?: Prisma.TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
@@ -305,6 +321,7 @@ export type TeamCreateManyInput = {
   name: string
   createdById?: string | null
   leagueId?: string | null
+  joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -312,6 +329,7 @@ export type TeamCreateManyInput = {
 export type TeamUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -321,6 +339,7 @@ export type TeamUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   leagueId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -340,6 +359,7 @@ export type TeamCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   leagueId?: Prisma.SortOrder
+  joinCode?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -349,6 +369,7 @@ export type TeamMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   leagueId?: Prisma.SortOrder
+  joinCode?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -358,6 +379,7 @@ export type TeamMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   leagueId?: Prisma.SortOrder
+  joinCode?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -496,6 +518,7 @@ export type TeamUpdateOneRequiredWithoutGamesNestedInput = {
 export type TeamCreateWithoutCreatedByInput = {
   id?: string
   name: string
+  joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   league?: Prisma.LeagueCreateNestedOneWithoutTeamsInput
@@ -508,6 +531,7 @@ export type TeamUncheckedCreateWithoutCreatedByInput = {
   id?: string
   name: string
   leagueId?: string | null
+  joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   members?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutTeamInput
@@ -549,6 +573,7 @@ export type TeamScalarWhereInput = {
   name?: Prisma.StringFilter<"Team"> | string
   createdById?: Prisma.StringNullableFilter<"Team"> | string | null
   leagueId?: Prisma.StringNullableFilter<"Team"> | string | null
+  joinCode?: Prisma.StringNullableFilter<"Team"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Team"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Team"> | Date | string
 }
@@ -556,6 +581,7 @@ export type TeamScalarWhereInput = {
 export type TeamCreateWithoutLeagueInput = {
   id?: string
   name: string
+  joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedTeamsInput
@@ -568,6 +594,7 @@ export type TeamUncheckedCreateWithoutLeagueInput = {
   id?: string
   name: string
   createdById?: string | null
+  joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   members?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutTeamInput
@@ -604,6 +631,7 @@ export type TeamUpdateManyWithWhereWithoutLeagueInput = {
 export type TeamCreateWithoutMembersInput = {
   id?: string
   name: string
+  joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedTeamsInput
@@ -617,6 +645,7 @@ export type TeamUncheckedCreateWithoutMembersInput = {
   name: string
   createdById?: string | null
   leagueId?: string | null
+  joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   games?: Prisma.TeamGameUncheckedCreateNestedManyWithoutTeamInput
@@ -642,6 +671,7 @@ export type TeamUpdateToOneWithWhereWithoutMembersInput = {
 export type TeamUpdateWithoutMembersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneWithoutCreatedTeamsNestedInput
@@ -655,6 +685,7 @@ export type TeamUncheckedUpdateWithoutMembersInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   leagueId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   games?: Prisma.TeamGameUncheckedUpdateManyWithoutTeamNestedInput
@@ -664,6 +695,7 @@ export type TeamUncheckedUpdateWithoutMembersInput = {
 export type TeamCreateWithoutPlayerStatsInput = {
   id?: string
   name: string
+  joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedTeamsInput
@@ -677,6 +709,7 @@ export type TeamUncheckedCreateWithoutPlayerStatsInput = {
   name: string
   createdById?: string | null
   leagueId?: string | null
+  joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   members?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutTeamInput
@@ -702,6 +735,7 @@ export type TeamUpdateToOneWithWhereWithoutPlayerStatsInput = {
 export type TeamUpdateWithoutPlayerStatsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneWithoutCreatedTeamsNestedInput
@@ -715,6 +749,7 @@ export type TeamUncheckedUpdateWithoutPlayerStatsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   leagueId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   members?: Prisma.TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
@@ -724,6 +759,7 @@ export type TeamUncheckedUpdateWithoutPlayerStatsInput = {
 export type TeamCreateWithoutGamesInput = {
   id?: string
   name: string
+  joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedTeamsInput
@@ -737,6 +773,7 @@ export type TeamUncheckedCreateWithoutGamesInput = {
   name: string
   createdById?: string | null
   leagueId?: string | null
+  joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   members?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutTeamInput
@@ -762,6 +799,7 @@ export type TeamUpdateToOneWithWhereWithoutGamesInput = {
 export type TeamUpdateWithoutGamesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneWithoutCreatedTeamsNestedInput
@@ -775,6 +813,7 @@ export type TeamUncheckedUpdateWithoutGamesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   leagueId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   members?: Prisma.TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
@@ -785,6 +824,7 @@ export type TeamCreateManyCreatedByInput = {
   id?: string
   name: string
   leagueId?: string | null
+  joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -792,6 +832,7 @@ export type TeamCreateManyCreatedByInput = {
 export type TeamUpdateWithoutCreatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   league?: Prisma.LeagueUpdateOneWithoutTeamsNestedInput
@@ -804,6 +845,7 @@ export type TeamUncheckedUpdateWithoutCreatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   leagueId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   members?: Prisma.TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
@@ -815,6 +857,7 @@ export type TeamUncheckedUpdateManyWithoutCreatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   leagueId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -823,6 +866,7 @@ export type TeamCreateManyLeagueInput = {
   id?: string
   name: string
   createdById?: string | null
+  joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -830,6 +874,7 @@ export type TeamCreateManyLeagueInput = {
 export type TeamUpdateWithoutLeagueInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneWithoutCreatedTeamsNestedInput
@@ -842,6 +887,7 @@ export type TeamUncheckedUpdateWithoutLeagueInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   members?: Prisma.TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
@@ -853,6 +899,7 @@ export type TeamUncheckedUpdateManyWithoutLeagueInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -911,6 +958,7 @@ export type TeamSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   name?: boolean
   createdById?: boolean
   leagueId?: boolean
+  joinCode?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdBy?: boolean | Prisma.Team$createdByArgs<ExtArgs>
@@ -926,6 +974,7 @@ export type TeamSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   name?: boolean
   createdById?: boolean
   leagueId?: boolean
+  joinCode?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdBy?: boolean | Prisma.Team$createdByArgs<ExtArgs>
@@ -937,6 +986,7 @@ export type TeamSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   name?: boolean
   createdById?: boolean
   leagueId?: boolean
+  joinCode?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdBy?: boolean | Prisma.Team$createdByArgs<ExtArgs>
@@ -948,11 +998,12 @@ export type TeamSelectScalar = {
   name?: boolean
   createdById?: boolean
   leagueId?: boolean
+  joinCode?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type TeamOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "createdById" | "leagueId" | "createdAt" | "updatedAt", ExtArgs["result"]["team"]>
+export type TeamOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "createdById" | "leagueId" | "joinCode" | "createdAt" | "updatedAt", ExtArgs["result"]["team"]>
 export type TeamInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdBy?: boolean | Prisma.Team$createdByArgs<ExtArgs>
   league?: boolean | Prisma.Team$leagueArgs<ExtArgs>
@@ -984,6 +1035,7 @@ export type $TeamPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     name: string
     createdById: string | null
     leagueId: string | null
+    joinCode: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["team"]>
@@ -1418,6 +1470,7 @@ export interface TeamFieldRefs {
   readonly name: Prisma.FieldRef<"Team", 'String'>
   readonly createdById: Prisma.FieldRef<"Team", 'String'>
   readonly leagueId: Prisma.FieldRef<"Team", 'String'>
+  readonly joinCode: Prisma.FieldRef<"Team", 'String'>
   readonly createdAt: Prisma.FieldRef<"Team", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Team", 'DateTime'>
 }

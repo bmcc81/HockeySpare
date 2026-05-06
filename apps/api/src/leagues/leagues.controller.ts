@@ -19,6 +19,7 @@ type AuthRequest = {
     id?: string;
     sub?: string;
     email?: string;
+    role: 'PLAYER' | 'CAPTAIN' | 'GENERAL_MANAGER';
   };
 };
 

@@ -171,116 +171,147 @@ export class LeaguesService {
     );
   }
 
-  private async assertUserCanAddTeamToLeague(
+  private async assertUserCanManageLeagueTeam(
     userId: string,
     leagueId: string,
-    teamName?: string,
+    teamId: string,
   ): Promise<void> {
-    const league = await this.prisma.league.findUnique({
+    const team = await this.prisma.team.findFirst({
       where: {
-        id: leagueId,
+        id: teamId,
+        leagueId,
       },
       select: {
         id: true,
-        createdById: true,
       },
     });
 
-    if (!league) {
-      throw new NotFoundException('League not found');
+    if (!team) {
+      throw new NotFoundException('Team not found in this league');
     }
 
-    if (league.createdById === userId) {
-      return;
+    const managedMembership = await this.prisma.teamMember.findFirst({
+      where: {
+        userId,
+        teamId,
+        isActive: true,
+        role: {
+          in: ['CAPTAIN', 'GENERAL_MANAGER'],
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!managedMembership) {
+      throw new ForbiddenException(
+        'Only a General Manager or Captain can schedule games for this team.',
+      );
+    }
+  }
+
+  async addGame(
+    userId: string,
+    leagueId: string,
+    teamId: string,
+    dto: CreateLeagueGameDto,
+  ) {
+    await this.assertUserCanManageLeagueTeam(userId, leagueId, teamId);
+
+    const title = dto.title.trim();
+
+    if (!title) {
+      throw new BadRequestException('Game title is required');
     }
 
-    const normalizedTeamName = this.normalizeTeamName(teamName ?? '');
+    const startsAt = new Date(dto.startsAt);
 
-    const manageableMembership = await this.prisma.teamMember.findFirst({
+    if (Number.isNaN(startsAt.getTime())) {
+      throw new BadRequestException('Valid start time is required');
+    }
+
+    return this.prisma.teamGame.create({
+      data: {
+        teamId,
+        title,
+        startsAt,
+        arena: dto.arena?.trim() || null,
+        opponent: dto.opponent?.trim() || null,
+        notes: dto.notes?.trim() || null,
+      },
+    });
+  }
+
+  async addTeam(userId: string, leagueId: string, dto: CreateLeagueTeamDto) {
+    await this.assertUserCanAddTeamToLeague(userId, leagueId);
+
+    const name = dto.name.trim();
+
+    if (!name) {
+      throw new BadRequestException('Team name is required');
+    }
+
+    const existingLeagueTeam = await this.prisma.team.findFirst({
+      where: {
+        leagueId,
+        name: {
+          equals: name,
+          mode: 'insensitive',
+        },
+      },
+      include: {
+        games: {
+          orderBy: {
+            startsAt: 'asc',
+          },
+        },
+      },
+    });
+
+    if (existingLeagueTeam) {
+      return existingLeagueTeam;
+    }
+
+    const managedMembership = await this.prisma.teamMember.findFirst({
       where: {
         userId,
         isActive: true,
         role: {
           in: ['CAPTAIN', 'GENERAL_MANAGER'],
         },
-        OR: [
-          {
-            team: {
-              leagueId,
+        team: {
+          name: {
+            equals: name,
+            mode: 'insensitive',
+          },
+        },
+      },
+      include: {
+        team: {
+          include: {
+            games: {
+              orderBy: {
+                startsAt: 'asc',
+              },
             },
           },
-          ...(normalizedTeamName
-            ? [
-                {
-                  team: {
-                    name: {
-                      equals: teamName?.trim(),
-                      mode: 'insensitive' as const,
-                    },
-                  },
-                },
-              ]
-            : []),
-        ],
+        },
       },
-      select: {
-        id: true,
+      orderBy: {
+        createdAt: 'asc',
       },
     });
 
-    if (!manageableMembership) {
-      throw new ForbiddenException(
-        'Only a General Manager or Captain can add teams.',
-      );
-    }
-  }
-
-async addTeam(userId: string, leagueId: string, dto: CreateLeagueTeamDto) {
-  await this.assertUserCanAddTeamToLeague(userId, leagueId, dto.name);
-
-  const name = dto.name.trim();
-
-  if (!name) {
-    throw new BadRequestException('Team name is required');
-  }
-
-  const existingLeagueTeam = await this.prisma.team.findFirst({
-    where: {
-      leagueId,
-      name: {
-        equals: name,
-        mode: 'insensitive',
-      },
-    },
-    include: {
-      games: {
-        orderBy: {
-          startsAt: 'asc',
+    if (managedMembership) {
+      return this.prisma.team.update({
+        where: {
+          id: managedMembership.teamId,
         },
-      },
-    },
-  });
-
-  if (existingLeagueTeam) {
-    return existingLeagueTeam;
-  }
-
-  const managedMembership = await this.prisma.teamMember.findFirst({
-    where: {
-      userId,
-      isActive: true,
-      role: {
-        in: ['CAPTAIN', 'GENERAL_MANAGER'],
-      },
-      team: {
-        name: {
-          equals: name,
-          mode: 'insensitive',
+        data: {
+          leagueId,
+          name,
         },
-      },
-    },
-    include: {
-      team: {
         include: {
           games: {
             orderBy: {
@@ -288,21 +319,14 @@ async addTeam(userId: string, leagueId: string, dto: CreateLeagueTeamDto) {
             },
           },
         },
-      },
-    },
-    orderBy: {
-      createdAt: 'asc',
-    },
-  });
+      });
+    }
 
-  if (managedMembership) {
-    return this.prisma.team.update({
-      where: {
-        id: managedMembership.teamId,
-      },
+    return this.prisma.team.create({
       data: {
-        leagueId,
         name,
+        leagueId,
+        createdById: userId,
       },
       include: {
         games: {
@@ -314,21 +338,63 @@ async addTeam(userId: string, leagueId: string, dto: CreateLeagueTeamDto) {
     });
   }
 
-  return this.prisma.team.create({
-    data: {
-      name,
-      leagueId,
-      createdById: userId,
-    },
-    include: {
-      games: {
-        orderBy: {
-          startsAt: 'asc',
-        },
+  private async assertUserCanAddTeamToLeague(
+    userId: string,
+    leagueId: string,
+  ): Promise<void> {
+    const league = await this.prisma.league.findUnique({
+      where: {
+        id: leagueId,
       },
-    },
-  });
-}
+      select: {
+        id: true,
+      },
+    });
+
+    if (!league) {
+      throw new NotFoundException('League not found');
+    }
+
+    const access = await this.prisma.league.findFirst({
+      where: {
+        id: leagueId,
+        OR: [
+          {
+            members: {
+              some: {
+                userId,
+                role: 'LEAGUE_MANAGER',
+              },
+            },
+          },
+          {
+            teams: {
+              some: {
+                members: {
+                  some: {
+                    userId,
+                    isActive: true,
+                    role: {
+                      in: ['CAPTAIN', 'GENERAL_MANAGER'],
+                    },
+                  },
+                },
+              },
+            },
+          },
+        ],
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!access) {
+      throw new ForbiddenException(
+        'Only a league manager, General Manager, or Captain can add teams.',
+      );
+    }
+  }
 
   async linkMyTeamToLeague(leagueId: string, userId: string) {
     const league = await this.prisma.league.findUnique({
@@ -500,13 +566,5 @@ async addTeam(userId: string, leagueId: string, dto: CreateLeagueTeamDto) {
     if (!access) {
       throw new ForbiddenException('You do not have access to this league');
     }
-  }
-
-  private normalizeTeamName(value: string): string {
-    return value
-      .trim()
-      .toLowerCase()
-      .replace(/^the\s+/, '')
-      .replace(/\s+/g, ' ');
   }
 }

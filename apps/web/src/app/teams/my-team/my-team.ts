@@ -1,30 +1,8 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import {
-  TeamMember,
-  MyTeamResponse,
-  TeamService,
-  TeamGame,
-  TeamGameAvailabilityStatus,
-  PlayerStat,
-} from '../../core/services/team';
-
-type UpcomingGame = {
-  id: string;
-  title: string;
-  startsAt: string;
-  arena: string | null;
-  opponent: string | null;
-  notes: string | null;
-  teamId?: string;
-  teamName?: string;
-  leagueId?: string;
-  leagueName?: string;
-  source: 'MY_TEAM' | 'LEAGUE';
-  invites: any[];
-  availabilities: any[];
-};
+import { MyTeamResponse, TeamMember, TeamGame, TeamGameAvailabilityStatus, UpcomingGame, PlayerStat } from '@hockeyspare/contracts';
+import { TeamService } from '../../core/services/team';
 
 @Component({
   selector: 'app-my-team',

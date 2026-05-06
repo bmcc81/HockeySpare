@@ -812,7 +812,7 @@ export class TeamsService {
   }
 
   async getTeamStats(userId: string) {
-    const team = await this.getManagedTeam(userId);
+    const team = await this.getUserTeam(userId);
 
     return this.prisma.playerStat.findMany({
       where: {

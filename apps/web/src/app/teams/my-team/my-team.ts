@@ -282,15 +282,13 @@ export class MyTeamComponent implements OnInit {
   }
 
   loadMyStats() {
-    const statsRequest = this.teamApi.getTeamStats();
-
-    statsRequest.subscribe({
+    this.teamApi.getTeamStats().subscribe({
       next: (stats) => {
         this.myStats = stats ?? [];
         this.cdr.detectChanges();
       },
       error: (err) => {
-        console.warn('Could not load player stats:', err);
+        console.warn('Could not load team stats:', err);
       },
     });
   }

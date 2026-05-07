@@ -17,8 +17,7 @@ export class BookingsService {
     private readonly emailService: EmailService,
   ) {}
 
-async create(userId: string, requestId: number, dto: CreateBookingDto) {
-  
+  async create(userId: string, requestId: number, dto: CreateBookingDto) {
     const request = await this.prisma.request.findUnique({
       where: { id: requestId },
       select: {
@@ -81,17 +80,23 @@ async create(userId: string, requestId: number, dto: CreateBookingDto) {
       },
     });
 
+    const bookedByName =
+      [bookingUser?.firstName, bookingUser?.lastName]
+        .filter(Boolean)
+        .join(' ') ||
+      bookingUser?.email ||
+      'A user';
+
+    const ownerName =
+      [request.user?.firstName, request.user?.lastName]
+        .filter(Boolean)
+        .join(' ') || '';
+
+    const emailTasks: Promise<unknown>[] = [];
+
     if (request.user?.email) {
-      const bookedByName =
-        [bookingUser?.firstName, bookingUser?.lastName].filter(Boolean).join(' ') ||
-        bookingUser?.email ||
-        'A user';
-
-      const ownerName =
-        [request.user.firstName, request.user.lastName].filter(Boolean).join(' ') || '';
-
-      try {
-        await this.emailService.sendBookingCreatedToRequestOwner({
+      emailTasks.push(
+        this.emailService.sendBookingCreatedToRequestOwner({
           to: request.user.email,
           ownerName,
           requestId: request.id,
@@ -99,17 +104,37 @@ async create(userId: string, requestId: number, dto: CreateBookingDto) {
           arena: request.arena ?? null,
           time: request.time ?? null,
           bookedByName,
-        });
-      } catch (error) {
-        const err = error as MailError;
-        console.error('Failed to send booking email:',  {
+        }),
+      );
+    }
+
+    if (bookingUser?.email) {
+      emailTasks.push(
+        this.emailService.sendBookingCreatedToBookingUser({
+          to: bookingUser.email,
+          bookedByName,
+          requestId: request.id,
+          teamName: request.teamName ?? null,
+          arena: request.arena ?? null,
+          time: request.time ?? null,
+        }),
+      );
+    }
+
+    const emailResults = await Promise.allSettled(emailTasks);
+
+    emailResults.forEach((result, index) => {
+      if (result.status === 'rejected') {
+        const err = result.reason as MailError;
+
+        console.error(`Failed to send booking email ${index + 1}:`, {
           message: err?.message,
           code: err?.code,
           response: err?.response,
           responseCode: err?.responseCode,
         });
       }
-    }
+    });
 
     return booking;
   }
@@ -125,7 +150,6 @@ async create(userId: string, requestId: number, dto: CreateBookingDto) {
   }
 
   async getForOwnedRequests(userId: string) {
-
     const result = this.prisma.booking.findMany({
       where: {
         request: {
@@ -149,7 +173,11 @@ async create(userId: string, requestId: number, dto: CreateBookingDto) {
     return result;
   }
 
-  async updateStatus(userId: string, bookingId: string, dto: UpdateBookingStatusDto) {
+  async updateStatus(
+    userId: string,
+    bookingId: string,
+    dto: UpdateBookingStatusDto,
+  ) {
     const booking = await this.prisma.booking.findUnique({
       where: { id: bookingId },
       include: {

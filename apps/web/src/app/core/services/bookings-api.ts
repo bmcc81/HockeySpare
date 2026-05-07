@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+
+export type BookingStatus = 'PENDING' | 'CONFIRMED' | 'DECLINED';
 
 export type IncomingBooking = {
   id: string;
   requestId: number;
   userId: string;
-  status: 'PENDING' | 'CONFIRMED' | 'CANCELLED';
+  status: BookingStatus;
   message: string | null;
+  responseMessage?: string | null;
   createdAt: string;
   updatedAt: string;
   request: {
@@ -31,10 +34,38 @@ export class BookingsApiService {
   constructor(private readonly http: HttpClient) {}
 
   getIncoming(): Observable<IncomingBooking[]> {
-    return this.http.get<IncomingBooking[]>('/api/bookings/incoming');
+    return this.http.get<IncomingBooking[]>('/api/bookings/incoming', {
+      headers: this.noCacheHeaders(),
+      params: this.noCacheParams(),
+    });
   }
 
-  updateStatus(bookingId: string, status: 'CONFIRMED' | 'CANCELLED') {
-    return this.http.patch(`/api/bookings/${bookingId}/status`, { status });
+  updateStatus(
+    bookingId: string,
+    status: 'CONFIRMED' | 'DECLINED',
+    message?: string,
+  ): Observable<IncomingBooking> {
+    return this.http.patch<IncomingBooking>(
+      `/api/bookings/${bookingId}/status`,
+      {
+        status,
+        message: message?.trim() || null,
+      },
+      {
+        headers: this.noCacheHeaders(),
+      },
+    );
+  }
+
+  private noCacheHeaders(): HttpHeaders {
+    return new HttpHeaders({
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      Pragma: 'no-cache',
+      Expires: '0',
+    });
+  }
+
+  private noCacheParams(): HttpParams {
+    return new HttpParams().set('_t', Date.now().toString());
   }
 }

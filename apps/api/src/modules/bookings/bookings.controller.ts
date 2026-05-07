@@ -14,6 +14,7 @@ import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { BookingsService } from './bookings.services';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingStatusDto } from './dto/update-booking-status.dto';
+import { UpdateBookingMessageDto } from './dto/update-booking-message.dto';
 
 @Controller('bookings')
 @UseGuards(JwtAuthGuard)
@@ -46,7 +47,6 @@ export class BookingsController {
 
   @Get('incoming')
   getIncoming(@Req() req: any) {
-    const userId = this.getUserId(req);
     return this.bookingsService.getForOwnedRequests(this.getUserId(req));
   }
 
@@ -56,11 +56,28 @@ export class BookingsController {
     @Param('bookingId') bookingId: string,
     @Body() dto: UpdateBookingStatusDto,
   ) {
-    return this.bookingsService.updateStatus(this.getUserId(req), bookingId, dto);
+    return this.bookingsService.updateStatus(
+      this.getUserId(req),
+      bookingId,
+      dto,
+    );
   }
 
   @Patch(':bookingId/cancel')
   cancelMine(@Req() req: any, @Param('bookingId') bookingId: string) {
     return this.bookingsService.cancelMine(this.getUserId(req), bookingId);
+  }
+
+  @Patch(':bookingId/message')
+  updateMineMessage(
+    @Req() req: any,
+    @Param('bookingId') bookingId: string,
+    @Body() dto: UpdateBookingMessageDto,
+  ) {
+    return this.bookingsService.updateMineMessage(
+      this.getUserId(req),
+      bookingId,
+      dto,
+    );
   }
 }

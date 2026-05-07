@@ -341,16 +341,17 @@ model Notification {
 }
 
 model Booking {
-  id        String        @id @default(cuid())
-  requestId Int
-  userId    String
-  status    BookingStatus @default(PENDING)
-  message   String?
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+  id              String   @id @default(cuid())
+  requestId       Int
+  userId          String
+  status          String   @default("PENDING")
+  message         String?
+  responseMessage String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  request Request @relation(fields: [requestId], references: [id], onDelete: Cascade)
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  request Request @relation(fields: [requestId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
 
   @@unique([requestId, userId])
 }

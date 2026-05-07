@@ -5,10 +5,19 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { EmailService } from '../email/email.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingStatusDto } from './dto/update-booking-status.dto';
-import { EmailService } from '../../email/email.service';
-import { MailError } from '@hockeyspare/contracts';
+import { UpdateBookingMessageDto } from './dto/update-booking-message.dto';
+
+type MailError = {
+  message?: string;
+  code?: string;
+  response?: string;
+  responseCode?: number;
+};
+
+type UpdateBookingStatus = 'CONFIRMED' | 'DECLINED';
 
 @Injectable()
 export class BookingsService {
@@ -26,6 +35,7 @@ export class BookingsService {
         status: true,
         teamName: true,
         arena: true,
+        date: true,
         time: true,
         user: {
           select: {
@@ -102,6 +112,7 @@ export class BookingsService {
           requestId: request.id,
           teamName: request.teamName ?? null,
           arena: request.arena ?? null,
+          date: request.date ? request.date.toISOString().slice(0, 10) : null,
           time: request.time ?? null,
           bookedByName,
         }),
@@ -116,6 +127,7 @@ export class BookingsService {
           requestId: request.id,
           teamName: request.teamName ?? null,
           arena: request.arena ?? null,
+          date: request.date ? request.date.toISOString().slice(0, 10) : null,
           time: request.time ?? null,
         }),
       );
@@ -141,22 +153,101 @@ export class BookingsService {
 
   async getMine(userId: string) {
     return this.prisma.booking.findMany({
-      where: { userId },
-      orderBy: { createdAt: 'desc' },
+      where: {
+        userId,
+      },
       include: {
-        request: true,
+        request: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                email: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
     });
   }
 
   async getForOwnedRequests(userId: string) {
-    const result = this.prisma.booking.findMany({
+    return this.prisma.booking.findMany({
       where: {
         request: {
           userId,
         },
       },
-      orderBy: { createdAt: 'desc' },
+      include: {
+        request: true,
+        user: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
+
+  async updateStatus(
+    userId: string,
+    bookingId: string,
+    dto: UpdateBookingStatusDto,
+  ) {
+    const status = dto.status as UpdateBookingStatus;
+    const responseMessage = dto.message?.trim() || null;
+
+    const booking = await this.prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        request: {
+          select: {
+            id: true,
+            userId: true,
+            teamName: true,
+            arena: true,
+            date: true,
+            time: true,
+          },
+        },
+      },
+    });
+
+    if (!booking) {
+      throw new NotFoundException('Booking not found');
+    }
+
+    if (booking.request.userId !== userId) {
+      throw new ForbiddenException(
+        'You do not have permission to manage this booking',
+      );
+    }
+
+    const updatedBooking = await this.prisma.booking.update({
+      where: { id: bookingId },
+      data: {
+        status,
+        responseMessage,
+      },
       include: {
         request: true,
         user: {
@@ -170,23 +261,78 @@ export class BookingsService {
       },
     });
 
-    return result;
+    if (status === 'CONFIRMED' && booking.user.email) {
+      const bookedByName =
+        [booking.user.firstName, booking.user.lastName]
+          .filter(Boolean)
+          .join(' ') || booking.user.email;
+
+      try {
+        await this.emailService.sendBookingConfirmedToBookingUser({
+          to: booking.user.email,
+          bookedByName,
+          requestId: booking.request.id,
+          teamName: booking.request.teamName ?? null,
+          arena: booking.request.arena ?? null,
+          date: booking.request.date
+            ? booking.request.date.toISOString().slice(0, 10)
+            : null,
+          time: booking.request.time ?? null,
+          message: responseMessage,
+        });
+      } catch (error) {
+        const err = error as MailError;
+
+        console.error('Failed to send confirmed booking email:', {
+          message: err?.message,
+          code: err?.code,
+          response: err?.response,
+          responseCode: err?.responseCode,
+        });
+      }
+    }
+
+    if (status === 'DECLINED' && booking.user.email) {
+      const bookedByName =
+        [booking.user.firstName, booking.user.lastName]
+          .filter(Boolean)
+          .join(' ') || booking.user.email;
+
+      try {
+        await this.emailService.sendBookingDeclinedToBookingUser({
+          to: booking.user.email,
+          bookedByName,
+          requestId: booking.request.id,
+          teamName: booking.request.teamName ?? null,
+          arena: booking.request.arena ?? null,
+          date: booking.request.date
+            ? booking.request.date.toISOString().slice(0, 10)
+            : null,
+          time: booking.request.time ?? null,
+          message: responseMessage,
+        });
+      } catch (error) {
+        const err = error as MailError;
+
+        console.error('Failed to send declined booking email:', {
+          message: err?.message,
+          code: err?.code,
+          response: err?.response,
+          responseCode: err?.responseCode,
+        });
+      }
+    }
+
+    return updatedBooking;
   }
 
-  async updateStatus(
-    userId: string,
-    bookingId: string,
-    dto: UpdateBookingStatusDto,
-  ) {
+  async cancelMine(userId: string, bookingId: string) {
     const booking = await this.prisma.booking.findUnique({
       where: { id: bookingId },
-      include: {
-        request: {
-          select: {
-            id: true,
-            userId: true,
-          },
-        },
+      select: {
+        id: true,
+        userId: true,
+        status: true,
       },
     });
 
@@ -194,45 +340,73 @@ export class BookingsService {
       throw new NotFoundException('Booking not found');
     }
 
-    if (booking.request.userId !== userId) {
-      throw new ForbiddenException('You do not own this request');
+    if (booking.userId !== userId) {
+      throw new ForbiddenException(
+        'You do not have permission to cancel this booking',
+      );
     }
 
-    const updated = await this.prisma.booking.update({
-      where: { id: bookingId },
-      data: {
-        status: dto.status,
-      },
-      include: {
-        request: true,
-      },
-    });
-
-    if (dto.status === 'CONFIRMED') {
-      await this.prisma.request.update({
-        where: { id: booking.requestId },
-        data: {
-          status: 'FILLED',
-        },
-      });
-    }
-
-    return updated;
-  }
-
-  async cancelMine(userId: string, bookingId: string) {
-    const booking = await this.prisma.booking.findUnique({
-      where: { id: bookingId },
-    });
-
-    if (!booking || booking.userId !== userId) {
-      throw new NotFoundException('Booking not found');
+    if (booking.status !== 'PENDING') {
+      throw new BadRequestException('Only pending bookings can be cancelled');
     }
 
     return this.prisma.booking.update({
       where: { id: bookingId },
       data: {
-        status: 'CANCELLED',
+        status: 'DECLINED',
+      },
+      include: {
+        request: true,
+        user: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+  }
+
+  async updateMineMessage(
+    userId: string,
+    bookingId: string,
+    dto: UpdateBookingMessageDto,
+  ) {
+    const booking = await this.prisma.booking.findUnique({
+      where: { id: bookingId },
+      select: {
+        id: true,
+        userId: true,
+      },
+    });
+
+    if (!booking) {
+      throw new NotFoundException('Booking not found');
+    }
+
+    if (booking.userId !== userId) {
+      throw new ForbiddenException(
+        'You do not have permission to update this booking',
+      );
+    }
+
+    return this.prisma.booking.update({
+      where: { id: bookingId },
+      data: {
+        message: dto.message?.trim() || null,
+      },
+      include: {
+        request: true,
+        user: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
       },
     });
   }

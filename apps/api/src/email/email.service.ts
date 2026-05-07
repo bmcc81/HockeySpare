@@ -190,4 +190,61 @@ export class EmailService {
       });
     }
   }
+
+  async sendBookingDeclinedToBookingUser(args: {
+    to: string;
+    bookedByName: string;
+    requestId: number;
+    teamName: string | null;
+    arena: string | null;
+    date?: string | null;
+    time: string | null;
+    message?: string | null;
+  }): Promise<void> {
+    const appUrl = this.getAppUrl();
+    const myBookingsUrl = `${appUrl}/bookings/my-bookings`;
+
+    await this.transporter.sendMail({
+      from: this.getMailFrom(),
+      to: args.to,
+      subject: 'Your hockey booking request was declined',
+      text: [
+        `Hi ${args.bookedByName},`,
+        '',
+        'Your booking request was declined.',
+        '',
+        `Request #${args.requestId}`,
+        args.teamName ? `Team: ${args.teamName}` : null,
+        args.arena ? `Arena: ${args.arena}` : null,
+        args.date ? `Date: ${args.date}` : null,
+        args.time ? `Time: ${args.time}` : null,
+        '',
+        `View your bookings here: ${myBookingsUrl}`,
+        '',
+        'Thanks,',
+        'HockeySpare Team',
+      ]
+        .filter(Boolean)
+        .join('\n'),
+      html: `
+      <p>Hi <strong>${args.bookedByName}</strong>,</p>
+
+      <p>Your booking request was declined.</p>
+
+      <p>
+        <strong>Request #${args.requestId}</strong><br />
+        ${args.teamName ? `Team: ${args.teamName}<br />` : ''}
+        ${args.arena ? `Arena: ${args.arena}<br />` : ''}
+        ${args.date ? `Date: ${args.date}<br />` : ''}
+        ${args.time ? `Time: ${args.time}<br />` : ''}
+      </p>
+
+      <p>
+        <a href="${myBookingsUrl}">View my bookings</a>
+      </p>
+
+      <p>Thanks,<br />HockeySpare Team</p>
+    `,
+    });
+  }
 }

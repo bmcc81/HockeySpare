@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Component, inject, signal, computed } from '@angular/core';
 import {
   NonNullableFormBuilder,
@@ -6,7 +6,12 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { LeagueDto, TeamDto, TeamGameDto } from '@hockeyspare/contracts';
+import {
+  LeagueDto,
+  TeamDto,
+  TeamGameDto,
+  LeagueArenaDto,
+} from '@hockeyspare/contracts';
 import { LeaguesApiService } from '../../core/services/leagues-api.service';
 import { AuthStateService } from '../../auth/auth-state.service';
 
@@ -14,6 +19,7 @@ import { AuthStateService } from '../../auth/auth-state.service';
   selector: 'app-league-detail',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  providers: [DatePipe],
   templateUrl: './league-detail.html',
   styleUrl: './league-detail.scss',
 })
@@ -22,6 +28,7 @@ export class LeagueDetailComponent {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly leaguesApi = inject(LeaguesApiService);
   private readonly authState = inject(AuthStateService);
+  private readonly datePipe = inject(DatePipe);
 
   leagueId = this.route.snapshot.paramMap.get('id') ?? '';
 
@@ -35,6 +42,7 @@ export class LeagueDetailComponent {
 
   error = signal<string | null>(null);
   teamError = signal<string | null>(null);
+  gameSuccess = signal<string | null>(null);
   gameError = signal<string | null>(null);
 
   teamSearch = signal('');
@@ -42,9 +50,35 @@ export class LeagueDetailComponent {
   scheduleTeamId = signal('');
   scheduleView = signal<'ALL' | 'UPCOMING' | 'PAST'>('UPCOMING');
 
+  arenas = signal<LeagueArenaDto[]>([]);
+  savingArena = signal(false);
+  arenaError = signal<string | null>(null);
+
+  teamsCollapsed = signal(false);
+  arenasCollapsed = signal(false);
+
+  deletingGameId = signal<string | null>(null);
+
+  getFormattedDate(date: string): string | null {
+    return this.datePipe.transform(date, 'short');
+  }
+
   teamForm = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
   });
+
+  arenaForm = this.fb.group({
+    name: ['', [Validators.required, Validators.minLength(2)]],
+    address: [''],
+  });
+
+  toggleTeamsCollapsed(): void {
+    this.teamsCollapsed.update((collapsed) => !collapsed);
+  }
+
+  toggleArenasCollapsed(): void {
+    this.arenasCollapsed.update((collapsed) => !collapsed);
+  }
 
   gameForm = this.fb.group({
     teamId: ['', [Validators.required]],
@@ -68,16 +102,28 @@ export class LeagueDetailComponent {
       return false;
     }
 
-    return (
-      league.teams?.some((team) =>
-        team.members?.some(
-          (member) =>
-            member.userId === userId &&
-            member.isActive !== false &&
-            (member.role === 'CAPTAIN' || member.role === 'GENERAL_MANAGER'),
-        ),
-      ) ?? false
-    );
+    const isLeagueManager =
+      league.members?.some(
+        (member) =>
+          member.userId === userId && member.role === 'LEAGUE_MANAGER',
+      ) ?? false;
+
+    const managesAnyTeam =
+      league.teams?.some((team) => {
+        const ownsTeam = team.createdById === userId;
+
+        const isTeamManager =
+          team.members?.some(
+            (member) =>
+              member.userId === userId &&
+              member.isActive !== false &&
+              (member.role === 'CAPTAIN' || member.role === 'GENERAL_MANAGER'),
+          ) ?? false;
+
+        return ownsTeam || isTeamManager;
+      }) ?? false;
+
+    return isLeagueManager || managesAnyTeam;
   });
 
   teamNameById = computed(() => {
@@ -90,10 +136,25 @@ export class LeagueDetailComponent {
     return map;
   });
 
+  arenaAddressByName = computed(() => {
+    const map = new Map<string, string>();
+
+    for (const arena of this.arenas()) {
+      if (arena.address) {
+        map.set(arena.name, arena.address);
+      }
+    }
+
+    return map;
+  });
+
   gameRows = computed(() =>
     this.games().map((game) => ({
       ...game,
       teamName: this.teamNameById().get(game.teamId) ?? 'Unknown team',
+      address: game.arena
+        ? (this.arenaAddressByName().get(game.arena) ?? null)
+        : null,
     })),
   );
 
@@ -126,6 +187,7 @@ export class LeagueDetailComponent {
         game.teamName.toLowerCase().includes(search) ||
         (game.opponent ?? '').toLowerCase().includes(search) ||
         (game.arena ?? '').toLowerCase().includes(search) ||
+        (game.address ?? '').toLowerCase().includes(search) ||
         (game.notes ?? '').toLowerCase().includes(search);
 
       const matchesView =
@@ -150,10 +212,15 @@ export class LeagueDetailComponent {
       next: (league) => {
         const teams = league.teams ?? [];
         const games = teams.flatMap((team) => team.games ?? []);
+        const arenas = league.arenas ?? [];
 
         this.league.set(league);
         this.teams.set(teams);
         this.games.set(this.sortGames(games));
+        this.arenas.set(
+          [...arenas].sort((a, b) => a.name.localeCompare(b.name)),
+        );
+
         this.updateGameTitle();
         this.loading.set(false);
       },
@@ -207,6 +274,51 @@ export class LeagueDetailComponent {
       });
   }
 
+  addArena(): void {
+    if (!this.canManageTeams()) {
+      this.arenaError.set('You do not have permission to manage arenas.');
+      return;
+    }
+
+    if (this.arenaForm.invalid || this.savingArena()) {
+      this.arenaForm.markAllAsTouched();
+      return;
+    }
+
+    this.savingArena.set(true);
+    this.arenaError.set(null);
+
+    const value = this.arenaForm.getRawValue();
+
+    this.leaguesApi
+      .addArena(this.leagueId, {
+        name: value.name.trim(),
+        address: value.address.trim() || null,
+      })
+      .subscribe({
+        next: (arena) => {
+          this.arenas.update((arenas) =>
+            [...arenas, arena].sort((a, b) => a.name.localeCompare(b.name)),
+          );
+
+          if (!this.gameForm.controls.arena.value) {
+            this.gameForm.controls.arena.setValue(arena.name);
+          }
+
+          this.arenaForm.reset({
+            name: '',
+            address: '',
+          });
+
+          this.savingArena.set(false);
+        },
+        error: (err) => {
+          this.arenaError.set(err?.error?.message || 'Could not add arena.');
+          this.savingArena.set(false);
+        },
+      });
+  }
+
   private setupAutoGameTitle(): void {
     this.gameForm.controls.teamId.valueChanges.subscribe(() => {
       this.updateGameTitle();
@@ -233,17 +345,21 @@ export class LeagueDetailComponent {
 
   addGame(): void {
     if (!this.canManageTeams()) {
+      this.gameSuccess.set(null);
       this.gameError.set('You do not have permission to manage games.');
       return;
     }
 
     if (this.gameForm.invalid || this.savingGame()) {
+      this.gameSuccess.set(null);
+      this.gameError.set(null);
       this.gameForm.markAllAsTouched();
       return;
     }
 
     this.savingGame.set(true);
     this.gameError.set(null);
+    this.gameSuccess.set(null);
 
     const value = this.gameForm.getRawValue();
     const startsAt = new Date(value.startsAt).toISOString();
@@ -260,21 +376,66 @@ export class LeagueDetailComponent {
         next: (game) => {
           this.games.update((games) => this.sortGames([...games, game]));
 
-          this.gameForm.patchValue({
+          this.gameForm.reset({
+            teamId: value.teamId,
             title: '',
             startsAt: '',
-            arena: '',
+            arena: value.arena,
             opponent: '',
             notes: '',
           });
 
+          this.gameForm.markAsPristine();
+          this.gameForm.markAsUntouched();
+
+          this.gameError.set(null);
+          this.gameSuccess.set(`Game added: ${game.title}`);
+
           this.savingGame.set(false);
         },
-        error: () => {
-          this.gameError.set('Could not add game.');
+        error: (err) => {
+          this.gameSuccess.set(null);
+          this.gameError.set(err?.error?.message || 'Could not add game.');
           this.savingGame.set(false);
         },
       });
+  }
+
+  deleteGame(game: TeamGameDto): void {
+    if (!this.canManageTeams()) {
+      this.gameSuccess.set(null);
+      this.gameError.set('You do not have permission to delete games.');
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Delete "${game.title}" at ${this.getFormattedDate(game.startsAt)} from the schedule?`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.deletingGameId.set(game.id);
+    this.gameError.set(null);
+    this.gameSuccess.set(null);
+
+    this.leaguesApi.deleteGame(this.leagueId, game.teamId, game.id).subscribe({
+      next: () => {
+        this.games.update((games) =>
+          games.filter((existingGame) => existingGame.id !== game.id),
+        );
+
+        this.gameSuccess.set(
+          `Game deleted: ${game.title} (${this.getFormattedDate(game.startsAt)})`,
+        );
+        this.deletingGameId.set(null);
+      },
+      error: (err) => {
+        this.gameError.set(err?.error?.message || 'Could not delete game.');
+        this.deletingGameId.set(null);
+      },
+    });
   }
 
   trackGameById(_index: number, game: TeamGameDto): string {

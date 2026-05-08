@@ -56,6 +56,7 @@ export const ModelName = {
   PlayerOffer: 'PlayerOffer',
   User: 'User',
   League: 'League',
+  LeagueArena: 'LeagueArena',
   LeagueMember: 'LeagueMember',
   Team: 'Team',
   TeamMember: 'TeamMember',
@@ -160,6 +161,18 @@ export const LeagueScalarFieldEnum = {
 } as const
 
 export type LeagueScalarFieldEnum = (typeof LeagueScalarFieldEnum)[keyof typeof LeagueScalarFieldEnum]
+
+
+export const LeagueArenaScalarFieldEnum = {
+  id: 'id',
+  leagueId: 'leagueId',
+  name: 'name',
+  address: 'address',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LeagueArenaScalarFieldEnum = (typeof LeagueArenaScalarFieldEnum)[keyof typeof LeagueArenaScalarFieldEnum]
 
 
 export const LeagueMemberScalarFieldEnum = {

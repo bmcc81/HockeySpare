@@ -9,6 +9,7 @@ import {
   TeamGameDto,
 } from '@hockeyspare/contracts';
 import { Observable } from 'rxjs';
+import { LeagueArenaDto } from '@hockeyspare/contracts';
 
 @Injectable({
   providedIn: 'root',
@@ -48,6 +49,22 @@ export class LeaguesApiService {
     return this.http.post<TeamGameDto>(
       `/api/leagues/${leagueId}/teams/${teamId}/games`,
       input,
+    );
+  }
+
+  addArena(
+    leagueId: string,
+    payload: { name: string; address?: string | null },
+  ) {
+    return this.http.post<LeagueArenaDto>(
+      `/api/leagues/${leagueId}/arenas`,
+      payload,
+    );
+  }
+
+  deleteGame(leagueId: string, teamId: string, gameId: string) {
+    return this.http.delete<{ id: string; title: string; deleted: boolean }>(
+      `/api/leagues/${leagueId}/teams/${teamId}/games/${gameId}`,
     );
   }
 }

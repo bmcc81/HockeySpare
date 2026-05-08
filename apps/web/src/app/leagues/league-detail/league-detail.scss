@@ -46,15 +46,38 @@ h2 {
   margin: 0.5rem 0 0;
 }
 
-.content-grid,
-.games-grid {
+.setup-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.8fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+  align-items: start;
+}
+
+.add-game-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  margin-bottom: 1rem;
+}
+
+.list-stack {
+  display: grid;
   gap: 1rem;
 }
 
-.games-grid {
-  margin-top: 1rem;
+.collapse-toggle {
+  min-width: 110px;
+}
+
+@media (max-width: 992px) {
+  .setup-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.list-stack {
+  display: grid;
+  gap: 1rem;
 }
 
 .team-list,
@@ -111,9 +134,8 @@ h2 {
   font-size: 0.875rem;
 }
 
-@media (max-width: 800px) {
-  .content-grid,
-  .games-grid {
+@media (max-width: 992px) {
+  .management-grid {
     grid-template-columns: 1fr;
   }
 }

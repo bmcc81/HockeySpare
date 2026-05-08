@@ -43,6 +43,11 @@ export type User = Prisma.UserModel
  */
 export type League = Prisma.LeagueModel
 /**
+ * Model LeagueArena
+ * 
+ */
+export type LeagueArena = Prisma.LeagueArenaModel
+/**
  * Model LeagueMember
  * 
  */

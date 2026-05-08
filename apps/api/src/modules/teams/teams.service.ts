@@ -443,6 +443,12 @@ export class TeamsService {
       },
     });
 
+    if (members.length === 0) {
+      throw new BadRequestException('No active team members found.');
+    }
+
+    const now = new Date();
+
     for (const member of members) {
       await this.prisma.teamGameInvite.upsert({
         where: {
@@ -453,13 +459,13 @@ export class TeamsService {
         },
         update: {
           status: 'SENT',
-          sentAt: new Date(),
+          sentAt: now,
         },
         create: {
           gameId,
           memberId: member.id,
           status: 'SENT',
-          sentAt: new Date(),
+          sentAt: now,
         },
       });
     }
@@ -469,8 +475,8 @@ export class TeamsService {
       .map((member) => ({
         userId: member.userId!,
         type: NotificationType.TEAM_GAME_REMINDER,
-        title: `Game reminder: ${game.title}`,
-        body: `${team.name} has a game on ${game.startsAt.toLocaleString()}`,
+        title: `Game availability request: ${game.title}`,
+        body: `${team.name} has a game on ${game.startsAt.toLocaleString()}. Please respond if you are available.`,
         link: '/my-team',
         metadata: {
           gameId: game.id,
@@ -483,9 +489,88 @@ export class TeamsService {
       await this.notifications.createMany(inAppNotifications);
     }
 
+    const appUrl = (process.env.APP_URL ?? 'http://localhost:4200').replace(
+      /\/$/,
+      '',
+    );
+
+    const gameUrl = `${appUrl}/my-team`;
+
+    const arenaAddressRecord =
+      team.leagueId && game.arena
+        ? await this.prisma.leagueArena.findFirst({
+            where: {
+              leagueId: team.leagueId,
+              name: game.arena,
+            },
+            select: {
+              address: true,
+            },
+          })
+        : null;
+
+    const arenaAddress = arenaAddressRecord?.address?.trim() || 'Address TBD';
+
+    const emailMembers = members.filter(
+      (member) => !!member.email && member.email.trim().length > 0,
+    );
+
+    const emailResults = await Promise.allSettled(
+      emailMembers.map((member) =>
+        this.emailService.sendMail({
+          to: member.email!.trim(),
+          subject: `Availability request: ${team.name} - ${game.title}`,
+          text:
+            `Hi ${member.displayName},\n\n` +
+            `${team.name} has an upcoming game.\n\n` +
+            `Game: ${game.title}\n` +
+            `Date: ${game.startsAt.toLocaleString()}\n` +
+            `Arena: ${game.arena ?? 'TBD'}\n` +
+            `Address: ${arenaAddress}\n` +
+            `${game.opponent ? `Opponent: ${game.opponent}\n` : ''}` +
+            `\nPlease respond if you are available:\n${gameUrl}\n\n` +
+            `Thank you.`,
+          html: `
+          <p>Hi ${member.displayName},</p>
+
+          <p>
+            <strong>${team.name}</strong> has an upcoming game.
+            Please respond if you are available.
+          </p>
+
+          <p>
+            <strong>Game:</strong> ${game.title}<br />
+            <strong>Date:</strong> ${game.startsAt.toLocaleString()}<br />
+            <strong>Arena:</strong> ${game.arena ?? 'TBD'}<br />
+            <strong>Address:</strong> ${arenaAddress}<br />
+            ${
+              game.opponent
+                ? `<strong>Opponent:</strong> ${game.opponent}<br />`
+                : ''
+            }
+          </p>
+
+          <p>
+            <a href="${gameUrl}">Respond in HockeySpare</a>
+          </p>
+        `,
+        }),
+      ),
+    );
+
+    const emailSentCount = emailResults.filter(
+      (result) => result.status === 'fulfilled',
+    ).length;
+
+    const emailFailedCount = emailResults.length - emailSentCount;
+
     return {
-      success: true,
+      success: emailFailedCount === 0,
       sentCount: members.length,
+      inviteCount: members.length,
+      inAppSentCount: inAppNotifications.length,
+      emailSentCount,
+      emailFailedCount,
     };
   }
 

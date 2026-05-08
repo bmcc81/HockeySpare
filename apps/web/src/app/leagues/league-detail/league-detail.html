@@ -29,7 +29,7 @@
                 type="text"
                 class="form-control"
                 formControlName="name"
-                placeholder="Vaudreuil Vikings"
+                placeholder="Add Team Name"
               />
 
               <div
@@ -73,7 +73,7 @@
                 type="text"
                 class="form-control"
                 formControlName="name"
-                placeholder="Vaudreuil Arena"
+                placeholder="Add Arena Name"
               />
 
               <div
@@ -91,7 +91,7 @@
                 type="text"
                 class="form-control"
                 formControlName="address"
-                placeholder="9 Jeannotte Rue, Vaudreuil-Dorion"
+                placeholder="Add Arena Address (optional)"
               />
             </div>
 
@@ -131,13 +131,32 @@
             </button>
           </div>
 
-          <div *ngIf="!arenasCollapsed()" class="d-flex flex-column gap-2">
-            <div *ngFor="let arena of arenas()" class="border rounded p-2">
-              <strong>{{ arena.name }}</strong>
+          <div *ngIf="arenaSuccess()" class="alert alert-success mt-3 mb-0">
+            {{ arenaSuccess() }}
+          </div>
 
-              <div *ngIf="arena.address" class="text-secondary small">
-                {{ arena.address }}
+          <div *ngIf="!arenasCollapsed()" class="d-flex flex-column gap-2 mt-3">
+            <div
+              *ngFor="let arena of arenas()"
+              class="border rounded p-2 d-flex justify-content-between align-items-start gap-3"
+            >
+              <div>
+                <strong>{{ arena.name }}</strong>
+
+                <div *ngIf="arena.address" class="text-secondary small">
+                  {{ arena.address }}
+                </div>
               </div>
+
+              <button
+                *ngIf="canManageTeams()"
+                type="button"
+                class="btn btn-outline-danger btn-sm arena-delete-btn"
+                (click)="deleteArena(arena)"
+                [disabled]="deletingArenaId() === arena.id"
+              >
+                {{ deletingArenaId() === arena.id ? '...' : 'Delete' }}
+              </button>
             </div>
           </div>
         </div>

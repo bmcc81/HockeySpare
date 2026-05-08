@@ -59,6 +59,9 @@ export class LeagueDetailComponent {
 
   deletingGameId = signal<string | null>(null);
 
+  arenaSuccess = signal<string | null>(null);
+  deletingArenaId = signal<string | null>(null);
+
   getFormattedDate(date: string): string | null {
     return this.datePipe.transform(date, 'short');
   }
@@ -287,6 +290,7 @@ export class LeagueDetailComponent {
 
     this.savingArena.set(true);
     this.arenaError.set(null);
+    this.arenaSuccess.set(null);
 
     const value = this.arenaForm.getRawValue();
 
@@ -310,6 +314,7 @@ export class LeagueDetailComponent {
             address: '',
           });
 
+          this.arenaSuccess.set(`Arena added: ${arena.name}`);
           this.savingArena.set(false);
         },
         error: (err) => {
@@ -317,6 +322,45 @@ export class LeagueDetailComponent {
           this.savingArena.set(false);
         },
       });
+  }
+
+  deleteArena(arena: LeagueArenaDto): void {
+    if (!this.canManageTeams()) {
+      this.arenaSuccess.set(null);
+      this.arenaError.set('You do not have permission to delete arenas.');
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Delete "${arena.name}" from this league? Existing games will keep their arena text, but this saved arena and address will be removed.`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.deletingArenaId.set(arena.id);
+    this.arenaError.set(null);
+    this.arenaSuccess.set(null);
+
+    this.leaguesApi.deleteArena(this.leagueId, arena.id).subscribe({
+      next: () => {
+        this.arenas.update((arenas) =>
+          arenas.filter((existingArena) => existingArena.id !== arena.id),
+        );
+
+        if (this.gameForm.controls.arena.value === arena.name) {
+          this.gameForm.controls.arena.setValue('');
+        }
+
+        this.arenaSuccess.set(`Arena deleted: ${arena.name}`);
+        this.deletingArenaId.set(null);
+      },
+      error: (err) => {
+        this.arenaError.set(err?.error?.message || 'Could not delete arena.');
+        this.deletingArenaId.set(null);
+      },
+    });
   }
 
   private setupAutoGameTitle(): void {
@@ -444,6 +488,10 @@ export class LeagueDetailComponent {
 
   trackByTeamId(_index: number, team: TeamDto): string {
     return team.id;
+  }
+
+  trackArenaById(_index: number, arena: LeagueArenaDto): string {
+    return arena.id;
   }
 
   private sortGames(games: TeamGameDto[]): TeamGameDto[] {

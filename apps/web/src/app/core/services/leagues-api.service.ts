@@ -62,6 +62,10 @@ export class LeaguesApiService {
     );
   }
 
+  deleteArena(leagueId: string, arenaId: string) {
+    return this.http.delete<void>(`/api/leagues/${leagueId}/arenas/${arenaId}`);
+  }
+
   deleteGame(leagueId: string, teamId: string, gameId: string) {
     return this.http.delete<{ id: string; title: string; deleted: boolean }>(
       `/api/leagues/${leagueId}/teams/${teamId}/games/${gameId}`,

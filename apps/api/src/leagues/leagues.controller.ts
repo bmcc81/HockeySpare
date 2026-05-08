@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -13,6 +14,7 @@ import { LeaguesService } from './leagues.service';
 import { CreateLeagueDto } from './dto/create-league.dto';
 import { CreateLeagueTeamDto } from './dto/create-league-team.dto';
 import { CreateLeagueGameDto } from './dto/create-league-game.dto';
+import { CreateLeagueArenaDto } from './dto/create-league-arena.dto';
 
 type AuthRequest = {
   user?: {
@@ -72,6 +74,21 @@ export class LeaguesController {
     return this.leaguesService.addGame(this.getUserId(req), id, teamId, dto);
   }
 
+  @Delete(':leagueId/teams/:teamId/games/:gameId')
+  deleteGame(
+    @Req() req: any,
+    @Param('leagueId') leagueId: string,
+    @Param('teamId') teamId: string,
+    @Param('gameId') gameId: string,
+  ) {
+    return this.leaguesService.deleteGame(
+      this.getUserId(req),
+      leagueId,
+      teamId,
+      gameId,
+    );
+  }
+
   @Post(':id/teams/link-my-team')
   linkMyTeamToLeague(@Req() req: AuthRequest, @Param('id') id: string) {
     return this.leaguesService.linkMyTeamToLeague(id, this.getUserId(req));
@@ -85,5 +102,14 @@ export class LeaguesController {
     }
 
     return userId;
+  }
+
+  @Post(':leagueId/arenas')
+  addArena(
+    @Req() req: any,
+    @Param('leagueId') leagueId: string,
+    @Body() dto: CreateLeagueArenaDto,
+  ) {
+    return this.leaguesService.addArena(this.getUserId(req), leagueId, dto);
   }
 }

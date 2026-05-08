@@ -8,6 +8,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateLeagueDto } from './dto/create-league.dto';
 import { CreateLeagueTeamDto } from './dto/create-league-team.dto';
 import { CreateLeagueGameDto } from './dto/create-league-game.dto';
+import { CreateLeagueArenaDto } from './dto/create-league-arena.dto';
 
 @Injectable()
 export class LeaguesService {
@@ -94,6 +95,11 @@ export class LeaguesService {
       },
       include: {
         members: true,
+        arenas: {
+          orderBy: {
+            name: 'asc',
+          },
+        },
         teams: {
           include: {
             games: {
@@ -122,6 +128,24 @@ export class LeaguesService {
     }
 
     return league;
+  }
+
+  async addArena(userId: string, leagueId: string, dto: CreateLeagueArenaDto) {
+    await this.assertUserCanAddTeamToLeague(userId, leagueId);
+
+    const name = dto.name.trim();
+
+    if (!name) {
+      throw new BadRequestException('Arena name is required');
+    }
+
+    return this.prisma.leagueArena.create({
+      data: {
+        leagueId,
+        name,
+        address: dto.address?.trim() || null,
+      },
+    });
   }
 
   async listTeams(userId: string, leagueId: string) {
@@ -183,6 +207,7 @@ export class LeaguesService {
       },
       select: {
         id: true,
+        createdById: true,
       },
     });
 
@@ -190,23 +215,52 @@ export class LeaguesService {
       throw new NotFoundException('Team not found in this league');
     }
 
-    const managedMembership = await this.prisma.teamMember.findFirst({
+    const canManageLeague = await this.prisma.league.findFirst({
       where: {
-        userId,
-        teamId,
-        isActive: true,
-        role: {
-          in: ['CAPTAIN', 'GENERAL_MANAGER'],
-        },
+        id: leagueId,
+        OR: [
+          {
+            members: {
+              some: {
+                userId,
+                role: 'LEAGUE_MANAGER',
+              },
+            },
+          },
+          {
+            teams: {
+              some: {
+                id: teamId,
+                createdById: userId,
+              },
+            },
+          },
+          {
+            teams: {
+              some: {
+                id: teamId,
+                members: {
+                  some: {
+                    userId,
+                    isActive: true,
+                    role: {
+                      in: ['CAPTAIN', 'GENERAL_MANAGER'],
+                    },
+                  },
+                },
+              },
+            },
+          },
+        ],
       },
       select: {
         id: true,
       },
     });
 
-    if (!managedMembership) {
+    if (!canManageLeague) {
       throw new ForbiddenException(
-        'Only a General Manager or Captain can schedule games for this team.',
+        'Only a league manager, team owner, General Manager, or Captain can schedule games for this team.',
       );
     }
   }
@@ -566,5 +620,44 @@ export class LeaguesService {
     if (!access) {
       throw new ForbiddenException('You do not have access to this league');
     }
+  }
+
+  async deleteGame(
+    userId: string,
+    leagueId: string,
+    teamId: string,
+    gameId: string,
+  ) {
+    await this.assertUserCanManageLeagueTeam(userId, leagueId, teamId);
+
+    const game = await this.prisma.teamGame.findFirst({
+      where: {
+        id: gameId,
+        teamId,
+        team: {
+          leagueId,
+        },
+      },
+      select: {
+        id: true,
+        title: true,
+      },
+    });
+
+    if (!game) {
+      throw new NotFoundException('Game not found in this league team');
+    }
+
+    await this.prisma.teamGame.delete({
+      where: {
+        id: game.id,
+      },
+    });
+
+    return {
+      id: game.id,
+      title: game.title,
+      deleted: true,
+    };
   }
 }

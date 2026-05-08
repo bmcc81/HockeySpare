@@ -8,6 +8,16 @@ export interface LeagueDto {
   updatedAt: string;
   teams?: TeamDto[];
   members?: LeagueMemberDto[];
+  arenas?: LeagueArenaDto[];
+}
+
+export interface LeagueArenaDto {
+  id: string;
+  leagueId: string;
+  name: string;
+  address?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface LeagueMemberDto {

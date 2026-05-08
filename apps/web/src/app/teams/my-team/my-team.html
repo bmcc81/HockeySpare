@@ -194,9 +194,7 @@
                   <ng-container *ngFor="let player of regulars">
                     <tr>
                       <td>
-                        <div class="fw-semibold">
-                          {{ player.displayName }}
-                        </div>
+                        <div class="fw-semibold">{{ player.displayName }}</div>
 
                         <span
                           *ngIf="player.role === 'CAPTAIN'"
@@ -414,9 +412,7 @@
                   <ng-container *ngFor="let player of spares">
                     <tr>
                       <td>
-                        <div class="fw-semibold">
-                          {{ player.displayName }}
-                        </div>
+                        <div class="fw-semibold">{{ player.displayName }}</div>
 
                         <span
                           *ngIf="player.role === 'CAPTAIN'"
@@ -776,6 +772,10 @@
               {{ upcomingGamesError }}
             </div>
 
+            <div *ngIf="notifySuccess" class="alert alert-success">
+              {{ notifySuccess }}
+            </div>
+
             <div
               class="game-list"
               *ngIf="!upcomingGamesLoading && upcomingGames.length"
@@ -795,8 +795,8 @@
                         {{ game.startsAt | date: 'medium' }}
                         <span *ngIf="game.arena"> • {{ game.arena }}</span>
                         <span *ngIf="game.opponent">
-                          • vs {{ game.opponent }}</span
-                        >
+                          • vs {{ game.opponent }}
+                        </span>
                       </div>
 
                       <div class="game-meta" *ngIf="game.leagueName">
@@ -866,12 +866,12 @@
 
                       <button
                         *ngIf="canManageTeam"
-                        class="btn btn-primary btn-sm"
                         type="button"
-                        (click)="notifyGame(game.id)"
-                        [disabled]="availabilitySavingGameId === game.id"
+                        class="btn btn-outline-primary btn-sm"
+                        (click)="notifyGame(game)"
+                        [disabled]="notifyingGameId === game.id"
                       >
-                        Notify team
+                        {{ notifyingGameId === game.id ? 'Sending...' : 'Notify Team' }}
                       </button>
                     </div>
                   </div>

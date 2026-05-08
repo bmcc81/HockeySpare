@@ -49,6 +49,9 @@ export class MyTeamComponent implements OnInit {
   upcomingGamesLoading = false;
   upcomingGamesError: string | null = null;
 
+  notifyingGameId: string | null = null;
+  notifySuccess: string | null = null;
+
   savingRoleMemberId = signal<string | null>(null);
   roleError = signal<string | null>(null);
 
@@ -403,16 +406,39 @@ export class MyTeamComponent implements OnInit {
     });
   }
 
-  notifyGame(gameId: string) {
+  notifyGame(game: UpcomingGame): void {
     if (!this.canManageTeam) {
+      this.notifySuccess = null;
       this.error = 'You do not have permission to notify the team.';
       return;
     }
 
-    this.teamApi.notifyGame(gameId).subscribe({
-      next: () => this.reload(),
-      error: () => {
-        this.error = 'Could not send notifications.';
+    const confirmed = window.confirm(
+      `Send an availability email to each team member for "${game.title}"?`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.notifyingGameId = game.id;
+    this.notifySuccess = null;
+    this.error = '';
+    this.cdr.detectChanges();
+
+    this.teamApi.notifyGame(game.id).subscribe({
+      next: (result: any) => {
+        this.notifyingGameId = null;
+        this.notifySuccess = `Team notified for ${game.title}. Emails sent: ${
+          result?.emailSentCount ?? result?.sentCount ?? 0
+        }.`;
+        this.reload();
+      },
+      error: (err) => {
+        this.notifyingGameId = null;
+        this.notifySuccess = null;
+        this.error = err?.error?.message || 'Could not send notifications.';
+        this.cdr.detectChanges();
       },
     });
   }

@@ -148,6 +148,29 @@ export class LeaguesService {
     });
   }
 
+  async deleteArena(userId: string, leagueId: string, arenaId: string) {
+    await this.assertUserCanAddTeamToLeague(userId, leagueId);
+
+    const arena = await this.prisma.leagueArena.findFirst({
+      where: {
+        id: arenaId,
+        leagueId,
+      },
+    });
+
+    if (!arena) {
+      throw new NotFoundException('Arena not found.');
+    }
+
+    await this.prisma.leagueArena.delete({
+      where: {
+        id: arenaId,
+      },
+    });
+
+    return { success: true };
+  }
+
   async listTeams(userId: string, leagueId: string) {
     await this.assertUserCanAccessLeague(userId, leagueId);
 

@@ -112,4 +112,13 @@ export class LeaguesController {
   ) {
     return this.leaguesService.addArena(this.getUserId(req), leagueId, dto);
   }
+
+  @Delete(':leagueId/arenas/:arenaId')
+  deleteArena(
+    @Req() req: AuthRequest,
+    @Param('leagueId') leagueId: string,
+    @Param('arenaId') arenaId: string,
+  ) {
+    return this.leaguesService.deleteArena(this.getUserId(req), leagueId, arenaId);
+  }
 }

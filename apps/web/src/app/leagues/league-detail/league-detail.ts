@@ -88,6 +88,7 @@ export class LeagueDetailComponent {
     title: ['', [Validators.required, Validators.minLength(2)]],
     startsAt: ['', [Validators.required]],
     arena: [''],
+    opponentTeamId: this.fb.control<string | null>(null),
     opponent: [''],
     notes: [''],
   });
@@ -152,13 +153,34 @@ export class LeagueDetailComponent {
   });
 
   gameRows = computed(() =>
-    this.games().map((game) => ({
-      ...game,
-      teamName: this.teamNameById().get(game.teamId) ?? 'Unknown team',
-      address: game.arena
-        ? (this.arenaAddressByName().get(game.arena) ?? null)
-        : null,
-    })),
+    this.games().map((game) => {
+      const arenaValue = (game as any).arena;
+      const arenaName =
+        typeof arenaValue === 'string'
+          ? arenaValue
+          : (arenaValue?.name ?? null);
+
+      const arenaAddress =
+        typeof arenaValue === 'string'
+          ? arenaValue
+            ? (this.arenaAddressByName().get(arenaValue) ?? null)
+            : null
+          : (arenaValue?.address ?? null);
+
+      const opponentTeam = (game as any).opponentTeam;
+      const opponentTeamName = opponentTeam?.name ?? null;
+      const opponentName = opponentTeamName ?? game.opponent ?? null;
+
+      return {
+        ...game,
+        arena: arenaName,
+        address: arenaAddress,
+        opponent: opponentName,
+        opponentTeamId: (game as any).opponentTeamId ?? null,
+        opponentTeamName,
+        teamName: this.teamNameById().get(game.teamId) ?? 'Unknown team',
+      };
+    }),
   );
 
   filteredTeams = computed(() => {
@@ -182,7 +204,8 @@ export class LeagueDetailComponent {
     return this.gameRows().filter((game) => {
       const gameTime = new Date(game.startsAt).getTime();
 
-      const matchesTeam = !teamId || game.teamId === teamId;
+      const matchesTeam =
+        !teamId || game.teamId === teamId || game.opponentTeamId === teamId;
 
       const matchesSearch =
         !search ||
@@ -368,6 +391,10 @@ export class LeagueDetailComponent {
       this.updateGameTitle();
     });
 
+    this.gameForm.controls.opponentTeamId.valueChanges.subscribe(() => {
+      this.updateGameTitle();
+    });
+
     this.gameForm.controls.opponent.valueChanges.subscribe(() => {
       this.updateGameTitle();
     });
@@ -375,10 +402,16 @@ export class LeagueDetailComponent {
 
   private updateGameTitle(): void {
     const teamId = this.gameForm.controls.teamId.value;
-    const opponent = this.gameForm.controls.opponent.value.trim();
+    const opponentTeamId = this.gameForm.controls.opponentTeamId.value;
+    const externalOpponent = this.gameForm.controls.opponent.value.trim();
 
     const teamName =
       this.teams().find((team) => team.id === teamId)?.name ?? '';
+
+    const opponentTeamName =
+      this.teams().find((team) => team.id === opponentTeamId)?.name ?? '';
+
+    const opponent = opponentTeamName || externalOpponent;
 
     const title = teamName && opponent ? `${teamName} vs ${opponent}` : '';
 
@@ -413,6 +446,7 @@ export class LeagueDetailComponent {
         title: value.title.trim(),
         startsAt,
         arena: value.arena.trim() || null,
+        opponentTeamId: value.opponentTeamId || null,
         opponent: value.opponent.trim() || null,
         notes: value.notes.trim() || null,
       })
@@ -425,6 +459,7 @@ export class LeagueDetailComponent {
             title: '',
             startsAt: '',
             arena: value.arena,
+            opponentTeamId: null,
             opponent: '',
             notes: '',
           });
@@ -529,4 +564,5 @@ export class LeagueDetailComponent {
     this.scheduleTeamId.set('');
     this.scheduleView.set('UPCOMING');
   }
+
 }

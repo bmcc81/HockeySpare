@@ -1,8 +1,7 @@
-import { IsDateString, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsDateString, IsOptional, IsString } from 'class-validator';
 
 export class CreateLeagueGameDto {
   @IsString()
-  @MinLength(2)
   title!: string;
 
   @IsDateString()
@@ -15,6 +14,10 @@ export class CreateLeagueGameDto {
   @IsOptional()
   @IsString()
   opponent?: string;
+
+  @IsOptional()
+  @IsString()
+  opponentTeamId?: string | null;
 
   @IsOptional()
   @IsString()

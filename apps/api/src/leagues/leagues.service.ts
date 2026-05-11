@@ -54,6 +54,9 @@ export class LeaguesService {
               orderBy: {
                 startsAt: 'asc',
               },
+              include: {
+                arena: true,
+              },
             },
           },
           orderBy: {
@@ -105,6 +108,9 @@ export class LeaguesService {
             games: {
               orderBy: {
                 startsAt: 'asc',
+              },
+              include: {
+                arena: true,
               },
             },
             members: {
@@ -183,6 +189,9 @@ export class LeaguesService {
           orderBy: {
             startsAt: 'asc',
           },
+          include: {
+            arena: true,
+          },
         },
       },
       orderBy: {
@@ -202,6 +211,9 @@ export class LeaguesService {
         games: {
           orderBy: {
             startsAt: 'asc',
+          },
+          include: {
+            arena: true,
           },
         },
       },
@@ -308,14 +320,68 @@ export class LeaguesService {
       throw new BadRequestException('Valid start time is required');
     }
 
+    let opponentTeamName: string | null = null;
+
+    if (dto.opponentTeamId) {
+      const opponentTeam = await this.prisma.team.findFirst({
+        where: {
+          id: dto.opponentTeamId,
+          leagueId,
+        },
+        select: {
+          id: true,
+          name: true,
+        },
+      });
+
+      if (!opponentTeam) {
+        throw new BadRequestException(
+          'Opponent team must belong to this league',
+        );
+      }
+
+      opponentTeamName = opponentTeam.name;
+    }
+
+    let arenaId: string | null = null;
+    const arenaName = dto.arena?.trim();
+
+    if (arenaName) {
+      const arena = await this.prisma.leagueArena.upsert({
+        where: {
+          leagueId_name: {
+            leagueId,
+            name: arenaName,
+          },
+        },
+        update: {},
+        create: {
+          leagueId,
+          name: arenaName,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      arenaId = arena.id;
+    }
+
     return this.prisma.teamGame.create({
       data: {
+        leagueId,
         teamId,
+        opponentTeamId: dto.opponentTeamId || null,
+        arenaId,
         title,
         startsAt,
-        arena: dto.arena?.trim() || null,
-        opponent: dto.opponent?.trim() || null,
+        opponent: opponentTeamName ?? dto.opponent?.trim() ?? null,
         notes: dto.notes?.trim() || null,
+      },
+      include: {
+        team: true,
+        opponentTeam: true,
+        arena: true,
       },
     });
   }
@@ -341,6 +407,9 @@ export class LeaguesService {
         games: {
           orderBy: {
             startsAt: 'asc',
+          },
+          include: {
+            arena: true,
           },
         },
       },
@@ -371,6 +440,9 @@ export class LeaguesService {
               orderBy: {
                 startsAt: 'asc',
               },
+              include: {
+                arena: true,
+              },
             },
           },
         },
@@ -394,6 +466,9 @@ export class LeaguesService {
             orderBy: {
               startsAt: 'asc',
             },
+            include: {
+              arena: true,
+            },
           },
         },
       });
@@ -409,6 +484,9 @@ export class LeaguesService {
         games: {
           orderBy: {
             startsAt: 'asc',
+          },
+          include: {
+            arena: true,
           },
         },
       },
@@ -526,6 +604,7 @@ export class LeaguesService {
             startsAt: 'asc',
           },
           include: {
+            arena: true,
             invites: {
               include: {
                 member: true,

@@ -91,12 +91,30 @@ export interface TeamGameAvailability {
   member: TeamMember;
 }
 
+export interface TeamGameArena {
+  id: string;
+  name: string;
+  address?: string | null;
+}
+
+export interface TeamGameOpponentTeam {
+  id: string;
+  name: string;
+}
+
 export interface TeamGame {
   id: string;
   title: string;
   startsAt: string;
-  arena?: string | null;
+  leagueId?: string | null;
+  teamId?: string;
+  arenaId?: string | null;
+  opponentTeamId?: string | null;
+
+  arena?: TeamGameArena | string | null;
   opponent?: string | null;
+  opponentTeam?: TeamGameOpponentTeam | null;
+
   notes?: string | null;
   invites: TeamGameInvite[];
   availabilities: TeamGameAvailability[];
@@ -147,14 +165,16 @@ export type UpcomingGame = {
   id: string;
   title: string;
   startsAt: string;
-  arena: string | null;
+  arena: TeamGameArena | string | null;
   opponent: string | null;
+  opponentTeamId?: string | null;
+  opponentTeam?: TeamGameOpponentTeam | null;
   notes: string | null;
   teamId?: string;
   teamName?: string;
   leagueId?: string;
   leagueName?: string;
-  source: 'MY_TEAM' | 'LEAGUE';
+  source: "MY_TEAM" | "LEAGUE";
   invites: any[];
   availabilities: any[];
 };
@@ -166,10 +186,14 @@ export interface CreateLeagueTeamInput {
 export interface TeamGameDto {
   id: string;
   teamId: string;
+  leagueId?: string | null;
+  arenaId?: string | null;
+  opponentTeamId?: string | null;
   title: string;
   startsAt: string;
-  arena: string | null;
+  arena: TeamGameArena | string | null;
   opponent: string | null;
+  opponentTeam?: TeamGameOpponentTeam | null;
   notes: string | null;
   createdAt: string;
   updatedAt: string;
@@ -181,5 +205,6 @@ export interface CreateLeagueGameInput {
   startsAt: string;
   arena?: string | null;
   opponent?: string | null;
+  opponentTeamId?: string | null;
   notes?: string | null;
 }

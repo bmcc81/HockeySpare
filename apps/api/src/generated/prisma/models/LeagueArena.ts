@@ -191,6 +191,7 @@ export type LeagueArenaWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"LeagueArena"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LeagueArena"> | Date | string
   league?: Prisma.XOR<Prisma.LeagueScalarRelationFilter, Prisma.LeagueWhereInput>
+  games?: Prisma.TeamGameListRelationFilter
 }
 
 export type LeagueArenaOrderByWithRelationInput = {
@@ -201,6 +202,7 @@ export type LeagueArenaOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   league?: Prisma.LeagueOrderByWithRelationInput
+  games?: Prisma.TeamGameOrderByRelationAggregateInput
 }
 
 export type LeagueArenaWhereUniqueInput = Prisma.AtLeast<{
@@ -215,6 +217,7 @@ export type LeagueArenaWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"LeagueArena"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LeagueArena"> | Date | string
   league?: Prisma.XOR<Prisma.LeagueScalarRelationFilter, Prisma.LeagueWhereInput>
+  games?: Prisma.TeamGameListRelationFilter
 }, "id" | "leagueId_name">
 
 export type LeagueArenaOrderByWithAggregationInput = {
@@ -248,6 +251,7 @@ export type LeagueArenaCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   league: Prisma.LeagueCreateNestedOneWithoutArenasInput
+  games?: Prisma.TeamGameCreateNestedManyWithoutArenaInput
 }
 
 export type LeagueArenaUncheckedCreateInput = {
@@ -257,6 +261,7 @@ export type LeagueArenaUncheckedCreateInput = {
   address?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  games?: Prisma.TeamGameUncheckedCreateNestedManyWithoutArenaInput
 }
 
 export type LeagueArenaUpdateInput = {
@@ -266,6 +271,7 @@ export type LeagueArenaUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   league?: Prisma.LeagueUpdateOneRequiredWithoutArenasNestedInput
+  games?: Prisma.TeamGameUpdateManyWithoutArenaNestedInput
 }
 
 export type LeagueArenaUncheckedUpdateInput = {
@@ -275,6 +281,7 @@ export type LeagueArenaUncheckedUpdateInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  games?: Prisma.TeamGameUncheckedUpdateManyWithoutArenaNestedInput
 }
 
 export type LeagueArenaCreateManyInput = {
@@ -345,6 +352,11 @@ export type LeagueArenaMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
+export type LeagueArenaNullableScalarRelationFilter = {
+  is?: Prisma.LeagueArenaWhereInput | null
+  isNot?: Prisma.LeagueArenaWhereInput | null
+}
+
 export type LeagueArenaCreateNestedManyWithoutLeagueInput = {
   create?: Prisma.XOR<Prisma.LeagueArenaCreateWithoutLeagueInput, Prisma.LeagueArenaUncheckedCreateWithoutLeagueInput> | Prisma.LeagueArenaCreateWithoutLeagueInput[] | Prisma.LeagueArenaUncheckedCreateWithoutLeagueInput[]
   connectOrCreate?: Prisma.LeagueArenaCreateOrConnectWithoutLeagueInput | Prisma.LeagueArenaCreateOrConnectWithoutLeagueInput[]
@@ -387,12 +399,29 @@ export type LeagueArenaUncheckedUpdateManyWithoutLeagueNestedInput = {
   deleteMany?: Prisma.LeagueArenaScalarWhereInput | Prisma.LeagueArenaScalarWhereInput[]
 }
 
+export type LeagueArenaCreateNestedOneWithoutGamesInput = {
+  create?: Prisma.XOR<Prisma.LeagueArenaCreateWithoutGamesInput, Prisma.LeagueArenaUncheckedCreateWithoutGamesInput>
+  connectOrCreate?: Prisma.LeagueArenaCreateOrConnectWithoutGamesInput
+  connect?: Prisma.LeagueArenaWhereUniqueInput
+}
+
+export type LeagueArenaUpdateOneWithoutGamesNestedInput = {
+  create?: Prisma.XOR<Prisma.LeagueArenaCreateWithoutGamesInput, Prisma.LeagueArenaUncheckedCreateWithoutGamesInput>
+  connectOrCreate?: Prisma.LeagueArenaCreateOrConnectWithoutGamesInput
+  upsert?: Prisma.LeagueArenaUpsertWithoutGamesInput
+  disconnect?: Prisma.LeagueArenaWhereInput | boolean
+  delete?: Prisma.LeagueArenaWhereInput | boolean
+  connect?: Prisma.LeagueArenaWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LeagueArenaUpdateToOneWithWhereWithoutGamesInput, Prisma.LeagueArenaUpdateWithoutGamesInput>, Prisma.LeagueArenaUncheckedUpdateWithoutGamesInput>
+}
+
 export type LeagueArenaCreateWithoutLeagueInput = {
   id?: string
   name: string
   address?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  games?: Prisma.TeamGameCreateNestedManyWithoutArenaInput
 }
 
 export type LeagueArenaUncheckedCreateWithoutLeagueInput = {
@@ -401,6 +430,7 @@ export type LeagueArenaUncheckedCreateWithoutLeagueInput = {
   address?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  games?: Prisma.TeamGameUncheckedCreateNestedManyWithoutArenaInput
 }
 
 export type LeagueArenaCreateOrConnectWithoutLeagueInput = {
@@ -441,6 +471,58 @@ export type LeagueArenaScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"LeagueArena"> | Date | string
 }
 
+export type LeagueArenaCreateWithoutGamesInput = {
+  id?: string
+  name: string
+  address?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  league: Prisma.LeagueCreateNestedOneWithoutArenasInput
+}
+
+export type LeagueArenaUncheckedCreateWithoutGamesInput = {
+  id?: string
+  leagueId: string
+  name: string
+  address?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type LeagueArenaCreateOrConnectWithoutGamesInput = {
+  where: Prisma.LeagueArenaWhereUniqueInput
+  create: Prisma.XOR<Prisma.LeagueArenaCreateWithoutGamesInput, Prisma.LeagueArenaUncheckedCreateWithoutGamesInput>
+}
+
+export type LeagueArenaUpsertWithoutGamesInput = {
+  update: Prisma.XOR<Prisma.LeagueArenaUpdateWithoutGamesInput, Prisma.LeagueArenaUncheckedUpdateWithoutGamesInput>
+  create: Prisma.XOR<Prisma.LeagueArenaCreateWithoutGamesInput, Prisma.LeagueArenaUncheckedCreateWithoutGamesInput>
+  where?: Prisma.LeagueArenaWhereInput
+}
+
+export type LeagueArenaUpdateToOneWithWhereWithoutGamesInput = {
+  where?: Prisma.LeagueArenaWhereInput
+  data: Prisma.XOR<Prisma.LeagueArenaUpdateWithoutGamesInput, Prisma.LeagueArenaUncheckedUpdateWithoutGamesInput>
+}
+
+export type LeagueArenaUpdateWithoutGamesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  league?: Prisma.LeagueUpdateOneRequiredWithoutArenasNestedInput
+}
+
+export type LeagueArenaUncheckedUpdateWithoutGamesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  leagueId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type LeagueArenaCreateManyLeagueInput = {
   id?: string
   name: string
@@ -455,6 +537,7 @@ export type LeagueArenaUpdateWithoutLeagueInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  games?: Prisma.TeamGameUpdateManyWithoutArenaNestedInput
 }
 
 export type LeagueArenaUncheckedUpdateWithoutLeagueInput = {
@@ -463,6 +546,7 @@ export type LeagueArenaUncheckedUpdateWithoutLeagueInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  games?: Prisma.TeamGameUncheckedUpdateManyWithoutArenaNestedInput
 }
 
 export type LeagueArenaUncheckedUpdateManyWithoutLeagueInput = {
@@ -474,6 +558,35 @@ export type LeagueArenaUncheckedUpdateManyWithoutLeagueInput = {
 }
 
 
+/**
+ * Count Type LeagueArenaCountOutputType
+ */
+
+export type LeagueArenaCountOutputType = {
+  games: number
+}
+
+export type LeagueArenaCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  games?: boolean | LeagueArenaCountOutputTypeCountGamesArgs
+}
+
+/**
+ * LeagueArenaCountOutputType without action
+ */
+export type LeagueArenaCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LeagueArenaCountOutputType
+   */
+  select?: Prisma.LeagueArenaCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * LeagueArenaCountOutputType without action
+ */
+export type LeagueArenaCountOutputTypeCountGamesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TeamGameWhereInput
+}
+
 
 export type LeagueArenaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -483,6 +596,8 @@ export type LeagueArenaSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   createdAt?: boolean
   updatedAt?: boolean
   league?: boolean | Prisma.LeagueDefaultArgs<ExtArgs>
+  games?: boolean | Prisma.LeagueArena$gamesArgs<ExtArgs>
+  _count?: boolean | Prisma.LeagueArenaCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["leagueArena"]>
 
 export type LeagueArenaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -517,6 +632,8 @@ export type LeagueArenaSelectScalar = {
 export type LeagueArenaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "leagueId" | "name" | "address" | "createdAt" | "updatedAt", ExtArgs["result"]["leagueArena"]>
 export type LeagueArenaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   league?: boolean | Prisma.LeagueDefaultArgs<ExtArgs>
+  games?: boolean | Prisma.LeagueArena$gamesArgs<ExtArgs>
+  _count?: boolean | Prisma.LeagueArenaCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type LeagueArenaIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   league?: boolean | Prisma.LeagueDefaultArgs<ExtArgs>
@@ -529,6 +646,7 @@ export type $LeagueArenaPayload<ExtArgs extends runtime.Types.Extensions.Interna
   name: "LeagueArena"
   objects: {
     league: Prisma.$LeaguePayload<ExtArgs>
+    games: Prisma.$TeamGamePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -932,6 +1050,7 @@ readonly fields: LeagueArenaFieldRefs;
 export interface Prisma__LeagueArenaClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   league<T extends Prisma.LeagueDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LeagueDefaultArgs<ExtArgs>>): Prisma.Prisma__LeagueClient<runtime.Types.Result.GetResult<Prisma.$LeaguePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  games<T extends Prisma.LeagueArena$gamesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LeagueArena$gamesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamGamePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1365,6 +1484,30 @@ export type LeagueArenaDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Limit how many LeagueArenas to delete.
    */
   limit?: number
+}
+
+/**
+ * LeagueArena.games
+ */
+export type LeagueArena$gamesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TeamGame
+   */
+  select?: Prisma.TeamGameSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TeamGame
+   */
+  omit?: Prisma.TeamGameOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TeamGameInclude<ExtArgs> | null
+  where?: Prisma.TeamGameWhereInput
+  orderBy?: Prisma.TeamGameOrderByWithRelationInput | Prisma.TeamGameOrderByWithRelationInput[]
+  cursor?: Prisma.TeamGameWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TeamGameScalarFieldEnum | Prisma.TeamGameScalarFieldEnum[]
 }
 
 /**

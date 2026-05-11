@@ -821,4 +821,26 @@ export class MyTeamComponent implements OnInit {
       },
     });
   }
+
+  gameOpponent(game: TeamGame): string {
+    return game.opponentTeam?.name ?? game.opponent ?? 'TBD';
+  }
+
+  gameArena(game: TeamGame): string {
+    const arena = game.arena as
+      | string
+      | { name?: string | null; address?: string | null }
+      | null
+      | undefined;
+
+    if (!arena) {
+      return 'Arena TBD';
+    }
+
+    if (typeof arena === 'string') {
+      return arena;
+    }
+
+    return arena.name ?? 'Arena TBD';
+  }
 }

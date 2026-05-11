@@ -237,21 +237,42 @@
           </div>
 
           <div class="mb-3">
-            <label class="form-label" for="opponent">Opponent</label>
+            <label class="form-label" for="opponentTeamId">Opponent Team</label>
 
             <select
-              id="opponent"
+              id="opponentTeamId"
               class="form-select"
-              formControlName="opponent"
+              formControlName="opponentTeamId"
             >
-              <option value="">Select an opponent</option>
+              <option [ngValue]="null">Select an opponent team</option>
+
               <option
                 *ngFor="let team of teams(); trackBy: trackByTeamId"
-                [value]="team.name"
+                [ngValue]="team.id"
+                [disabled]="team.id === gameForm.controls.teamId.value"
               >
                 {{ team.name }}
               </option>
             </select>
+
+            <div class="form-text">
+              Select a league team here if you want the game to appear on both
+              teams' schedules.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="opponent"
+              >External opponent name</label
+            >
+
+            <input
+              id="opponent"
+              type="text"
+              class="form-control"
+              formControlName="opponent"
+              placeholder="Use only if the opponent is not in this league"
+            />
           </div>
 
           <div class="mb-4">

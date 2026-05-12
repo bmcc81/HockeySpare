@@ -501,12 +501,12 @@ export class TeamsService {
       },
     });
 
-    const alreadyInvitedMemberIds = new Set(
+    const alreadyNotifiedMemberIds = new Set(
       existingInvites.map((invite) => invite.memberId),
     );
 
     const membersToNotify = members.filter(
-      (member) => !alreadyInvitedMemberIds.has(member.id),
+      (member) => !alreadyNotifiedMemberIds.has(member.id),
     );
 
     if (membersToNotify.length === 0) {

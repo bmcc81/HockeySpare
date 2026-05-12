@@ -228,3 +228,12 @@ New user registers
 → if no, /api/my-team returns 404
 → frontend shows “Create your team”
 → creating a team makes them GENERAL_MANAGER
+
+
+Brevo
+
+Then click Authorize IP address.
+
+One thing to know: because this looks like a home internet IP, it may change later if your router/modem restarts or your ISP changes it. <B>If Brevo API calls suddenly fail later with an IP authorization error, run this again on the Pi:</B>
+
+curl -4 https://api.ipify.org

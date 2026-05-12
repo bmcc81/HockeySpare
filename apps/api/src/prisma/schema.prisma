@@ -192,6 +192,7 @@ model League {
   members     LeagueMember[]
   playerStats PlayerStat[]
   arenas      LeagueArena[]
+  games       TeamGame[]
 }
 
 model LeagueArena {
@@ -202,7 +203,8 @@ model LeagueArena {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  league League @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  league League    @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  games  TeamGame[]
 
   @@unique([leagueId, name])
   @@index([leagueId])
@@ -234,7 +236,8 @@ model Team {
   createdBy   User?        @relation("CreatedTeams", fields: [createdById], references: [id], onDelete: SetNull)
   league      League?      @relation(fields: [leagueId], references: [id], onDelete: SetNull)
   members     TeamMember[]
-  games       TeamGame[]
+  games       TeamGame[]   @relation("TeamGameTeam")
+  opponentGames TeamGame[] @relation("TeamGameOpponentTeam")
   playerStats PlayerStat[]
 
   @@index([leagueId])
@@ -291,21 +294,30 @@ model PlayerStat {
 }
 
 model TeamGame {
-  id        String   @id @default(cuid())
-  teamId    String
-  title     String
-  startsAt  DateTime
-  arena     String?
-  opponent  String?
-  notes     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String   @id @default(cuid())
+  leagueId       String?
+  teamId         String
+  opponentTeamId String?
+  arenaId        String?
+  title          String
+  startsAt       DateTime
+  opponent       String?
+  notes          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  team           Team                   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  league       League?      @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  team         Team         @relation("TeamGameTeam", fields: [teamId], references: [id], onDelete: Cascade)
+  opponentTeam Team?        @relation("TeamGameOpponentTeam", fields: [opponentTeamId], references: [id], onDelete: SetNull)
+  arena        LeagueArena? @relation(fields: [arenaId], references: [id], onDelete: SetNull)
+
   invites        TeamGameInvite[]
   availabilities TeamGameAvailability[]
 
+  @@index([leagueId, startsAt])
   @@index([teamId, startsAt])
+  @@index([opponentTeamId, startsAt])
+  @@index([arenaId])
 }
 
 model TeamGameInvite {

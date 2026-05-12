@@ -237,21 +237,42 @@
           </div>
 
           <div class="mb-3">
-            <label class="form-label" for="opponent">Opponent</label>
+            <label class="form-label" for="opponentTeamId">Opponent Team</label>
 
             <select
-              id="opponent"
+              id="opponentTeamId"
               class="form-select"
-              formControlName="opponent"
+              formControlName="opponentTeamId"
             >
-              <option value="">Select an opponent</option>
+              <option [ngValue]="null">Select an opponent team</option>
+
               <option
                 *ngFor="let team of teams(); trackBy: trackByTeamId"
-                [value]="team.name"
+                [ngValue]="team.id"
+                [disabled]="team.id === gameForm.controls.teamId.value"
               >
                 {{ team.name }}
               </option>
             </select>
+
+            <div class="form-text">
+              Select a league team here if you want the game to appear on both
+              teams' schedules.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="opponent"
+              >External opponent name</label
+            >
+
+            <input
+              id="opponent"
+              type="text"
+              class="form-control"
+              formControlName="opponent"
+              placeholder="Use only if the opponent is not in this league"
+            />
           </div>
 
           <div class="mb-4">
@@ -358,6 +379,126 @@
               <div>
                 <strong>{{ team.name }}</strong>
                 <p>{{ team.games?.length ?? 0 }} games scheduled</p>
+                <p class="mb-2">{{ team.members?.length ?? 0 }} player(s)</p>
+
+                <button
+                  *ngIf="canManageTeams()"
+                  type="button"
+                  class="btn btn-outline-primary btn-sm"
+                  (click)="openAddMember(team)"
+                >
+                  Invite Player
+                </button>
+
+                <div
+                  *ngIf="memberTeamId() === team.id"
+                  class="border rounded p-3 mt-3 bg-light"
+                >
+                  <div *ngIf="memberError()" class="alert alert-danger">
+                    {{ memberError() }}
+                  </div>
+
+                  <div *ngIf="memberSuccess()" class="alert alert-success">
+                    {{ memberSuccess() }}
+                  </div>
+
+                  <form
+                    [formGroup]="memberForm"
+                    (ngSubmit)="addMemberToSelectedTeam()"
+                  >
+                    <div class="row g-2">
+                      <div class="col-12 col-md-6">
+                        <label class="form-label">Player name</label>
+                        <input
+                          class="form-control"
+                          formControlName="displayName"
+                          placeholder="Player name"
+                        />
+                      </div>
+
+                      <div class="col-12 col-md-6">
+                        <label class="form-label">Email</label>
+                        <input
+                          class="form-control"
+                          formControlName="email"
+                          placeholder="player@email.com"
+                        />
+                      </div>
+
+                      <div class="col-12 col-md-6">
+                        <label class="form-label">Phone</label>
+                        <input
+                          class="form-control"
+                          formControlName="phone"
+                          placeholder="Optional"
+                        />
+                      </div>
+
+                      <div class="col-12 col-md-6">
+                        <label class="form-label">Position</label>
+                        <select class="form-select" formControlName="position">
+                          <option value="FORWARD">Forward</option>
+                          <option value="DEFENSE">Defense</option>
+                          <option value="GOALIE">Goalie</option>
+                        </select>
+                      </div>
+
+                      <div class="col-12 col-md-6">
+                        <label class="form-label">Type</label>
+                        <select
+                          class="form-select"
+                          formControlName="memberType"
+                        >
+                          <option value="REGULAR">Regular</option>
+                          <option value="SPARE">Spare</option>
+                        </select>
+                      </div>
+
+                      <div class="col-12 col-md-6">
+                        <label class="form-label">Role</label>
+                        <select class="form-select" formControlName="role">
+                          <option value="PLAYER">Player</option>
+                          <option value="CAPTAIN">Captain</option>
+                          <option value="GENERAL_MANAGER">
+                            General Manager
+                          </option>
+                        </select>
+                      </div>
+
+                      <div class="col-12">
+                        <label class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            formControlName="notifyByEmail"
+                          />
+                          <span class="form-check-label">
+                            Email invitation to player
+                          </span>
+                        </label>
+                      </div>
+
+                      <div class="col-12 d-flex gap-2">
+                        <button
+                          type="submit"
+                          class="btn btn-primary btn-sm"
+                          [disabled]="savingMember()"
+                        >
+                          {{ savingMember() ? 'Sending...' : 'Invite Player' }}
+                        </button>
+
+                        <button
+                          type="button"
+                          class="btn btn-outline-secondary btn-sm"
+                          (click)="cancelAddMember()"
+                          [disabled]="savingMember()"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
               </div>
             </div>
           </div>

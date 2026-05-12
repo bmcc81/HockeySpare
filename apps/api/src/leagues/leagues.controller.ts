@@ -15,6 +15,8 @@ import { CreateLeagueDto } from './dto/create-league.dto';
 import { CreateLeagueTeamDto } from './dto/create-league-team.dto';
 import { CreateLeagueGameDto } from './dto/create-league-game.dto';
 import { CreateLeagueArenaDto } from './dto/create-league-arena.dto';
+import { AddLeagueTeamMemberDto } from './dto/add-league-team-member.dto';
+
 
 type AuthRequest = {
   user?: {
@@ -119,6 +121,27 @@ export class LeaguesController {
     @Param('leagueId') leagueId: string,
     @Param('arenaId') arenaId: string,
   ) {
-    return this.leaguesService.deleteArena(this.getUserId(req), leagueId, arenaId);
+    return this.leaguesService.deleteArena(
+      this.getUserId(req),
+      leagueId,
+      arenaId,
+    );
   }
+
+  @Post(':leagueId/teams/:teamId/members')
+  @UseGuards(JwtAuthGuard)
+  addMemberToLeagueTeam(
+    @Req() req: any,
+    @Param('leagueId') leagueId: string,
+    @Param('teamId') teamId: string,
+    @Body() dto: AddLeagueTeamMemberDto,
+  ) {
+    return this.leaguesService.addMemberToLeagueTeam(
+      this.getUserId(req),
+      leagueId,
+      teamId,
+      dto,
+    );
+  }
+  
 }

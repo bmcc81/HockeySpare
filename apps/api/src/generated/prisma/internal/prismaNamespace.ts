@@ -1721,10 +1721,12 @@ export type PlayerStatScalarFieldEnum = (typeof PlayerStatScalarFieldEnum)[keyof
 
 export const TeamGameScalarFieldEnum = {
   id: 'id',
+  leagueId: 'leagueId',
   teamId: 'teamId',
+  opponentTeamId: 'opponentTeamId',
+  arenaId: 'arenaId',
   title: 'title',
   startsAt: 'startsAt',
-  arena: 'arena',
   opponent: 'opponent',
   notes: 'notes',
   createdAt: 'createdAt',

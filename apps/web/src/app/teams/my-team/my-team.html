@@ -226,7 +226,8 @@
                             [disabled]="savingRoleMemberId() === player.id"
                             (click)="makeCaptain(player)"
                           >
-                            {{ savingRoleMemberId() === player.id ? 'Updating...' : 'Make Captain' }}
+                            {{ savingRoleMemberId() === player.id ?
+                            'Updating...' : 'Make Captain' }}
                           </button>
 
                           <button
@@ -236,7 +237,8 @@
                             [disabled]="savingRoleMemberId() === player.id"
                             (click)="removeCaptain(player)"
                           >
-                            {{ savingRoleMemberId() === player.id ? 'Updating...' : 'Remove Captain' }}
+                            {{ savingRoleMemberId() === player.id ?
+                            'Updating...' : 'Remove Captain' }}
                           </button>
 
                           <button
@@ -444,7 +446,8 @@
                             [disabled]="savingRoleMemberId() === player.id"
                             (click)="makeCaptain(player)"
                           >
-                            {{ savingRoleMemberId() === player.id ? 'Updating...' : 'Make Captain' }}
+                            {{ savingRoleMemberId() === player.id ?
+                            'Updating...' : 'Make Captain' }}
                           </button>
 
                           <button
@@ -454,7 +457,8 @@
                             [disabled]="savingRoleMemberId() === player.id"
                             (click)="removeCaptain(player)"
                           >
-                            {{ savingRoleMemberId() === player.id ? 'Updating...' : 'Remove Captain' }}
+                            {{ savingRoleMemberId() === player.id ?
+                            'Updating...' : 'Remove Captain' }}
                           </button>
 
                           <button
@@ -748,7 +752,8 @@
 
             <ng-template #noStatsTpl>
               <div class="text-secondary">
-                {{ myStats.length ? 'No stats match your filters.' : 'No stats recorded yet.' }}
+                {{ myStats.length ? 'No stats match your filters.' : 'No stats
+                recorded yet.' }}
               </div>
             </ng-template>
           </div>
@@ -793,9 +798,10 @@
 
                       <div class="game-meta">
                         {{ game.startsAt | date: 'medium' }}
-                        <span *ngIf="game.arena"> • {{ game.arena }}</span>
-                        <span *ngIf="game.opponent">
-                          • vs {{ game.opponent }}
+                        <span *ngIf="game.arena"> • {{ gameArena(game) }}</span>
+
+                        <span *ngIf="game.opponentTeam?.name || game.opponent">
+                          • vs {{ gameOpponent(game) }}
                         </span>
                       </div>
 
@@ -871,7 +877,8 @@
                         (click)="notifyGame(game)"
                         [disabled]="notifyingGameId === game.id"
                       >
-                        {{ notifyingGameId === game.id ? 'Sending...' : 'Notify Team' }}
+                        {{ notifyingGameId === game.id ? 'Sending...' : 'Notify
+                        Team' }}
                       </button>
                     </div>
                   </div>

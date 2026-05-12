@@ -185,34 +185,39 @@ export class TeamsService {
           },
           orderBy: [{ memberType: 'asc' }, { displayName: 'asc' }],
         },
-        games: {
-          where: {
-            startsAt: {
-              gte: new Date(),
-            },
-          },
-          orderBy: {
-            startsAt: 'asc',
-          },
-          include: {
-            invites: {
-              include: {
-                member: true,
-              },
-            },
-            availabilities: {
-              include: {
-                member: true,
-              },
-            },
-          },
-        },
       },
     });
 
     if (!teamData) {
       throw new NotFoundException('No team found.');
     }
+
+    const games = await this.prisma.teamGame.findMany({
+      where: {
+        startsAt: {
+          gte: new Date(),
+        },
+        OR: [{ teamId: team.id }, { opponentTeamId: team.id }],
+      },
+      orderBy: {
+        startsAt: 'asc',
+      },
+      include: {
+        team: true,
+        opponentTeam: true,
+        arena: true,
+        invites: {
+          include: {
+            member: true,
+          },
+        },
+        availabilities: {
+          include: {
+            member: true,
+          },
+        },
+      },
+    });
 
     const myMembership = await this.prisma.teamMember.findFirst({
       where: {
@@ -230,6 +235,7 @@ export class TeamsService {
 
     return {
       ...teamData,
+      games,
       myMembership,
       canManageTeam:
         myMembership?.role === TeamRole.CAPTAIN ||
@@ -409,14 +415,43 @@ export class TeamsService {
   async createGame(userId: string, dto: CreateTeamGameDto) {
     const team = await this.getManagedTeam(userId);
 
+    let arenaId: string | null = null;
+
+    const arenaName = dto.arena?.trim();
+
+    if (team.leagueId && arenaName) {
+      const arena = await this.prisma.leagueArena.upsert({
+        where: {
+          leagueId_name: {
+            leagueId: team.leagueId,
+            name: arenaName,
+          },
+        },
+        update: {},
+        create: {
+          leagueId: team.leagueId,
+          name: arenaName,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      arenaId = arena.id;
+    }
+
     return this.prisma.teamGame.create({
       data: {
         teamId: team.id,
+        leagueId: team.leagueId ?? null,
+        arenaId,
         title: dto.title.trim(),
         startsAt: new Date(dto.startsAt),
-        arena: dto.arena?.trim() || null,
         opponent: dto.opponent?.trim() || null,
         notes: dto.notes?.trim() || null,
+      },
+      include: {
+        arena: true,
       },
     });
   }
@@ -427,12 +462,17 @@ export class TeamsService {
     const game = await this.prisma.teamGame.findFirst({
       where: {
         id: gameId,
-        teamId: team.id,
+        OR: [{ teamId: team.id }, { opponentTeamId: team.id }],
+      },
+      include: {
+        team: true,
+        opponentTeam: true,
+        arena: true,
       },
     });
 
     if (!game) {
-      throw new NotFoundException('Game not found');
+      throw new NotFoundException('Game not found for your team');
     }
 
     const members = await this.prisma.teamMember.findMany({
@@ -447,36 +487,69 @@ export class TeamsService {
       throw new BadRequestException('No active team members found.');
     }
 
-    const now = new Date();
+    const memberIds = members.map((member) => member.id);
 
-    for (const member of members) {
-      await this.prisma.teamGameInvite.upsert({
-        where: {
-          gameId_memberId: {
-            gameId,
-            memberId: member.id,
-          },
+    const existingInvites = await this.prisma.teamGameInvite.findMany({
+      where: {
+        gameId,
+        memberId: {
+          in: memberIds,
         },
-        update: {
-          status: 'SENT',
-          sentAt: now,
-        },
-        create: {
-          gameId,
-          memberId: member.id,
-          status: 'SENT',
-          sentAt: now,
-        },
-      });
+      },
+      select: {
+        memberId: true,
+      },
+    });
+
+    const alreadyNotifiedMemberIds = new Set(
+      existingInvites.map((invite) => invite.memberId),
+    );
+
+    const membersToNotify = members.filter(
+      (member) => !alreadyNotifiedMemberIds.has(member.id),
+    );
+
+    if (membersToNotify.length === 0) {
+      return {
+        success: true,
+        sentCount: 0,
+        inviteCount: 0,
+        inAppSentCount: 0,
+        emailSentCount: 0,
+        emailFailedCount: 0,
+        skippedAlreadyNotifiedCount: members.length,
+        message:
+          'All selected team members were already notified for this game.',
+      };
     }
 
-    const inAppNotifications = members
+    const now = new Date();
+
+    await this.prisma.teamGameInvite.createMany({
+      data: membersToNotify.map((member) => ({
+        gameId,
+        memberId: member.id,
+        status: 'SENT',
+        sentAt: now,
+      })),
+      skipDuplicates: true,
+    });
+
+    const opponentName =
+      game.teamId === team.id
+        ? (game.opponentTeam?.name ?? game.opponent ?? 'TBD')
+        : game.team.name;
+
+    const arenaName = game.arena?.name ?? 'TBD';
+    const arenaAddress = game.arena?.address?.trim() || 'Address TBD';
+
+    const inAppNotifications = membersToNotify
       .filter((member) => member.userId && member.notifyByApp)
       .map((member) => ({
         userId: member.userId!,
         type: NotificationType.TEAM_GAME_REMINDER,
         title: `Game availability request: ${game.title}`,
-        body: `${team.name} has a game on ${game.startsAt.toLocaleString()}. Please respond if you are available.`,
+        body: `${team.name} has a game against ${opponentName} on ${game.startsAt.toLocaleString()}. Please respond if you are available.`,
         link: '/my-team',
         metadata: {
           gameId: game.id,
@@ -496,22 +569,7 @@ export class TeamsService {
 
     const gameUrl = `${appUrl}/my-team`;
 
-    const arenaAddressRecord =
-      team.leagueId && game.arena
-        ? await this.prisma.leagueArena.findFirst({
-            where: {
-              leagueId: team.leagueId,
-              name: game.arena,
-            },
-            select: {
-              address: true,
-            },
-          })
-        : null;
-
-    const arenaAddress = arenaAddressRecord?.address?.trim() || 'Address TBD';
-
-    const emailMembers = members.filter(
+    const emailMembers = membersToNotify.filter(
       (member) => !!member.email && member.email.trim().length > 0,
     );
 
@@ -519,35 +577,31 @@ export class TeamsService {
       emailMembers.map((member) =>
         this.emailService.sendMail({
           to: member.email!.trim(),
-          subject: `Availability request: ${team.name} - ${game.title}`,
+          subject: `Availability request: ${team.name} vs ${opponentName}`,
           text:
             `Hi ${member.displayName},\n\n` +
             `${team.name} has an upcoming game.\n\n` +
             `Game: ${game.title}\n` +
             `Date: ${game.startsAt.toLocaleString()}\n` +
-            `Arena: ${game.arena ?? 'TBD'}\n` +
+            `Arena: ${arenaName}\n` +
             `Address: ${arenaAddress}\n` +
-            `${game.opponent ? `Opponent: ${game.opponent}\n` : ''}` +
-            `\nPlease respond if you are available:\n${gameUrl}\n\n` +
+            `Opponent: ${opponentName}\n\n` +
+            `Please respond if you are available:\n${gameUrl}\n\n` +
             `Thank you.`,
           html: `
           <p>Hi ${member.displayName},</p>
 
           <p>
-            <strong>${team.name}</strong> has an upcoming game.
-            Please respond if you are available.
+            <strong>${team.name}</strong> has an upcoming game against
+            <strong>${opponentName}</strong>. Please respond if you are available.
           </p>
 
           <p>
             <strong>Game:</strong> ${game.title}<br />
             <strong>Date:</strong> ${game.startsAt.toLocaleString()}<br />
-            <strong>Arena:</strong> ${game.arena ?? 'TBD'}<br />
+            <strong>Arena:</strong> ${arenaName}<br />
             <strong>Address:</strong> ${arenaAddress}<br />
-            ${
-              game.opponent
-                ? `<strong>Opponent:</strong> ${game.opponent}<br />`
-                : ''
-            }
+            <strong>Opponent:</strong> ${opponentName}<br />
           </p>
 
           <p>
@@ -566,11 +620,12 @@ export class TeamsService {
 
     return {
       success: emailFailedCount === 0,
-      sentCount: members.length,
-      inviteCount: members.length,
+      sentCount: membersToNotify.length,
+      inviteCount: membersToNotify.length,
       inAppSentCount: inAppNotifications.length,
       emailSentCount,
       emailFailedCount,
+      skippedAlreadyNotifiedCount: members.length - membersToNotify.length,
     };
   }
 
@@ -588,6 +643,8 @@ export class TeamsService {
       },
       include: {
         team: true,
+        opponentTeam: true,
+        arena: true,
       },
     });
 
@@ -595,14 +652,21 @@ export class TeamsService {
       throw new NotFoundException('Game not found');
     }
 
+    const eligibleTeamIds = [game.teamId, game.opponentTeamId].filter(
+      (teamId): teamId is string => !!teamId,
+    );
+
     const member = await this.prisma.teamMember.findFirst({
       where: {
-        teamId: game.teamId,
+        teamId: {
+          in: eligibleTeamIds,
+        },
         userId,
         isActive: true,
       },
       include: {
         user: true,
+        team: true,
       },
     });
 
@@ -639,7 +703,7 @@ export class TeamsService {
     if (shouldEmailManagers) {
       const managers = await this.prisma.teamMember.findMany({
         where: {
-          teamId: game.teamId,
+          teamId: member.teamId,
           isActive: true,
           userId: {
             not: null,
@@ -658,6 +722,7 @@ export class TeamsService {
 
       const appUrl = process.env.APP_URL ?? 'http://localhost:4200';
       const gameUrl = `${appUrl}/my-team`;
+      const arenaName = game.arena?.name ?? 'TBD';
 
       await Promise.allSettled(
         managers
@@ -665,15 +730,15 @@ export class TeamsService {
           .map((manager) =>
             this.emailService.sendMail({
               to: manager.user!.email,
-              subject: `${member.displayName} ${statusLabel} for ${game.title} on ${game.startsAt.toLocaleString()} at ${game.arena}`,
+              subject: `${member.displayName} ${statusLabel} for ${game.title} on ${game.startsAt.toLocaleString()} at ${arenaName}`,
               text: `${member.displayName} ${statusLabel} for ${game.title}.${
                 note ? ` Note: ${note}` : ''
               }`,
               html: `
                 <p><strong>${member.displayName}</strong> ${statusLabel} for:</p>
                 <p><strong>${game.title}</strong></p>
-                <p><strong>Team:</strong> ${game.team.name}</p>
-                <p><strong>Arena:</strong> ${game.arena ?? 'N/A'}</p>
+                <p><strong>Team:</strong> ${member.team.name}</p>
+                <p><strong>Arena:</strong> ${arenaName}</p>
                 <p><strong>Date:</strong> ${game.startsAt.toLocaleString()}</p>
                 ${note ? `<p><strong>Note:</strong> ${note}</p>` : ''}
                 <p>
@@ -694,7 +759,10 @@ export class TeamsService {
     const game = await this.prisma.teamGame.findFirst({
       where: {
         id: gameId,
-        teamId: team.id,
+        OR: [{ teamId: team.id }, { opponentTeamId: team.id }],
+      },
+      include: {
+        arena: true,
       },
     });
 

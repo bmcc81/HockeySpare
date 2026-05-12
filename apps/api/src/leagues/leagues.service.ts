@@ -9,10 +9,16 @@ import { CreateLeagueDto } from './dto/create-league.dto';
 import { CreateLeagueTeamDto } from './dto/create-league-team.dto';
 import { CreateLeagueGameDto } from './dto/create-league-game.dto';
 import { CreateLeagueArenaDto } from './dto/create-league-arena.dto';
+import { AddLeagueTeamMemberDto } from './dto/add-league-team-member.dto';
+
+import { EmailService } from '../modules/email/email.service';
 
 @Injectable()
 export class LeaguesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly emailService: EmailService,
+  ) {}
 
   async listForUser(userId: string) {
     return this.prisma.league.findMany({
@@ -761,5 +767,146 @@ export class LeaguesService {
       title: game.title,
       deleted: true,
     };
+  }
+
+  async addMemberToLeagueTeam(
+    managerUserId: string,
+    leagueId: string,
+    teamId: string,
+    dto: AddLeagueTeamMemberDto,
+  ) {
+    await this.assertUserCanManageLeagueTeam(managerUserId, leagueId, teamId);
+
+    const email = dto.email.trim().toLowerCase();
+    const displayName = dto.displayName.trim();
+
+    if (!displayName) {
+      throw new BadRequestException('Player name is required');
+    }
+
+    const team = await this.prisma.team.findFirst({
+      where: {
+        id: teamId,
+        leagueId,
+      },
+      select: {
+        id: true,
+        name: true,
+        league: {
+          select: {
+            name: true,
+            season: true,
+          },
+        },
+      },
+    });
+
+    if (!team) {
+      throw new NotFoundException('Team not found in this league');
+    }
+
+    const existingUser = await this.prisma.user.findUnique({
+      where: {
+        email,
+      },
+      select: {
+        id: true,
+        email: true,
+      },
+    });
+
+    const existingMember = await this.prisma.teamMember.findFirst({
+      where: {
+        teamId,
+        isActive: true,
+        OR: [
+          {
+            email: {
+              equals: email,
+              mode: 'insensitive',
+            },
+          },
+          ...(existingUser?.id ? [{ userId: existingUser.id }] : []),
+        ],
+      },
+    });
+
+    if (existingMember) {
+      throw new BadRequestException('This player is already on this team');
+    }
+
+    const member = await this.prisma.teamMember.create({
+      data: {
+        teamId,
+        userId: existingUser?.id ?? null,
+        displayName,
+        email,
+        phone: dto.phone?.trim() || null,
+        position: dto.position ?? null,
+        memberType: dto.memberType,
+        role: dto.role ?? 'PLAYER',
+        notifyByApp: true,
+        notifyByEmail: dto.notifyByEmail ?? true,
+        isActive: true,
+      },
+    });
+
+    if (dto.notifyByEmail !== false) {
+      const appUrl = (process.env.APP_URL ?? 'http://localhost:4200').replace(
+        /\/$/,
+        '',
+      );
+
+      const registerUrl = `${appUrl}/register?email=${encodeURIComponent(email)}`;
+      const myTeamUrl = `${appUrl}/my-team`;
+
+      const memberTypeLabel =
+        member.memberType === 'SPARE' ? 'spare' : 'regular player';
+
+      await this.emailService.sendMail({
+        to: email,
+        subject: `You have been invited to join ${team.name} on HockeySpare`,
+        text:
+          `Hi ${displayName},\n\n` +
+          `You have been invited to join ${team.name} as a ${memberTypeLabel} in ${team.league?.name}.\n\n` +
+          `If you already have a HockeySpare account, log in here:\n${myTeamUrl}\n\n` +
+          `If you do not have an account yet, create one using this same email address:\n${registerUrl}\n\n` +
+          `Once registered, you will be linked to the team automatically.`,
+        html: `
+        <p>Hi <strong>${displayName}</strong>,</p>
+
+        <p>
+          You have been invited to join
+          <strong>${team.name}</strong>
+          as a <strong>${memberTypeLabel}</strong>
+          in <strong>${team.league?.name}</strong>.
+        </p>
+
+        <p>
+          If you already have a HockeySpare account, open your team page:
+        </p>
+
+        <p>
+          <a href="${myTeamUrl}">Open My Team</a>
+        </p>
+
+        <p>
+          If you do not have an account yet, create one using this same email address:
+        </p>
+
+        <p>
+          <a href="${registerUrl}">Create HockeySpare account</a>
+        </p>
+
+        <p>
+          Once registered, you will be linked to the team automatically.
+        </p>
+
+        <p>Thanks,<br />HockeySpare</p>
+      `,
+      });
+    }
+
+    return member;
   }
 }

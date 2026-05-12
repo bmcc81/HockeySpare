@@ -62,6 +62,11 @@ export class LeagueDetailComponent {
   arenaSuccess = signal<string | null>(null);
   deletingArenaId = signal<string | null>(null);
 
+  memberTeamId = signal<string | null>(null);
+  savingMember = signal(false);
+  memberError = signal<string | null>(null);
+  memberSuccess = signal<string | null>(null);
+
   getFormattedDate(date: string): string | null {
     return this.datePipe.transform(date, 'short');
   }
@@ -75,13 +80,15 @@ export class LeagueDetailComponent {
     address: [''],
   });
 
-  toggleTeamsCollapsed(): void {
-    this.teamsCollapsed.update((collapsed) => !collapsed);
-  }
-
-  toggleArenasCollapsed(): void {
-    this.arenasCollapsed.update((collapsed) => !collapsed);
-  }
+  memberForm = this.fb.group({
+    displayName: ['', [Validators.required, Validators.minLength(2)]],
+    email: ['', [Validators.required, Validators.email]],
+    phone: [''],
+    position: ['FORWARD'],
+    memberType: ['REGULAR'],
+    role: ['PLAYER'],
+    notifyByEmail: [true],
+  });
 
   gameForm = this.fb.group({
     teamId: ['', [Validators.required]],
@@ -92,6 +99,14 @@ export class LeagueDetailComponent {
     opponent: [''],
     notes: [''],
   });
+
+  toggleTeamsCollapsed(): void {
+    this.teamsCollapsed.update((collapsed) => !collapsed);
+  }
+
+  toggleArenasCollapsed(): void {
+    this.arenasCollapsed.update((collapsed) => !collapsed);
+  }
 
   ngOnInit(): void {
     this.setupAutoGameTitle();
@@ -420,6 +435,12 @@ export class LeagueDetailComponent {
     });
   }
 
+  private sortGames(games: TeamGameDto[]): TeamGameDto[] {
+    return [...games].sort(
+      (a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime(),
+    );
+  }
+
   addGame(): void {
     if (!this.canManageTeams()) {
       this.gameSuccess.set(null);
@@ -517,6 +538,101 @@ export class LeagueDetailComponent {
     });
   }
 
+  openAddMember(team: TeamDto): void {
+    this.memberTeamId.set(team.id);
+    this.memberError.set(null);
+    this.memberSuccess.set(null);
+
+    this.memberForm.reset({
+      displayName: '',
+      email: '',
+      phone: '',
+      position: 'FORWARD',
+      memberType: 'REGULAR',
+      role: 'PLAYER',
+      notifyByEmail: true,
+    });
+  }
+
+  cancelAddMember(): void {
+    this.memberTeamId.set(null);
+    this.memberError.set(null);
+    this.memberSuccess.set(null);
+  }
+
+  addMemberToSelectedTeam(): void {
+    const teamId = this.memberTeamId();
+
+    if (!teamId) {
+      this.memberError.set('Select a team first.');
+      return;
+    }
+
+    if (!this.canManageTeams()) {
+      this.memberError.set('You do not have permission to add players.');
+      return;
+    }
+
+    if (this.memberForm.invalid || this.savingMember()) {
+      this.memberForm.markAllAsTouched();
+      return;
+    }
+
+    const value = this.memberForm.getRawValue();
+
+    this.savingMember.set(true);
+    this.memberError.set(null);
+    this.memberSuccess.set(null);
+
+    this.leaguesApi
+      .addTeamMember(this.leagueId, teamId, {
+        displayName: value.displayName.trim(),
+        email: value.email.trim(),
+        phone: value.phone.trim() || null,
+        position: value.position as 'GOALIE' | 'DEFENSE' | 'FORWARD',
+        memberType: value.memberType as 'REGULAR' | 'SPARE',
+        role: value.role as 'PLAYER' | 'CAPTAIN' | 'GENERAL_MANAGER',
+        notifyByEmail: !!value.notifyByEmail,
+      })
+      .subscribe({
+        next: (member) => {
+          this.teams.update((teams) =>
+            teams.map((team) =>
+              team.id === teamId
+                ? {
+                    ...team,
+                    members: [...(team.members ?? []), member].sort((a, b) =>
+                      a.displayName.localeCompare(b.displayName),
+                    ),
+                  }
+                : team,
+            ),
+          );
+
+          this.memberSuccess.set(
+            `Invite sent to ${member.email ?? member.displayName}.`,
+          );
+          this.savingMember.set(false);
+
+          this.memberForm.reset({
+            displayName: '',
+            email: '',
+            phone: '',
+            position: 'FORWARD',
+            memberType: 'REGULAR',
+            role: 'PLAYER',
+            notifyByEmail: true,
+          });
+        },
+        error: (err) => {
+          this.memberError.set(
+            err?.error?.message || 'Could not invite player to this team.',
+          );
+          this.savingMember.set(false);
+        },
+      });
+  }
+
   trackGameById(_index: number, game: TeamGameDto): string {
     return game.id;
   }
@@ -527,12 +643,6 @@ export class LeagueDetailComponent {
 
   trackArenaById(_index: number, arena: LeagueArenaDto): string {
     return arena.id;
-  }
-
-  private sortGames(games: TeamGameDto[]): TeamGameDto[] {
-    return [...games].sort(
-      (a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime(),
-    );
   }
 
   setTeamSearch(event: Event): void {
@@ -564,5 +674,4 @@ export class LeagueDetailComponent {
     this.scheduleTeamId.set('');
     this.scheduleView.set('UPCOMING');
   }
-
 }

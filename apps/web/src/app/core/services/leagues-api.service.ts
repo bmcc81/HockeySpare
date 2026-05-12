@@ -7,6 +7,8 @@ import {
   LeagueDto,
   TeamDto,
   TeamGameDto,
+  AddLeagueTeamMemberInput,
+  TeamMember,
 } from '@hockeyspare/contracts';
 import { Observable } from 'rxjs';
 import { LeagueArenaDto } from '@hockeyspare/contracts';
@@ -69,6 +71,17 @@ export class LeaguesApiService {
   deleteGame(leagueId: string, teamId: string, gameId: string) {
     return this.http.delete<{ id: string; title: string; deleted: boolean }>(
       `/api/leagues/${leagueId}/teams/${teamId}/games/${gameId}`,
+    );
+  }
+
+  addTeamMember(
+    leagueId: string,
+    teamId: string,
+    input: AddLeagueTeamMemberInput,
+  ) {
+    return this.http.post<TeamMember>(
+      `/api/leagues/${leagueId}/teams/${teamId}/members`,
+      input,
     );
   }
 }

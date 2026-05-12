@@ -208,3 +208,13 @@ export interface CreateLeagueGameInput {
   opponentTeamId?: string | null;
   notes?: string | null;
 }
+
+export interface AddLeagueTeamMemberInput {
+  displayName: string;
+  email: string;
+  phone?: string | null;
+  position?: 'GOALIE' | 'DEFENSE' | 'FORWARD' | null;
+  memberType: 'REGULAR' | 'SPARE';
+  role?: 'PLAYER' | 'CAPTAIN' | 'GENERAL_MANAGER';
+  notifyByEmail?: boolean;
+}

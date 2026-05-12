@@ -429,9 +429,15 @@ export class MyTeamComponent implements OnInit {
     this.teamApi.notifyGame(game.id).subscribe({
       next: (result: any) => {
         this.notifyingGameId = null;
-        this.notifySuccess = `Team notified for ${game.title}. Emails sent: ${
-          result?.emailSentCount ?? result?.sentCount ?? 0
-        }.`;
+
+        const emailSentCount = result?.emailSentCount ?? 0;
+        const skippedCount = result?.skippedAlreadyNotifiedCount ?? 0;
+
+        this.notifySuccess =
+          skippedCount > 0
+            ? `Team notified for ${game.title}. Emails sent: ${emailSentCount}. Already notified: ${skippedCount}.`
+            : `Team notified for ${game.title}. Emails sent: ${emailSentCount}.`;
+
         this.reload();
       },
       error: (err) => {

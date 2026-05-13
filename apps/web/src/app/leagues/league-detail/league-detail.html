@@ -20,7 +20,7 @@
           {{ teamError() }}
         </div>
 
-        <div *ngIf="canManageTeams(); else noTeamPermission">
+        <div *ngIf="canManageLeague(); else noTeamPermission">
           <form [formGroup]="teamForm" (ngSubmit)="addTeam()">
             <div class="mb-3">
               <label class="form-label" for="teamName">Team name</label>
@@ -52,7 +52,7 @@
 
         <ng-template #noTeamPermission>
           <div class="empty">
-            Only a General Manager or Captain can add a team.
+            Only a league manager can add teams.
           </div>
         </ng-template>
       </div>
@@ -64,7 +64,7 @@
           {{ arenaError() }}
         </div>
 
-        <div *ngIf="canManageTeams(); else noArenaPermission">
+        <div *ngIf="canManageLeague(); else noArenaPermission">
           <form [formGroup]="arenaForm" (ngSubmit)="addArena()">
             <div class="mb-3">
               <label class="form-label" for="arenaName">Arena name</label>
@@ -107,7 +107,7 @@
 
         <ng-template #noArenaPermission>
           <div class="empty">
-            Only a General Manager or Captain can add arenas.
+            Only a league manager can add arenas.
           </div>
         </ng-template>
 
@@ -149,7 +149,7 @@
               </div>
 
               <button
-                *ngIf="canManageTeams()"
+                *ngIf="canManageLeague()"
                 type="button"
                 class="btn btn-outline-danger btn-sm arena-delete-btn"
                 (click)="deleteArena(arena)"
@@ -164,19 +164,19 @@
     </div>
 
     <div class="add-game-row">
-      <div class="panel" *ngIf="canManageTeams(); else noGamePermission">
+      <div class="panel" *ngIf="canManageAnyTeam(); else noGamePermission">
         <h2>Add Game</h2>
 
         <div *ngIf="gameError()" class="alert alert-danger">
           {{ gameError() }}
         </div>
 
-        <div *ngIf="teams().length === 0" class="empty">
-          Add a team before scheduling games.
+        <div *ngIf="manageableTeams().length === 0" class="empty">
+          You do not manage any teams in this league yet.
         </div>
 
         <form
-          *ngIf="teams().length > 0"
+          *ngIf="manageableTeams().length > 0"
           [formGroup]="gameForm"
           (ngSubmit)="addGame()"
         >
@@ -185,7 +185,7 @@
             <select id="gameTeam" class="form-select" formControlName="teamId">
               <option value="">Select a team</option>
               <option
-                *ngFor="let team of teams(); trackBy: trackByTeamId"
+                *ngFor="let team of manageableTeams(); trackBy: trackByTeamId"
                 [value]="team.id"
               >
                 {{ team.name }}
@@ -289,7 +289,7 @@
           <button
             type="submit"
             class="btn btn-primary"
-            [disabled]="savingGame()"
+            [disabled]="savingGame() || !canManageSelectedGameTeam()"
           >
             {{ savingGame() ? 'Adding...' : 'Add Game' }}
           </button>
@@ -309,7 +309,7 @@
         <div class="panel">
           <h2>Add Game</h2>
           <div class="empty">
-            Only a General Manager or Captain can add games.
+            Only a league manager, captain, or general manager can add games for teams they manage.
           </div>
         </div>
       </ng-template>
@@ -382,7 +382,7 @@
                 <p class="mb-2">{{ team.members?.length ?? 0 }} player(s)</p>
 
                 <button
-                  *ngIf="canManageTeams()"
+                  *ngIf="canManageTeam(team)"
                   type="button"
                   class="btn btn-outline-primary btn-sm"
                   (click)="openAddMember(team)"
@@ -602,7 +602,7 @@
               <span *ngIf="game.opponent">vs {{ game.opponent }}</span>
             </div>
 
-            <div class="mt-3" *ngIf="canManageTeams()">
+            <div class="mt-3" *ngIf="canDeleteGame(game)">
               <button
                 type="button"
                 class="btn btn-outline-danger btn-sm"

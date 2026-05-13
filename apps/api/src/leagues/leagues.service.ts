@@ -143,6 +143,7 @@ export class LeaguesService {
   }
 
   async addArena(userId: string, leagueId: string, dto: CreateLeagueArenaDto) {
+    await this.assertUserIsLeagueManager(userId, leagueId);
     await this.assertUserCanAddTeamToLeague(userId, leagueId);
 
     const name = dto.name.trim();
@@ -161,6 +162,7 @@ export class LeaguesService {
   }
 
   async deleteArena(userId: string, leagueId: string, arenaId: string) {
+    await this.assertUserIsLeagueManager(userId, leagueId);
     await this.assertUserCanAddTeamToLeague(userId, leagueId);
 
     const arena = await this.prisma.leagueArena.findFirst({
@@ -393,6 +395,7 @@ export class LeaguesService {
   }
 
   async addTeam(userId: string, leagueId: string, dto: CreateLeagueTeamDto) {
+    await this.assertUserIsLeagueManager(userId, leagueId);
     await this.assertUserCanAddTeamToLeague(userId, leagueId);
 
     const name = dto.name.trim();
@@ -516,46 +519,23 @@ export class LeaguesService {
       throw new NotFoundException('League not found');
     }
 
-    const access = await this.prisma.league.findFirst({
+    const membership = await this.prisma.leagueMember.findFirst({
       where: {
-        id: leagueId,
-        OR: [
-          {
-            members: {
-              some: {
-                userId,
-                role: 'LEAGUE_MANAGER',
-              },
-            },
-          },
-          {
-            teams: {
-              some: {
-                members: {
-                  some: {
-                    userId,
-                    isActive: true,
-                    role: {
-                      in: ['CAPTAIN', 'GENERAL_MANAGER'],
-                    },
-                  },
-                },
-              },
-            },
-          },
-        ],
+        leagueId,
+        userId,
+        role: 'LEAGUE_MANAGER',
       },
       select: {
         id: true,
       },
     });
 
-    if (!access) {
+    if (!membership) {
       throw new ForbiddenException(
-        'Only a league manager, General Manager, or Captain can add teams.',
+        'Only a league manager can perform this league-wide action.',
       );
     }
-  }
+  } 
 
   async linkMyTeamToLeague(leagueId: string, userId: string) {
     const league = await this.prisma.league.findUnique({
@@ -908,5 +888,105 @@ export class LeaguesService {
     }
 
     return member;
+  }
+
+  private async assertUserIsLeagueManager(
+    userId: string,
+    leagueId: string,
+  ): Promise<void> {
+    const league = await this.prisma.league.findUnique({
+      where: { id: leagueId },
+      select: { id: true },
+    });
+
+    if (!league) {
+      throw new NotFoundException('League not found');
+    }
+
+    const membership = await this.prisma.leagueMember.findFirst({
+      where: {
+        leagueId,
+        userId,
+        role: 'LEAGUE_MANAGER',
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!membership) {
+      throw new ForbiddenException(
+        'Only a league manager can perform this action.',
+      );
+    }
+  }
+
+  async removeMemberFromLeagueTeam(
+    userId: string,
+    leagueId: string,
+    teamId: string,
+    memberId: string,
+  ) {
+    await this.assertUserCanManageLeagueTeam(userId, leagueId, teamId);
+
+    const member = await this.prisma.teamMember.findFirst({
+      where: {
+        id: memberId,
+        teamId,
+        isActive: true,
+      },
+      select: {
+        id: true,
+        displayName: true,
+      },
+    });
+
+    if (!member) {
+      throw new NotFoundException('Team member not found');
+    }
+
+    await this.prisma.teamMember.update({
+      where: { id: member.id },
+      data: {
+        isActive: false,
+      },
+    });
+
+    return {
+      id: member.id,
+      displayName: member.displayName,
+      removed: true,
+    };
+  }
+
+  async updateLeagueTeamMemberRole(
+    userId: string,
+    leagueId: string,
+    teamId: string,
+    memberId: string,
+    role: 'PLAYER' | 'CAPTAIN' | 'GENERAL_MANAGER',
+  ) {
+    await this.assertUserCanManageLeagueTeam(userId, leagueId, teamId);
+
+    const member = await this.prisma.teamMember.findFirst({
+      where: {
+        id: memberId,
+        teamId,
+        isActive: true,
+      },
+    });
+
+    if (!member) {
+      throw new NotFoundException('Team member not found');
+    }
+
+    return this.prisma.teamMember.update({
+      where: {
+        id: member.id,
+      },
+      data: {
+        role,
+      },
+    });
   }
 }

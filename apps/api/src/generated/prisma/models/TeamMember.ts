@@ -36,6 +36,7 @@ export type TeamMemberMinAggregateOutputType = {
   role: $Enums.TeamRole | null
   notifyByApp: boolean | null
   notifyByEmail: boolean | null
+  notifyBySms: boolean | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -53,6 +54,7 @@ export type TeamMemberMaxAggregateOutputType = {
   role: $Enums.TeamRole | null
   notifyByApp: boolean | null
   notifyByEmail: boolean | null
+  notifyBySms: boolean | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -70,6 +72,7 @@ export type TeamMemberCountAggregateOutputType = {
   role: number
   notifyByApp: number
   notifyByEmail: number
+  notifyBySms: number
   isActive: number
   createdAt: number
   updatedAt: number
@@ -89,6 +92,7 @@ export type TeamMemberMinAggregateInputType = {
   role?: true
   notifyByApp?: true
   notifyByEmail?: true
+  notifyBySms?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -106,6 +110,7 @@ export type TeamMemberMaxAggregateInputType = {
   role?: true
   notifyByApp?: true
   notifyByEmail?: true
+  notifyBySms?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -123,6 +128,7 @@ export type TeamMemberCountAggregateInputType = {
   role?: true
   notifyByApp?: true
   notifyByEmail?: true
+  notifyBySms?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -213,6 +219,7 @@ export type TeamMemberGroupByOutputType = {
   role: $Enums.TeamRole
   notifyByApp: boolean
   notifyByEmail: boolean
+  notifyBySms: boolean
   isActive: boolean
   createdAt: Date
   updatedAt: Date
@@ -251,6 +258,7 @@ export type TeamMemberWhereInput = {
   role?: Prisma.EnumTeamRoleFilter<"TeamMember"> | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFilter<"TeamMember"> | boolean
   notifyByEmail?: Prisma.BoolFilter<"TeamMember"> | boolean
+  notifyBySms?: Prisma.BoolFilter<"TeamMember"> | boolean
   isActive?: Prisma.BoolFilter<"TeamMember"> | boolean
   createdAt?: Prisma.DateTimeFilter<"TeamMember"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TeamMember"> | Date | string
@@ -273,6 +281,7 @@ export type TeamMemberOrderByWithRelationInput = {
   role?: Prisma.SortOrder
   notifyByApp?: Prisma.SortOrder
   notifyByEmail?: Prisma.SortOrder
+  notifyBySms?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -298,6 +307,7 @@ export type TeamMemberWhereUniqueInput = Prisma.AtLeast<{
   role?: Prisma.EnumTeamRoleFilter<"TeamMember"> | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFilter<"TeamMember"> | boolean
   notifyByEmail?: Prisma.BoolFilter<"TeamMember"> | boolean
+  notifyBySms?: Prisma.BoolFilter<"TeamMember"> | boolean
   isActive?: Prisma.BoolFilter<"TeamMember"> | boolean
   createdAt?: Prisma.DateTimeFilter<"TeamMember"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TeamMember"> | Date | string
@@ -320,6 +330,7 @@ export type TeamMemberOrderByWithAggregationInput = {
   role?: Prisma.SortOrder
   notifyByApp?: Prisma.SortOrder
   notifyByEmail?: Prisma.SortOrder
+  notifyBySms?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -343,6 +354,7 @@ export type TeamMemberScalarWhereWithAggregatesInput = {
   role?: Prisma.EnumTeamRoleWithAggregatesFilter<"TeamMember"> | $Enums.TeamRole
   notifyByApp?: Prisma.BoolWithAggregatesFilter<"TeamMember"> | boolean
   notifyByEmail?: Prisma.BoolWithAggregatesFilter<"TeamMember"> | boolean
+  notifyBySms?: Prisma.BoolWithAggregatesFilter<"TeamMember"> | boolean
   isActive?: Prisma.BoolWithAggregatesFilter<"TeamMember"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TeamMember"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"TeamMember"> | Date | string
@@ -358,6 +370,7 @@ export type TeamMemberCreateInput = {
   role?: $Enums.TeamRole
   notifyByApp?: boolean
   notifyByEmail?: boolean
+  notifyBySms?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -380,6 +393,7 @@ export type TeamMemberUncheckedCreateInput = {
   role?: $Enums.TeamRole
   notifyByApp?: boolean
   notifyByEmail?: boolean
+  notifyBySms?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -398,6 +412,7 @@ export type TeamMemberUpdateInput = {
   role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBySms?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -420,6 +435,7 @@ export type TeamMemberUncheckedUpdateInput = {
   role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBySms?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -440,6 +456,7 @@ export type TeamMemberCreateManyInput = {
   role?: $Enums.TeamRole
   notifyByApp?: boolean
   notifyByEmail?: boolean
+  notifyBySms?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -455,6 +472,7 @@ export type TeamMemberUpdateManyMutationInput = {
   role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBySms?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -472,6 +490,7 @@ export type TeamMemberUncheckedUpdateManyInput = {
   role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBySms?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -499,6 +518,7 @@ export type TeamMemberCountOrderByAggregateInput = {
   role?: Prisma.SortOrder
   notifyByApp?: Prisma.SortOrder
   notifyByEmail?: Prisma.SortOrder
+  notifyBySms?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -516,6 +536,7 @@ export type TeamMemberMaxOrderByAggregateInput = {
   role?: Prisma.SortOrder
   notifyByApp?: Prisma.SortOrder
   notifyByEmail?: Prisma.SortOrder
+  notifyBySms?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -533,6 +554,7 @@ export type TeamMemberMinOrderByAggregateInput = {
   role?: Prisma.SortOrder
   notifyByApp?: Prisma.SortOrder
   notifyByEmail?: Prisma.SortOrder
+  notifyBySms?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -695,6 +717,7 @@ export type TeamMemberCreateWithoutUserInput = {
   role?: $Enums.TeamRole
   notifyByApp?: boolean
   notifyByEmail?: boolean
+  notifyBySms?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -715,6 +738,7 @@ export type TeamMemberUncheckedCreateWithoutUserInput = {
   role?: $Enums.TeamRole
   notifyByApp?: boolean
   notifyByEmail?: boolean
+  notifyBySms?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -764,6 +788,7 @@ export type TeamMemberScalarWhereInput = {
   role?: Prisma.EnumTeamRoleFilter<"TeamMember"> | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFilter<"TeamMember"> | boolean
   notifyByEmail?: Prisma.BoolFilter<"TeamMember"> | boolean
+  notifyBySms?: Prisma.BoolFilter<"TeamMember"> | boolean
   isActive?: Prisma.BoolFilter<"TeamMember"> | boolean
   createdAt?: Prisma.DateTimeFilter<"TeamMember"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TeamMember"> | Date | string
@@ -779,6 +804,7 @@ export type TeamMemberCreateWithoutTeamInput = {
   role?: $Enums.TeamRole
   notifyByApp?: boolean
   notifyByEmail?: boolean
+  notifyBySms?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -799,6 +825,7 @@ export type TeamMemberUncheckedCreateWithoutTeamInput = {
   role?: $Enums.TeamRole
   notifyByApp?: boolean
   notifyByEmail?: boolean
+  notifyBySms?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -843,6 +870,7 @@ export type TeamMemberCreateWithoutPlayerStatsInput = {
   role?: $Enums.TeamRole
   notifyByApp?: boolean
   notifyByEmail?: boolean
+  notifyBySms?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -864,6 +892,7 @@ export type TeamMemberUncheckedCreateWithoutPlayerStatsInput = {
   role?: $Enums.TeamRole
   notifyByApp?: boolean
   notifyByEmail?: boolean
+  notifyBySms?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -897,6 +926,7 @@ export type TeamMemberUpdateWithoutPlayerStatsInput = {
   role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBySms?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -918,6 +948,7 @@ export type TeamMemberUncheckedUpdateWithoutPlayerStatsInput = {
   role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBySms?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -935,6 +966,7 @@ export type TeamMemberCreateWithoutInvitesInput = {
   role?: $Enums.TeamRole
   notifyByApp?: boolean
   notifyByEmail?: boolean
+  notifyBySms?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -956,6 +988,7 @@ export type TeamMemberUncheckedCreateWithoutInvitesInput = {
   role?: $Enums.TeamRole
   notifyByApp?: boolean
   notifyByEmail?: boolean
+  notifyBySms?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -989,6 +1022,7 @@ export type TeamMemberUpdateWithoutInvitesInput = {
   role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBySms?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1010,6 +1044,7 @@ export type TeamMemberUncheckedUpdateWithoutInvitesInput = {
   role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBySms?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1027,6 +1062,7 @@ export type TeamMemberCreateWithoutAvailabilitiesInput = {
   role?: $Enums.TeamRole
   notifyByApp?: boolean
   notifyByEmail?: boolean
+  notifyBySms?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1048,6 +1084,7 @@ export type TeamMemberUncheckedCreateWithoutAvailabilitiesInput = {
   role?: $Enums.TeamRole
   notifyByApp?: boolean
   notifyByEmail?: boolean
+  notifyBySms?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1081,6 +1118,7 @@ export type TeamMemberUpdateWithoutAvailabilitiesInput = {
   role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBySms?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1102,6 +1140,7 @@ export type TeamMemberUncheckedUpdateWithoutAvailabilitiesInput = {
   role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBySms?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1120,6 +1159,7 @@ export type TeamMemberCreateManyUserInput = {
   role?: $Enums.TeamRole
   notifyByApp?: boolean
   notifyByEmail?: boolean
+  notifyBySms?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1135,6 +1175,7 @@ export type TeamMemberUpdateWithoutUserInput = {
   role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBySms?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1155,6 +1196,7 @@ export type TeamMemberUncheckedUpdateWithoutUserInput = {
   role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBySms?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1174,6 +1216,7 @@ export type TeamMemberUncheckedUpdateManyWithoutUserInput = {
   role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBySms?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1190,6 +1233,7 @@ export type TeamMemberCreateManyTeamInput = {
   role?: $Enums.TeamRole
   notifyByApp?: boolean
   notifyByEmail?: boolean
+  notifyBySms?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1205,6 +1249,7 @@ export type TeamMemberUpdateWithoutTeamInput = {
   role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBySms?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1225,6 +1270,7 @@ export type TeamMemberUncheckedUpdateWithoutTeamInput = {
   role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBySms?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1244,6 +1290,7 @@ export type TeamMemberUncheckedUpdateManyWithoutTeamInput = {
   role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
   notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBySms?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1310,6 +1357,7 @@ export type TeamMemberSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   role?: boolean
   notifyByApp?: boolean
   notifyByEmail?: boolean
+  notifyBySms?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1333,6 +1381,7 @@ export type TeamMemberSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   role?: boolean
   notifyByApp?: boolean
   notifyByEmail?: boolean
+  notifyBySms?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1352,6 +1401,7 @@ export type TeamMemberSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   role?: boolean
   notifyByApp?: boolean
   notifyByEmail?: boolean
+  notifyBySms?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1371,12 +1421,13 @@ export type TeamMemberSelectScalar = {
   role?: boolean
   notifyByApp?: boolean
   notifyByEmail?: boolean
+  notifyBySms?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type TeamMemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "teamId" | "userId" | "displayName" | "email" | "phone" | "position" | "memberType" | "role" | "notifyByApp" | "notifyByEmail" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["teamMember"]>
+export type TeamMemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "teamId" | "userId" | "displayName" | "email" | "phone" | "position" | "memberType" | "role" | "notifyByApp" | "notifyByEmail" | "notifyBySms" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["teamMember"]>
 export type TeamMemberInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
   user?: boolean | Prisma.TeamMember$userArgs<ExtArgs>
@@ -1415,6 +1466,7 @@ export type $TeamMemberPayload<ExtArgs extends runtime.Types.Extensions.Internal
     role: $Enums.TeamRole
     notifyByApp: boolean
     notifyByEmail: boolean
+    notifyBySms: boolean
     isActive: boolean
     createdAt: Date
     updatedAt: Date
@@ -1857,6 +1909,7 @@ export interface TeamMemberFieldRefs {
   readonly role: Prisma.FieldRef<"TeamMember", 'TeamRole'>
   readonly notifyByApp: Prisma.FieldRef<"TeamMember", 'Boolean'>
   readonly notifyByEmail: Prisma.FieldRef<"TeamMember", 'Boolean'>
+  readonly notifyBySms: Prisma.FieldRef<"TeamMember", 'Boolean'>
   readonly isActive: Prisma.FieldRef<"TeamMember", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"TeamMember", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"TeamMember", 'DateTime'>

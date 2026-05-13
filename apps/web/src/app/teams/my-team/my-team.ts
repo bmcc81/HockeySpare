@@ -502,6 +502,8 @@ export class MyTeamComponent implements OnInit {
       startsAt: game.startsAt,
       arena: game.arena ?? null,
       opponent: game.opponent ?? null,
+      opponentTeamId: game.opponentTeamId ?? null,
+      opponentTeam: game.opponentTeam ?? null,
       notes: game.notes ?? null,
       teamId: game.teamId,
       teamName: this.team?.name ?? undefined,
@@ -632,9 +634,25 @@ export class MyTeamComponent implements OnInit {
     this.error = '';
 
     this.teamApi.respondToGame(gameId, { status, note }).subscribe({
-      next: () => {
+      next: (result: any) => {
         this.availabilitySavingGameId = null;
         this.cancelAvailabilityComposer();
+
+        const spareNotification = result?.spareNotification;
+
+        if (spareNotification?.spareInviteCount > 0) {
+          const smsPart =
+            spareNotification.spareSmsSentCount > 0
+              ? ` Texts sent: ${spareNotification.spareSmsSentCount}.`
+              : ' SMS pending sender approval.';
+
+          this.notifySuccess =
+            `Spare request sent. Emails: ${spareNotification.spareEmailSentCount}.` +
+            smsPart;
+        } else if (spareNotification?.spareSkippedAlreadyNotifiedCount > 0) {
+          this.notifySuccess = `Spares were already notified for this game. Already notified: ${spareNotification.spareSkippedAlreadyNotifiedCount}.`;
+        }
+
         this.reload();
       },
       error: () => {

@@ -18,6 +18,7 @@ import { UpdateTeamDto } from './dto/update-team.dto';
 import { CreateMyTeamDto } from './dto/create-my-team.dto';
 import { EmailService } from '../email/email.service';
 import { UpdateTeamMemberRoleDto } from './dto/update-team-member-role.dto';
+import { SmsService } from '../sms/sms.service';
 
 @Injectable()
 export class TeamsService {
@@ -25,6 +26,7 @@ export class TeamsService {
     private readonly prisma: PrismaService,
     private readonly notifications: NotificationsService,
     private readonly emailService: EmailService,
+    private readonly smsService: SmsService,
   ) {}
 
   private buildDisplayName(user: {
@@ -629,6 +631,207 @@ export class TeamsService {
     };
   }
 
+  private async notifySparesForGame(args: {
+    gameId: string;
+    teamId: string;
+    unavailableMemberId: string;
+    unavailablePlayerName: string;
+    status: 'UNAVAILABLE' | 'NEED_SPARE';
+    note?: string;
+  }) {
+    const game = await this.prisma.teamGame.findUnique({
+      where: {
+        id: args.gameId,
+      },
+      include: {
+        team: true,
+        opponentTeam: true,
+        arena: true,
+      },
+    });
+
+    if (!game) {
+      throw new NotFoundException('Game not found');
+    }
+
+    const spares = await this.prisma.teamMember.findMany({
+      where: {
+        teamId: args.teamId,
+        memberType: TeamMemberType.SPARE,
+        isActive: true,
+        id: {
+          not: args.unavailableMemberId,
+        },
+      },
+    });
+
+    if (!spares.length) {
+      return {
+        spareInviteCount: 0,
+        spareEmailSentCount: 0,
+        spareSmsSentCount: 0,
+        spareSmsSkippedCount: 0,
+        spareSmsFailedCount: 0,
+        spareSkippedAlreadyNotifiedCount: 0,
+      };
+    }
+
+    const spareIds = spares.map((spare) => spare.id);
+
+    const existingInvites = await this.prisma.teamGameInvite.findMany({
+      where: {
+        gameId: args.gameId,
+        memberId: {
+          in: spareIds,
+        },
+      },
+      select: {
+        memberId: true,
+      },
+    });
+
+    const alreadyNotifiedIds = new Set(
+      existingInvites.map((invite) => invite.memberId),
+    );
+
+    const sparesToNotify = spares.filter(
+      (spare) => !alreadyNotifiedIds.has(spare.id),
+    );
+
+    if (!sparesToNotify.length) {
+      return {
+        spareInviteCount: 0,
+        spareEmailSentCount: 0,
+        spareSmsSentCount: 0,
+        spareSmsSkippedCount: 0,
+        spareSmsFailedCount: 0,
+        spareSkippedAlreadyNotifiedCount: spares.length,
+      };
+    }
+
+    const now = new Date();
+
+    await this.prisma.teamGameInvite.createMany({
+      data: sparesToNotify.map((spare) => ({
+        gameId: args.gameId,
+        memberId: spare.id,
+        status: 'SENT',
+        sentAt: now,
+      })),
+      skipDuplicates: true,
+    });
+
+    const appUrl = (process.env.APP_URL ?? 'http://localhost:4200').replace(
+      /\/$/,
+      '',
+    );
+
+    const gameUrl = `${appUrl}/my-team`;
+    const arenaName = game.arena?.name ?? 'TBD';
+    const arenaAddress = game.arena?.address?.trim() || 'Address TBD';
+
+    const opponentName =
+      game.teamId === args.teamId
+        ? (game.opponentTeam?.name ?? game.opponent ?? 'TBD')
+        : game.team.name;
+
+    const reason =
+      args.status === 'NEED_SPARE'
+        ? `${args.unavailablePlayerName} needs a spare.`
+        : `${args.unavailablePlayerName} can’t make it.`;
+
+    const emailResults = await Promise.allSettled(
+      sparesToNotify
+        .filter((spare) => !!spare.email && spare.email.trim().length > 0)
+        .map((spare) =>
+          this.emailService.sendMail({
+            to: spare.email!.trim(),
+            subject: `Spare needed: ${game.title}`,
+            text:
+              `Hi ${spare.displayName},\n\n` +
+              `${reason}\n\n` +
+              `Can you play this game?\n\n` +
+              `Game: ${game.title}\n` +
+              `Opponent: ${opponentName}\n` +
+              `Date: ${game.startsAt.toLocaleString()}\n` +
+              `Arena: ${arenaName}\n` +
+              `Address: ${arenaAddress}\n` +
+              `${args.note ? `Note: ${args.note}\n` : ''}` +
+              `\nRespond here:\n${gameUrl}\n\n` +
+              `Thank you.`,
+            html: `
+            <p>Hi <strong>${spare.displayName}</strong>,</p>
+
+            <p>${reason}</p>
+
+            <p><strong>Can you play this game?</strong></p>
+
+            <p>
+              <strong>Game:</strong> ${game.title}<br />
+              <strong>Opponent:</strong> ${opponentName}<br />
+              <strong>Date:</strong> ${game.startsAt.toLocaleString()}<br />
+              <strong>Arena:</strong> ${arenaName}<br />
+              <strong>Address:</strong> ${arenaAddress}<br />
+              ${args.note ? `<strong>Note:</strong> ${args.note}<br />` : ''}
+            </p>
+
+            <p>
+              <a href="${gameUrl}">Respond in HockeySpare</a>
+            </p>
+          `,
+          }),
+        ),
+    );
+
+    const smsResults = await Promise.allSettled(
+      sparesToNotify
+        .filter((spare) => !!spare.phone && spare.phone.trim().length > 0)
+        .map((spare) =>
+          this.smsService.sendSms({
+            to: spare.phone!.trim(),
+            tag: 'spare-request',
+            body:
+              `HockeySpare: ${reason} ` +
+              `Can you play ${game.title} on ${game.startsAt.toLocaleString()} at ${arenaName}? ` +
+              `Respond: ${gameUrl}`,
+          }),
+        ),
+    );
+
+    const spareEmailSentCount = emailResults.filter(
+      (result) => result.status === 'fulfilled',
+    ).length;
+
+    const spareSmsSentCount = smsResults.filter((result) => {
+      if (result.status !== 'fulfilled') {
+        return false;
+      }
+
+      return !result.value?.skipped;
+    }).length;
+
+    const spareSmsSkippedCount = smsResults.filter((result) => {
+      if (result.status !== 'fulfilled') {
+        return false;
+      }
+
+      return result.value?.skipped === true;
+    }).length;
+
+    const spareSmsFailedCount = smsResults.filter(
+      (result) => result.status === 'rejected',
+    ).length;
+
+    return {
+      spareInviteCount: sparesToNotify.length,
+      spareEmailSentCount,
+      spareSmsSentCount,
+      spareSmsSkippedCount,
+      spareSmsFailedCount,
+      spareSkippedAlreadyNotifiedCount: spares.length - sparesToNotify.length,
+    };
+  }
+
   async respondToGame(
     userId: string,
     gameId: string,
@@ -697,6 +900,26 @@ export class TeamsService {
       },
     });
 
+    let spareNotification = {
+      spareInviteCount: 0,
+      spareEmailSentCount: 0,
+      spareSmsSentCount: 0,
+      spareSmsSkippedCount: 0,
+      spareSmsFailedCount: 0,
+      spareSkippedAlreadyNotifiedCount: 0,
+    };
+
+    if (status === 'UNAVAILABLE' || status === 'NEED_SPARE') {
+      spareNotification = await this.notifySparesForGame({
+        gameId,
+        teamId: member.teamId,
+        unavailableMemberId: member.id,
+        unavailablePlayerName: member.displayName,
+        status,
+        note,
+      });
+    }
+
     const shouldEmailManagers =
       status === 'UNAVAILABLE' || status === 'NEED_SPARE';
 
@@ -750,7 +973,10 @@ export class TeamsService {
       );
     }
 
-    return response;
+    return {
+      ...response,
+      spareNotification,
+    };
   }
 
   async getGameAvailability(userId: string, gameId: string) {

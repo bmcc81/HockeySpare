@@ -53,8 +53,8 @@ export class TeamsController {
   }
 
   @Post('members')
-  addMember(@Req() req: any, @Body() dto: CreateTeamMemberDto) {
-    return this.teamsService.addMember(this.getUserId(req), dto);
+  addMember(@Req() req: any, @Body() dto: CreateTeamMemberDto, @Query('teamId') teamId?: string) {
+    return this.teamsService.addMember(this.getUserId(req), dto, teamId);
   }
 
   @Delete('members/:memberId')

@@ -535,7 +535,7 @@ export class LeaguesService {
         'Only a league manager can perform this league-wide action.',
       );
     }
-  } 
+  }
 
   async linkMyTeamToLeague(leagueId: string, userId: string) {
     const league = await this.prisma.league.findUnique({

@@ -10,6 +10,7 @@ import {
   NotificationType,
   TeamMemberType,
   TeamRole,
+  LeagueRole,
 } from '../../generated/prisma/client';
 import { CreateTeamMemberDto } from './dto/create-team-member.dto';
 import { CreateTeamGameDto } from './dto/create-team-game.dto';
@@ -128,8 +129,61 @@ export class TeamsService {
     return membership.team;
   }
 
-  private async getManagedTeam(userId: string) {
-    await this.linkPendingTeamMembershipsByEmail(userId);
+  private async getManagedTeam(userId: string, teamId?: string) {
+    if (teamId) {
+      const targetTeam = await this.prisma.team.findUnique({
+        where: {
+          id: teamId,
+        },
+        include: {
+          league: true,
+        },
+      });
+
+      if (!targetTeam) {
+        throw new NotFoundException('Team not found.');
+      }
+
+      const teamManagerMembership = await this.prisma.teamMember.findFirst({
+        where: {
+          userId,
+          teamId: targetTeam.id,
+          isActive: true,
+          role: {
+            in: [TeamRole.CAPTAIN, TeamRole.GENERAL_MANAGER],
+          },
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      if (teamManagerMembership) {
+        return targetTeam;
+      }
+
+      if (targetTeam.leagueId) {
+        const leagueManagerMembership =
+          await this.prisma.leagueMember.findFirst({
+            where: {
+              userId,
+              leagueId: targetTeam.leagueId,
+              role: LeagueRole.LEAGUE_MANAGER,
+            },
+            select: {
+              id: true,
+            },
+          });
+
+        if (leagueManagerMembership) {
+          return targetTeam;
+        }
+      }
+
+      throw new ForbiddenException(
+        'You do not have permission to manage this team.',
+      );
+    }
 
     const managerMembership = await this.prisma.teamMember.findFirst({
       where: {
@@ -163,7 +217,7 @@ export class TeamsService {
 
     if (anyMembership) {
       throw new ForbiddenException(
-        'You do not have permission to manage this team',
+        'You do not have permission to manage this team.',
       );
     }
 
@@ -245,8 +299,8 @@ export class TeamsService {
     };
   }
 
-  async updateMyTeam(userId: string, dto: UpdateTeamDto) {
-    const team = await this.getManagedTeam(userId);
+  async updateMyTeam(userId: string, dto: UpdateTeamDto, teamId?: string) {
+    const team = await this.getManagedTeam(userId, teamId);
 
     return this.prisma.team.update({
       where: {
@@ -258,8 +312,8 @@ export class TeamsService {
     });
   }
 
-  async addMember(userId: string, dto: CreateTeamMemberDto) {
-    const team = await this.getManagedTeam(userId);
+  async addMember(userId: string, dto: CreateTeamMemberDto, teamId?: string) {
+    const team = await this.getManagedTeam(userId, teamId);
 
     const displayName = dto.displayName.trim();
     const email = dto.email?.trim() || null;
@@ -375,8 +429,8 @@ export class TeamsService {
     }
   }
 
-  async removeMember(userId: string, memberId: string) {
-    const team = await this.getManagedTeam(userId);
+  async removeMember(userId: string, memberId: string, teamId?: string) {
+    const team = await this.getManagedTeam(userId, teamId);
 
     const member = await this.prisma.teamMember.findFirst({
       where: {
@@ -414,8 +468,8 @@ export class TeamsService {
     };
   }
 
-  async createGame(userId: string, dto: CreateTeamGameDto) {
-    const team = await this.getManagedTeam(userId);
+  async createGame(userId: string, dto: CreateTeamGameDto, teamId?: string) {
+    const team = await this.getManagedTeam(userId, teamId);
 
     let arenaId: string | null = null;
 
@@ -458,8 +512,13 @@ export class TeamsService {
     });
   }
 
-  async notifyGame(userId: string, gameId: string, dto: NotifyTeamGameDto) {
-    const team = await this.getManagedTeam(userId);
+  async notifyGame(
+    userId: string,
+    gameId: string,
+    dto: NotifyTeamGameDto,
+    teamId?: string,
+  ) {
+    const team = await this.getManagedTeam(userId, teamId);
 
     const game = await this.prisma.teamGame.findFirst({
       where: {
@@ -1009,8 +1068,12 @@ export class TeamsService {
     });
   }
 
-  async linkMemberToUser(managerUserId: string, memberId: string) {
-    const team = await this.getManagedTeam(managerUserId);
+  async linkMemberToUser(
+    managerUserId: string,
+    memberId: string,
+    teamId?: string,
+  ) {
+    const team = await this.getManagedTeam(managerUserId, teamId);
 
     const member = await this.prisma.teamMember.findFirst({
       where: {
@@ -1078,8 +1141,9 @@ export class TeamsService {
     managerUserId: string,
     memberId: string,
     season?: string,
+    teamId?: string,
   ) {
-    const team = await this.getManagedTeam(managerUserId);
+    const team = await this.getManagedTeam(managerUserId, teamId);
 
     const member = await this.prisma.teamMember.findFirst({
       where: {
@@ -1125,8 +1189,9 @@ export class TeamsService {
       assists: number;
       penaltyMins: number;
     },
+    teamId?: string,
   ) {
-    const team = await this.getManagedTeam(managerUserId);
+    const team = await this.getManagedTeam(managerUserId, teamId);
 
     const member = await this.prisma.teamMember.findFirst({
       where: {
@@ -1265,21 +1330,53 @@ export class TeamsService {
         isActive: true,
         role: TeamRole.GENERAL_MANAGER,
       },
+      select: {
+        id: true,
+      },
     });
 
+    let isLeagueManager = false;
+
     if (!currentUserMembership) {
+      const targetTeam = await this.prisma.team.findUnique({
+        where: {
+          id: targetMember.teamId,
+        },
+        select: {
+          leagueId: true,
+        },
+      });
+
+      if (targetTeam?.leagueId) {
+        const leagueManagerMembership =
+          await this.prisma.leagueMember.findFirst({
+            where: {
+              userId,
+              leagueId: targetTeam.leagueId,
+              role: LeagueRole.LEAGUE_MANAGER,
+            },
+            select: {
+              id: true,
+            },
+          });
+
+        isLeagueManager = !!leagueManagerMembership;
+      }
+    }
+
+    if (!currentUserMembership && !isLeagueManager) {
       throw new ForbiddenException(
-        'Only a General Manager can assign team roles.',
+        'Only a Team General Manager or League Manager can assign team roles.',
       );
     }
 
-    if (currentUserMembership.id === targetMember.id) {
+    if (currentUserMembership?.id === targetMember.id) {
       throw new BadRequestException('You cannot change your own role.');
     }
 
-    if (targetMember.role === TeamRole.GENERAL_MANAGER) {
+    if (targetMember.role === TeamRole.GENERAL_MANAGER && !isLeagueManager) {
       throw new BadRequestException(
-        'You cannot change another General Manager role.',
+        'Only a League Manager can change another General Manager role.',
       );
     }
 

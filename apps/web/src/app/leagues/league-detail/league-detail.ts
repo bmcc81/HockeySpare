@@ -11,6 +11,8 @@ import {
   TeamDto,
   TeamGameDto,
   LeagueArenaDto,
+  TeamMember,
+  TeamRole,
 } from '@hockeyspare/contracts';
 import { LeaguesApiService } from '../../core/services/leagues-api.service';
 import { AuthStateService } from '../../auth/auth-state.service';
@@ -66,6 +68,10 @@ export class LeagueDetailComponent {
   savingMember = signal(false);
   memberError = signal<string | null>(null);
   memberSuccess = signal<string | null>(null);
+
+  savingRoleMemberId = signal<string | null>(null);
+  roleError = signal<string | null>(null);
+  roleSuccess = signal<string | null>(null);
 
   getFormattedDate(date: string): string | null {
     return this.datePipe.transform(date, 'short');
@@ -152,7 +158,6 @@ export class LeagueDetailComponent {
 
     return ownsTeam || isTeamManager;
   }
-
 
   private teamById(teamId?: string | null): TeamDto | undefined {
     if (!teamId) {
@@ -670,6 +675,74 @@ export class LeagueDetailComponent {
           this.savingMember.set(false);
         },
       });
+  }
+
+  updateTeamMemberRole(team: TeamDto, member: TeamMember, event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    const role = select.value as TeamRole;
+
+    if (!this.canManageTeam(team)) {
+      this.roleSuccess.set(null);
+      this.roleError.set('You do not have permission to update roles.');
+      select.value = member.role ?? 'PLAYER';
+      return;
+    }
+
+    if (role === member.role) {
+      return;
+    }
+
+    this.savingRoleMemberId.set(member.id);
+    this.roleError.set(null);
+    this.roleSuccess.set(null);
+
+    this.leaguesApi
+      .updateTeamMemberRole(this.leagueId, team.id, member.id, role)
+      .subscribe({
+        next: (updatedMember) => {
+          this.teams.update((teams) =>
+            teams.map((existingTeam) =>
+              existingTeam.id === team.id
+                ? {
+                    ...existingTeam,
+                    members: (existingTeam.members ?? []).map(
+                      (existingMember) =>
+                        existingMember.id === member.id
+                          ? {
+                              ...existingMember,
+                              role: updatedMember.role,
+                            }
+                          : existingMember,
+                    ),
+                  }
+                : existingTeam,
+            ),
+          );
+
+          this.roleSuccess.set(
+            `${member.displayName} is now ${this.roleLabel(updatedMember.role ?? 'PLAYER')}.`,
+          );
+          this.savingRoleMemberId.set(null);
+        },
+        error: (err) => {
+          this.roleError.set(
+            err?.error?.message || 'Could not update player role.',
+          );
+          this.savingRoleMemberId.set(null);
+          select.value = member.role ?? 'PLAYER';
+        },
+      });
+  }
+
+  roleLabel(role: TeamRole | undefined | null): string {
+    switch (role) {
+      case 'GENERAL_MANAGER':
+        return 'General Manager';
+      case 'CAPTAIN':
+        return 'Captain';
+      default:
+        return 'Player';
+    }
   }
 
   trackGameById(_index: number, game: TeamGameDto): string {

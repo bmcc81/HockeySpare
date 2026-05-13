@@ -632,9 +632,20 @@ export class MyTeamComponent implements OnInit {
     this.error = '';
 
     this.teamApi.respondToGame(gameId, { status, note }).subscribe({
-      next: () => {
+      next: (result: any) => {
         this.availabilitySavingGameId = null;
         this.cancelAvailabilityComposer();
+
+        const spareNotification = result?.spareNotification;
+
+        if (spareNotification?.spareInviteCount > 0) {
+          this.notifySuccess =
+            `Spare request sent. Emails: ${spareNotification.spareEmailSentCount}. ` +
+            `Texts: ${spareNotification.spareSmsSentCount}.`;
+        } else if (spareNotification?.spareSkippedAlreadyNotifiedCount > 0) {
+          this.notifySuccess = `Spares were already notified for this game. Already notified: ${spareNotification.spareSkippedAlreadyNotifiedCount}.`;
+        }
+
         this.reload();
       },
       error: () => {

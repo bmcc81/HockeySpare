@@ -255,6 +255,7 @@ model TeamMember {
   role          TeamRole       @default(PLAYER)
   notifyByApp   Boolean        @default(true)
   notifyByEmail Boolean        @default(false)
+  notifyBySms   Boolean        @default(false)
   isActive      Boolean        @default(true)
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt

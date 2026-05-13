@@ -211,6 +211,7 @@ export const TeamMemberScalarFieldEnum = {
   role: 'role',
   notifyByApp: 'notifyByApp',
   notifyByEmail: 'notifyByEmail',
+  notifyBySms: 'notifyBySms',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

@@ -113,7 +113,7 @@ export class LeagueDetailComponent {
     this.load();
   }
 
-  canManageTeams = computed(() => {
+  canManageLeague = computed(() => {
     const userId = this.authState.user()?.id;
     const league = this.league();
 
@@ -121,29 +121,68 @@ export class LeagueDetailComponent {
       return false;
     }
 
-    const isLeagueManager =
+    return (
       league.members?.some(
         (member) =>
           member.userId === userId && member.role === 'LEAGUE_MANAGER',
+      ) ?? false
+    );
+  });
+
+  canManageTeam(team: TeamDto): boolean {
+    const userId = this.authState.user()?.id;
+
+    if (!userId) {
+      return false;
+    }
+
+    if (this.canManageLeague()) {
+      return true;
+    }
+
+    const ownsTeam = team.createdById === userId;
+
+    const isTeamManager =
+      team.members?.some(
+        (member) =>
+          member.userId === userId &&
+          member.isActive !== false &&
+          (member.role === 'CAPTAIN' || member.role === 'GENERAL_MANAGER'),
       ) ?? false;
 
-    const managesAnyTeam =
-      league.teams?.some((team) => {
-        const ownsTeam = team.createdById === userId;
+    return ownsTeam || isTeamManager;
+  }
 
-        const isTeamManager =
-          team.members?.some(
-            (member) =>
-              member.userId === userId &&
-              member.isActive !== false &&
-              (member.role === 'CAPTAIN' || member.role === 'GENERAL_MANAGER'),
-          ) ?? false;
 
-        return ownsTeam || isTeamManager;
-      }) ?? false;
+  private teamById(teamId?: string | null): TeamDto | undefined {
+    if (!teamId) {
+      return undefined;
+    }
 
-    return isLeagueManager || managesAnyTeam;
-  });
+    return this.teams().find((team) => team.id === teamId);
+  }
+
+  canManageTeamById(teamId?: string | null): boolean {
+    const team = this.teamById(teamId);
+
+    return !!team && this.canManageTeam(team);
+  }
+
+  canManageAnyTeam(): boolean {
+    return this.teams().some((team) => this.canManageTeam(team));
+  }
+
+  canManageSelectedGameTeam(): boolean {
+    return this.canManageTeamById(this.gameForm.controls.teamId.value);
+  }
+
+  canDeleteGame(game: TeamGameDto): boolean {
+    return this.canManageTeamById(game.teamId);
+  }
+
+  manageableTeams = computed(() =>
+    this.teams().filter((team) => this.canManageTeam(team)),
+  );
 
   teamNameById = computed(() => {
     const map = new Map<string, string>();
@@ -273,8 +312,8 @@ export class LeagueDetailComponent {
   }
 
   addTeam(): void {
-    if (!this.canManageTeams()) {
-      this.teamError.set('You do not have permission to manage teams.');
+    if (!this.canManageLeague()) {
+      this.teamError.set('Only a league manager can add teams.');
       return;
     }
 
@@ -316,8 +355,8 @@ export class LeagueDetailComponent {
   }
 
   addArena(): void {
-    if (!this.canManageTeams()) {
-      this.arenaError.set('You do not have permission to manage arenas.');
+    if (!this.canManageLeague()) {
+      this.arenaError.set('Only a league manager can manage arenas.');
       return;
     }
 
@@ -363,9 +402,9 @@ export class LeagueDetailComponent {
   }
 
   deleteArena(arena: LeagueArenaDto): void {
-    if (!this.canManageTeams()) {
+    if (!this.canManageLeague()) {
       this.arenaSuccess.set(null);
-      this.arenaError.set('You do not have permission to delete arenas.');
+      this.arenaError.set('Only a league manager can delete arenas.');
       return;
     }
 
@@ -442,9 +481,9 @@ export class LeagueDetailComponent {
   }
 
   addGame(): void {
-    if (!this.canManageTeams()) {
+    if (!this.canManageSelectedGameTeam()) {
       this.gameSuccess.set(null);
-      this.gameError.set('You do not have permission to manage games.');
+      this.gameError.set('You can only add games for teams you manage.');
       return;
     }
 
@@ -502,9 +541,9 @@ export class LeagueDetailComponent {
   }
 
   deleteGame(game: TeamGameDto): void {
-    if (!this.canManageTeams()) {
+    if (!this.canDeleteGame(game)) {
       this.gameSuccess.set(null);
-      this.gameError.set('You do not have permission to delete games.');
+      this.gameError.set('You can only delete games for teams you manage.');
       return;
     }
 
@@ -568,8 +607,8 @@ export class LeagueDetailComponent {
       return;
     }
 
-    if (!this.canManageTeams()) {
-      this.memberError.set('You do not have permission to add players.');
+    if (!this.canManageTeamById(teamId)) {
+      this.memberError.set('You can only add players to teams you manage.');
       return;
     }
 

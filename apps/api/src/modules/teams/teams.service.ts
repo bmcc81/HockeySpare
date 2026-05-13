@@ -670,6 +670,8 @@ export class TeamsService {
         spareInviteCount: 0,
         spareEmailSentCount: 0,
         spareSmsSentCount: 0,
+        spareSmsSkippedCount: 0,
+        spareSmsFailedCount: 0,
         spareSkippedAlreadyNotifiedCount: 0,
       };
     }
@@ -701,6 +703,8 @@ export class TeamsService {
         spareInviteCount: 0,
         spareEmailSentCount: 0,
         spareSmsSentCount: 0,
+        spareSmsSkippedCount: 0,
+        spareSmsFailedCount: 0,
         spareSkippedAlreadyNotifiedCount: spares.length,
       };
     }
@@ -723,7 +727,6 @@ export class TeamsService {
     );
 
     const gameUrl = `${appUrl}/my-team`;
-
     const arenaName = game.arena?.name ?? 'TBD';
     const arenaAddress = game.arena?.address?.trim() || 'Address TBD';
 
@@ -799,14 +802,32 @@ export class TeamsService {
       (result) => result.status === 'fulfilled',
     ).length;
 
-    const spareSmsSentCount = smsResults.filter(
-      (result) => result.status === 'fulfilled',
+    const spareSmsSentCount = smsResults.filter((result) => {
+      if (result.status !== 'fulfilled') {
+        return false;
+      }
+
+      return !result.value?.skipped;
+    }).length;
+
+    const spareSmsSkippedCount = smsResults.filter((result) => {
+      if (result.status !== 'fulfilled') {
+        return false;
+      }
+
+      return result.value?.skipped === true;
+    }).length;
+
+    const spareSmsFailedCount = smsResults.filter(
+      (result) => result.status === 'rejected',
     ).length;
 
     return {
       spareInviteCount: sparesToNotify.length,
       spareEmailSentCount,
       spareSmsSentCount,
+      spareSmsSkippedCount,
+      spareSmsFailedCount,
       spareSkippedAlreadyNotifiedCount: spares.length - sparesToNotify.length,
     };
   }
@@ -883,6 +904,8 @@ export class TeamsService {
       spareInviteCount: 0,
       spareEmailSentCount: 0,
       spareSmsSentCount: 0,
+      spareSmsSkippedCount: 0,
+      spareSmsFailedCount: 0,
       spareSkippedAlreadyNotifiedCount: 0,
     };
 

@@ -4,12 +4,23 @@ import { Injectable, Logger } from '@nestjs/common';
 export class SmsService {
   private readonly logger = new Logger(SmsService.name);
 
+  private readonly smsEnabled = process.env.BREVO_SMS_ENABLED === 'true';
   private readonly apiKey = process.env.BREVO_API_KEY;
   private readonly sender = process.env.BREVO_SMS_SENDER || 'HockeySpare';
   private readonly organisationPrefix =
     process.env.BREVO_SMS_ORGANISATION_PREFIX || 'HockeySpare';
 
   async sendSms(args: { to: string; body: string; tag?: string }) {
+    if (!this.smsEnabled) {
+      this.logger.warn('SMS skipped. BREVO_SMS_ENABLED is not true.');
+
+      return {
+        skipped: true,
+        provider: 'brevo',
+        reason: 'sms_disabled',
+      };
+    }
+
     if (!this.apiKey) {
       this.logger.warn(
         `SMS skipped. BREVO_API_KEY is not configured. Recipient: ${args.to}`,
@@ -84,6 +95,7 @@ export class SmsService {
     this.logger.log(`Brevo SMS sent. Response=${JSON.stringify(responseBody)}`);
 
     return {
+      skipped: false,
       provider: 'brevo',
       response: responseBody,
     };
@@ -102,7 +114,6 @@ export class SmsService {
       return digitsOnly;
     }
 
-    // Default to North America/Canada if the user entered 10 digits.
     const justDigits = digitsOnly.replace(/\D/g, '');
 
     if (justDigits.length === 10) {

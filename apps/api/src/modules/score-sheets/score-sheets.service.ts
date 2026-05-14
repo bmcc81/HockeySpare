@@ -306,7 +306,7 @@ export class ScoreSheetsService {
       },
     });
 
-    return this.getScoreSheetOrThrow(scoreSheet.id);
+    return this.recalculateAndSaveScore(scoreSheet.id);
   }
 
   async updatePlayerLine(
@@ -385,11 +385,11 @@ export class ScoreSheetsService {
       },
     });
 
-    return this.getScoreSheetOrThrow(scoreSheet.id);
+    return this.recalculateAndSaveScore(scoreSheet.id);
   }
 
   async finalizeScoreSheet(userId: string, scoreSheetId: string) {
-    const scoreSheet = await this.getScoreSheetOrThrow(scoreSheetId);
+    const scoreSheet = await this.recalculateAndSaveScore(scoreSheetId);
 
     await this.assertCanManageScoreSheet(userId, scoreSheet.leagueId);
     this.assertDraft(scoreSheet.status);
@@ -401,6 +401,17 @@ export class ScoreSheetsService {
     }
 
     const season = this.getSeasonFromScoreSheet(scoreSheet);
+
+    const calculated = this.calculateScoreTotals(scoreSheet);
+
+    if (
+      scoreSheet.teamScore !== calculated.teamScore ||
+      scoreSheet.opponentScore !== calculated.opponentScore
+    ) {
+      throw new BadRequestException(
+        `Score does not match player goals. Expected ${calculated.teamScore}-${calculated.opponentScore}.`,
+      );
+    }
 
     await this.prisma.$transaction(async (tx) => {
       for (const line of scoreSheet.playerLines) {
@@ -501,5 +512,41 @@ export class ScoreSheetsService {
       })),
       skipDuplicates: true,
     });
+  }
+
+  private calculateScoreTotals(scoreSheet: any) {
+    const teamScore = scoreSheet.playerLines
+      .filter((line: any) => line.member.teamId === scoreSheet.teamId)
+      .reduce((total: number, line: any) => total + line.goals, 0);
+
+    const opponentTeamId = scoreSheet.game.opponentTeamId;
+
+    const opponentScore = opponentTeamId
+      ? scoreSheet.playerLines
+          .filter((line: any) => line.member.teamId === opponentTeamId)
+          .reduce((total: number, line: any) => total + line.goals, 0)
+      : scoreSheet.opponentScore;
+
+    return {
+      teamScore,
+      opponentScore,
+    };
+  }
+
+  private async recalculateAndSaveScore(scoreSheetId: string) {
+    const scoreSheet = await this.getScoreSheetOrThrow(scoreSheetId);
+    const calculated = this.calculateScoreTotals(scoreSheet);
+
+    await this.prisma.gameScoreSheet.update({
+      where: {
+        id: scoreSheet.id,
+      },
+      data: {
+        teamScore: calculated.teamScore,
+        opponentScore: calculated.opponentScore,
+      },
+    });
+
+    return this.getScoreSheetOrThrow(scoreSheet.id);
   }
 }

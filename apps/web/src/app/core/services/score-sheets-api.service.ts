@@ -55,6 +55,7 @@ export interface ScoreSheetMemberDto {
   memberType: 'REGULAR' | 'SPARE';
   role?: 'PLAYER' | 'CAPTAIN' | 'GENERAL_MANAGER';
   isActive?: boolean;
+  team?: ScoreSheetTeamDto;
 }
 
 export interface ScoreSheetPlayerLineDto {

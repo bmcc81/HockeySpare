@@ -197,7 +197,9 @@ export class MyTeamComponent implements OnInit {
     this.route.queryParamMap.subscribe((params) => {
       this.selectedTeamId = params.get('teamId');
       this.isLeagueManagerView = params.get('leagueManager') === 'true';
+
       this.reload();
+      this.loadMyStats();
     });
 
     this.statForm.controls.season.valueChanges.subscribe((season) => {
@@ -295,14 +297,14 @@ export class MyTeamComponent implements OnInit {
     });
   }
 
-  loadMyStats() {
+  private loadMyStats(): void {
     this.teamApi.getTeamStats(this.selectedTeamId).subscribe({
       next: (stats) => {
-        this.myStats = stats ?? [];
-        this.cdr.detectChanges();
+        this.myStats = stats;
       },
       error: (err) => {
-        console.warn('Could not load team stats:', err);
+        console.error('Failed to load team stats', err);
+        this.myStats = [];
       },
     });
   }

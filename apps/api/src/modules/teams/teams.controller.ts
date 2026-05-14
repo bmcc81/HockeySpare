@@ -113,8 +113,8 @@ export class TeamsController {
   }
 
   @Get('stats/team')
-  getTeamStats(@Req() req: any) {
-    return this.teamsService.getTeamStats(this.getUserId(req));
+  getTeamStats(@Req() req: any, @Query('teamId') teamId?: string) {
+    return this.teamsService.getTeamStats(this.getUserId(req), teamId);
   }
 
   @Get('stats/me')
@@ -127,11 +127,13 @@ export class TeamsController {
     @Req() req: any,
     @Param('memberId') memberId: string,
     @Body() dto: UpsertPlayerStatDto,
+    @Query('teamId') teamId?: string,
   ) {
     return this.teamsService.upsertMemberStats(
       this.getUserId(req),
       memberId,
       dto,
+      teamId,
     );
   }
 
@@ -140,11 +142,13 @@ export class TeamsController {
     @Req() req: any,
     @Param('memberId') memberId: string,
     @Query('season') season?: string,
+    @Query('teamId') teamId?: string,
   ) {
     return this.teamsService.getMemberStats(
       this.getUserId(req),
       memberId,
       season,
+      teamId,
     );
   }
 

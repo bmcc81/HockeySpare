@@ -1514,22 +1514,29 @@ export class TeamsService {
     });
   }
 
-  async getTeamStats(userId: string) {
-    const team = await this.getUserTeam(userId);
+  async getTeamStats(userId: string, teamId?: string) {
+    const team = teamId
+      ? await this.getManagedTeam(userId, teamId)
+      : await this.getUserTeam(userId);
 
     return this.prisma.playerStat.findMany({
       where: {
         teamId: team.id,
-        member: {
-          isActive: true,
-        },
       },
       include: {
-        team: true,
-        league: true,
         member: true,
+        team: true,
       },
-      orderBy: [{ season: 'desc' }, { updatedAt: 'desc' }],
+      orderBy: [
+        {
+          season: 'desc',
+        },
+        {
+          member: {
+            displayName: 'asc',
+          },
+        },
+      ],
     });
   }
 }

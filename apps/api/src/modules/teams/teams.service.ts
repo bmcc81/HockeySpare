@@ -1323,10 +1323,6 @@ export class TeamsService {
         teamId: team.id,
         isActive: true,
       },
-      select: {
-        id: true,
-        userId: true,
-      },
     });
 
     if (!member) {
@@ -1341,24 +1337,24 @@ export class TeamsService {
         },
       },
       update: {
-        userId: member.userId ?? null,
-        teamId: team.id,
-        leagueId: team.leagueId ?? null,
         gamesPlayed: dto.gamesPlayed,
         goals: dto.goals,
         assists: dto.assists,
         penaltyMins: dto.penaltyMins,
+        teamId: team.id,
       },
       create: {
         memberId: member.id,
-        userId: member.userId ?? undefined,
         teamId: team.id,
-        leagueId: team.leagueId ?? undefined,
         season: dto.season,
         gamesPlayed: dto.gamesPlayed,
         goals: dto.goals,
         assists: dto.assists,
         penaltyMins: dto.penaltyMins,
+      },
+      include: {
+        member: true,
+        team: true,
       },
     });
   }

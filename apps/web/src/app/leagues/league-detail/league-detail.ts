@@ -5,7 +5,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   LeagueDto,
   TeamDto,
@@ -27,6 +27,7 @@ import { AuthStateService } from '../../auth/auth-state.service';
 })
 export class LeagueDetailComponent {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly leaguesApi = inject(LeaguesApiService);
   private readonly authState = inject(AuthStateService);
@@ -134,6 +135,21 @@ export class LeagueDetailComponent {
       ) ?? false
     );
   });
+
+  manageTeam(team: TeamDto): void {
+    if (!this.canManageTeam(team)) {
+      this.error.set('You do not have permission to manage this team.');
+      return;
+    }
+
+    this.router.navigate(['/my-team'], {
+      queryParams: {
+        teamId: team.id,
+        leagueId: this.leagueId,
+        leagueManager: this.canManageLeague() ? 'true' : null,
+      },
+    });
+  }
 
   canManageTeam(team: TeamDto): boolean {
     const userId = this.authState.user()?.id;

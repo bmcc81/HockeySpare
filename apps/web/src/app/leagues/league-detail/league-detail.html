@@ -429,14 +429,23 @@
                   </table>
                 </div>
 
-                <button
-                  *ngIf="canManageTeam(team)"
-                  type="button"
-                  class="btn btn-outline-primary btn-sm"
-                  (click)="openAddMember(team)"
-                >
-                  Invite Player
-                </button>
+                <div class="d-flex gap-2 flex-wrap mt-3" *ngIf="canManageTeam(team)">
+                  <button
+                    type="button"
+                    class="btn btn-outline-primary btn-sm"
+                    (click)="openAddMember(team)"
+                  >
+                    Invite Player
+                  </button>
+
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    (click)="manageTeam(team)"
+                  >
+                    Manage Team
+                  </button>
+                </div>
 
                 <div
                   *ngIf="memberTeamId() === team.id"

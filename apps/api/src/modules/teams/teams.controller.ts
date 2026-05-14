@@ -38,8 +38,8 @@ export class TeamsController {
   }
 
   @Get()
-  getMyTeam(@Req() req: any) {
-    return this.teamsService.getMyTeam(this.getUserId(req));
+  getMyTeam(@Req() req: any, @Query('teamId') teamId?: string) {
+    return this.teamsService.getMyTeam(this.getUserId(req), teamId);
   }
 
   @Post()
@@ -53,7 +53,11 @@ export class TeamsController {
   }
 
   @Post('members')
-  addMember(@Req() req: any, @Body() dto: CreateTeamMemberDto, @Query('teamId') teamId?: string) {
+  addMember(
+    @Req() req: any,
+    @Body() dto: CreateTeamMemberDto,
+    @Query('teamId') teamId?: string,
+  ) {
     return this.teamsService.addMember(this.getUserId(req), dto, teamId);
   }
 

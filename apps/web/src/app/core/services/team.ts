@@ -1,118 +1,214 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import {
   MyTeamResponse,
-  TeamGameAvailabilityStatus,
-  TeamMemberType,
   PlayerStat,
+  TeamGame,
+  TeamGameAvailabilityStatus,
   TeamMember,
 } from '@hockeyspare/contracts';
+import { Observable } from 'rxjs';
 
-export type AssignableTeamRole = 'PLAYER' | 'CAPTAIN';
+export type TeamMemberRole = 'PLAYER' | 'CAPTAIN' | 'GENERAL_MANAGER';
+export type TeamMemberType = 'REGULAR' | 'SPARE';
+export type TeamPosition = 'GOALIE' | 'DEFENSE' | 'FORWARD';
 
-@Injectable({ providedIn: 'root' })
+export interface CreateMyTeamInput {
+  name: string;
+}
+
+export interface UpdateMyTeamInput {
+  name: string;
+}
+
+export interface CreateTeamMemberInput {
+  displayName: string;
+  email?: string | null;
+  phone?: string | null;
+  position?: TeamPosition | string | null;
+  memberType: TeamMemberType | string;
+  notifyByApp?: boolean;
+  notifyByEmail?: boolean;
+}
+
+export interface CreateTeamGameInput {
+  title: string;
+  startsAt: string;
+  arena?: string | null;
+  opponent?: string | null;
+  notes?: string | null;
+}
+
+export interface UpsertPlayerStatInput {
+  season: string;
+  gamesPlayed: number;
+  goals: number;
+  assists: number;
+  penaltyMins: number;
+}
+
+export interface NotifyTeamGameResult {
+  emailSentCount?: number;
+  skippedAlreadyNotifiedCount?: number;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
 export class TeamService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = '/api/my-team';
 
-  getMyTeam(): Observable<MyTeamResponse> {
-    return this.http.get<MyTeamResponse>('/api/my-team', {
-      headers: new HttpHeaders({
-        'Cache-Control': 'no-cache',
-        Pragma: 'no-cache',
-      }),
-      params: new HttpParams().set('_ts', Date.now().toString()),
+  private teamParams(teamId?: string | null): HttpParams {
+    let params = new HttpParams();
+
+    if (teamId) {
+      params = params.set('teamId', teamId);
+    }
+
+    return params;
+  }
+
+  getMyTeam(teamId?: string | null): Observable<MyTeamResponse> {
+    return this.http.get<MyTeamResponse>(this.baseUrl, {
+      params: this.teamParams(teamId),
     });
   }
 
-  createMyTeam(payload: { name: string }): Observable<MyTeamResponse> {
-    return this.http.post<MyTeamResponse>('/api/my-team', payload);
+  createMyTeam(input: CreateMyTeamInput): Observable<MyTeamResponse> {
+    return this.http.post<MyTeamResponse>(this.baseUrl, input);
   }
 
-  updateMyTeam(input: { name: string }) {
-    return this.http.patch('/api/my-team', input);
+  updateMyTeam(
+    input: UpdateMyTeamInput,
+    teamId?: string | null,
+  ): Observable<MyTeamResponse> {
+    return this.http.patch<MyTeamResponse>(this.baseUrl, input, {
+      params: this.teamParams(teamId),
+    });
   }
 
-  getTeamStats() {
-    return this.http.get<PlayerStat[]>('/api/my-team/stats/team');
+  addMember(
+    input: CreateTeamMemberInput,
+    teamId?: string | null,
+  ): Observable<TeamMember> {
+    return this.http.post<TeamMember>(`${this.baseUrl}/members`, input, {
+      params: this.teamParams(teamId),
+    });
   }
 
-  addMember(payload: {
-    displayName: string;
-    email?: string;
-    phone?: string;
-    position?: string;
-    memberType: TeamMemberType;
-    notifyByApp: boolean;
-    notifyByEmail: boolean;
-  }) {
-    return this.http.post('/api/my-team/members', payload);
+  removeMember(memberId: string, teamId?: string | null): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/members/${memberId}`, {
+      params: this.teamParams(teamId),
+    });
   }
 
-  removeMember(memberId: string) {
-    return this.http.delete(`/api/my-team/members/${memberId}`);
+  updateMemberRole(
+    memberId: string,
+    role: TeamMemberRole,
+    teamId?: string | null,
+  ): Observable<TeamMember> {
+    return this.http.patch<TeamMember>(
+      `${this.baseUrl}/members/${memberId}/role`,
+      { role },
+      {
+        params: this.teamParams(teamId),
+      },
+    );
+  }
+
+  linkMemberToUser(
+    memberId: string,
+    teamId?: string | null,
+  ): Observable<TeamMember> {
+    return this.http.post<TeamMember>(
+      `${this.baseUrl}/members/${memberId}/link-user`,
+      {},
+      {
+        params: this.teamParams(teamId),
+      },
+    );
+  }
+
+  createGame(
+    input: CreateTeamGameInput,
+    teamId?: string | null,
+  ): Observable<TeamGame> {
+    return this.http.post<TeamGame>(`${this.baseUrl}/games`, input, {
+      params: this.teamParams(teamId),
+    });
+  }
+
+  notifyGame(
+    gameId: string,
+    teamId?: string | null,
+  ): Observable<NotifyTeamGameResult> {
+    return this.http.post<NotifyTeamGameResult>(
+      `${this.baseUrl}/games/${gameId}/notify`,
+      {},
+      {
+        params: this.teamParams(teamId),
+      },
+    );
   }
 
   respondToGame(
     gameId: string,
-    payload: { status: TeamGameAvailabilityStatus; note?: string },
-  ) {
-    return this.http.post(`/api/my-team/games/${gameId}/availability`, payload);
+    input: {
+      status: TeamGameAvailabilityStatus;
+      note?: string;
+    },
+  ): Observable<any> {
+    return this.http.post<any>(
+      `${this.baseUrl}/games/${gameId}/availability`,
+      input,
+    );
   }
 
-  createGame(payload: {
-    title: string;
-    startsAt: string;
-    arena?: string;
-    opponent?: string;
-    notes?: string;
-  }) {
-    return this.http.post('/api/my-team/games', payload);
+  getGameAvailability(gameId: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/games/${gameId}/availability`);
   }
 
-  notifyGame(gameId: string, memberIds?: string[]) {
-    return this.http.post(`/api/my-team/games/${gameId}/notify`, { memberIds });
+  getTeamStats(teamId?: string | null): Observable<PlayerStat[]> {
+    return this.http.get<PlayerStat[]>(`${this.baseUrl}/stats/team`, {
+      params: this.teamParams(teamId),
+    });
   }
 
-  getMyStats() {
-    return this.http.get<PlayerStat[]>('/api/my-team/stats/me');
+  getMyStats(): Observable<PlayerStat[]> {
+    return this.http.get<PlayerStat[]>(`${this.baseUrl}/stats/me`);
   }
 
-  linkMemberToUser(memberId: string) {
-    return this.http.post(`/api/my-team/members/${memberId}/link-user`, {});
+  getMemberStats(
+    memberId: string,
+    season?: string | null,
+    teamId?: string | null,
+  ): Observable<PlayerStat | null> {
+    let params = this.teamParams(teamId);
+
+    if (season) {
+      params = params.set('season', season);
+    }
+
+    return this.http.get<PlayerStat | null>(
+      `${this.baseUrl}/stats/member/${memberId}`,
+      {
+        params,
+      },
+    );
   }
 
   upsertMemberStats(
     memberId: string,
-    payload: {
-      season: string;
-      gamesPlayed: number;
-      goals: number;
-      assists: number;
-      penaltyMins: number;
-    },
-  ) {
-    return this.http.post(`/api/my-team/stats/member/${memberId}`, payload);
-  }
-
-  getMemberStats(memberId: string, season?: string) {
-    const params = new URLSearchParams();
-
-    if (season) {
-      params.set('season', season);
-    }
-
-    params.set('_ts', Date.now().toString());
-
-    return this.http.get<PlayerStat | null>(
-      `/api/my-team/stats/member/${memberId}?${params.toString()}`,
-    );
-  }
-
-  updateMemberRole(memberId: string, role: AssignableTeamRole) {
-    return this.http.patch<TeamMember>(
-      `/api/my-team/members/${memberId}/role`,
-      { role },
+    input: UpsertPlayerStatInput,
+    teamId?: string | null,
+  ): Observable<PlayerStat> {
+    return this.http.post<PlayerStat>(
+      `${this.baseUrl}/stats/member/${memberId}`,
+      input,
+      {
+        params: this.teamParams(teamId),
+      },
     );
   }
 }

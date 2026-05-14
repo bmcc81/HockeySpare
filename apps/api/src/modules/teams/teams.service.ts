@@ -224,7 +224,130 @@ export class TeamsService {
     throw new NotFoundException('No team found.');
   }
 
-  async getMyTeam(userId: string) {
+  async getMyTeam(userId: string, teamId?: string) {
+    if (teamId) {
+      const team = await this.getManagedTeam(userId, teamId);
+
+      const fullTeam = await this.prisma.team.findUnique({
+        where: {
+          id: team.id,
+        },
+        include: {
+          members: {
+            where: {
+              isActive: true,
+            },
+            orderBy: {
+              createdAt: 'asc',
+            },
+          },
+          games: {
+            orderBy: {
+              startsAt: 'asc',
+            },
+            include: {
+              opponentTeam: true,
+              invites: true,
+              availabilities: {
+                include: {
+                  member: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!fullTeam) {
+        throw new NotFoundException('Team not found.');
+      }
+
+      const myMembership = fullTeam.members.find(
+        (member) => member.userId === userId,
+      );
+
+      return {
+        ...fullTeam,
+        myMembership: myMembership ?? {
+          id: null,
+          teamId: fullTeam.id,
+          userId,
+          displayName: 'League Manager',
+          email: null,
+          phone: null,
+          position: null,
+          memberType: 'REGULAR',
+          role: 'GENERAL_MANAGER',
+          notifyByApp: false,
+          notifyByEmail: false,
+          isActive: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      };
+    }
+    
+    if (teamId) {
+      const team = await this.getManagedTeam(userId, teamId);
+
+      const fullTeam = await this.prisma.team.findUnique({
+        where: {
+          id: team.id,
+        },
+        include: {
+          members: {
+            where: {
+              isActive: true,
+            },
+            orderBy: {
+              createdAt: 'asc',
+            },
+          },
+          games: {
+            orderBy: {
+              startsAt: 'asc',
+            },
+            include: {
+              opponentTeam: true,
+              invites: true,
+              availabilities: {
+                include: {
+                  member: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!fullTeam) {
+        throw new NotFoundException('Team not found.');
+      }
+
+      const myMembership = fullTeam.members.find(
+        (member) => member.userId === userId,
+      );
+
+      return {
+        ...fullTeam,
+        myMembership: myMembership ?? {
+          id: null,
+          teamId: fullTeam.id,
+          userId,
+          displayName: 'League Manager',
+          email: null,
+          phone: null,
+          position: null,
+          memberType: 'REGULAR',
+          role: 'GENERAL_MANAGER',
+          notifyByApp: false,
+          notifyByEmail: false,
+          isActive: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      };
+    }
     await this.linkPendingTeamMembershipsByEmail(userId);
 
     const team = await this.getUserTeam(userId);

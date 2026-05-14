@@ -65,7 +65,9 @@ export const ModelName = {
   TeamGameInvite: 'TeamGameInvite',
   TeamGameAvailability: 'TeamGameAvailability',
   Notification: 'Notification',
-  Booking: 'Booking'
+  Booking: 'Booking',
+  GameScoreSheet: 'GameScoreSheet',
+  GameScoreSheetPlayer: 'GameScoreSheetPlayer'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -180,7 +182,8 @@ export const LeagueMemberScalarFieldEnum = {
   leagueId: 'leagueId',
   userId: 'userId',
   role: 'role',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  gameScoreSheetId: 'gameScoreSheetId'
 } as const
 
 export type LeagueMemberScalarFieldEnum = (typeof LeagueMemberScalarFieldEnum)[keyof typeof LeagueMemberScalarFieldEnum]
@@ -307,6 +310,39 @@ export const BookingScalarFieldEnum = {
 } as const
 
 export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
+
+
+export const GameScoreSheetScalarFieldEnum = {
+  id: 'id',
+  gameId: 'gameId',
+  leagueId: 'leagueId',
+  teamId: 'teamId',
+  teamScore: 'teamScore',
+  opponentScore: 'opponentScore',
+  status: 'status',
+  finalizedAt: 'finalizedAt',
+  finalizedById: 'finalizedById',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GameScoreSheetScalarFieldEnum = (typeof GameScoreSheetScalarFieldEnum)[keyof typeof GameScoreSheetScalarFieldEnum]
+
+
+export const GameScoreSheetPlayerScalarFieldEnum = {
+  id: 'id',
+  scoreSheetId: 'scoreSheetId',
+  memberId: 'memberId',
+  gamesPlayed: 'gamesPlayed',
+  goals: 'goals',
+  assists: 'assists',
+  penaltyMins: 'penaltyMins',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GameScoreSheetPlayerScalarFieldEnum = (typeof GameScoreSheetPlayerScalarFieldEnum)[keyof typeof GameScoreSheetPlayerScalarFieldEnum]
 
 
 export const SortOrder = {

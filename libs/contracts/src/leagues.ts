@@ -1,4 +1,4 @@
-export type LeagueRole = "PLAYER" | "TEAM_MANAGER" | "LEAGUE_MANAGER";
+export type LeagueRole = "PLAYER" | "TEAM_MANAGER" | "LEAGUE_MANAGER" | 'TIMEKEEPER';
 
 export interface LeagueDto {
   id: string;

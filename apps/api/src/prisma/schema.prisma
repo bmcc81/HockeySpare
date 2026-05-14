@@ -29,6 +29,7 @@ enum LeagueRole {
   PLAYER
   TEAM_MANAGER
   LEAGUE_MANAGER
+  TIMEKEEPER
 }
 
 enum TeamGameAvailabilityStatus {
@@ -175,6 +176,8 @@ model User {
   requestResponses RequestResponse[]
   bookings         Booking[]
 
+  finalizedScoreSheets GameScoreSheet[]
+
   createdTeams      Team[]         @relation("CreatedTeams")
   teamMemberships   TeamMember[]   @relation("UserTeamMemberships")
   leagueMemberships LeagueMember[]
@@ -187,6 +190,8 @@ model League {
   season    String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  scoreSheets GameScoreSheet[]
 
   teams       Team[]
   members     LeagueMember[]
@@ -203,7 +208,7 @@ model LeagueArena {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  league League    @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  league League     @relation(fields: [leagueId], references: [id], onDelete: Cascade)
   games  TeamGame[]
 
   @@unique([leagueId, name])
@@ -217,8 +222,11 @@ model LeagueMember {
   role      LeagueRole @default(PLAYER)
   createdAt DateTime   @default(now())
 
-  league League @relation(fields: [leagueId], references: [id], onDelete: Cascade)
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  scoreSheet GameScoreSheet? @relation(fields: [gameScoreSheetId], references: [id])
+
+  league           League  @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  user             User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gameScoreSheetId String?
 
   @@unique([leagueId, userId])
   @@index([leagueId, role])
@@ -233,12 +241,14 @@ model Team {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  createdBy   User?        @relation("CreatedTeams", fields: [createdById], references: [id], onDelete: SetNull)
-  league      League?      @relation(fields: [leagueId], references: [id], onDelete: SetNull)
-  members     TeamMember[]
-  games       TeamGame[]   @relation("TeamGameTeam")
-  opponentGames TeamGame[] @relation("TeamGameOpponentTeam")
-  playerStats PlayerStat[]
+  scoreSheets GameScoreSheet[]
+
+  createdBy     User?        @relation("CreatedTeams", fields: [createdById], references: [id], onDelete: SetNull)
+  league        League?      @relation(fields: [leagueId], references: [id], onDelete: SetNull)
+  members       TeamMember[]
+  games         TeamGame[]   @relation("TeamGameTeam")
+  opponentGames TeamGame[]   @relation("TeamGameOpponentTeam")
+  playerStats   PlayerStat[]
 
   @@index([leagueId])
 }
@@ -260,11 +270,12 @@ model TeamMember {
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 
-  team           Team                   @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  user           User?                  @relation("UserTeamMemberships", fields: [userId], references: [id], onDelete: SetNull)
-  invites        TeamGameInvite[]
-  availabilities TeamGameAvailability[]
-  playerStats    PlayerStat[]
+  team                  Team                   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user                  User?                  @relation("UserTeamMemberships", fields: [userId], references: [id], onDelete: SetNull)
+  invites               TeamGameInvite[]
+  availabilities        TeamGameAvailability[]
+  playerStats           PlayerStat[]
+  gameScoreSheetPlayers GameScoreSheetPlayer[]
 
   @@index([teamId, memberType])
   @@index([teamId, role])
@@ -314,6 +325,7 @@ model TeamGame {
 
   invites        TeamGameInvite[]
   availabilities TeamGameAvailability[]
+  gameScoreSheet GameScoreSheet?
 
   @@index([leagueId, startsAt])
   @@index([teamId, startsAt])
@@ -382,4 +394,55 @@ model Booking {
   user    User    @relation(fields: [userId], references: [id])
 
   @@unique([requestId, userId])
+}
+
+enum ScoreSheetStatus {
+  DRAFT
+  FINALIZED
+}
+
+model GameScoreSheet {
+  id       String @id @default(cuid())
+  gameId   String @unique
+  leagueId String
+  teamId   String
+
+  teamScore     Int @default(0)
+  opponentScore Int @default(0)
+
+  status        ScoreSheetStatus @default(DRAFT)
+  finalizedAt   DateTime?
+  finalizedById String?
+
+  notes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  game        TeamGame @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  league      League   @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  team        Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  finalizedBy User?    @relation(fields: [finalizedById], references: [id])
+
+  playerLines   GameScoreSheetPlayer[]
+  leagueMembers LeagueMember[]
+}
+
+model GameScoreSheetPlayer {
+  id           String @id @default(cuid())
+  scoreSheetId String
+  memberId     String
+
+  gamesPlayed Int @default(1)
+  goals       Int @default(0)
+  assists     Int @default(0)
+  penaltyMins Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  scoreSheet GameScoreSheet @relation(fields: [scoreSheetId], references: [id], onDelete: Cascade)
+  member     TeamMember     @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([scoreSheetId, memberId])
 }

@@ -761,6 +761,15 @@ export class LeagueDetailComponent {
     }
   }
 
+  openScoreSheet(game: TeamGameDto): void {
+    this.router.navigate(['/score-sheets', 'games', game.id], {
+      queryParams: {
+        leagueId: this.leagueId,
+        teamId: game.teamId,
+      },
+    });
+  }
+
   trackGameById(_index: number, game: TeamGameDto): string {
     return game.id;
   }

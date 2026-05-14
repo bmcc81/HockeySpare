@@ -211,6 +211,7 @@ export type UserWhereInput = {
   notifications?: Prisma.NotificationListRelationFilter
   requestResponses?: Prisma.RequestResponseListRelationFilter
   bookings?: Prisma.BookingListRelationFilter
+  finalizedScoreSheets?: Prisma.GameScoreSheetListRelationFilter
   createdTeams?: Prisma.TeamListRelationFilter
   teamMemberships?: Prisma.TeamMemberListRelationFilter
   leagueMemberships?: Prisma.LeagueMemberListRelationFilter
@@ -231,6 +232,7 @@ export type UserOrderByWithRelationInput = {
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
   requestResponses?: Prisma.RequestResponseOrderByRelationAggregateInput
   bookings?: Prisma.BookingOrderByRelationAggregateInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetOrderByRelationAggregateInput
   createdTeams?: Prisma.TeamOrderByRelationAggregateInput
   teamMemberships?: Prisma.TeamMemberOrderByRelationAggregateInput
   leagueMemberships?: Prisma.LeagueMemberOrderByRelationAggregateInput
@@ -254,6 +256,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   notifications?: Prisma.NotificationListRelationFilter
   requestResponses?: Prisma.RequestResponseListRelationFilter
   bookings?: Prisma.BookingListRelationFilter
+  finalizedScoreSheets?: Prisma.GameScoreSheetListRelationFilter
   createdTeams?: Prisma.TeamListRelationFilter
   teamMemberships?: Prisma.TeamMemberListRelationFilter
   leagueMemberships?: Prisma.LeagueMemberListRelationFilter
@@ -302,6 +305,7 @@ export type UserCreateInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseCreateNestedManyWithoutResponderInput
   bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetCreateNestedManyWithoutFinalizedByInput
   createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatedByInput
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   leagueMemberships?: Prisma.LeagueMemberCreateNestedManyWithoutUserInput
@@ -322,6 +326,7 @@ export type UserUncheckedCreateInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseUncheckedCreateNestedManyWithoutResponderInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUncheckedCreateNestedManyWithoutFinalizedByInput
   createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatedByInput
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   leagueMemberships?: Prisma.LeagueMemberUncheckedCreateNestedManyWithoutUserInput
@@ -342,6 +347,7 @@ export type UserUpdateInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUpdateManyWithoutResponderNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUpdateManyWithoutFinalizedByNestedInput
   createdTeams?: Prisma.TeamUpdateManyWithoutCreatedByNestedInput
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   leagueMemberships?: Prisma.LeagueMemberUpdateManyWithoutUserNestedInput
@@ -362,6 +368,7 @@ export type UserUncheckedUpdateInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUncheckedUpdateManyWithoutResponderNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUncheckedUpdateManyWithoutFinalizedByNestedInput
   createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatedByNestedInput
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   leagueMemberships?: Prisma.LeagueMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -580,6 +587,22 @@ export type UserUpdateOneRequiredWithoutBookingsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBookingsInput, Prisma.UserUpdateWithoutBookingsInput>, Prisma.UserUncheckedUpdateWithoutBookingsInput>
 }
 
+export type UserCreateNestedOneWithoutFinalizedScoreSheetsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutFinalizedScoreSheetsInput, Prisma.UserUncheckedCreateWithoutFinalizedScoreSheetsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFinalizedScoreSheetsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutFinalizedScoreSheetsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutFinalizedScoreSheetsInput, Prisma.UserUncheckedCreateWithoutFinalizedScoreSheetsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFinalizedScoreSheetsInput
+  upsert?: Prisma.UserUpsertWithoutFinalizedScoreSheetsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFinalizedScoreSheetsInput, Prisma.UserUpdateWithoutFinalizedScoreSheetsInput>, Prisma.UserUncheckedUpdateWithoutFinalizedScoreSheetsInput>
+}
+
 export type UserCreateWithoutRequestsInput = {
   id?: string
   email: string
@@ -593,6 +616,7 @@ export type UserCreateWithoutRequestsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseCreateNestedManyWithoutResponderInput
   bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetCreateNestedManyWithoutFinalizedByInput
   createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatedByInput
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   leagueMemberships?: Prisma.LeagueMemberCreateNestedManyWithoutUserInput
@@ -612,6 +636,7 @@ export type UserUncheckedCreateWithoutRequestsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseUncheckedCreateNestedManyWithoutResponderInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUncheckedCreateNestedManyWithoutFinalizedByInput
   createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatedByInput
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   leagueMemberships?: Prisma.LeagueMemberUncheckedCreateNestedManyWithoutUserInput
@@ -647,6 +672,7 @@ export type UserUpdateWithoutRequestsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUpdateManyWithoutResponderNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUpdateManyWithoutFinalizedByNestedInput
   createdTeams?: Prisma.TeamUpdateManyWithoutCreatedByNestedInput
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   leagueMemberships?: Prisma.LeagueMemberUpdateManyWithoutUserNestedInput
@@ -666,6 +692,7 @@ export type UserUncheckedUpdateWithoutRequestsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUncheckedUpdateManyWithoutResponderNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUncheckedUpdateManyWithoutFinalizedByNestedInput
   createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatedByNestedInput
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   leagueMemberships?: Prisma.LeagueMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -685,6 +712,7 @@ export type UserCreateWithoutRequestResponsesInput = {
   playerOffers?: Prisma.PlayerOfferCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetCreateNestedManyWithoutFinalizedByInput
   createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatedByInput
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   leagueMemberships?: Prisma.LeagueMemberCreateNestedManyWithoutUserInput
@@ -704,6 +732,7 @@ export type UserUncheckedCreateWithoutRequestResponsesInput = {
   playerOffers?: Prisma.PlayerOfferUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUncheckedCreateNestedManyWithoutFinalizedByInput
   createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatedByInput
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   leagueMemberships?: Prisma.LeagueMemberUncheckedCreateNestedManyWithoutUserInput
@@ -739,6 +768,7 @@ export type UserUpdateWithoutRequestResponsesInput = {
   playerOffers?: Prisma.PlayerOfferUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUpdateManyWithoutFinalizedByNestedInput
   createdTeams?: Prisma.TeamUpdateManyWithoutCreatedByNestedInput
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   leagueMemberships?: Prisma.LeagueMemberUpdateManyWithoutUserNestedInput
@@ -758,6 +788,7 @@ export type UserUncheckedUpdateWithoutRequestResponsesInput = {
   playerOffers?: Prisma.PlayerOfferUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUncheckedUpdateManyWithoutFinalizedByNestedInput
   createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatedByNestedInput
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   leagueMemberships?: Prisma.LeagueMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -777,6 +808,7 @@ export type UserCreateWithoutPlayerOffersInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseCreateNestedManyWithoutResponderInput
   bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetCreateNestedManyWithoutFinalizedByInput
   createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatedByInput
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   leagueMemberships?: Prisma.LeagueMemberCreateNestedManyWithoutUserInput
@@ -796,6 +828,7 @@ export type UserUncheckedCreateWithoutPlayerOffersInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseUncheckedCreateNestedManyWithoutResponderInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUncheckedCreateNestedManyWithoutFinalizedByInput
   createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatedByInput
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   leagueMemberships?: Prisma.LeagueMemberUncheckedCreateNestedManyWithoutUserInput
@@ -831,6 +864,7 @@ export type UserUpdateWithoutPlayerOffersInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUpdateManyWithoutResponderNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUpdateManyWithoutFinalizedByNestedInput
   createdTeams?: Prisma.TeamUpdateManyWithoutCreatedByNestedInput
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   leagueMemberships?: Prisma.LeagueMemberUpdateManyWithoutUserNestedInput
@@ -850,6 +884,7 @@ export type UserUncheckedUpdateWithoutPlayerOffersInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUncheckedUpdateManyWithoutResponderNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUncheckedUpdateManyWithoutFinalizedByNestedInput
   createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatedByNestedInput
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   leagueMemberships?: Prisma.LeagueMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -870,6 +905,7 @@ export type UserCreateWithoutLeagueMembershipsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseCreateNestedManyWithoutResponderInput
   bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetCreateNestedManyWithoutFinalizedByInput
   createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatedByInput
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   playerStats?: Prisma.PlayerStatCreateNestedManyWithoutUserInput
@@ -889,6 +925,7 @@ export type UserUncheckedCreateWithoutLeagueMembershipsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseUncheckedCreateNestedManyWithoutResponderInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUncheckedCreateNestedManyWithoutFinalizedByInput
   createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatedByInput
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutUserInput
@@ -924,6 +961,7 @@ export type UserUpdateWithoutLeagueMembershipsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUpdateManyWithoutResponderNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUpdateManyWithoutFinalizedByNestedInput
   createdTeams?: Prisma.TeamUpdateManyWithoutCreatedByNestedInput
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   playerStats?: Prisma.PlayerStatUpdateManyWithoutUserNestedInput
@@ -943,6 +981,7 @@ export type UserUncheckedUpdateWithoutLeagueMembershipsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUncheckedUpdateManyWithoutResponderNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUncheckedUpdateManyWithoutFinalizedByNestedInput
   createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatedByNestedInput
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutUserNestedInput
@@ -962,6 +1001,7 @@ export type UserCreateWithoutCreatedTeamsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseCreateNestedManyWithoutResponderInput
   bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetCreateNestedManyWithoutFinalizedByInput
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   leagueMemberships?: Prisma.LeagueMemberCreateNestedManyWithoutUserInput
   playerStats?: Prisma.PlayerStatCreateNestedManyWithoutUserInput
@@ -981,6 +1021,7 @@ export type UserUncheckedCreateWithoutCreatedTeamsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseUncheckedCreateNestedManyWithoutResponderInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUncheckedCreateNestedManyWithoutFinalizedByInput
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   leagueMemberships?: Prisma.LeagueMemberUncheckedCreateNestedManyWithoutUserInput
   playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutUserInput
@@ -1016,6 +1057,7 @@ export type UserUpdateWithoutCreatedTeamsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUpdateManyWithoutResponderNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUpdateManyWithoutFinalizedByNestedInput
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   leagueMemberships?: Prisma.LeagueMemberUpdateManyWithoutUserNestedInput
   playerStats?: Prisma.PlayerStatUpdateManyWithoutUserNestedInput
@@ -1035,6 +1077,7 @@ export type UserUncheckedUpdateWithoutCreatedTeamsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUncheckedUpdateManyWithoutResponderNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUncheckedUpdateManyWithoutFinalizedByNestedInput
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   leagueMemberships?: Prisma.LeagueMemberUncheckedUpdateManyWithoutUserNestedInput
   playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutUserNestedInput
@@ -1054,6 +1097,7 @@ export type UserCreateWithoutTeamMembershipsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseCreateNestedManyWithoutResponderInput
   bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetCreateNestedManyWithoutFinalizedByInput
   createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatedByInput
   leagueMemberships?: Prisma.LeagueMemberCreateNestedManyWithoutUserInput
   playerStats?: Prisma.PlayerStatCreateNestedManyWithoutUserInput
@@ -1073,6 +1117,7 @@ export type UserUncheckedCreateWithoutTeamMembershipsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseUncheckedCreateNestedManyWithoutResponderInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUncheckedCreateNestedManyWithoutFinalizedByInput
   createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatedByInput
   leagueMemberships?: Prisma.LeagueMemberUncheckedCreateNestedManyWithoutUserInput
   playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutUserInput
@@ -1108,6 +1153,7 @@ export type UserUpdateWithoutTeamMembershipsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUpdateManyWithoutResponderNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUpdateManyWithoutFinalizedByNestedInput
   createdTeams?: Prisma.TeamUpdateManyWithoutCreatedByNestedInput
   leagueMemberships?: Prisma.LeagueMemberUpdateManyWithoutUserNestedInput
   playerStats?: Prisma.PlayerStatUpdateManyWithoutUserNestedInput
@@ -1127,6 +1173,7 @@ export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUncheckedUpdateManyWithoutResponderNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUncheckedUpdateManyWithoutFinalizedByNestedInput
   createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatedByNestedInput
   leagueMemberships?: Prisma.LeagueMemberUncheckedUpdateManyWithoutUserNestedInput
   playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutUserNestedInput
@@ -1146,6 +1193,7 @@ export type UserCreateWithoutPlayerStatsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseCreateNestedManyWithoutResponderInput
   bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetCreateNestedManyWithoutFinalizedByInput
   createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatedByInput
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   leagueMemberships?: Prisma.LeagueMemberCreateNestedManyWithoutUserInput
@@ -1165,6 +1213,7 @@ export type UserUncheckedCreateWithoutPlayerStatsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseUncheckedCreateNestedManyWithoutResponderInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUncheckedCreateNestedManyWithoutFinalizedByInput
   createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatedByInput
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   leagueMemberships?: Prisma.LeagueMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1200,6 +1249,7 @@ export type UserUpdateWithoutPlayerStatsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUpdateManyWithoutResponderNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUpdateManyWithoutFinalizedByNestedInput
   createdTeams?: Prisma.TeamUpdateManyWithoutCreatedByNestedInput
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   leagueMemberships?: Prisma.LeagueMemberUpdateManyWithoutUserNestedInput
@@ -1219,6 +1269,7 @@ export type UserUncheckedUpdateWithoutPlayerStatsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUncheckedUpdateManyWithoutResponderNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUncheckedUpdateManyWithoutFinalizedByNestedInput
   createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatedByNestedInput
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   leagueMemberships?: Prisma.LeagueMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1237,6 +1288,7 @@ export type UserCreateWithoutNotificationsInput = {
   playerOffers?: Prisma.PlayerOfferCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseCreateNestedManyWithoutResponderInput
   bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetCreateNestedManyWithoutFinalizedByInput
   createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatedByInput
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   leagueMemberships?: Prisma.LeagueMemberCreateNestedManyWithoutUserInput
@@ -1256,6 +1308,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   playerOffers?: Prisma.PlayerOfferUncheckedCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseUncheckedCreateNestedManyWithoutResponderInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUncheckedCreateNestedManyWithoutFinalizedByInput
   createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatedByInput
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   leagueMemberships?: Prisma.LeagueMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1291,6 +1344,7 @@ export type UserUpdateWithoutNotificationsInput = {
   playerOffers?: Prisma.PlayerOfferUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUpdateManyWithoutResponderNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUpdateManyWithoutFinalizedByNestedInput
   createdTeams?: Prisma.TeamUpdateManyWithoutCreatedByNestedInput
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   leagueMemberships?: Prisma.LeagueMemberUpdateManyWithoutUserNestedInput
@@ -1310,6 +1364,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   playerOffers?: Prisma.PlayerOfferUncheckedUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUncheckedUpdateManyWithoutResponderNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUncheckedUpdateManyWithoutFinalizedByNestedInput
   createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatedByNestedInput
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   leagueMemberships?: Prisma.LeagueMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1329,6 +1384,7 @@ export type UserCreateWithoutBookingsInput = {
   playerOffers?: Prisma.PlayerOfferCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseCreateNestedManyWithoutResponderInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetCreateNestedManyWithoutFinalizedByInput
   createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatedByInput
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   leagueMemberships?: Prisma.LeagueMemberCreateNestedManyWithoutUserInput
@@ -1348,6 +1404,7 @@ export type UserUncheckedCreateWithoutBookingsInput = {
   playerOffers?: Prisma.PlayerOfferUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   requestResponses?: Prisma.RequestResponseUncheckedCreateNestedManyWithoutResponderInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUncheckedCreateNestedManyWithoutFinalizedByInput
   createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatedByInput
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   leagueMemberships?: Prisma.LeagueMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1383,6 +1440,7 @@ export type UserUpdateWithoutBookingsInput = {
   playerOffers?: Prisma.PlayerOfferUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUpdateManyWithoutResponderNestedInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUpdateManyWithoutFinalizedByNestedInput
   createdTeams?: Prisma.TeamUpdateManyWithoutCreatedByNestedInput
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   leagueMemberships?: Prisma.LeagueMemberUpdateManyWithoutUserNestedInput
@@ -1402,6 +1460,103 @@ export type UserUncheckedUpdateWithoutBookingsInput = {
   playerOffers?: Prisma.PlayerOfferUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   requestResponses?: Prisma.RequestResponseUncheckedUpdateManyWithoutResponderNestedInput
+  finalizedScoreSheets?: Prisma.GameScoreSheetUncheckedUpdateManyWithoutFinalizedByNestedInput
+  createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatedByNestedInput
+  teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
+  leagueMemberships?: Prisma.LeagueMemberUncheckedUpdateManyWithoutUserNestedInput
+  playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutFinalizedScoreSheetsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  firstName?: string | null
+  lastName?: string | null
+  appRole?: $Enums.AppRole
+  requests?: Prisma.RequestCreateNestedManyWithoutUserInput
+  playerOffers?: Prisma.PlayerOfferCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  requestResponses?: Prisma.RequestResponseCreateNestedManyWithoutResponderInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamCreateNestedManyWithoutCreatedByInput
+  teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
+  leagueMemberships?: Prisma.LeagueMemberCreateNestedManyWithoutUserInput
+  playerStats?: Prisma.PlayerStatCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutFinalizedScoreSheetsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  firstName?: string | null
+  lastName?: string | null
+  appRole?: $Enums.AppRole
+  requests?: Prisma.RequestUncheckedCreateNestedManyWithoutUserInput
+  playerOffers?: Prisma.PlayerOfferUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  requestResponses?: Prisma.RequestResponseUncheckedCreateNestedManyWithoutResponderInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
+  createdTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutCreatedByInput
+  teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
+  leagueMemberships?: Prisma.LeagueMemberUncheckedCreateNestedManyWithoutUserInput
+  playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutFinalizedScoreSheetsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutFinalizedScoreSheetsInput, Prisma.UserUncheckedCreateWithoutFinalizedScoreSheetsInput>
+}
+
+export type UserUpsertWithoutFinalizedScoreSheetsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutFinalizedScoreSheetsInput, Prisma.UserUncheckedUpdateWithoutFinalizedScoreSheetsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutFinalizedScoreSheetsInput, Prisma.UserUncheckedCreateWithoutFinalizedScoreSheetsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutFinalizedScoreSheetsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutFinalizedScoreSheetsInput, Prisma.UserUncheckedUpdateWithoutFinalizedScoreSheetsInput>
+}
+
+export type UserUpdateWithoutFinalizedScoreSheetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  appRole?: Prisma.EnumAppRoleFieldUpdateOperationsInput | $Enums.AppRole
+  requests?: Prisma.RequestUpdateManyWithoutUserNestedInput
+  playerOffers?: Prisma.PlayerOfferUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  requestResponses?: Prisma.RequestResponseUpdateManyWithoutResponderNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
+  createdTeams?: Prisma.TeamUpdateManyWithoutCreatedByNestedInput
+  teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
+  leagueMemberships?: Prisma.LeagueMemberUpdateManyWithoutUserNestedInput
+  playerStats?: Prisma.PlayerStatUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutFinalizedScoreSheetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  appRole?: Prisma.EnumAppRoleFieldUpdateOperationsInput | $Enums.AppRole
+  requests?: Prisma.RequestUncheckedUpdateManyWithoutUserNestedInput
+  playerOffers?: Prisma.PlayerOfferUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  requestResponses?: Prisma.RequestResponseUncheckedUpdateManyWithoutResponderNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   createdTeams?: Prisma.TeamUncheckedUpdateManyWithoutCreatedByNestedInput
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   leagueMemberships?: Prisma.LeagueMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1419,6 +1574,7 @@ export type UserCountOutputType = {
   notifications: number
   requestResponses: number
   bookings: number
+  finalizedScoreSheets: number
   createdTeams: number
   teamMemberships: number
   leagueMemberships: number
@@ -1431,6 +1587,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
   requestResponses?: boolean | UserCountOutputTypeCountRequestResponsesArgs
   bookings?: boolean | UserCountOutputTypeCountBookingsArgs
+  finalizedScoreSheets?: boolean | UserCountOutputTypeCountFinalizedScoreSheetsArgs
   createdTeams?: boolean | UserCountOutputTypeCountCreatedTeamsArgs
   teamMemberships?: boolean | UserCountOutputTypeCountTeamMembershipsArgs
   leagueMemberships?: boolean | UserCountOutputTypeCountLeagueMembershipsArgs
@@ -1485,6 +1642,13 @@ export type UserCountOutputTypeCountBookingsArgs<ExtArgs extends runtime.Types.E
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountFinalizedScoreSheetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.GameScoreSheetWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountCreatedTeamsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.TeamWhereInput
 }
@@ -1525,6 +1689,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   requestResponses?: boolean | Prisma.User$requestResponsesArgs<ExtArgs>
   bookings?: boolean | Prisma.User$bookingsArgs<ExtArgs>
+  finalizedScoreSheets?: boolean | Prisma.User$finalizedScoreSheetsArgs<ExtArgs>
   createdTeams?: boolean | Prisma.User$createdTeamsArgs<ExtArgs>
   teamMemberships?: boolean | Prisma.User$teamMembershipsArgs<ExtArgs>
   leagueMemberships?: boolean | Prisma.User$leagueMembershipsArgs<ExtArgs>
@@ -1572,6 +1737,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   requestResponses?: boolean | Prisma.User$requestResponsesArgs<ExtArgs>
   bookings?: boolean | Prisma.User$bookingsArgs<ExtArgs>
+  finalizedScoreSheets?: boolean | Prisma.User$finalizedScoreSheetsArgs<ExtArgs>
   createdTeams?: boolean | Prisma.User$createdTeamsArgs<ExtArgs>
   teamMemberships?: boolean | Prisma.User$teamMembershipsArgs<ExtArgs>
   leagueMemberships?: boolean | Prisma.User$leagueMembershipsArgs<ExtArgs>
@@ -1589,6 +1755,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
     requestResponses: Prisma.$RequestResponsePayload<ExtArgs>[]
     bookings: Prisma.$BookingPayload<ExtArgs>[]
+    finalizedScoreSheets: Prisma.$GameScoreSheetPayload<ExtArgs>[]
     createdTeams: Prisma.$TeamPayload<ExtArgs>[]
     teamMemberships: Prisma.$TeamMemberPayload<ExtArgs>[]
     leagueMemberships: Prisma.$LeagueMemberPayload<ExtArgs>[]
@@ -2002,6 +2169,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   requestResponses<T extends Prisma.User$requestResponsesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$requestResponsesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RequestResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   bookings<T extends Prisma.User$bookingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$bookingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  finalizedScoreSheets<T extends Prisma.User$finalizedScoreSheetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$finalizedScoreSheetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GameScoreSheetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdTeams<T extends Prisma.User$createdTeamsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdTeamsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   teamMemberships<T extends Prisma.User$teamMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$teamMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   leagueMemberships<T extends Prisma.User$leagueMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$leagueMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeagueMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2553,6 +2721,30 @@ export type User$bookingsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.BookingScalarFieldEnum | Prisma.BookingScalarFieldEnum[]
+}
+
+/**
+ * User.finalizedScoreSheets
+ */
+export type User$finalizedScoreSheetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the GameScoreSheet
+   */
+  select?: Prisma.GameScoreSheetSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the GameScoreSheet
+   */
+  omit?: Prisma.GameScoreSheetOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GameScoreSheetInclude<ExtArgs> | null
+  where?: Prisma.GameScoreSheetWhereInput
+  orderBy?: Prisma.GameScoreSheetOrderByWithRelationInput | Prisma.GameScoreSheetOrderByWithRelationInput[]
+  cursor?: Prisma.GameScoreSheetWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.GameScoreSheetScalarFieldEnum | Prisma.GameScoreSheetScalarFieldEnum[]
 }
 
 /**

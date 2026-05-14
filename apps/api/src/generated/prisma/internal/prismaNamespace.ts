@@ -398,7 +398,9 @@ export const ModelName = {
   TeamGameInvite: 'TeamGameInvite',
   TeamGameAvailability: 'TeamGameAvailability',
   Notification: 'Notification',
-  Booking: 'Booking'
+  Booking: 'Booking',
+  GameScoreSheet: 'GameScoreSheet',
+  GameScoreSheetPlayer: 'GameScoreSheetPlayer'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -414,7 +416,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "request" | "requestResponse" | "playerOffer" | "user" | "league" | "leagueArena" | "leagueMember" | "team" | "teamMember" | "playerStat" | "teamGame" | "teamGameInvite" | "teamGameAvailability" | "notification" | "booking"
+    modelProps: "request" | "requestResponse" | "playerOffer" | "user" | "league" | "leagueArena" | "leagueMember" | "team" | "teamMember" | "playerStat" | "teamGame" | "teamGameInvite" | "teamGameAvailability" | "notification" | "booking" | "gameScoreSheet" | "gameScoreSheetPlayer"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1528,6 +1530,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    GameScoreSheet: {
+      payload: Prisma.$GameScoreSheetPayload<ExtArgs>
+      fields: Prisma.GameScoreSheetFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.GameScoreSheetFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameScoreSheetPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.GameScoreSheetFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameScoreSheetPayload>
+        }
+        findFirst: {
+          args: Prisma.GameScoreSheetFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameScoreSheetPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.GameScoreSheetFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameScoreSheetPayload>
+        }
+        findMany: {
+          args: Prisma.GameScoreSheetFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameScoreSheetPayload>[]
+        }
+        create: {
+          args: Prisma.GameScoreSheetCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameScoreSheetPayload>
+        }
+        createMany: {
+          args: Prisma.GameScoreSheetCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.GameScoreSheetCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameScoreSheetPayload>[]
+        }
+        delete: {
+          args: Prisma.GameScoreSheetDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameScoreSheetPayload>
+        }
+        update: {
+          args: Prisma.GameScoreSheetUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameScoreSheetPayload>
+        }
+        deleteMany: {
+          args: Prisma.GameScoreSheetDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.GameScoreSheetUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.GameScoreSheetUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameScoreSheetPayload>[]
+        }
+        upsert: {
+          args: Prisma.GameScoreSheetUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameScoreSheetPayload>
+        }
+        aggregate: {
+          args: Prisma.GameScoreSheetAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGameScoreSheet>
+        }
+        groupBy: {
+          args: Prisma.GameScoreSheetGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GameScoreSheetGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.GameScoreSheetCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GameScoreSheetCountAggregateOutputType> | number
+        }
+      }
+    }
+    GameScoreSheetPlayer: {
+      payload: Prisma.$GameScoreSheetPlayerPayload<ExtArgs>
+      fields: Prisma.GameScoreSheetPlayerFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.GameScoreSheetPlayerFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameScoreSheetPlayerPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.GameScoreSheetPlayerFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameScoreSheetPlayerPayload>
+        }
+        findFirst: {
+          args: Prisma.GameScoreSheetPlayerFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameScoreSheetPlayerPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.GameScoreSheetPlayerFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameScoreSheetPlayerPayload>
+        }
+        findMany: {
+          args: Prisma.GameScoreSheetPlayerFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameScoreSheetPlayerPayload>[]
+        }
+        create: {
+          args: Prisma.GameScoreSheetPlayerCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameScoreSheetPlayerPayload>
+        }
+        createMany: {
+          args: Prisma.GameScoreSheetPlayerCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.GameScoreSheetPlayerCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameScoreSheetPlayerPayload>[]
+        }
+        delete: {
+          args: Prisma.GameScoreSheetPlayerDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameScoreSheetPlayerPayload>
+        }
+        update: {
+          args: Prisma.GameScoreSheetPlayerUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameScoreSheetPlayerPayload>
+        }
+        deleteMany: {
+          args: Prisma.GameScoreSheetPlayerDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.GameScoreSheetPlayerUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.GameScoreSheetPlayerUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameScoreSheetPlayerPayload>[]
+        }
+        upsert: {
+          args: Prisma.GameScoreSheetPlayerUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameScoreSheetPlayerPayload>
+        }
+        aggregate: {
+          args: Prisma.GameScoreSheetPlayerAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGameScoreSheetPlayer>
+        }
+        groupBy: {
+          args: Prisma.GameScoreSheetPlayerGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GameScoreSheetPlayerGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.GameScoreSheetPlayerCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GameScoreSheetPlayerCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1663,7 +1813,8 @@ export const LeagueMemberScalarFieldEnum = {
   leagueId: 'leagueId',
   userId: 'userId',
   role: 'role',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  gameScoreSheetId: 'gameScoreSheetId'
 } as const
 
 export type LeagueMemberScalarFieldEnum = (typeof LeagueMemberScalarFieldEnum)[keyof typeof LeagueMemberScalarFieldEnum]
@@ -1790,6 +1941,39 @@ export const BookingScalarFieldEnum = {
 } as const
 
 export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
+
+
+export const GameScoreSheetScalarFieldEnum = {
+  id: 'id',
+  gameId: 'gameId',
+  leagueId: 'leagueId',
+  teamId: 'teamId',
+  teamScore: 'teamScore',
+  opponentScore: 'opponentScore',
+  status: 'status',
+  finalizedAt: 'finalizedAt',
+  finalizedById: 'finalizedById',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GameScoreSheetScalarFieldEnum = (typeof GameScoreSheetScalarFieldEnum)[keyof typeof GameScoreSheetScalarFieldEnum]
+
+
+export const GameScoreSheetPlayerScalarFieldEnum = {
+  id: 'id',
+  scoreSheetId: 'scoreSheetId',
+  memberId: 'memberId',
+  gamesPlayed: 'gamesPlayed',
+  goals: 'goals',
+  assists: 'assists',
+  penaltyMins: 'penaltyMins',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GameScoreSheetPlayerScalarFieldEnum = (typeof GameScoreSheetPlayerScalarFieldEnum)[keyof typeof GameScoreSheetPlayerScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -2085,6 +2269,20 @@ export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$Prisma
 
 
 /**
+ * Reference to a field of type 'ScoreSheetStatus'
+ */
+export type EnumScoreSheetStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ScoreSheetStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ScoreSheetStatus[]'
+ */
+export type ListEnumScoreSheetStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ScoreSheetStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -2207,6 +2405,8 @@ export type GlobalOmitConfig = {
   teamGameAvailability?: Prisma.TeamGameAvailabilityOmit
   notification?: Prisma.NotificationOmit
   booking?: Prisma.BookingOmit
+  gameScoreSheet?: Prisma.GameScoreSheetOmit
+  gameScoreSheetPlayer?: Prisma.GameScoreSheetPlayerOmit
 }
 
 /* Types for Logging */

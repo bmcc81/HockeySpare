@@ -13,11 +13,13 @@ import { TeamsModule } from './modules/teams/teams.module';
 import { BookingsModule } from './modules/bookings/bookings.module';
 import { EmailModule } from './email/email.module';
 import { LeaguesModule } from './leagues/leagues.module';
+import { ScoreSheetsModule } from './modules/score-sheets/score-sheets.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
+    ScoreSheetsModule,
     PrismaModule,
     RequestsModule,
     PlayerOffersModule,

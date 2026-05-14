@@ -12,6 +12,7 @@ import { CreateLeagueArenaDto } from './dto/create-league-arena.dto';
 import { AddLeagueTeamMemberDto } from './dto/add-league-team-member.dto';
 
 import { EmailService } from '../modules/email/email.service';
+import { LeagueRole } from '../generated/prisma/client';
 
 @Injectable()
 export class LeaguesService {
@@ -988,5 +989,19 @@ export class LeaguesService {
         role,
       },
     });
+  }
+
+  private async canManageScoreSheet(userId: string, leagueId: string) {
+    const membership = await this.prisma.leagueMember.findFirst({
+      where: {
+        userId,
+        leagueId,
+        role: {
+          in: [LeagueRole.LEAGUE_MANAGER, LeagueRole.TIMEKEEPER],
+        },
+      },
+    });
+
+    return !!membership;
   }
 }

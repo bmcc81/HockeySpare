@@ -6,31 +6,33 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./home/home/home').then(m => m.HomeComponent),
+      import('./home/home/home').then((m) => m.HomeComponent),
   },
   {
     path: 'login',
     canActivate: [guestGuard],
     loadComponent: () =>
-      import('./auth/login/login').then(m => m.LoginComponent),
+      import('./auth/login/login').then((m) => m.LoginComponent),
   },
   {
     path: 'register',
     canActivate: [guestGuard],
     loadComponent: () =>
-      import('./auth/register/register').then(m => m.RegisterComponent),
+      import('./auth/register/register').then((m) => m.RegisterComponent),
   },
   {
     path: 'requests',
     loadComponent: () =>
-      import('./requests/request-list/request-list').then(m => m.RequestListComponent),
+      import('./requests/request-list/request-list').then(
+        (m) => m.RequestListComponent,
+      ),
   },
   {
     path: 'requests/team/new',
     canActivate: [authGuard],
     loadComponent: () =>
       import('./requests/team-request-create/team-request-create').then(
-        m => m.TeamRequestCreateComponent
+        (m) => m.TeamRequestCreateComponent,
       ),
   },
   {
@@ -38,32 +40,38 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () =>
       import('./requests/player-offer-create/player-offer-create').then(
-        m => m.PlayerOfferCreateComponent
+        (m) => m.PlayerOfferCreateComponent,
       ),
   },
   {
     path: 'requests/:id',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./requests/request-detail/request-detail').then(m => m.RequestDetailComponent),
+      import('./requests/request-detail/request-detail').then(
+        (m) => m.RequestDetailComponent,
+      ),
   },
   {
     path: 'profile/player',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./profiles/player-profile/player-profile').then(m => m.PlayerProfileComponent),
+      import('./profiles/player-profile/player-profile').then(
+        (m) => m.PlayerProfileComponent,
+      ),
   },
   {
     path: 'profile/team',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./profiles/team-profile/team-profile').then(m => m.TeamProfileComponent),
+      import('./profiles/team-profile/team-profile').then(
+        (m) => m.TeamProfileComponent,
+      ),
   },
   {
     path: 'my-team',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./teams/my-team/my-team').then(m => m.MyTeamComponent),
+      import('./teams/my-team/my-team').then((m) => m.MyTeamComponent),
   },
 
   // League routes
@@ -71,44 +79,65 @@ export const routes: Routes = [
     path: 'leagues',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./leagues/leagues-list/leagues-list').then(m => m.LeaguesListComponent),
+      import('./leagues/leagues-list/leagues-list').then(
+        (m) => m.LeaguesListComponent,
+      ),
   },
   {
     path: 'leagues/new',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./leagues/create-league/create-league').then(m => m.CreateLeagueComponent),
+      import('./leagues/create-league/create-league').then(
+        (m) => m.CreateLeagueComponent,
+      ),
   },
   {
     path: 'leagues/:id',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./leagues/league-detail/league-detail').then(m => m.LeagueDetailComponent),
+      import('./leagues/league-detail/league-detail').then(
+        (m) => m.LeagueDetailComponent,
+      ),
   },
-
+  {
+    path: 'score-sheets/games/:gameId',
+    loadComponent: () =>
+      import('./score-sheets/score-sheet.component').then(
+        (m) => m.ScoreSheetComponent,
+      ),
+    canActivate: [authGuard],
+  },
   {
     path: 'messages',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./messaging/chat-list/chat-list').then(m => m.ChatListComponent),
+      import('./messaging/chat-list/chat-list').then(
+        (m) => m.ChatListComponent,
+      ),
   },
   {
     path: 'messages/:id',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./messaging/chat-window/chat-window').then(m => m.ChatWindowComponent),
+      import('./messaging/chat-window/chat-window').then(
+        (m) => m.ChatWindowComponent,
+      ),
   },
   {
     path: 'my-bookings',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./matches/my-bookings/my-bookings').then(m => m.MyBookingsComponent),
+      import('./matches/my-bookings/my-bookings').then(
+        (m) => m.MyBookingsComponent,
+      ),
   },
   {
     path: 'bookings/incoming',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./bookings/incoming-bookings/incoming-bookings').then(m => m.IncomingBookingsComponent),
+      import('./bookings/incoming-bookings/incoming-bookings').then(
+        (m) => m.IncomingBookingsComponent,
+      ),
   },
   { path: '**', redirectTo: '' },
 ];

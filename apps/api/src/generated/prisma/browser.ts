@@ -92,3 +92,13 @@ export type Notification = Prisma.NotificationModel
  * 
  */
 export type Booking = Prisma.BookingModel
+/**
+ * Model GameScoreSheet
+ * 
+ */
+export type GameScoreSheet = Prisma.GameScoreSheetModel
+/**
+ * Model GameScoreSheetPlayer
+ * 
+ */
+export type GameScoreSheetPlayer = Prisma.GameScoreSheetPlayerModel

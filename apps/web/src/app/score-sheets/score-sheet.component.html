@@ -1,0 +1,273 @@
+<section class="container py-4">
+  <button type="button" class="btn btn-link px-0 mb-3" (click)="goBack()">
+    ← Back
+  </button>
+
+  <div *ngIf="loading()" class="card">
+    <div class="card-body text-secondary">Loading scoresheet...</div>
+  </div>
+
+  <div *ngIf="!loading() && error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading() && success" class="alert alert-success">
+    {{ success }}
+  </div>
+
+  <ng-container *ngIf="!loading() && scoreSheet as sheet">
+    <div class="card mb-4">
+      <div
+        class="card-body d-flex justify-content-between align-items-start gap-3 flex-wrap"
+      >
+        <div>
+          <div class="text-secondary small">Scoresheet</div>
+
+          <h1 class="h3 mb-2">
+            {{ sheet.team.name }} vs {{ gameOpponent() }}
+          </h1>
+
+          <div class="text-secondary">
+            {{ sheet.game.startsAt | date: 'EEE, MMM d, y, h:mm a' }}
+          </div>
+
+          <div class="text-secondary" *ngIf="sheet.game.arena">
+            {{ sheet.game.arena.name }}
+            <span *ngIf="sheet.game.arena.address">
+              • {{ sheet.game.arena.address }}
+            </span>
+          </div>
+
+          <div class="text-secondary" *ngIf="sheet.league">
+            League: {{ sheet.league.name }}
+            <span *ngIf="sheet.league.season">
+              • Season: {{ sheet.league.season }}
+            </span>
+          </div>
+        </div>
+
+        <div class="text-end">
+          <span
+            class="badge rounded-pill"
+            [ngClass]="{
+              'text-bg-warning': sheet.status === 'DRAFT',
+              'text-bg-success': sheet.status === 'FINALIZED'
+            }"
+          >
+            {{ sheet.status }}
+          </span>
+
+          <div
+            class="text-secondary small mt-2"
+            *ngIf="sheet.status === 'FINALIZED'"
+          >
+            Finalized by {{ finalizedByName() }}
+          </div>
+
+          <div
+            class="text-secondary small"
+            *ngIf="sheet.status === 'FINALIZED' && sheet.finalizedAt"
+          >
+            {{ sheet.finalizedAt | date: 'medium' }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Game Score</h2>
+
+        <form [formGroup]="scoreForm" (ngSubmit)="saveScore()">
+          <div class="row g-3 align-items-end">
+            <div class="col-12 col-md-3">
+              <label class="form-label">{{ sheet.team.name }} Score</label>
+              <input
+                class="form-control"
+                type="number"
+                min="0"
+                formControlName="teamScore"
+              />
+            </div>
+
+            <div class="col-12 col-md-3">
+              <label class="form-label">{{ gameOpponent() }} Score</label>
+              <input
+                class="form-control"
+                type="number"
+                min="0"
+                formControlName="opponentScore"
+              />
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label">Notes</label>
+              <input
+                class="form-control"
+                type="text"
+                formControlName="notes"
+                placeholder="Optional notes"
+              />
+            </div>
+
+            <div class="col-12">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="saving || isFinalized"
+              >
+                {{ saving ? 'Saving...' : 'Save Score' }}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <div
+          class="d-flex justify-content-between align-items-center gap-3 flex-wrap mb-3"
+        >
+          <div>
+            <h2 class="h5 mb-1">Player Stats</h2>
+            <div class="text-secondary small">
+              These lines will update season stats when the scoresheet is
+              finalized.
+            </div>
+          </div>
+
+          <span class="badge rounded-pill text-bg-secondary">
+            {{ sheet.playerLines.length }} player(s)
+          </span>
+        </div>
+
+        <div *ngIf="sheet.playerLines.length === 0" class="text-secondary">
+          No player lines were created for this scoresheet.
+        </div>
+
+        <form [formGroup]="linesForm" *ngIf="sheet.playerLines.length > 0">
+          <div class="table-responsive">
+            <table class="table align-middle">
+              <thead>
+                <tr>
+                  <th>Player</th>
+                  <th>Position</th>
+                  <th>GP</th>
+                  <th>G</th>
+                  <th>A</th>
+                  <th>PIM</th>
+                  <th></th>
+                </tr>
+              </thead>
+
+              <tbody formArrayName="lines">
+                <tr
+                  *ngFor="
+                    let line of sheet.playerLines;
+                    let i = index;
+                    trackBy: trackByLineId
+                  "
+                  [formGroupName]="i"
+                >
+                  <td>
+                    <div class="fw-semibold">
+                      {{ line.member.displayName }}
+                    </div>
+                    <div class="text-secondary small">
+                      {{ line.member.memberType }}
+                    </div>
+                  </td>
+
+                  <td>{{ line.member.position || 'N/A' }}</td>
+
+                  <td style="width: 90px">
+                    <input
+                      class="form-control form-control-sm"
+                      type="number"
+                      min="0"
+                      formControlName="gamesPlayed"
+                    />
+                  </td>
+
+                  <td style="width: 90px">
+                    <input
+                      class="form-control form-control-sm"
+                      type="number"
+                      min="0"
+                      formControlName="goals"
+                    />
+                  </td>
+
+                  <td style="width: 90px">
+                    <input
+                      class="form-control form-control-sm"
+                      type="number"
+                      min="0"
+                      formControlName="assists"
+                    />
+                  </td>
+
+                  <td style="width: 100px">
+                    <input
+                      class="form-control form-control-sm"
+                      type="number"
+                      min="0"
+                      formControlName="penaltyMins"
+                    />
+                  </td>
+
+                  <td class="text-end">
+                    <div class="d-flex justify-content-end gap-2 flex-wrap">
+                      <button
+                        type="button"
+                        class="btn btn-outline-primary btn-sm"
+                        (click)="savePlayerLine(line, i)"
+                        [disabled]="saving || isFinalized"
+                      >
+                        Save
+                      </button>
+
+                      <button
+                        type="button"
+                        class="btn btn-outline-danger btn-sm"
+                        (click)="deletePlayerLine(line)"
+                        [disabled]="saving || isFinalized"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <div
+        class="card-body d-flex justify-content-between align-items-center gap-3 flex-wrap"
+      >
+        <div>
+          <h2 class="h5 mb-1">Finalize Scoresheet</h2>
+
+          <div class="text-secondary">
+            Finalizing locks the scoresheet and adds these player lines to
+            season stats.
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-success"
+          (click)="finalizeScoreSheet()"
+          [disabled]="finalizing || isFinalized || sheet.playerLines.length === 0"
+        >
+          {{ finalizing ? 'Finalizing...' : 'Finalize Scoresheet' }}
+        </button>
+      </div>
+    </div>
+  </ng-container>
+</section>

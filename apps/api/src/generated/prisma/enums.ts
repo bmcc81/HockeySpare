@@ -38,7 +38,8 @@ export type TeamRole = (typeof TeamRole)[keyof typeof TeamRole]
 export const LeagueRole = {
   PLAYER: 'PLAYER',
   TEAM_MANAGER: 'TEAM_MANAGER',
-  LEAGUE_MANAGER: 'LEAGUE_MANAGER'
+  LEAGUE_MANAGER: 'LEAGUE_MANAGER',
+  TIMEKEEPER: 'TIMEKEEPER'
 } as const
 
 export type LeagueRole = (typeof LeagueRole)[keyof typeof LeagueRole]
@@ -137,3 +138,11 @@ export const BookingStatus = {
 } as const
 
 export type BookingStatus = (typeof BookingStatus)[keyof typeof BookingStatus]
+
+
+export const ScoreSheetStatus = {
+  DRAFT: 'DRAFT',
+  FINALIZED: 'FINALIZED'
+} as const
+
+export type ScoreSheetStatus = (typeof ScoreSheetStatus)[keyof typeof ScoreSheetStatus]

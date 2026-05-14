@@ -223,7 +223,11 @@ export class MyTeamComponent implements OnInit {
   }
 
   get canManageTeam(): boolean {
-    return !!this.team?.canManageTeam;
+    if (this.team?.canManageTeam) {
+      return true;
+    }
+
+    return this.myRole === 'CAPTAIN' || this.myRole === 'GENERAL_MANAGER';
   }
 
   private sortUpcomingGames(games: UpcomingGame[]): UpcomingGame[] {
@@ -399,8 +403,8 @@ export class MyTeamComponent implements OnInit {
           });
           this.reload();
         },
-        error: () => {
-          this.error = 'Could not add player.';
+        error: (err) => {
+          this.error = err?.error?.message || 'Could not add player.';
         },
       });
   }
@@ -683,46 +687,48 @@ export class MyTeamComponent implements OnInit {
 
     const fallbackSeason = season || this.defaultSeason();
 
-    this.teamApi.getMemberStats(memberId, season, this.selectedTeamId).subscribe({
-      next: (stat) => {
-        if (stat) {
-          this.statsSeasonHasRecord = true;
+    this.teamApi
+      .getMemberStats(memberId, season, this.selectedTeamId)
+      .subscribe({
+        next: (stat) => {
+          if (stat) {
+            this.statsSeasonHasRecord = true;
 
-          this.statForm.patchValue(
-            {
-              season: stat.season ?? fallbackSeason,
-              gamesPlayed: stat.gamesPlayed ?? 0,
-              goals: stat.goals ?? 0,
-              assists: stat.assists ?? 0,
-              penaltyMins: stat.penaltyMins ?? 0,
-            },
-            { emitEvent: false },
-          );
-        } else {
-          this.statsSeasonHasRecord = false;
+            this.statForm.patchValue(
+              {
+                season: stat.season ?? fallbackSeason,
+                gamesPlayed: stat.gamesPlayed ?? 0,
+                goals: stat.goals ?? 0,
+                assists: stat.assists ?? 0,
+                penaltyMins: stat.penaltyMins ?? 0,
+              },
+              { emitEvent: false },
+            );
+          } else {
+            this.statsSeasonHasRecord = false;
 
-          this.statForm.patchValue(
-            {
-              season: fallbackSeason,
-              gamesPlayed: 0,
-              goals: 0,
-              assists: 0,
-              penaltyMins: 0,
-            },
-            { emitEvent: false },
-          );
-        }
+            this.statForm.patchValue(
+              {
+                season: fallbackSeason,
+                gamesPlayed: 0,
+                goals: 0,
+                assists: 0,
+                penaltyMins: 0,
+              },
+              { emitEvent: false },
+            );
+          }
 
-        this.statsLoadingMemberId = null;
-        this.cdr.detectChanges();
-      },
-      error: () => {
-        this.statsLoadingMemberId = null;
-        this.statsSeasonHasRecord = null;
-        this.error = 'Could not load player stats.';
-        this.cdr.detectChanges();
-      },
-    });
+          this.statsLoadingMemberId = null;
+          this.cdr.detectChanges();
+        },
+        error: () => {
+          this.statsLoadingMemberId = null;
+          this.statsSeasonHasRecord = null;
+          this.error = 'Could not load player stats.';
+          this.cdr.detectChanges();
+        },
+      });
   }
 
   openStatEditor(memberId: string) {
@@ -838,7 +844,9 @@ export class MyTeamComponent implements OnInit {
           this.reload();
         },
         error: (err) => {
-          this.roleError.set(err?.error?.message || 'Could not assign Captain.');
+          this.roleError.set(
+            err?.error?.message || 'Could not assign Captain.',
+          );
           this.savingRoleMemberId.set(null);
           this.cdr.detectChanges();
         },

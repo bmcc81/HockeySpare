@@ -268,6 +268,7 @@ export class TeamsService {
 
       return {
         ...fullTeam,
+        canManageTeam: true,
         myMembership: myMembership ?? {
           id: null,
           teamId: fullTeam.id,
@@ -286,7 +287,7 @@ export class TeamsService {
         },
       };
     }
-    
+
     if (teamId) {
       const team = await this.getManagedTeam(userId, teamId);
 

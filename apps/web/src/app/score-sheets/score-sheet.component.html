@@ -23,12 +23,10 @@
         <div>
           <div class="text-secondary small">Scoresheet</div>
 
-          <h1 class="h3 mb-2">
-            {{ sheet.team.name }} vs {{ gameOpponent() }}
-          </h1>
+          <h1 class="h3 mb-2">{{ sheet.team.name }} vs {{ gameOpponent() }}</h1>
 
           <div class="text-secondary">
-            {{ sheet.game.startsAt | date: 'EEE, MMM d, y, h:mm a' }}
+            {{ sheet.game.startsAt | date: "EEE, MMM d, y, h:mm a" }}
           </div>
 
           <div class="text-secondary" *ngIf="sheet.game.arena">
@@ -51,7 +49,7 @@
             class="badge rounded-pill"
             [ngClass]="{
               'text-bg-warning': sheet.status === 'DRAFT',
-              'text-bg-success': sheet.status === 'FINALIZED'
+              'text-bg-success': sheet.status === 'FINALIZED',
             }"
           >
             {{ sheet.status }}
@@ -68,7 +66,7 @@
             class="text-secondary small"
             *ngIf="sheet.status === 'FINALIZED' && sheet.finalizedAt"
           >
-            {{ sheet.finalizedAt | date: 'medium' }}
+            {{ sheet.finalizedAt | date: "medium" }}
           </div>
         </div>
       </div>
@@ -87,6 +85,7 @@
                 type="number"
                 min="0"
                 formControlName="teamScore"
+                readonly
               />
             </div>
 
@@ -97,7 +96,15 @@
                 type="number"
                 min="0"
                 formControlName="opponentScore"
+                readonly
               />
+            </div>
+
+            <div class="text-secondary small mt-2">
+              Score is calculated from player goals:
+              {{ sheet.team.name }} {{ calculatedTeamScore() }}
+              -
+              {{ gameOpponent() }} {{ calculatedOpponentScore() }}
             </div>
 
             <div class="col-12 col-md-6">
@@ -116,7 +123,7 @@
                 class="btn btn-primary"
                 [disabled]="saving || isFinalized"
               >
-                {{ saving ? 'Saving...' : 'Save Score' }}
+                {{ saving ? "Saving..." : "Save Score" }}
               </button>
             </div>
           </div>
@@ -179,7 +186,7 @@
                     </div>
                   </td>
 
-                  <td>{{ line.member.position || 'N/A' }}</td>
+                  <td>{{ line.member.position || "N/A" }}</td>
 
                   <td style="width: 90px">
                     <input
@@ -263,9 +270,15 @@
           type="button"
           class="btn btn-success"
           (click)="finalizeScoreSheet()"
-          [disabled]="finalizing || isFinalized || sheet.playerLines.length === 0"
+          [disabled]="
+            finalizing ||
+            saving ||
+            isFinalized ||
+            sheet.playerLines.length === 0 ||
+            linesForm.invalid
+          "
         >
-          {{ finalizing ? 'Finalizing...' : 'Finalize Scoresheet' }}
+          {{ finalizing ? "Finalizing..." : "Finalize Scoresheet" }}
         </button>
       </div>
     </div>

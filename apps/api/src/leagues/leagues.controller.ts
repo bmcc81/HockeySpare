@@ -17,6 +17,7 @@ import { CreateLeagueTeamDto } from './dto/create-league-team.dto';
 import { CreateLeagueGameDto } from './dto/create-league-game.dto';
 import { CreateLeagueArenaDto } from './dto/create-league-arena.dto';
 import { AddLeagueTeamMemberDto } from './dto/add-league-team-member.dto';
+import { UpdateLeagueTeamMemberRoleDto } from './dto/update-league-team-member-role.dto';
 
 type AuthRequest = {
   user?: {
@@ -167,7 +168,7 @@ export class LeaguesController {
     @Param('id') leagueId: string,
     @Param('teamId') teamId: string,
     @Param('memberId') memberId: string,
-    @Body() dto: { role: 'PLAYER' | 'CAPTAIN' | 'GENERAL_MANAGER' },
+    @Body() dto: UpdateLeagueTeamMemberRoleDto,
   ) {
     return this.leaguesService.updateLeagueTeamMemberRole(
       req.user.sub,

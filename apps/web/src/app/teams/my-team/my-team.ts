@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import {
   MyTeamResponse,
   TeamMember,
@@ -26,12 +27,15 @@ import { TeamService } from '../../core/services/team';
 })
 export class MyTeamComponent implements OnInit {
   private fb = inject(FormBuilder);
+  private route = inject(ActivatedRoute);
   private teamApi = inject(TeamService);
   private cdr = inject(ChangeDetectorRef);
 
   loading = false;
   error = '';
   team: MyTeamResponse | null = null;
+  selectedTeamId: string | null = null;
+  isLeagueManagerView = false;
   myStats: PlayerStat[] = [];
 
   availabilitySavingGameId: string | null = null;
@@ -190,8 +194,13 @@ export class MyTeamComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.reload();
-    this.loadMyStats();
+    this.route.queryParamMap.subscribe((params) => {
+      this.selectedTeamId = params.get('teamId');
+      this.isLeagueManagerView = params.get('leagueManager') === 'true';
+
+      this.reload();
+      this.loadMyStats();
+    });
 
     this.statForm.controls.season.valueChanges.subscribe((season) => {
       if (!this.statEditorMemberId) return;
@@ -216,7 +225,11 @@ export class MyTeamComponent implements OnInit {
   }
 
   get canManageTeam(): boolean {
-    return !!this.team?.canManageTeam;
+    if (this.team?.canManageTeam) {
+      return true;
+    }
+
+    return this.myRole === 'CAPTAIN' || this.myRole === 'GENERAL_MANAGER';
   }
 
   private sortUpcomingGames(games: UpcomingGame[]): UpcomingGame[] {
@@ -242,7 +255,7 @@ export class MyTeamComponent implements OnInit {
     this.upcomingGamesError = null;
     this.cdr.detectChanges();
 
-    this.teamApi.getMyTeam().subscribe({
+    this.teamApi.getMyTeam(this.selectedTeamId).subscribe({
       next: (team) => {
         this.team = {
           ...team,
@@ -284,14 +297,14 @@ export class MyTeamComponent implements OnInit {
     });
   }
 
-  loadMyStats() {
-    this.teamApi.getTeamStats().subscribe({
+  private loadMyStats(): void {
+    this.teamApi.getTeamStats(this.selectedTeamId).subscribe({
       next: (stats) => {
-        this.myStats = stats ?? [];
-        this.cdr.detectChanges();
+        this.myStats = stats;
       },
       error: (err) => {
-        console.warn('Could not load team stats:', err);
+        console.error('Failed to load team stats', err);
+        this.myStats = [];
       },
     });
   }
@@ -339,9 +352,12 @@ export class MyTeamComponent implements OnInit {
     const raw = this.teamForm.getRawValue();
 
     this.teamApi
-      .updateMyTeam({
-        name: raw.name ?? '',
-      })
+      .updateMyTeam(
+        {
+          name: raw.name ?? '',
+        },
+        this.selectedTeamId,
+      )
       .subscribe({
         next: () => this.reload(),
         error: () => {
@@ -364,15 +380,18 @@ export class MyTeamComponent implements OnInit {
     const raw = this.memberForm.getRawValue();
 
     this.teamApi
-      .addMember({
-        displayName: raw.displayName ?? '',
-        email: raw.email ?? '',
-        phone: raw.phone ?? '',
-        position: raw.position ?? 'FORWARD',
-        memberType: raw.memberType ?? 'REGULAR',
-        notifyByApp: !!raw.notifyByApp,
-        notifyByEmail: !!raw.notifyByEmail,
-      })
+      .addMember(
+        {
+          displayName: raw.displayName ?? '',
+          email: raw.email ?? '',
+          phone: raw.phone ?? '',
+          position: raw.position ?? 'FORWARD',
+          memberType: raw.memberType ?? 'REGULAR',
+          notifyByApp: !!raw.notifyByApp,
+          notifyByEmail: !!raw.notifyByEmail,
+        },
+        this.selectedTeamId,
+      )
       .subscribe({
         next: () => {
           this.memberForm.reset({
@@ -386,8 +405,8 @@ export class MyTeamComponent implements OnInit {
           });
           this.reload();
         },
-        error: () => {
-          this.error = 'Could not add player.';
+        error: (err) => {
+          this.error = err?.error?.message || 'Could not add player.';
         },
       });
   }
@@ -398,7 +417,7 @@ export class MyTeamComponent implements OnInit {
       return;
     }
 
-    this.teamApi.removeMember(memberId).subscribe({
+    this.teamApi.removeMember(memberId, this.selectedTeamId).subscribe({
       next: () => this.reload(),
       error: () => {
         this.error = 'Could not remove player.';
@@ -426,7 +445,7 @@ export class MyTeamComponent implements OnInit {
     this.error = '';
     this.cdr.detectChanges();
 
-    this.teamApi.notifyGame(game.id).subscribe({
+    this.teamApi.notifyGame(game.id, this.selectedTeamId).subscribe({
       next: (result: any) => {
         this.notifyingGameId = null;
 
@@ -670,46 +689,48 @@ export class MyTeamComponent implements OnInit {
 
     const fallbackSeason = season || this.defaultSeason();
 
-    this.teamApi.getMemberStats(memberId, season).subscribe({
-      next: (stat) => {
-        if (stat) {
-          this.statsSeasonHasRecord = true;
+    this.teamApi
+      .getMemberStats(memberId, season, this.selectedTeamId)
+      .subscribe({
+        next: (stat) => {
+          if (stat) {
+            this.statsSeasonHasRecord = true;
 
-          this.statForm.patchValue(
-            {
-              season: stat.season ?? fallbackSeason,
-              gamesPlayed: stat.gamesPlayed ?? 0,
-              goals: stat.goals ?? 0,
-              assists: stat.assists ?? 0,
-              penaltyMins: stat.penaltyMins ?? 0,
-            },
-            { emitEvent: false },
-          );
-        } else {
-          this.statsSeasonHasRecord = false;
+            this.statForm.patchValue(
+              {
+                season: stat.season ?? fallbackSeason,
+                gamesPlayed: stat.gamesPlayed ?? 0,
+                goals: stat.goals ?? 0,
+                assists: stat.assists ?? 0,
+                penaltyMins: stat.penaltyMins ?? 0,
+              },
+              { emitEvent: false },
+            );
+          } else {
+            this.statsSeasonHasRecord = false;
 
-          this.statForm.patchValue(
-            {
-              season: fallbackSeason,
-              gamesPlayed: 0,
-              goals: 0,
-              assists: 0,
-              penaltyMins: 0,
-            },
-            { emitEvent: false },
-          );
-        }
+            this.statForm.patchValue(
+              {
+                season: fallbackSeason,
+                gamesPlayed: 0,
+                goals: 0,
+                assists: 0,
+                penaltyMins: 0,
+              },
+              { emitEvent: false },
+            );
+          }
 
-        this.statsLoadingMemberId = null;
-        this.cdr.detectChanges();
-      },
-      error: () => {
-        this.statsLoadingMemberId = null;
-        this.statsSeasonHasRecord = null;
-        this.error = 'Could not load player stats.';
-        this.cdr.detectChanges();
-      },
-    });
+          this.statsLoadingMemberId = null;
+          this.cdr.detectChanges();
+        },
+        error: () => {
+          this.statsLoadingMemberId = null;
+          this.statsSeasonHasRecord = null;
+          this.error = 'Could not load player stats.';
+          this.cdr.detectChanges();
+        },
+      });
   }
 
   openStatEditor(memberId: string) {
@@ -759,13 +780,17 @@ export class MyTeamComponent implements OnInit {
     this.error = '';
 
     this.teamApi
-      .upsertMemberStats(memberId, {
-        season: raw.season ?? '',
-        gamesPlayed: Number(raw.gamesPlayed ?? 0),
-        goals: Number(raw.goals ?? 0),
-        assists: Number(raw.assists ?? 0),
-        penaltyMins: Number(raw.penaltyMins ?? 0),
-      })
+      .upsertMemberStats(
+        memberId,
+        {
+          season: raw.season ?? '',
+          gamesPlayed: Number(raw.gamesPlayed ?? 0),
+          goals: Number(raw.goals ?? 0),
+          assists: Number(raw.assists ?? 0),
+          penaltyMins: Number(raw.penaltyMins ?? 0),
+        },
+        this.selectedTeamId,
+      )
       .subscribe({
         next: () => {
           this.statsSavingMemberId = null;
@@ -799,7 +824,10 @@ export class MyTeamComponent implements OnInit {
   }
 
   canAssignCaptains(): boolean {
-    return this.myRole === 'GENERAL_MANAGER';
+    return (
+      this.myRole === 'GENERAL_MANAGER' ||
+      (this.canManageTeam && this.isLeagueManagerView)
+    );
   }
 
   makeCaptain(member: TeamMember): void {
@@ -810,17 +838,21 @@ export class MyTeamComponent implements OnInit {
     this.savingRoleMemberId.set(member.id);
     this.roleError.set(null);
 
-    this.teamApi.updateMemberRole(member.id, 'CAPTAIN').subscribe({
-      next: () => {
-        this.savingRoleMemberId.set(null);
-        this.reload();
-      },
-      error: (err) => {
-        this.roleError.set(err?.error?.message || 'Could not assign Captain.');
-        this.savingRoleMemberId.set(null);
-        this.cdr.detectChanges();
-      },
-    });
+    this.teamApi
+      .updateMemberRole(member.id, 'CAPTAIN', this.selectedTeamId)
+      .subscribe({
+        next: () => {
+          this.savingRoleMemberId.set(null);
+          this.reload();
+        },
+        error: (err) => {
+          this.roleError.set(
+            err?.error?.message || 'Could not assign Captain.',
+          );
+          this.savingRoleMemberId.set(null);
+          this.cdr.detectChanges();
+        },
+      });
   }
 
   removeCaptain(member: TeamMember): void {
@@ -831,19 +863,21 @@ export class MyTeamComponent implements OnInit {
     this.savingRoleMemberId.set(member.id);
     this.roleError.set(null);
 
-    this.teamApi.updateMemberRole(member.id, 'PLAYER').subscribe({
-      next: () => {
-        this.savingRoleMemberId.set(null);
-        this.reload();
-      },
-      error: (err) => {
-        this.roleError.set(
-          err?.error?.message || 'Could not remove Captain role.',
-        );
-        this.savingRoleMemberId.set(null);
-        this.cdr.detectChanges();
-      },
-    });
+    this.teamApi
+      .updateMemberRole(member.id, 'PLAYER', this.selectedTeamId)
+      .subscribe({
+        next: () => {
+          this.savingRoleMemberId.set(null);
+          this.reload();
+        },
+        error: (err) => {
+          this.roleError.set(
+            err?.error?.message || 'Could not remove Captain role.',
+          );
+          this.savingRoleMemberId.set(null);
+          this.cdr.detectChanges();
+        },
+      });
   }
 
   gameOpponent(game: TeamGame): string {

@@ -20,9 +20,13 @@
 
         <p class="mb-0">
           <span class="badge rounded-pill text-bg-dark">
-            Role: {{ myRole || 'PLAYER' }}
+            Role: {{ myRole || (isLeagueManagerView ? 'LEAGUE_MANAGER' : 'PLAYER') }}
           </span>
         </p>
+
+        <div *ngIf="selectedTeamId" class="alert alert-info mt-3 mb-0">
+          You are managing this team from the league page.
+        </div>
       </div>
 
       <div class="stats d-flex gap-3 flex-wrap">

@@ -84,4 +84,16 @@ export class LeaguesApiService {
       input,
     );
   }
+
+  updateTeamMemberRole(
+    leagueId: string,
+    teamId: string,
+    memberId: string,
+    role: 'PLAYER' | 'CAPTAIN' | 'GENERAL_MANAGER',
+  ) {
+    return this.http.patch<TeamMember>(
+      `/api/leagues/${leagueId}/teams/${teamId}/members/${memberId}/role`,
+      { role },
+    );
+  }
 }

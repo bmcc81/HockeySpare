@@ -1275,31 +1275,28 @@ export class TeamsService {
         teamId: team.id,
         isActive: true,
       },
-      select: {
-        id: true,
-      },
     });
 
     if (!member) {
       throw new NotFoundException('Team member not found');
     }
 
-    if (season) {
-      return this.prisma.playerStat.findUnique({
-        where: {
-          memberId_season: {
-            memberId: member.id,
-            season,
-          },
-        },
-      });
-    }
-
     return this.prisma.playerStat.findFirst({
       where: {
         memberId: member.id,
+        ...(season
+          ? {
+              season,
+            }
+          : {}),
       },
-      orderBy: [{ season: 'desc' }, { updatedAt: 'desc' }],
+      include: {
+        member: true,
+        team: true,
+      },
+      orderBy: {
+        season: 'desc',
+      },
     });
   }
 

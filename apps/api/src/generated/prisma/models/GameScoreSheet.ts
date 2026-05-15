@@ -29,11 +29,27 @@ export type AggregateGameScoreSheet = {
 export type GameScoreSheetAvgAggregateOutputType = {
   teamScore: number | null
   opponentScore: number | null
+  teamPeriod1Score: number | null
+  teamPeriod2Score: number | null
+  teamPeriod3Score: number | null
+  teamOvertimeScore: number | null
+  opponentPeriod1Score: number | null
+  opponentPeriod2Score: number | null
+  opponentPeriod3Score: number | null
+  opponentOvertimeScore: number | null
 }
 
 export type GameScoreSheetSumAggregateOutputType = {
   teamScore: number | null
   opponentScore: number | null
+  teamPeriod1Score: number | null
+  teamPeriod2Score: number | null
+  teamPeriod3Score: number | null
+  teamOvertimeScore: number | null
+  opponentPeriod1Score: number | null
+  opponentPeriod2Score: number | null
+  opponentPeriod3Score: number | null
+  opponentOvertimeScore: number | null
 }
 
 export type GameScoreSheetMinAggregateOutputType = {
@@ -43,6 +59,14 @@ export type GameScoreSheetMinAggregateOutputType = {
   teamId: string | null
   teamScore: number | null
   opponentScore: number | null
+  teamPeriod1Score: number | null
+  teamPeriod2Score: number | null
+  teamPeriod3Score: number | null
+  teamOvertimeScore: number | null
+  opponentPeriod1Score: number | null
+  opponentPeriod2Score: number | null
+  opponentPeriod3Score: number | null
+  opponentOvertimeScore: number | null
   status: $Enums.ScoreSheetStatus | null
   finalizedAt: Date | null
   finalizedById: string | null
@@ -58,6 +82,14 @@ export type GameScoreSheetMaxAggregateOutputType = {
   teamId: string | null
   teamScore: number | null
   opponentScore: number | null
+  teamPeriod1Score: number | null
+  teamPeriod2Score: number | null
+  teamPeriod3Score: number | null
+  teamOvertimeScore: number | null
+  opponentPeriod1Score: number | null
+  opponentPeriod2Score: number | null
+  opponentPeriod3Score: number | null
+  opponentOvertimeScore: number | null
   status: $Enums.ScoreSheetStatus | null
   finalizedAt: Date | null
   finalizedById: string | null
@@ -73,6 +105,14 @@ export type GameScoreSheetCountAggregateOutputType = {
   teamId: number
   teamScore: number
   opponentScore: number
+  teamPeriod1Score: number
+  teamPeriod2Score: number
+  teamPeriod3Score: number
+  teamOvertimeScore: number
+  opponentPeriod1Score: number
+  opponentPeriod2Score: number
+  opponentPeriod3Score: number
+  opponentOvertimeScore: number
   status: number
   finalizedAt: number
   finalizedById: number
@@ -86,11 +126,27 @@ export type GameScoreSheetCountAggregateOutputType = {
 export type GameScoreSheetAvgAggregateInputType = {
   teamScore?: true
   opponentScore?: true
+  teamPeriod1Score?: true
+  teamPeriod2Score?: true
+  teamPeriod3Score?: true
+  teamOvertimeScore?: true
+  opponentPeriod1Score?: true
+  opponentPeriod2Score?: true
+  opponentPeriod3Score?: true
+  opponentOvertimeScore?: true
 }
 
 export type GameScoreSheetSumAggregateInputType = {
   teamScore?: true
   opponentScore?: true
+  teamPeriod1Score?: true
+  teamPeriod2Score?: true
+  teamPeriod3Score?: true
+  teamOvertimeScore?: true
+  opponentPeriod1Score?: true
+  opponentPeriod2Score?: true
+  opponentPeriod3Score?: true
+  opponentOvertimeScore?: true
 }
 
 export type GameScoreSheetMinAggregateInputType = {
@@ -100,6 +156,14 @@ export type GameScoreSheetMinAggregateInputType = {
   teamId?: true
   teamScore?: true
   opponentScore?: true
+  teamPeriod1Score?: true
+  teamPeriod2Score?: true
+  teamPeriod3Score?: true
+  teamOvertimeScore?: true
+  opponentPeriod1Score?: true
+  opponentPeriod2Score?: true
+  opponentPeriod3Score?: true
+  opponentOvertimeScore?: true
   status?: true
   finalizedAt?: true
   finalizedById?: true
@@ -115,6 +179,14 @@ export type GameScoreSheetMaxAggregateInputType = {
   teamId?: true
   teamScore?: true
   opponentScore?: true
+  teamPeriod1Score?: true
+  teamPeriod2Score?: true
+  teamPeriod3Score?: true
+  teamOvertimeScore?: true
+  opponentPeriod1Score?: true
+  opponentPeriod2Score?: true
+  opponentPeriod3Score?: true
+  opponentOvertimeScore?: true
   status?: true
   finalizedAt?: true
   finalizedById?: true
@@ -130,6 +202,14 @@ export type GameScoreSheetCountAggregateInputType = {
   teamId?: true
   teamScore?: true
   opponentScore?: true
+  teamPeriod1Score?: true
+  teamPeriod2Score?: true
+  teamPeriod3Score?: true
+  teamOvertimeScore?: true
+  opponentPeriod1Score?: true
+  opponentPeriod2Score?: true
+  opponentPeriod3Score?: true
+  opponentOvertimeScore?: true
   status?: true
   finalizedAt?: true
   finalizedById?: true
@@ -232,6 +312,14 @@ export type GameScoreSheetGroupByOutputType = {
   teamId: string
   teamScore: number
   opponentScore: number
+  teamPeriod1Score: number
+  teamPeriod2Score: number
+  teamPeriod3Score: number
+  teamOvertimeScore: number
+  opponentPeriod1Score: number
+  opponentPeriod2Score: number
+  opponentPeriod3Score: number
+  opponentOvertimeScore: number
   status: $Enums.ScoreSheetStatus
   finalizedAt: Date | null
   finalizedById: string | null
@@ -270,6 +358,14 @@ export type GameScoreSheetWhereInput = {
   teamId?: Prisma.StringFilter<"GameScoreSheet"> | string
   teamScore?: Prisma.IntFilter<"GameScoreSheet"> | number
   opponentScore?: Prisma.IntFilter<"GameScoreSheet"> | number
+  teamPeriod1Score?: Prisma.IntFilter<"GameScoreSheet"> | number
+  teamPeriod2Score?: Prisma.IntFilter<"GameScoreSheet"> | number
+  teamPeriod3Score?: Prisma.IntFilter<"GameScoreSheet"> | number
+  teamOvertimeScore?: Prisma.IntFilter<"GameScoreSheet"> | number
+  opponentPeriod1Score?: Prisma.IntFilter<"GameScoreSheet"> | number
+  opponentPeriod2Score?: Prisma.IntFilter<"GameScoreSheet"> | number
+  opponentPeriod3Score?: Prisma.IntFilter<"GameScoreSheet"> | number
+  opponentOvertimeScore?: Prisma.IntFilter<"GameScoreSheet"> | number
   status?: Prisma.EnumScoreSheetStatusFilter<"GameScoreSheet"> | $Enums.ScoreSheetStatus
   finalizedAt?: Prisma.DateTimeNullableFilter<"GameScoreSheet"> | Date | string | null
   finalizedById?: Prisma.StringNullableFilter<"GameScoreSheet"> | string | null
@@ -291,6 +387,14 @@ export type GameScoreSheetOrderByWithRelationInput = {
   teamId?: Prisma.SortOrder
   teamScore?: Prisma.SortOrder
   opponentScore?: Prisma.SortOrder
+  teamPeriod1Score?: Prisma.SortOrder
+  teamPeriod2Score?: Prisma.SortOrder
+  teamPeriod3Score?: Prisma.SortOrder
+  teamOvertimeScore?: Prisma.SortOrder
+  opponentPeriod1Score?: Prisma.SortOrder
+  opponentPeriod2Score?: Prisma.SortOrder
+  opponentPeriod3Score?: Prisma.SortOrder
+  opponentOvertimeScore?: Prisma.SortOrder
   status?: Prisma.SortOrder
   finalizedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   finalizedById?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -315,6 +419,14 @@ export type GameScoreSheetWhereUniqueInput = Prisma.AtLeast<{
   teamId?: Prisma.StringFilter<"GameScoreSheet"> | string
   teamScore?: Prisma.IntFilter<"GameScoreSheet"> | number
   opponentScore?: Prisma.IntFilter<"GameScoreSheet"> | number
+  teamPeriod1Score?: Prisma.IntFilter<"GameScoreSheet"> | number
+  teamPeriod2Score?: Prisma.IntFilter<"GameScoreSheet"> | number
+  teamPeriod3Score?: Prisma.IntFilter<"GameScoreSheet"> | number
+  teamOvertimeScore?: Prisma.IntFilter<"GameScoreSheet"> | number
+  opponentPeriod1Score?: Prisma.IntFilter<"GameScoreSheet"> | number
+  opponentPeriod2Score?: Prisma.IntFilter<"GameScoreSheet"> | number
+  opponentPeriod3Score?: Prisma.IntFilter<"GameScoreSheet"> | number
+  opponentOvertimeScore?: Prisma.IntFilter<"GameScoreSheet"> | number
   status?: Prisma.EnumScoreSheetStatusFilter<"GameScoreSheet"> | $Enums.ScoreSheetStatus
   finalizedAt?: Prisma.DateTimeNullableFilter<"GameScoreSheet"> | Date | string | null
   finalizedById?: Prisma.StringNullableFilter<"GameScoreSheet"> | string | null
@@ -336,6 +448,14 @@ export type GameScoreSheetOrderByWithAggregationInput = {
   teamId?: Prisma.SortOrder
   teamScore?: Prisma.SortOrder
   opponentScore?: Prisma.SortOrder
+  teamPeriod1Score?: Prisma.SortOrder
+  teamPeriod2Score?: Prisma.SortOrder
+  teamPeriod3Score?: Prisma.SortOrder
+  teamOvertimeScore?: Prisma.SortOrder
+  opponentPeriod1Score?: Prisma.SortOrder
+  opponentPeriod2Score?: Prisma.SortOrder
+  opponentPeriod3Score?: Prisma.SortOrder
+  opponentOvertimeScore?: Prisma.SortOrder
   status?: Prisma.SortOrder
   finalizedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   finalizedById?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -359,6 +479,14 @@ export type GameScoreSheetScalarWhereWithAggregatesInput = {
   teamId?: Prisma.StringWithAggregatesFilter<"GameScoreSheet"> | string
   teamScore?: Prisma.IntWithAggregatesFilter<"GameScoreSheet"> | number
   opponentScore?: Prisma.IntWithAggregatesFilter<"GameScoreSheet"> | number
+  teamPeriod1Score?: Prisma.IntWithAggregatesFilter<"GameScoreSheet"> | number
+  teamPeriod2Score?: Prisma.IntWithAggregatesFilter<"GameScoreSheet"> | number
+  teamPeriod3Score?: Prisma.IntWithAggregatesFilter<"GameScoreSheet"> | number
+  teamOvertimeScore?: Prisma.IntWithAggregatesFilter<"GameScoreSheet"> | number
+  opponentPeriod1Score?: Prisma.IntWithAggregatesFilter<"GameScoreSheet"> | number
+  opponentPeriod2Score?: Prisma.IntWithAggregatesFilter<"GameScoreSheet"> | number
+  opponentPeriod3Score?: Prisma.IntWithAggregatesFilter<"GameScoreSheet"> | number
+  opponentOvertimeScore?: Prisma.IntWithAggregatesFilter<"GameScoreSheet"> | number
   status?: Prisma.EnumScoreSheetStatusWithAggregatesFilter<"GameScoreSheet"> | $Enums.ScoreSheetStatus
   finalizedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"GameScoreSheet"> | Date | string | null
   finalizedById?: Prisma.StringNullableWithAggregatesFilter<"GameScoreSheet"> | string | null
@@ -371,6 +499,14 @@ export type GameScoreSheetCreateInput = {
   id?: string
   teamScore?: number
   opponentScore?: number
+  teamPeriod1Score?: number
+  teamPeriod2Score?: number
+  teamPeriod3Score?: number
+  teamOvertimeScore?: number
+  opponentPeriod1Score?: number
+  opponentPeriod2Score?: number
+  opponentPeriod3Score?: number
+  opponentOvertimeScore?: number
   status?: $Enums.ScoreSheetStatus
   finalizedAt?: Date | string | null
   notes?: string | null
@@ -391,6 +527,14 @@ export type GameScoreSheetUncheckedCreateInput = {
   teamId: string
   teamScore?: number
   opponentScore?: number
+  teamPeriod1Score?: number
+  teamPeriod2Score?: number
+  teamPeriod3Score?: number
+  teamOvertimeScore?: number
+  opponentPeriod1Score?: number
+  opponentPeriod2Score?: number
+  opponentPeriod3Score?: number
+  opponentOvertimeScore?: number
   status?: $Enums.ScoreSheetStatus
   finalizedAt?: Date | string | null
   finalizedById?: string | null
@@ -405,6 +549,14 @@ export type GameScoreSheetUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   teamScore?: Prisma.IntFieldUpdateOperationsInput | number
   opponentScore?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumScoreSheetStatusFieldUpdateOperationsInput | $Enums.ScoreSheetStatus
   finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -425,6 +577,14 @@ export type GameScoreSheetUncheckedUpdateInput = {
   teamId?: Prisma.StringFieldUpdateOperationsInput | string
   teamScore?: Prisma.IntFieldUpdateOperationsInput | number
   opponentScore?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumScoreSheetStatusFieldUpdateOperationsInput | $Enums.ScoreSheetStatus
   finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   finalizedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -442,6 +602,14 @@ export type GameScoreSheetCreateManyInput = {
   teamId: string
   teamScore?: number
   opponentScore?: number
+  teamPeriod1Score?: number
+  teamPeriod2Score?: number
+  teamPeriod3Score?: number
+  teamOvertimeScore?: number
+  opponentPeriod1Score?: number
+  opponentPeriod2Score?: number
+  opponentPeriod3Score?: number
+  opponentOvertimeScore?: number
   status?: $Enums.ScoreSheetStatus
   finalizedAt?: Date | string | null
   finalizedById?: string | null
@@ -454,6 +622,14 @@ export type GameScoreSheetUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   teamScore?: Prisma.IntFieldUpdateOperationsInput | number
   opponentScore?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumScoreSheetStatusFieldUpdateOperationsInput | $Enums.ScoreSheetStatus
   finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -468,6 +644,14 @@ export type GameScoreSheetUncheckedUpdateManyInput = {
   teamId?: Prisma.StringFieldUpdateOperationsInput | string
   teamScore?: Prisma.IntFieldUpdateOperationsInput | number
   opponentScore?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumScoreSheetStatusFieldUpdateOperationsInput | $Enums.ScoreSheetStatus
   finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   finalizedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -498,6 +682,14 @@ export type GameScoreSheetCountOrderByAggregateInput = {
   teamId?: Prisma.SortOrder
   teamScore?: Prisma.SortOrder
   opponentScore?: Prisma.SortOrder
+  teamPeriod1Score?: Prisma.SortOrder
+  teamPeriod2Score?: Prisma.SortOrder
+  teamPeriod3Score?: Prisma.SortOrder
+  teamOvertimeScore?: Prisma.SortOrder
+  opponentPeriod1Score?: Prisma.SortOrder
+  opponentPeriod2Score?: Prisma.SortOrder
+  opponentPeriod3Score?: Prisma.SortOrder
+  opponentOvertimeScore?: Prisma.SortOrder
   status?: Prisma.SortOrder
   finalizedAt?: Prisma.SortOrder
   finalizedById?: Prisma.SortOrder
@@ -509,6 +701,14 @@ export type GameScoreSheetCountOrderByAggregateInput = {
 export type GameScoreSheetAvgOrderByAggregateInput = {
   teamScore?: Prisma.SortOrder
   opponentScore?: Prisma.SortOrder
+  teamPeriod1Score?: Prisma.SortOrder
+  teamPeriod2Score?: Prisma.SortOrder
+  teamPeriod3Score?: Prisma.SortOrder
+  teamOvertimeScore?: Prisma.SortOrder
+  opponentPeriod1Score?: Prisma.SortOrder
+  opponentPeriod2Score?: Prisma.SortOrder
+  opponentPeriod3Score?: Prisma.SortOrder
+  opponentOvertimeScore?: Prisma.SortOrder
 }
 
 export type GameScoreSheetMaxOrderByAggregateInput = {
@@ -518,6 +718,14 @@ export type GameScoreSheetMaxOrderByAggregateInput = {
   teamId?: Prisma.SortOrder
   teamScore?: Prisma.SortOrder
   opponentScore?: Prisma.SortOrder
+  teamPeriod1Score?: Prisma.SortOrder
+  teamPeriod2Score?: Prisma.SortOrder
+  teamPeriod3Score?: Prisma.SortOrder
+  teamOvertimeScore?: Prisma.SortOrder
+  opponentPeriod1Score?: Prisma.SortOrder
+  opponentPeriod2Score?: Prisma.SortOrder
+  opponentPeriod3Score?: Prisma.SortOrder
+  opponentOvertimeScore?: Prisma.SortOrder
   status?: Prisma.SortOrder
   finalizedAt?: Prisma.SortOrder
   finalizedById?: Prisma.SortOrder
@@ -533,6 +741,14 @@ export type GameScoreSheetMinOrderByAggregateInput = {
   teamId?: Prisma.SortOrder
   teamScore?: Prisma.SortOrder
   opponentScore?: Prisma.SortOrder
+  teamPeriod1Score?: Prisma.SortOrder
+  teamPeriod2Score?: Prisma.SortOrder
+  teamPeriod3Score?: Prisma.SortOrder
+  teamOvertimeScore?: Prisma.SortOrder
+  opponentPeriod1Score?: Prisma.SortOrder
+  opponentPeriod2Score?: Prisma.SortOrder
+  opponentPeriod3Score?: Prisma.SortOrder
+  opponentOvertimeScore?: Prisma.SortOrder
   status?: Prisma.SortOrder
   finalizedAt?: Prisma.SortOrder
   finalizedById?: Prisma.SortOrder
@@ -544,6 +760,14 @@ export type GameScoreSheetMinOrderByAggregateInput = {
 export type GameScoreSheetSumOrderByAggregateInput = {
   teamScore?: Prisma.SortOrder
   opponentScore?: Prisma.SortOrder
+  teamPeriod1Score?: Prisma.SortOrder
+  teamPeriod2Score?: Prisma.SortOrder
+  teamPeriod3Score?: Prisma.SortOrder
+  teamOvertimeScore?: Prisma.SortOrder
+  opponentPeriod1Score?: Prisma.SortOrder
+  opponentPeriod2Score?: Prisma.SortOrder
+  opponentPeriod3Score?: Prisma.SortOrder
+  opponentOvertimeScore?: Prisma.SortOrder
 }
 
 export type GameScoreSheetScalarRelationFilter = {
@@ -747,6 +971,14 @@ export type GameScoreSheetCreateWithoutFinalizedByInput = {
   id?: string
   teamScore?: number
   opponentScore?: number
+  teamPeriod1Score?: number
+  teamPeriod2Score?: number
+  teamPeriod3Score?: number
+  teamOvertimeScore?: number
+  opponentPeriod1Score?: number
+  opponentPeriod2Score?: number
+  opponentPeriod3Score?: number
+  opponentOvertimeScore?: number
   status?: $Enums.ScoreSheetStatus
   finalizedAt?: Date | string | null
   notes?: string | null
@@ -766,6 +998,14 @@ export type GameScoreSheetUncheckedCreateWithoutFinalizedByInput = {
   teamId: string
   teamScore?: number
   opponentScore?: number
+  teamPeriod1Score?: number
+  teamPeriod2Score?: number
+  teamPeriod3Score?: number
+  teamOvertimeScore?: number
+  opponentPeriod1Score?: number
+  opponentPeriod2Score?: number
+  opponentPeriod3Score?: number
+  opponentOvertimeScore?: number
   status?: $Enums.ScoreSheetStatus
   finalizedAt?: Date | string | null
   notes?: string | null
@@ -811,6 +1051,14 @@ export type GameScoreSheetScalarWhereInput = {
   teamId?: Prisma.StringFilter<"GameScoreSheet"> | string
   teamScore?: Prisma.IntFilter<"GameScoreSheet"> | number
   opponentScore?: Prisma.IntFilter<"GameScoreSheet"> | number
+  teamPeriod1Score?: Prisma.IntFilter<"GameScoreSheet"> | number
+  teamPeriod2Score?: Prisma.IntFilter<"GameScoreSheet"> | number
+  teamPeriod3Score?: Prisma.IntFilter<"GameScoreSheet"> | number
+  teamOvertimeScore?: Prisma.IntFilter<"GameScoreSheet"> | number
+  opponentPeriod1Score?: Prisma.IntFilter<"GameScoreSheet"> | number
+  opponentPeriod2Score?: Prisma.IntFilter<"GameScoreSheet"> | number
+  opponentPeriod3Score?: Prisma.IntFilter<"GameScoreSheet"> | number
+  opponentOvertimeScore?: Prisma.IntFilter<"GameScoreSheet"> | number
   status?: Prisma.EnumScoreSheetStatusFilter<"GameScoreSheet"> | $Enums.ScoreSheetStatus
   finalizedAt?: Prisma.DateTimeNullableFilter<"GameScoreSheet"> | Date | string | null
   finalizedById?: Prisma.StringNullableFilter<"GameScoreSheet"> | string | null
@@ -823,6 +1071,14 @@ export type GameScoreSheetCreateWithoutLeagueInput = {
   id?: string
   teamScore?: number
   opponentScore?: number
+  teamPeriod1Score?: number
+  teamPeriod2Score?: number
+  teamPeriod3Score?: number
+  teamOvertimeScore?: number
+  opponentPeriod1Score?: number
+  opponentPeriod2Score?: number
+  opponentPeriod3Score?: number
+  opponentOvertimeScore?: number
   status?: $Enums.ScoreSheetStatus
   finalizedAt?: Date | string | null
   notes?: string | null
@@ -841,6 +1097,14 @@ export type GameScoreSheetUncheckedCreateWithoutLeagueInput = {
   teamId: string
   teamScore?: number
   opponentScore?: number
+  teamPeriod1Score?: number
+  teamPeriod2Score?: number
+  teamPeriod3Score?: number
+  teamOvertimeScore?: number
+  opponentPeriod1Score?: number
+  opponentPeriod2Score?: number
+  opponentPeriod3Score?: number
+  opponentOvertimeScore?: number
   status?: $Enums.ScoreSheetStatus
   finalizedAt?: Date | string | null
   finalizedById?: string | null
@@ -881,6 +1145,14 @@ export type GameScoreSheetCreateWithoutLeagueMembersInput = {
   id?: string
   teamScore?: number
   opponentScore?: number
+  teamPeriod1Score?: number
+  teamPeriod2Score?: number
+  teamPeriod3Score?: number
+  teamOvertimeScore?: number
+  opponentPeriod1Score?: number
+  opponentPeriod2Score?: number
+  opponentPeriod3Score?: number
+  opponentOvertimeScore?: number
   status?: $Enums.ScoreSheetStatus
   finalizedAt?: Date | string | null
   notes?: string | null
@@ -900,6 +1172,14 @@ export type GameScoreSheetUncheckedCreateWithoutLeagueMembersInput = {
   teamId: string
   teamScore?: number
   opponentScore?: number
+  teamPeriod1Score?: number
+  teamPeriod2Score?: number
+  teamPeriod3Score?: number
+  teamOvertimeScore?: number
+  opponentPeriod1Score?: number
+  opponentPeriod2Score?: number
+  opponentPeriod3Score?: number
+  opponentOvertimeScore?: number
   status?: $Enums.ScoreSheetStatus
   finalizedAt?: Date | string | null
   finalizedById?: string | null
@@ -929,6 +1209,14 @@ export type GameScoreSheetUpdateWithoutLeagueMembersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   teamScore?: Prisma.IntFieldUpdateOperationsInput | number
   opponentScore?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumScoreSheetStatusFieldUpdateOperationsInput | $Enums.ScoreSheetStatus
   finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -948,6 +1236,14 @@ export type GameScoreSheetUncheckedUpdateWithoutLeagueMembersInput = {
   teamId?: Prisma.StringFieldUpdateOperationsInput | string
   teamScore?: Prisma.IntFieldUpdateOperationsInput | number
   opponentScore?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumScoreSheetStatusFieldUpdateOperationsInput | $Enums.ScoreSheetStatus
   finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   finalizedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -961,6 +1257,14 @@ export type GameScoreSheetCreateWithoutTeamInput = {
   id?: string
   teamScore?: number
   opponentScore?: number
+  teamPeriod1Score?: number
+  teamPeriod2Score?: number
+  teamPeriod3Score?: number
+  teamOvertimeScore?: number
+  opponentPeriod1Score?: number
+  opponentPeriod2Score?: number
+  opponentPeriod3Score?: number
+  opponentOvertimeScore?: number
   status?: $Enums.ScoreSheetStatus
   finalizedAt?: Date | string | null
   notes?: string | null
@@ -979,6 +1283,14 @@ export type GameScoreSheetUncheckedCreateWithoutTeamInput = {
   leagueId: string
   teamScore?: number
   opponentScore?: number
+  teamPeriod1Score?: number
+  teamPeriod2Score?: number
+  teamPeriod3Score?: number
+  teamOvertimeScore?: number
+  opponentPeriod1Score?: number
+  opponentPeriod2Score?: number
+  opponentPeriod3Score?: number
+  opponentOvertimeScore?: number
   status?: $Enums.ScoreSheetStatus
   finalizedAt?: Date | string | null
   finalizedById?: string | null
@@ -1019,6 +1331,14 @@ export type GameScoreSheetCreateWithoutGameInput = {
   id?: string
   teamScore?: number
   opponentScore?: number
+  teamPeriod1Score?: number
+  teamPeriod2Score?: number
+  teamPeriod3Score?: number
+  teamOvertimeScore?: number
+  opponentPeriod1Score?: number
+  opponentPeriod2Score?: number
+  opponentPeriod3Score?: number
+  opponentOvertimeScore?: number
   status?: $Enums.ScoreSheetStatus
   finalizedAt?: Date | string | null
   notes?: string | null
@@ -1037,6 +1357,14 @@ export type GameScoreSheetUncheckedCreateWithoutGameInput = {
   teamId: string
   teamScore?: number
   opponentScore?: number
+  teamPeriod1Score?: number
+  teamPeriod2Score?: number
+  teamPeriod3Score?: number
+  teamOvertimeScore?: number
+  opponentPeriod1Score?: number
+  opponentPeriod2Score?: number
+  opponentPeriod3Score?: number
+  opponentOvertimeScore?: number
   status?: $Enums.ScoreSheetStatus
   finalizedAt?: Date | string | null
   finalizedById?: string | null
@@ -1067,6 +1395,14 @@ export type GameScoreSheetUpdateWithoutGameInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   teamScore?: Prisma.IntFieldUpdateOperationsInput | number
   opponentScore?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumScoreSheetStatusFieldUpdateOperationsInput | $Enums.ScoreSheetStatus
   finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1085,6 +1421,14 @@ export type GameScoreSheetUncheckedUpdateWithoutGameInput = {
   teamId?: Prisma.StringFieldUpdateOperationsInput | string
   teamScore?: Prisma.IntFieldUpdateOperationsInput | number
   opponentScore?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumScoreSheetStatusFieldUpdateOperationsInput | $Enums.ScoreSheetStatus
   finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   finalizedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1099,6 +1443,14 @@ export type GameScoreSheetCreateWithoutPlayerLinesInput = {
   id?: string
   teamScore?: number
   opponentScore?: number
+  teamPeriod1Score?: number
+  teamPeriod2Score?: number
+  teamPeriod3Score?: number
+  teamOvertimeScore?: number
+  opponentPeriod1Score?: number
+  opponentPeriod2Score?: number
+  opponentPeriod3Score?: number
+  opponentOvertimeScore?: number
   status?: $Enums.ScoreSheetStatus
   finalizedAt?: Date | string | null
   notes?: string | null
@@ -1118,6 +1470,14 @@ export type GameScoreSheetUncheckedCreateWithoutPlayerLinesInput = {
   teamId: string
   teamScore?: number
   opponentScore?: number
+  teamPeriod1Score?: number
+  teamPeriod2Score?: number
+  teamPeriod3Score?: number
+  teamOvertimeScore?: number
+  opponentPeriod1Score?: number
+  opponentPeriod2Score?: number
+  opponentPeriod3Score?: number
+  opponentOvertimeScore?: number
   status?: $Enums.ScoreSheetStatus
   finalizedAt?: Date | string | null
   finalizedById?: string | null
@@ -1147,6 +1507,14 @@ export type GameScoreSheetUpdateWithoutPlayerLinesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   teamScore?: Prisma.IntFieldUpdateOperationsInput | number
   opponentScore?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumScoreSheetStatusFieldUpdateOperationsInput | $Enums.ScoreSheetStatus
   finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1166,6 +1534,14 @@ export type GameScoreSheetUncheckedUpdateWithoutPlayerLinesInput = {
   teamId?: Prisma.StringFieldUpdateOperationsInput | string
   teamScore?: Prisma.IntFieldUpdateOperationsInput | number
   opponentScore?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumScoreSheetStatusFieldUpdateOperationsInput | $Enums.ScoreSheetStatus
   finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   finalizedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1182,6 +1558,14 @@ export type GameScoreSheetCreateManyFinalizedByInput = {
   teamId: string
   teamScore?: number
   opponentScore?: number
+  teamPeriod1Score?: number
+  teamPeriod2Score?: number
+  teamPeriod3Score?: number
+  teamOvertimeScore?: number
+  opponentPeriod1Score?: number
+  opponentPeriod2Score?: number
+  opponentPeriod3Score?: number
+  opponentOvertimeScore?: number
   status?: $Enums.ScoreSheetStatus
   finalizedAt?: Date | string | null
   notes?: string | null
@@ -1193,6 +1577,14 @@ export type GameScoreSheetUpdateWithoutFinalizedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   teamScore?: Prisma.IntFieldUpdateOperationsInput | number
   opponentScore?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumScoreSheetStatusFieldUpdateOperationsInput | $Enums.ScoreSheetStatus
   finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1212,6 +1604,14 @@ export type GameScoreSheetUncheckedUpdateWithoutFinalizedByInput = {
   teamId?: Prisma.StringFieldUpdateOperationsInput | string
   teamScore?: Prisma.IntFieldUpdateOperationsInput | number
   opponentScore?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumScoreSheetStatusFieldUpdateOperationsInput | $Enums.ScoreSheetStatus
   finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1228,6 +1628,14 @@ export type GameScoreSheetUncheckedUpdateManyWithoutFinalizedByInput = {
   teamId?: Prisma.StringFieldUpdateOperationsInput | string
   teamScore?: Prisma.IntFieldUpdateOperationsInput | number
   opponentScore?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumScoreSheetStatusFieldUpdateOperationsInput | $Enums.ScoreSheetStatus
   finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1241,6 +1649,14 @@ export type GameScoreSheetCreateManyLeagueInput = {
   teamId: string
   teamScore?: number
   opponentScore?: number
+  teamPeriod1Score?: number
+  teamPeriod2Score?: number
+  teamPeriod3Score?: number
+  teamOvertimeScore?: number
+  opponentPeriod1Score?: number
+  opponentPeriod2Score?: number
+  opponentPeriod3Score?: number
+  opponentOvertimeScore?: number
   status?: $Enums.ScoreSheetStatus
   finalizedAt?: Date | string | null
   finalizedById?: string | null
@@ -1253,6 +1669,14 @@ export type GameScoreSheetUpdateWithoutLeagueInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   teamScore?: Prisma.IntFieldUpdateOperationsInput | number
   opponentScore?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumScoreSheetStatusFieldUpdateOperationsInput | $Enums.ScoreSheetStatus
   finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1271,6 +1695,14 @@ export type GameScoreSheetUncheckedUpdateWithoutLeagueInput = {
   teamId?: Prisma.StringFieldUpdateOperationsInput | string
   teamScore?: Prisma.IntFieldUpdateOperationsInput | number
   opponentScore?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumScoreSheetStatusFieldUpdateOperationsInput | $Enums.ScoreSheetStatus
   finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   finalizedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1287,6 +1719,14 @@ export type GameScoreSheetUncheckedUpdateManyWithoutLeagueInput = {
   teamId?: Prisma.StringFieldUpdateOperationsInput | string
   teamScore?: Prisma.IntFieldUpdateOperationsInput | number
   opponentScore?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumScoreSheetStatusFieldUpdateOperationsInput | $Enums.ScoreSheetStatus
   finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   finalizedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1301,6 +1741,14 @@ export type GameScoreSheetCreateManyTeamInput = {
   leagueId: string
   teamScore?: number
   opponentScore?: number
+  teamPeriod1Score?: number
+  teamPeriod2Score?: number
+  teamPeriod3Score?: number
+  teamOvertimeScore?: number
+  opponentPeriod1Score?: number
+  opponentPeriod2Score?: number
+  opponentPeriod3Score?: number
+  opponentOvertimeScore?: number
   status?: $Enums.ScoreSheetStatus
   finalizedAt?: Date | string | null
   finalizedById?: string | null
@@ -1313,6 +1761,14 @@ export type GameScoreSheetUpdateWithoutTeamInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   teamScore?: Prisma.IntFieldUpdateOperationsInput | number
   opponentScore?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumScoreSheetStatusFieldUpdateOperationsInput | $Enums.ScoreSheetStatus
   finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1331,6 +1787,14 @@ export type GameScoreSheetUncheckedUpdateWithoutTeamInput = {
   leagueId?: Prisma.StringFieldUpdateOperationsInput | string
   teamScore?: Prisma.IntFieldUpdateOperationsInput | number
   opponentScore?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumScoreSheetStatusFieldUpdateOperationsInput | $Enums.ScoreSheetStatus
   finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   finalizedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1347,6 +1811,14 @@ export type GameScoreSheetUncheckedUpdateManyWithoutTeamInput = {
   leagueId?: Prisma.StringFieldUpdateOperationsInput | string
   teamScore?: Prisma.IntFieldUpdateOperationsInput | number
   opponentScore?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  teamOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod1Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod2Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentPeriod3Score?: Prisma.IntFieldUpdateOperationsInput | number
+  opponentOvertimeScore?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumScoreSheetStatusFieldUpdateOperationsInput | $Enums.ScoreSheetStatus
   finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   finalizedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1402,6 +1874,14 @@ export type GameScoreSheetSelect<ExtArgs extends runtime.Types.Extensions.Intern
   teamId?: boolean
   teamScore?: boolean
   opponentScore?: boolean
+  teamPeriod1Score?: boolean
+  teamPeriod2Score?: boolean
+  teamPeriod3Score?: boolean
+  teamOvertimeScore?: boolean
+  opponentPeriod1Score?: boolean
+  opponentPeriod2Score?: boolean
+  opponentPeriod3Score?: boolean
+  opponentOvertimeScore?: boolean
   status?: boolean
   finalizedAt?: boolean
   finalizedById?: boolean
@@ -1424,6 +1904,14 @@ export type GameScoreSheetSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   teamId?: boolean
   teamScore?: boolean
   opponentScore?: boolean
+  teamPeriod1Score?: boolean
+  teamPeriod2Score?: boolean
+  teamPeriod3Score?: boolean
+  teamOvertimeScore?: boolean
+  opponentPeriod1Score?: boolean
+  opponentPeriod2Score?: boolean
+  opponentPeriod3Score?: boolean
+  opponentOvertimeScore?: boolean
   status?: boolean
   finalizedAt?: boolean
   finalizedById?: boolean
@@ -1443,6 +1931,14 @@ export type GameScoreSheetSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   teamId?: boolean
   teamScore?: boolean
   opponentScore?: boolean
+  teamPeriod1Score?: boolean
+  teamPeriod2Score?: boolean
+  teamPeriod3Score?: boolean
+  teamOvertimeScore?: boolean
+  opponentPeriod1Score?: boolean
+  opponentPeriod2Score?: boolean
+  opponentPeriod3Score?: boolean
+  opponentOvertimeScore?: boolean
   status?: boolean
   finalizedAt?: boolean
   finalizedById?: boolean
@@ -1462,6 +1958,14 @@ export type GameScoreSheetSelectScalar = {
   teamId?: boolean
   teamScore?: boolean
   opponentScore?: boolean
+  teamPeriod1Score?: boolean
+  teamPeriod2Score?: boolean
+  teamPeriod3Score?: boolean
+  teamOvertimeScore?: boolean
+  opponentPeriod1Score?: boolean
+  opponentPeriod2Score?: boolean
+  opponentPeriod3Score?: boolean
+  opponentOvertimeScore?: boolean
   status?: boolean
   finalizedAt?: boolean
   finalizedById?: boolean
@@ -1470,7 +1974,7 @@ export type GameScoreSheetSelectScalar = {
   updatedAt?: boolean
 }
 
-export type GameScoreSheetOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "gameId" | "leagueId" | "teamId" | "teamScore" | "opponentScore" | "status" | "finalizedAt" | "finalizedById" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["gameScoreSheet"]>
+export type GameScoreSheetOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "gameId" | "leagueId" | "teamId" | "teamScore" | "opponentScore" | "teamPeriod1Score" | "teamPeriod2Score" | "teamPeriod3Score" | "teamOvertimeScore" | "opponentPeriod1Score" | "opponentPeriod2Score" | "opponentPeriod3Score" | "opponentOvertimeScore" | "status" | "finalizedAt" | "finalizedById" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["gameScoreSheet"]>
 export type GameScoreSheetInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   game?: boolean | Prisma.TeamGameDefaultArgs<ExtArgs>
   league?: boolean | Prisma.LeagueDefaultArgs<ExtArgs>
@@ -1510,6 +2014,14 @@ export type $GameScoreSheetPayload<ExtArgs extends runtime.Types.Extensions.Inte
     teamId: string
     teamScore: number
     opponentScore: number
+    teamPeriod1Score: number
+    teamPeriod2Score: number
+    teamPeriod3Score: number
+    teamOvertimeScore: number
+    opponentPeriod1Score: number
+    opponentPeriod2Score: number
+    opponentPeriod3Score: number
+    opponentOvertimeScore: number
     status: $Enums.ScoreSheetStatus
     finalizedAt: Date | null
     finalizedById: string | null
@@ -1951,6 +2463,14 @@ export interface GameScoreSheetFieldRefs {
   readonly teamId: Prisma.FieldRef<"GameScoreSheet", 'String'>
   readonly teamScore: Prisma.FieldRef<"GameScoreSheet", 'Int'>
   readonly opponentScore: Prisma.FieldRef<"GameScoreSheet", 'Int'>
+  readonly teamPeriod1Score: Prisma.FieldRef<"GameScoreSheet", 'Int'>
+  readonly teamPeriod2Score: Prisma.FieldRef<"GameScoreSheet", 'Int'>
+  readonly teamPeriod3Score: Prisma.FieldRef<"GameScoreSheet", 'Int'>
+  readonly teamOvertimeScore: Prisma.FieldRef<"GameScoreSheet", 'Int'>
+  readonly opponentPeriod1Score: Prisma.FieldRef<"GameScoreSheet", 'Int'>
+  readonly opponentPeriod2Score: Prisma.FieldRef<"GameScoreSheet", 'Int'>
+  readonly opponentPeriod3Score: Prisma.FieldRef<"GameScoreSheet", 'Int'>
+  readonly opponentOvertimeScore: Prisma.FieldRef<"GameScoreSheet", 'Int'>
   readonly status: Prisma.FieldRef<"GameScoreSheet", 'ScoreSheetStatus'>
   readonly finalizedAt: Prisma.FieldRef<"GameScoreSheet", 'DateTime'>
   readonly finalizedById: Prisma.FieldRef<"GameScoreSheet", 'String'>

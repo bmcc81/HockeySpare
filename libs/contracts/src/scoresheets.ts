@@ -82,6 +82,16 @@ export interface GameScoreSheetDto {
   teamScore: number;
   opponentScore: number;
 
+  teamPeriod1Score: number;
+  teamPeriod2Score: number;
+  teamPeriod3Score: number;
+  teamOvertimeScore: number;
+
+  opponentPeriod1Score: number;
+  opponentPeriod2Score: number;
+  opponentPeriod3Score: number;
+  opponentOvertimeScore: number;
+
   status: ScoreSheetStatus;
   finalizedAt?: string | null;
   finalizedById?: string | null;
@@ -102,6 +112,17 @@ export interface GameScoreSheetDto {
 export interface UpdateScoreSheetInput {
   teamScore?: number;
   opponentScore?: number;
+
+  teamPeriod1Score?: number;
+  teamPeriod2Score?: number;
+  teamPeriod3Score?: number;
+  teamOvertimeScore?: number;
+
+  opponentPeriod1Score?: number;
+  opponentPeriod2Score?: number;
+  opponentPeriod3Score?: number;
+  opponentOvertimeScore?: number;
+
   notes?: string | null;
 }
 

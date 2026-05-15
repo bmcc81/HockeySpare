@@ -410,6 +410,16 @@ model GameScoreSheet {
   teamScore     Int @default(0)
   opponentScore Int @default(0)
 
+  teamPeriod1Score     Int @default(0)
+  teamPeriod2Score     Int @default(0)
+  teamPeriod3Score     Int @default(0)
+  teamOvertimeScore    Int @default(0)
+
+  opponentPeriod1Score  Int @default(0)
+  opponentPeriod2Score  Int @default(0)
+  opponentPeriod3Score  Int @default(0)
+  opponentOvertimeScore Int @default(0)
+
   status        ScoreSheetStatus @default(DRAFT)
   finalizedAt   DateTime?
   finalizedById String?

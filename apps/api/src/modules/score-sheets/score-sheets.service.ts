@@ -9,6 +9,17 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { UpdateScoreSheetDto } from './dto/update-score-sheet.dto';
 import { UpsertScoreSheetPlayerDto } from './dto/upsert-score-sheet-player.dto';
 
+type ScoreSheetPeriodScores = {
+  teamPeriod1Score?: number;
+  teamPeriod2Score?: number;
+  teamPeriod3Score?: number;
+  teamOvertimeScore?: number;
+  opponentPeriod1Score?: number;
+  opponentPeriod2Score?: number;
+  opponentPeriod3Score?: number;
+  opponentOvertimeScore?: number;
+};
+
 @Injectable()
 export class ScoreSheetsService {
   constructor(private readonly prisma: PrismaService) {}
@@ -128,6 +139,50 @@ export class ScoreSheetsService {
     return `${startYear}-${startYear + 1}`;
   }
 
+  private getPeriodScoreData(
+    dto: UpdateScoreSheetDto,
+    fallback?: ScoreSheetPeriodScores,
+  ) {
+    const teamPeriod1Score =
+      dto.teamPeriod1Score ?? fallback?.teamPeriod1Score ?? 0;
+    const teamPeriod2Score =
+      dto.teamPeriod2Score ?? fallback?.teamPeriod2Score ?? 0;
+    const teamPeriod3Score =
+      dto.teamPeriod3Score ?? fallback?.teamPeriod3Score ?? 0;
+    const teamOvertimeScore =
+      dto.teamOvertimeScore ?? fallback?.teamOvertimeScore ?? 0;
+
+    const opponentPeriod1Score =
+      dto.opponentPeriod1Score ?? fallback?.opponentPeriod1Score ?? 0;
+    const opponentPeriod2Score =
+      dto.opponentPeriod2Score ?? fallback?.opponentPeriod2Score ?? 0;
+    const opponentPeriod3Score =
+      dto.opponentPeriod3Score ?? fallback?.opponentPeriod3Score ?? 0;
+    const opponentOvertimeScore =
+      dto.opponentOvertimeScore ?? fallback?.opponentOvertimeScore ?? 0;
+
+    return {
+      teamPeriod1Score,
+      teamPeriod2Score,
+      teamPeriod3Score,
+      teamOvertimeScore,
+      opponentPeriod1Score,
+      opponentPeriod2Score,
+      opponentPeriod3Score,
+      opponentOvertimeScore,
+      teamScore:
+        teamPeriod1Score +
+        teamPeriod2Score +
+        teamPeriod3Score +
+        teamOvertimeScore,
+      opponentScore:
+        opponentPeriod1Score +
+        opponentPeriod2Score +
+        opponentPeriod3Score +
+        opponentOvertimeScore,
+    };
+  }
+
   async getByGame(userId: string, gameId: string) {
     const game = await this.getGameOrThrow(gameId);
 
@@ -156,8 +211,20 @@ export class ScoreSheetsService {
       gameId: game.id,
       leagueId: game.leagueId,
       teamId: game.teamId,
+
       teamScore: 0,
       opponentScore: 0,
+
+      teamPeriod1Score: 0,
+      teamPeriod2Score: 0,
+      teamPeriod3Score: 0,
+      teamOvertimeScore: 0,
+
+      opponentPeriod1Score: 0,
+      opponentPeriod2Score: 0,
+      opponentPeriod3Score: 0,
+      opponentOvertimeScore: 0,
+
       status: ScoreSheetStatus.DRAFT,
       finalizedAt: null,
       finalizedById: null,
@@ -199,13 +266,16 @@ export class ScoreSheetsService {
       return this.getScoreSheetOrThrow(existing.id);
     }
 
+    const scoreData = this.getPeriodScoreData(dto);
+
     const scoreSheet = await this.prisma.gameScoreSheet.create({
       data: {
         gameId: game.id,
         leagueId: game.leagueId!,
         teamId: game.teamId,
-        teamScore: dto.teamScore ?? 0,
-        opponentScore: dto.opponentScore ?? 0,
+
+        ...scoreData,
+
         notes: dto.notes?.trim() || null,
         status: ScoreSheetStatus.DRAFT,
       },
@@ -229,21 +299,14 @@ export class ScoreSheetsService {
     await this.assertCanManageScoreSheet(userId, scoreSheet.leagueId);
     this.assertDraft(scoreSheet.status);
 
+    const scoreData = this.getPeriodScoreData(dto, scoreSheet);
+
     await this.prisma.gameScoreSheet.update({
       where: {
         id: scoreSheet.id,
       },
       data: {
-        ...(dto.teamScore !== undefined
-          ? {
-              teamScore: dto.teamScore,
-            }
-          : {}),
-        ...(dto.opponentScore !== undefined
-          ? {
-              opponentScore: dto.opponentScore,
-            }
-          : {}),
+        ...scoreData,
         ...(dto.notes !== undefined
           ? {
               notes: dto.notes?.trim() || null,
@@ -310,7 +373,7 @@ export class ScoreSheetsService {
       },
     });
 
-    return this.recalculateAndSaveScore(scoreSheet.id);
+    return this.getScoreSheetOrThrow(scoreSheet.id);
   }
 
   async updatePlayerLine(
@@ -363,7 +426,7 @@ export class ScoreSheetsService {
       },
     });
 
-    return this.recalculateAndSaveScore(scoreSheet.id);
+    return this.getScoreSheetOrThrow(scoreSheet.id);
   }
 
   async deletePlayerLine(userId: string, scoreSheetId: string, lineId: string) {
@@ -389,16 +452,14 @@ export class ScoreSheetsService {
       },
     });
 
-    return this.recalculateAndSaveScore(scoreSheet.id);
+    return this.getScoreSheetOrThrow(scoreSheet.id);
   }
 
   async finalizeScoreSheet(userId: string, scoreSheetId: string) {
-    const existingScoreSheet = await this.getScoreSheetOrThrow(scoreSheetId);
+    const scoreSheet = await this.getScoreSheetOrThrow(scoreSheetId);
 
-    await this.assertCanManageScoreSheet(userId, existingScoreSheet.leagueId);
-    this.assertDraft(existingScoreSheet.status);
-
-    const scoreSheet = await this.recalculateAndSaveScore(existingScoreSheet.id);
+    await this.assertCanManageScoreSheet(userId, scoreSheet.leagueId);
+    this.assertDraft(scoreSheet.status);
 
     if (scoreSheet.playerLines.length === 0) {
       throw new BadRequestException(
@@ -522,44 +583,5 @@ export class ScoreSheetsService {
       })),
       skipDuplicates: true,
     });
-  }
-
-  private calculateScoreTotals(scoreSheet: any) {
-    const teamScore = scoreSheet.playerLines
-      .filter((line: any) => line.member.teamId === scoreSheet.teamId)
-      .reduce((total: number, line: any) => total + line.goals, 0);
-
-    const opponentTeamId = scoreSheet.game.opponentTeamId;
-
-    const opponentScore = opponentTeamId
-      ? scoreSheet.playerLines
-          .filter((line: any) => line.member.teamId === opponentTeamId)
-          .reduce((total: number, line: any) => total + line.goals, 0)
-      : scoreSheet.opponentScore;
-
-    return {
-      teamScore,
-      opponentScore,
-    };
-  }
-
-  private async recalculateAndSaveScore(scoreSheetId: string) {
-    const scoreSheet = await this.getScoreSheetOrThrow(scoreSheetId);
-
-    this.assertDraft(scoreSheet.status);
-
-    const calculated = this.calculateScoreTotals(scoreSheet);
-
-    await this.prisma.gameScoreSheet.update({
-      where: {
-        id: scoreSheet.id,
-      },
-      data: {
-        teamScore: calculated.teamScore,
-        opponentScore: calculated.opponentScore,
-      },
-    });
-
-    return this.getScoreSheetOrThrow(scoreSheet.id);
   }
 }

@@ -74,4 +74,8 @@ export class ScoreSheetsApiService {
       {},
     );
   }
+
+  finalize(scoreSheetId: string): Observable<GameScoreSheetDto> {
+    return this.finalizeScoreSheet(scoreSheetId);
+  }
 }

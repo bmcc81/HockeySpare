@@ -73,7 +73,8 @@ export class ScoreSheetComponent implements OnInit {
       !this.saving &&
       !this.finalizing &&
       this.lineArray.length > 0 &&
-      this.linesForm.valid
+      this.linesForm.valid &&
+      this.scoreForm.valid
     );
   }
 
@@ -217,7 +218,7 @@ export class ScoreSheetComponent implements OnInit {
   }
 
   saveScore(): void {
-    if (!this.scoreSheet?.id || this.scoreForm.invalid || this.isFinalized) {
+    if (!this.scoreSheet?.id || this.scoreForm.invalid || !this.canEdit) {
       this.scoreForm.markAllAsTouched();
       return;
     }
@@ -250,7 +251,7 @@ export class ScoreSheetComponent implements OnInit {
   }
 
   savePlayerLine(line: ScoreSheetPlayerLineDto, index: number): void {
-    if (!this.scoreSheet?.id || this.isFinalized) {
+    if (!this.scoreSheet?.id || !this.canEdit) {
       return;
     }
 
@@ -291,7 +292,7 @@ export class ScoreSheetComponent implements OnInit {
   }
 
   deletePlayerLine(line: ScoreSheetPlayerLineDto): void {
-    if (!this.scoreSheet?.id || this.isFinalized) {
+    if (!this.scoreSheet?.id || !this.canEdit) {
       return;
     }
 
@@ -307,21 +308,18 @@ export class ScoreSheetComponent implements OnInit {
     this.error = '';
     this.success = '';
 
-    this.scoreSheetsApi
-      .deletePlayerLine(this.scoreSheet.id, line.id)
-      .subscribe({
-        next: (scoreSheet) => {
-          this.saving = false;
-          this.success = `${line.member.displayName} removed from scoresheet.`;
-          this.setScoreSheet(scoreSheet);
-        },
-        error: (err) => {
-          this.saving = false;
-          this.error =
-            err?.error?.message ||
-            `Could not remove ${line.member.displayName}.`;
-        },
-      });
+    this.scoreSheetsApi.deletePlayerLine(this.scoreSheet.id, line.id).subscribe({
+      next: (scoreSheet) => {
+        this.saving = false;
+        this.success = `${line.member.displayName} removed from scoresheet.`;
+        this.setScoreSheet(scoreSheet);
+      },
+      error: (err) => {
+        this.saving = false;
+        this.error =
+          err?.error?.message || `Could not remove ${line.member.displayName}.`;
+      },
+    });
   }
 
   private saveAllPlayerLinesBeforeFinalize() {
@@ -366,10 +364,6 @@ export class ScoreSheetComponent implements OnInit {
     );
 
     if (!confirmed) {
-      return;
-    } 
-    
-    if (!this.scoreSheet?.id || this.isFinalized) {
       return;
     }
 
@@ -427,10 +421,6 @@ export class ScoreSheetComponent implements OnInit {
     return fullName || user.email;
   }
 
-  hasOpponentTeam(): boolean {
-    return !!this.scoreSheet?.game.opponentTeamId;
-  }
-
   trackByLineId(_: number, line: ScoreSheetPlayerLineDto): string {
     return line.id;
   }
@@ -468,22 +458,6 @@ export class ScoreSheetComponent implements OnInit {
     }
 
     return this.getLineGoalsForTeam(opponentTeamId);
-  }
-
-  scoresMatchPlayerGoals(): boolean {
-    if (!this.scoreSheet) {
-      return false;
-    }
-
-    const teamScore = Number(this.scoreForm.controls.teamScore.value ?? 0);
-    const opponentScore = Number(
-      this.scoreForm.controls.opponentScore.value ?? 0,
-    );
-
-    return (
-      teamScore === this.calculatedTeamScore() &&
-      opponentScore === this.calculatedOpponentScore()
-    );
   }
 
   syncScoreWithPlayerGoals(): void {

@@ -72,6 +72,11 @@
       </div>
     </div>
 
+    <div *ngIf="isFinalized" class="alert alert-success">
+      This scoresheet has been finalized. Stats are locked and can no longer be
+      edited.
+    </div>
+
     <div class="card mb-4">
       <div class="card-body">
         <h2 class="h5 mb-3">Game Score</h2>
@@ -96,7 +101,7 @@
                 type="number"
                 min="0"
                 formControlName="opponentScore"
-                readonly
+                [readonly]="hasOpponentTeam() || !canEdit"
               />
             </div>
 
@@ -114,6 +119,7 @@
                 type="text"
                 formControlName="notes"
                 placeholder="Optional notes"
+                [readonly]="!canEdit"
               />
             </div>
 
@@ -121,7 +127,7 @@
               <button
                 type="submit"
                 class="btn btn-primary"
-                [disabled]="saving || isFinalized"
+                [disabled]="!canEdit || scoreForm.invalid"
               >
                 {{ saving ? "Saving..." : "Save Score" }}
               </button>
@@ -194,6 +200,7 @@
                       type="number"
                       min="0"
                       formControlName="gamesPlayed"
+                      [readonly]="!canEdit"
                     />
                   </td>
 
@@ -203,6 +210,7 @@
                       type="number"
                       min="0"
                       formControlName="goals"
+                      [readonly]="!canEdit"
                     />
                   </td>
 
@@ -212,6 +220,7 @@
                       type="number"
                       min="0"
                       formControlName="assists"
+                      [readonly]="!canEdit"
                     />
                   </td>
 
@@ -221,6 +230,7 @@
                       type="number"
                       min="0"
                       formControlName="penaltyMins"
+                      [readonly]="!canEdit"
                     />
                   </td>
 
@@ -230,7 +240,7 @@
                         type="button"
                         class="btn btn-outline-primary btn-sm"
                         (click)="savePlayerLine(line, i)"
-                        [disabled]="saving || isFinalized"
+                        [disabled]="!canEdit"
                       >
                         Save
                       </button>
@@ -239,7 +249,7 @@
                         type="button"
                         class="btn btn-outline-danger btn-sm"
                         (click)="deletePlayerLine(line)"
-                        [disabled]="saving || isFinalized"
+                        [disabled]="!canEdit"
                       >
                         Remove
                       </button>

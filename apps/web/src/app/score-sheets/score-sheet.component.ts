@@ -9,7 +9,10 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { finalize, forkJoin, switchMap, timeout } from 'rxjs';
-import { GameScoreSheetDto, ScoreSheetPlayerLineDto } from '@hockeyspare/contracts';
+import {
+  GameScoreSheetDto,
+  ScoreSheetPlayerLineDto,
+} from '@hockeyspare/contracts';
 import { ScoreSheetsApiService } from '../core/services/score-sheets-api.service';
 
 @Component({
@@ -55,7 +58,12 @@ export class ScoreSheetComponent implements OnInit {
   }
 
   get canEdit(): boolean {
-    return !!this.scoreSheet?.id && !this.isFinalized && !this.saving && !this.finalizing;
+    return (
+      !!this.scoreSheet?.id &&
+      !this.isFinalized &&
+      !this.saving &&
+      !this.finalizing
+    );
   }
 
   get canFinalize(): boolean {
@@ -67,6 +75,10 @@ export class ScoreSheetComponent implements OnInit {
       this.lineArray.length > 0 &&
       this.linesForm.valid
     );
+  }
+
+  get canEditOpponentScore(): boolean {
+    return this.canEdit && !this.scoreSheet?.game.opponentTeamId;
   }
 
   ngOnInit(): void {
@@ -354,6 +366,10 @@ export class ScoreSheetComponent implements OnInit {
     );
 
     if (!confirmed) {
+      return;
+    } 
+    
+    if (!this.scoreSheet?.id || this.isFinalized) {
       return;
     }
 

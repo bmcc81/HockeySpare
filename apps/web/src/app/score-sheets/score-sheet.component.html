@@ -49,7 +49,7 @@
             class="badge rounded-pill"
             [ngClass]="{
               'text-bg-warning': sheet.status === 'DRAFT',
-              'text-bg-success': sheet.status === 'FINALIZED',
+              'text-bg-success': sheet.status === 'FINALIZED'
             }"
           >
             {{ sheet.status }}
@@ -73,8 +73,7 @@
     </div>
 
     <div *ngIf="isFinalized" class="alert alert-success">
-      This scoresheet has been finalized. Stats are locked and can no longer be
-      edited.
+      This scoresheet has been finalized. Stats are locked and can no longer be edited.
     </div>
 
     <div class="card mb-4">
@@ -101,7 +100,7 @@
                 type="number"
                 min="0"
                 formControlName="opponentScore"
-                [readonly]="hasOpponentTeam() || !canEdit"
+                [readonly]="!canEditOpponentScore"
               />
             </div>
 
@@ -145,8 +144,7 @@
           <div>
             <h2 class="h5 mb-1">Player Stats</h2>
             <div class="text-secondary small">
-              These lines will update season stats when the scoresheet is
-              finalized.
+              These lines will update season stats when the scoresheet is finalized.
             </div>
           </div>
 
@@ -271,8 +269,7 @@
           <h2 class="h5 mb-1">Finalize Scoresheet</h2>
 
           <div class="text-secondary">
-            Finalizing locks the scoresheet and adds these player lines to
-            season stats.
+            Finalizing locks the scoresheet and adds these player lines to season stats.
           </div>
         </div>
 
@@ -280,13 +277,7 @@
           type="button"
           class="btn btn-success"
           (click)="finalizeScoreSheet()"
-          [disabled]="
-            finalizing ||
-            saving ||
-            isFinalized ||
-            sheet.playerLines.length === 0 ||
-            linesForm.invalid
-          "
+          [disabled]="!canFinalize"
         >
           {{ finalizing ? "Finalizing..." : "Finalize Scoresheet" }}
         </button>

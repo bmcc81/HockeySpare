@@ -41,27 +41,29 @@ jobs:
           npm ci
 
       - name: Generate Prisma client
+        env:
+            PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING: "1"
         run: |
-          cd /opt/hockeyspare
+            cd /opt/hockeyspare
 
-          if [ ! -f apps/api/.env ]; then
+            if [ ! -f apps/api/.env ]; then
             echo "Missing apps/api/.env on Raspberry Pi"
             exit 1
-          fi
+            fi
 
-          DATABASE_URL=$(grep -E '^DATABASE_URL=' apps/api/.env | head -n 1 | cut -d '=' -f 2-)
-          DATABASE_URL="${DATABASE_URL%\"}"
-          DATABASE_URL="${DATABASE_URL#\"}"
-          DATABASE_URL="${DATABASE_URL%\'}"
-          DATABASE_URL="${DATABASE_URL#\'}"
+            DATABASE_URL=$(grep -E '^DATABASE_URL=' apps/api/.env | head -n 1 | cut -d '=' -f 2-)
+            DATABASE_URL="${DATABASE_URL%\"}"
+            DATABASE_URL="${DATABASE_URL#\"}"
+            DATABASE_URL="${DATABASE_URL%\'}"
+            DATABASE_URL="${DATABASE_URL#\'}"
 
-          if [ -z "$DATABASE_URL" ]; then
+            if [ -z "$DATABASE_URL" ]; then
             echo "DATABASE_URL was not found in apps/api/.env"
             exit 1
-          fi
+            fi
 
-          export DATABASE_URL
-          npx prisma generate --schema=apps/api/src/prisma/schema.prisma
+            export DATABASE_URL
+            npx prisma generate --schema=apps/api/src/prisma/schema.prisma
 
       - name: Build shared contracts
         run: |

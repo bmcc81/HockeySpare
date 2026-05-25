@@ -35,33 +35,51 @@ jobs:
           git checkout main
           git reset --hard origin/main
 
-      - name: Install dependencies
+      - name: Install dependencies when package-lock changes
         run: |
           cd /opt/hockeyspare
-          npm ci
+
+          mkdir -p .deploy-cache
+
+          CURRENT_LOCK_HASH=$(sha256sum package-lock.json | awk '{print $1}')
+          SAVED_LOCK_HASH=""
+
+          if [ -f .deploy-cache/package-lock.sha256 ]; then
+            SAVED_LOCK_HASH=$(cat .deploy-cache/package-lock.sha256)
+          fi
+
+          if [ -d node_modules ] && [ "$CURRENT_LOCK_HASH" = "$SAVED_LOCK_HASH" ]; then
+            echo "package-lock.json has not changed. Skipping npm ci."
+          else
+            echo "package-lock.json changed or node_modules missing. Running npm ci."
+            npm ci --prefer-offline --no-audit --fund=false
+            echo "$CURRENT_LOCK_HASH" > .deploy-cache/package-lock.sha256
+          fi
 
       - name: Generate Prisma client
+        env:
+            PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING: "1"
         run: |
-          cd /opt/hockeyspare
+            cd /opt/hockeyspare
 
-          if [ ! -f apps/api/.env ]; then
+            if [ ! -f apps/api/.env ]; then
             echo "Missing apps/api/.env on Raspberry Pi"
             exit 1
-          fi
+            fi
 
-          DATABASE_URL=$(grep -E '^DATABASE_URL=' apps/api/.env | head -n 1 | cut -d '=' -f 2-)
-          DATABASE_URL="${DATABASE_URL%\"}"
-          DATABASE_URL="${DATABASE_URL#\"}"
-          DATABASE_URL="${DATABASE_URL%\'}"
-          DATABASE_URL="${DATABASE_URL#\'}"
+            DATABASE_URL=$(grep -E '^DATABASE_URL=' apps/api/.env | head -n 1 | cut -d '=' -f 2-)
+            DATABASE_URL="${DATABASE_URL%\"}"
+            DATABASE_URL="${DATABASE_URL#\"}"
+            DATABASE_URL="${DATABASE_URL%\'}"
+            DATABASE_URL="${DATABASE_URL#\'}"
 
-          if [ -z "$DATABASE_URL" ]; then
+            if [ -z "$DATABASE_URL" ]; then
             echo "DATABASE_URL was not found in apps/api/.env"
             exit 1
-          fi
+            fi
 
-          export DATABASE_URL
-          npx prisma generate --schema=apps/api/src/prisma/schema.prisma
+            export DATABASE_URL
+            npx prisma generate --schema=apps/api/src/prisma/schema.prisma
 
       - name: Build shared contracts
         run: |

@@ -24,6 +24,7 @@ jobs:
 
     env:
       PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING: "1"
+      BUILD_DIR: /home/pi/hockeyspare-build
 
     steps:
       - name: Checkout repository
@@ -37,13 +38,44 @@ jobs:
           node --version
           npm --version
 
-      - name: Install dependencies in runner workspace
+      - name: Sync source to persistent build directory
+        run: |
+          mkdir -p "$BUILD_DIR"
+
+          rsync -a --delete \
+            --exclude node_modules \
+            --exclude .deploy-cache \
+            --exclude dist \
+            --exclude .git \
+            "$GITHUB_WORKSPACE/" \
+            "$BUILD_DIR/"
+
+      - name: Install dependencies only when lockfile changes
         timeout-minutes: 25
         run: |
-          npm ci --prefer-offline --no-audit --fund=false
+          cd "$BUILD_DIR"
+
+          mkdir -p .deploy-cache
+
+          CURRENT_LOCK_HASH=$(sha256sum package-lock.json | awk '{print $1}')
+          SAVED_LOCK_HASH=""
+
+          if [ -f .deploy-cache/package-lock.sha256 ]; then
+            SAVED_LOCK_HASH=$(cat .deploy-cache/package-lock.sha256)
+          fi
+
+          if [ -d node_modules ] && [ "$CURRENT_LOCK_HASH" = "$SAVED_LOCK_HASH" ]; then
+            echo "package-lock.json unchanged. Skipping npm ci."
+          else
+            echo "package-lock.json changed or node_modules missing. Running npm ci."
+            npm ci --prefer-offline --no-audit --fund=false
+            echo "$CURRENT_LOCK_HASH" > .deploy-cache/package-lock.sha256
+          fi
 
       - name: Generate Prisma client
         run: |
+          cd "$BUILD_DIR"
+
           if [ ! -f /opt/hockeyspare/apps/api/.env ]; then
             echo "Missing /opt/hockeyspare/apps/api/.env on Raspberry Pi"
             exit 1
@@ -65,14 +97,17 @@ jobs:
 
       - name: Build shared contracts
         run: |
+          cd "$BUILD_DIR"
           npm run build -w libs/contracts --if-present
 
       - name: Build NestJS API
         run: |
+          cd "$BUILD_DIR"
           npm run build -w apps/api
 
       - name: Build Angular app
         run: |
+          cd "$BUILD_DIR"
           npm run build -w apps/web
 
       - name: Dry run complete
@@ -87,7 +122,7 @@ jobs:
           sudo mkdir -p /var/www/hockeyspare/browser
 
           sudo rsync -av --delete \
-            "$GITHUB_WORKSPACE/apps/web/dist/hockeyspare-web/browser/" \
+            "$BUILD_DIR/apps/web/dist/hockeyspare-web/browser/" \
             /var/www/hockeyspare/browser/
 
       - name: Deploy NestJS API dist
@@ -96,7 +131,7 @@ jobs:
           sudo mkdir -p /opt/hockeyspare/apps/api/dist
 
           sudo rsync -av --delete \
-            "$GITHUB_WORKSPACE/apps/api/dist/" \
+            "$BUILD_DIR/apps/api/dist/" \
             /opt/hockeyspare/apps/api/dist/
 
       - name: Restart NestJS API

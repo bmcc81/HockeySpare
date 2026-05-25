@@ -12,13 +12,23 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: hockeyspare-production-deploy
+  cancel-in-progress: false
+
 jobs:
   deploy:
     name: Build and deploy on Raspberry Pi
     runs-on: [self-hosted, Linux, ARM, hockeyspare-pi]
     timeout-minutes: 45
 
+    env:
+      PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING: "1"
+
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
       - name: Show runner info
         run: |
           whoami
@@ -27,88 +37,67 @@ jobs:
           node --version
           npm --version
 
-      - name: Sync production source to main
+      - name: Install dependencies in runner workspace
+        timeout-minutes: 25
         run: |
-          cd /opt/hockeyspare
-          git config --global --add safe.directory /opt/hockeyspare
-          git fetch origin main
-          git checkout main
-          git reset --hard origin/main
-
-      - name: Install dependencies when package-lock changes
-        run: |
-          cd /opt/hockeyspare
-
-          mkdir -p .deploy-cache
-
-          CURRENT_LOCK_HASH=$(sha256sum package-lock.json | awk '{print $1}')
-          SAVED_LOCK_HASH=""
-
-          if [ -f .deploy-cache/package-lock.sha256 ]; then
-            SAVED_LOCK_HASH=$(cat .deploy-cache/package-lock.sha256)
-          fi
-
-          if [ -d node_modules ] && [ "$CURRENT_LOCK_HASH" = "$SAVED_LOCK_HASH" ]; then
-            echo "package-lock.json has not changed. Skipping npm ci."
-          else
-            echo "package-lock.json changed or node_modules missing. Running npm ci."
-            npm ci --prefer-offline --no-audit --fund=false
-            echo "$CURRENT_LOCK_HASH" > .deploy-cache/package-lock.sha256
-          fi
+          npm ci --prefer-offline --no-audit --fund=false
 
       - name: Generate Prisma client
-        env:
-            PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING: "1"
         run: |
-            cd /opt/hockeyspare
-
-            if [ ! -f apps/api/.env ]; then
-            echo "Missing apps/api/.env on Raspberry Pi"
+          if [ ! -f /opt/hockeyspare/apps/api/.env ]; then
+            echo "Missing /opt/hockeyspare/apps/api/.env on Raspberry Pi"
             exit 1
-            fi
+          fi
 
-            DATABASE_URL=$(grep -E '^DATABASE_URL=' apps/api/.env | head -n 1 | cut -d '=' -f 2-)
-            DATABASE_URL="${DATABASE_URL%\"}"
-            DATABASE_URL="${DATABASE_URL#\"}"
-            DATABASE_URL="${DATABASE_URL%\'}"
-            DATABASE_URL="${DATABASE_URL#\'}"
+          DATABASE_URL=$(grep -E '^DATABASE_URL=' /opt/hockeyspare/apps/api/.env | head -n 1 | cut -d '=' -f 2-)
+          DATABASE_URL="${DATABASE_URL%\"}"
+          DATABASE_URL="${DATABASE_URL#\"}"
+          DATABASE_URL="${DATABASE_URL%\'}"
+          DATABASE_URL="${DATABASE_URL#\'}"
 
-            if [ -z "$DATABASE_URL" ]; then
-            echo "DATABASE_URL was not found in apps/api/.env"
+          if [ -z "$DATABASE_URL" ]; then
+            echo "DATABASE_URL was not found in /opt/hockeyspare/apps/api/.env"
             exit 1
-            fi
+          fi
 
-            export DATABASE_URL
-            npx prisma generate --schema=apps/api/src/prisma/schema.prisma
+          export DATABASE_URL
+          npx prisma generate --schema=apps/api/src/prisma/schema.prisma
 
       - name: Build shared contracts
         run: |
-          cd /opt/hockeyspare
           npm run build -w libs/contracts --if-present
 
       - name: Build NestJS API
         run: |
-          cd /opt/hockeyspare
           npm run build -w apps/api
 
       - name: Build Angular app
         run: |
-          cd /opt/hockeyspare
           npm run build -w apps/web
 
       - name: Dry run complete
         if: ${{ inputs.deploy != true }}
         run: |
-          echo "Build passed on the Raspberry Pi."
-          echo "No files were deployed because deploy=false."
-          echo "Run this workflow again with deploy=true to publish."
+          echo "Build passed on the Raspberry Pi runner."
+          echo "No production files were changed because deploy=false."
 
       - name: Deploy Angular static files
         if: ${{ inputs.deploy == true }}
         run: |
+          sudo mkdir -p /var/www/hockeyspare/browser
+
           sudo rsync -av --delete \
-            /opt/hockeyspare/apps/web/dist/hockeyspare-web/browser/ \
+            "$GITHUB_WORKSPACE/apps/web/dist/hockeyspare-web/browser/" \
             /var/www/hockeyspare/browser/
+
+      - name: Deploy NestJS API dist
+        if: ${{ inputs.deploy == true }}
+        run: |
+          sudo mkdir -p /opt/hockeyspare/apps/api/dist
+
+          sudo rsync -av --delete \
+            "$GITHUB_WORKSPACE/apps/api/dist/" \
+            /opt/hockeyspare/apps/api/dist/
 
       - name: Restart NestJS API
         if: ${{ inputs.deploy == true }}

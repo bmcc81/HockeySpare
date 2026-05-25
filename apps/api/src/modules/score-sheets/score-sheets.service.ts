@@ -299,7 +299,16 @@ export class ScoreSheetsService {
     await this.assertCanManageScoreSheet(userId, scoreSheet.leagueId);
     this.assertDraft(scoreSheet.status);
 
-    const scoreData = this.getPeriodScoreData(dto, scoreSheet);
+    const scoreData = this.getPeriodScoreData(dto, {
+      teamPeriod1Score: scoreSheet.teamPeriod1Score,
+      teamPeriod2Score: scoreSheet.teamPeriod2Score,
+      teamPeriod3Score: scoreSheet.teamPeriod3Score,
+      teamOvertimeScore: scoreSheet.teamOvertimeScore,
+      opponentPeriod1Score: scoreSheet.opponentPeriod1Score,
+      opponentPeriod2Score: scoreSheet.opponentPeriod2Score,
+      opponentPeriod3Score: scoreSheet.opponentPeriod3Score,
+      opponentOvertimeScore: scoreSheet.opponentOvertimeScore,
+    });
 
     await this.prisma.gameScoreSheet.update({
       where: {

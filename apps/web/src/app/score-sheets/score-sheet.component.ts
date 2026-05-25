@@ -40,8 +40,19 @@ export class ScoreSheetComponent implements OnInit {
   scoreSheet: GameScoreSheetDto | null = null;
 
   scoreForm = this.fb.group({
+    teamPeriod1Score: [0, [Validators.required, Validators.min(0)]],
+    teamPeriod2Score: [0, [Validators.required, Validators.min(0)]],
+    teamPeriod3Score: [0, [Validators.required, Validators.min(0)]],
+    teamOvertimeScore: [0, [Validators.required, Validators.min(0)]],
+
+    opponentPeriod1Score: [0, [Validators.required, Validators.min(0)]],
+    opponentPeriod2Score: [0, [Validators.required, Validators.min(0)]],
+    opponentPeriod3Score: [0, [Validators.required, Validators.min(0)]],
+    opponentOvertimeScore: [0, [Validators.required, Validators.min(0)]],
+
     teamScore: [0, [Validators.required, Validators.min(0)]],
     opponentScore: [0, [Validators.required, Validators.min(0)]],
+
     notes: [''],
   });
 
@@ -83,6 +94,10 @@ export class ScoreSheetComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.scoreForm.valueChanges.subscribe(() => {
+      this.syncScoreFromPeriods();
+    });
+
     this.gameId = this.route.snapshot.paramMap.get('gameId') ?? '';
     this.leagueId = this.route.snapshot.queryParamMap.get('leagueId');
     this.teamId = this.route.snapshot.queryParamMap.get('teamId');
@@ -170,8 +185,19 @@ export class ScoreSheetComponent implements OnInit {
 
     this.scoreForm.patchValue(
       {
+        teamPeriod1Score: scoreSheet.teamPeriod1Score ?? 0,
+        teamPeriod2Score: scoreSheet.teamPeriod2Score ?? 0,
+        teamPeriod3Score: scoreSheet.teamPeriod3Score ?? 0,
+        teamOvertimeScore: scoreSheet.teamOvertimeScore ?? 0,
+
+        opponentPeriod1Score: scoreSheet.opponentPeriod1Score ?? 0,
+        opponentPeriod2Score: scoreSheet.opponentPeriod2Score ?? 0,
+        opponentPeriod3Score: scoreSheet.opponentPeriod3Score ?? 0,
+        opponentOvertimeScore: scoreSheet.opponentOvertimeScore ?? 0,
+
         teamScore: scoreSheet.teamScore ?? 0,
         opponentScore: scoreSheet.opponentScore ?? 0,
+
         notes: scoreSheet.notes ?? '',
       },
       { emitEvent: false },
@@ -187,7 +213,7 @@ export class ScoreSheetComponent implements OnInit {
 
     this.scoreForm.enable({ emitEvent: false });
     this.linesForm.enable({ emitEvent: false });
-    this.syncScoreWithPlayerGoals();
+    this.syncScoreFromPeriods();
   }
 
   buildLineForms(lines: ScoreSheetPlayerLineDto[]): void {
@@ -217,38 +243,49 @@ export class ScoreSheetComponent implements OnInit {
     }
   }
 
-  saveScore(): void {
-    if (!this.scoreSheet?.id || this.scoreForm.invalid || !this.canEdit) {
-      this.scoreForm.markAllAsTouched();
-      return;
-    }
-
-    this.syncScoreWithPlayerGoals();
-
-    const raw = this.scoreForm.getRawValue();
-
-    this.saving = true;
-    this.error = '';
-    this.success = '';
-
-    this.scoreSheetsApi
-      .updateScoreSheet(this.scoreSheet.id, {
-        teamScore: Number(raw.teamScore ?? 0),
-        opponentScore: Number(raw.opponentScore ?? 0),
-        notes: raw.notes ?? '',
-      })
-      .subscribe({
-        next: (scoreSheet) => {
-          this.saving = false;
-          this.success = 'Score saved.';
-          this.setScoreSheet(scoreSheet);
-        },
-        error: (err) => {
-          this.saving = false;
-          this.error = err?.error?.message || 'Could not save the score.';
-        },
-      });
+saveScore(): void {
+  if (!this.scoreSheet?.id || this.scoreForm.invalid || !this.canEdit) {
+    this.scoreForm.markAllAsTouched();
+    return;
   }
+
+  this.syncScoreFromPeriods();
+
+  const raw = this.scoreForm.getRawValue();
+
+  this.saving = true;
+  this.error = '';
+  this.success = '';
+
+  this.scoreSheetsApi
+    .updateScoreSheet(this.scoreSheet.id, {
+      teamPeriod1Score: Number(raw.teamPeriod1Score ?? 0),
+      teamPeriod2Score: Number(raw.teamPeriod2Score ?? 0),
+      teamPeriod3Score: Number(raw.teamPeriod3Score ?? 0),
+      teamOvertimeScore: Number(raw.teamOvertimeScore ?? 0),
+
+      opponentPeriod1Score: Number(raw.opponentPeriod1Score ?? 0),
+      opponentPeriod2Score: Number(raw.opponentPeriod2Score ?? 0),
+      opponentPeriod3Score: Number(raw.opponentPeriod3Score ?? 0),
+      opponentOvertimeScore: Number(raw.opponentOvertimeScore ?? 0),
+
+      teamScore: Number(raw.teamScore ?? 0),
+      opponentScore: Number(raw.opponentScore ?? 0),
+
+      notes: raw.notes ?? '',
+    })
+    .subscribe({
+      next: (scoreSheet) => {
+        this.saving = false;
+        this.success = 'Score saved.';
+        this.setScoreSheet(scoreSheet);
+      },
+      error: (err) => {
+        this.saving = false;
+        this.error = err?.error?.message || 'Could not save the score.';
+      },
+    });
+}
 
   savePlayerLine(line: ScoreSheetPlayerLineDto, index: number): void {
     if (!this.scoreSheet?.id || !this.canEdit) {
@@ -308,18 +345,21 @@ export class ScoreSheetComponent implements OnInit {
     this.error = '';
     this.success = '';
 
-    this.scoreSheetsApi.deletePlayerLine(this.scoreSheet.id, line.id).subscribe({
-      next: (scoreSheet) => {
-        this.saving = false;
-        this.success = `${line.member.displayName} removed from scoresheet.`;
-        this.setScoreSheet(scoreSheet);
-      },
-      error: (err) => {
-        this.saving = false;
-        this.error =
-          err?.error?.message || `Could not remove ${line.member.displayName}.`;
-      },
-    });
+    this.scoreSheetsApi
+      .deletePlayerLine(this.scoreSheet.id, line.id)
+      .subscribe({
+        next: (scoreSheet) => {
+          this.saving = false;
+          this.success = `${line.member.displayName} removed from scoresheet.`;
+          this.setScoreSheet(scoreSheet);
+        },
+        error: (err) => {
+          this.saving = false;
+          this.error =
+            err?.error?.message ||
+            `Could not remove ${line.member.displayName}.`;
+        },
+      });
   }
 
   private saveAllPlayerLinesBeforeFinalize() {
@@ -357,7 +397,7 @@ export class ScoreSheetComponent implements OnInit {
       return;
     }
 
-    this.syncScoreWithPlayerGoals();
+    this.syncScoreFromPeriods();
 
     const confirmed = window.confirm(
       'Finalize this scoresheet? This will save all player stats, update season stats, and lock the scoresheet.',
@@ -473,6 +513,34 @@ export class ScoreSheetComponent implements OnInit {
       {
         emitEvent: false,
       },
+    );
+  }
+
+  syncScoreFromPeriods(): void {
+    if (!this.scoreSheet || this.isFinalized) {
+      return;
+    }
+
+    const raw = this.scoreForm.getRawValue();
+
+    const teamScore =
+      Number(raw.teamPeriod1Score ?? 0) +
+      Number(raw.teamPeriod2Score ?? 0) +
+      Number(raw.teamPeriod3Score ?? 0) +
+      Number(raw.teamOvertimeScore ?? 0);
+
+    const opponentScore =
+      Number(raw.opponentPeriod1Score ?? 0) +
+      Number(raw.opponentPeriod2Score ?? 0) +
+      Number(raw.opponentPeriod3Score ?? 0) +
+      Number(raw.opponentOvertimeScore ?? 0);
+
+    this.scoreForm.patchValue(
+      {
+        teamScore,
+        opponentScore,
+      },
+      { emitEvent: false },
     );
   }
 }

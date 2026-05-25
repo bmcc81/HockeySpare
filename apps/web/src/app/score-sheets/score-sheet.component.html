@@ -49,7 +49,7 @@
             class="badge rounded-pill"
             [ngClass]="{
               'text-bg-warning': sheet.status === 'DRAFT',
-              'text-bg-success': sheet.status === 'FINALIZED'
+              'text-bg-success': sheet.status === 'FINALIZED',
             }"
           >
             {{ sheet.status }}
@@ -73,66 +73,169 @@
     </div>
 
     <div *ngIf="isFinalized" class="alert alert-success">
-      This scoresheet has been finalized. Stats are locked and can no longer be edited.
+      This scoresheet has been finalized. Stats are locked and can no longer be
+      edited.
     </div>
 
     <div class="card mb-4">
       <div class="card-body">
-        <h2 class="h5 mb-3">Game Score</h2>
+        <h2 class="h5 mb-3">Game Score by Period</h2>
 
-        <form [formGroup]="scoreForm" (ngSubmit)="saveScore()">
-          <div class="row g-3 align-items-end">
-            <div class="col-12 col-md-3">
-              <label class="form-label">{{ sheet.team.name }} Score</label>
-              <input
-                class="form-control"
-                type="number"
-                min="0"
-                formControlName="teamScore"
-                readonly
-              />
-            </div>
+        <div class="card mb-4">
+          <div class="card-body">
+            <h2 class="h5 mb-3">Game Score by Period</h2>
 
-            <div class="col-12 col-md-3">
-              <label class="form-label">{{ gameOpponent() }} Score</label>
-              <input
-                class="form-control"
-                type="number"
-                min="0"
-                formControlName="opponentScore"
-                [readonly]="!canEditOpponentScore"
-              />
-            </div>
+            <form [formGroup]="scoreForm" (ngSubmit)="saveScore()">
+              <div class="table-responsive">
+                <table class="table align-middle text-center">
+                  <thead>
+                    <tr>
+                      <th class="text-start">Team</th>
+                      <th>1st</th>
+                      <th>2nd</th>
+                      <th>3rd</th>
+                      <th>OT</th>
+                      <th>Total</th>
+                    </tr>
+                  </thead>
 
-            <div class="text-secondary small mt-2">
-              Score is calculated from player goals:
-              {{ sheet.team.name }} {{ calculatedTeamScore() }}
-              -
-              {{ gameOpponent() }} {{ calculatedOpponentScore() }}
-            </div>
+                  <tbody>
+                    <tr>
+                      <td class="text-start fw-semibold">
+                        {{ sheet.team.name }}
+                      </td>
 
-            <div class="col-12 col-md-6">
-              <label class="form-label">Notes</label>
-              <input
-                class="form-control"
-                type="text"
-                formControlName="notes"
-                placeholder="Optional notes"
-                [readonly]="!canEdit"
-              />
-            </div>
+                      <td>
+                        <input
+                          class="form-control form-control-sm text-center"
+                          type="number"
+                          min="0"
+                          formControlName="teamPeriod1Score"
+                          [readonly]="!canEdit"
+                        />
+                      </td>
 
-            <div class="col-12">
-              <button
-                type="submit"
-                class="btn btn-primary"
-                [disabled]="!canFinalize"
-              >
-                {{ saving ? "Saving..." : "Save Score" }}
-              </button>
-            </div>
+                      <td>
+                        <input
+                          class="form-control form-control-sm text-center"
+                          type="number"
+                          min="0"
+                          formControlName="teamPeriod2Score"
+                          [readonly]="!canEdit"
+                        />
+                      </td>
+
+                      <td>
+                        <input
+                          class="form-control form-control-sm text-center"
+                          type="number"
+                          min="0"
+                          formControlName="teamPeriod3Score"
+                          [readonly]="!canEdit"
+                        />
+                      </td>
+
+                      <td>
+                        <input
+                          class="form-control form-control-sm text-center"
+                          type="number"
+                          min="0"
+                          formControlName="teamOvertimeScore"
+                          [readonly]="!canEdit"
+                        />
+                      </td>
+
+                      <td>
+                        <input
+                          class="form-control form-control-sm text-center fw-bold"
+                          type="number"
+                          formControlName="teamScore"
+                          readonly
+                        />
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td class="text-start fw-semibold">
+                        {{ gameOpponent() }}
+                      </td>
+
+                      <td>
+                        <input
+                          class="form-control form-control-sm text-center"
+                          type="number"
+                          min="0"
+                          formControlName="opponentPeriod1Score"
+                          [readonly]="!canEdit"
+                        />
+                      </td>
+
+                      <td>
+                        <input
+                          class="form-control form-control-sm text-center"
+                          type="number"
+                          min="0"
+                          formControlName="opponentPeriod2Score"
+                          [readonly]="!canEdit"
+                        />
+                      </td>
+
+                      <td>
+                        <input
+                          class="form-control form-control-sm text-center"
+                          type="number"
+                          min="0"
+                          formControlName="opponentPeriod3Score"
+                          [readonly]="!canEdit"
+                        />
+                      </td>
+
+                      <td>
+                        <input
+                          class="form-control form-control-sm text-center"
+                          type="number"
+                          min="0"
+                          formControlName="opponentOvertimeScore"
+                          [readonly]="!canEdit"
+                        />
+                      </td>
+
+                      <td>
+                        <input
+                          class="form-control form-control-sm text-center fw-bold"
+                          type="number"
+                          formControlName="opponentScore"
+                          readonly
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="mt-3">
+                <label class="form-label">Notes</label>
+                <input
+                  class="form-control"
+                  type="text"
+                  formControlName="notes"
+                  placeholder="Optional notes"
+                  [readonly]="!canEdit"
+                />
+              </div>
+
+              <div class="mt-3">
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  [disabled]="!canEdit || scoreForm.invalid"
+                >
+                  {{ saving ? "Saving..." : "Save Score" }}
+                </button>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
     </div>
 
@@ -144,7 +247,8 @@
           <div>
             <h2 class="h5 mb-1">Player Stats</h2>
             <div class="text-secondary small">
-              These lines will update season stats when the scoresheet is finalized.
+              These lines will update season stats when the scoresheet is
+              finalized.
             </div>
           </div>
 
@@ -269,7 +373,8 @@
           <h2 class="h5 mb-1">Finalize Scoresheet</h2>
 
           <div class="text-secondary">
-            Finalizing locks the scoresheet and adds these player lines to season stats.
+            Finalizing locks the scoresheet and adds these player lines to
+            season stats.
           </div>
         </div>
 

@@ -35,10 +35,26 @@ jobs:
           git checkout main
           git reset --hard origin/main
 
-      - name: Install dependencies
+      - name: Install dependencies when package-lock changes
         run: |
           cd /opt/hockeyspare
-          npm ci
+
+          mkdir -p .deploy-cache
+
+          CURRENT_LOCK_HASH=$(sha256sum package-lock.json | awk '{print $1}')
+          SAVED_LOCK_HASH=""
+
+          if [ -f .deploy-cache/package-lock.sha256 ]; then
+            SAVED_LOCK_HASH=$(cat .deploy-cache/package-lock.sha256)
+          fi
+
+          if [ -d node_modules ] && [ "$CURRENT_LOCK_HASH" = "$SAVED_LOCK_HASH" ]; then
+            echo "package-lock.json has not changed. Skipping npm ci."
+          else
+            echo "package-lock.json changed or node_modules missing. Running npm ci."
+            npm ci --prefer-offline --no-audit --fund=false
+            echo "$CURRENT_LOCK_HASH" > .deploy-cache/package-lock.sha256
+          fi
 
       - name: Generate Prisma client
         env:

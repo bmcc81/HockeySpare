@@ -1,0 +1,57 @@
+name: HockeySpare CI
+
+on:
+  pull_request:
+    branches:
+      - main
+
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hockeyspare-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build HockeySpare
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://hockeyspare:hockeyspare@localhost:5432/hockeyspare
+      JWT_SECRET: ci-only-secret
+      CORS_ORIGIN: http://localhost:4200
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate --schema=apps/api/src/prisma/schema.prisma
+
+      - name: Build shared contracts
+        run: npm run build -w libs/contracts --if-present
+
+      - name: Build NestJS API
+        run: npm run build -w apps/api
+
+      - name: Build Angular app
+        run: npm run build -w apps/web

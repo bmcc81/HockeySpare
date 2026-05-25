@@ -1,0 +1,9 @@
+-- AlterTable
+ALTER TABLE "GameScoreSheet" ADD COLUMN     "opponentOvertimeScore" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "opponentPeriod1Score" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "opponentPeriod2Score" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "opponentPeriod3Score" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "teamOvertimeScore" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "teamPeriod1Score" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "teamPeriod2Score" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "teamPeriod3Score" INTEGER NOT NULL DEFAULT 0;

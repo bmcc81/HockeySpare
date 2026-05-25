@@ -49,7 +49,7 @@
             class="badge rounded-pill"
             [ngClass]="{
               'text-bg-warning': sheet.status === 'DRAFT',
-              'text-bg-success': sheet.status === 'FINALIZED',
+              'text-bg-success': sheet.status === 'FINALIZED'
             }"
           >
             {{ sheet.status }}
@@ -70,6 +70,10 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <div *ngIf="isFinalized" class="alert alert-success">
+      This scoresheet has been finalized. Stats are locked and can no longer be edited.
     </div>
 
     <div class="card mb-4">
@@ -96,7 +100,7 @@
                 type="number"
                 min="0"
                 formControlName="opponentScore"
-                readonly
+                [readonly]="!canEditOpponentScore"
               />
             </div>
 
@@ -114,6 +118,7 @@
                 type="text"
                 formControlName="notes"
                 placeholder="Optional notes"
+                [readonly]="!canEdit"
               />
             </div>
 
@@ -121,7 +126,7 @@
               <button
                 type="submit"
                 class="btn btn-primary"
-                [disabled]="saving || isFinalized"
+                [disabled]="!canFinalize"
               >
                 {{ saving ? "Saving..." : "Save Score" }}
               </button>
@@ -139,8 +144,7 @@
           <div>
             <h2 class="h5 mb-1">Player Stats</h2>
             <div class="text-secondary small">
-              These lines will update season stats when the scoresheet is
-              finalized.
+              These lines will update season stats when the scoresheet is finalized.
             </div>
           </div>
 
@@ -194,6 +198,7 @@
                       type="number"
                       min="0"
                       formControlName="gamesPlayed"
+                      [readonly]="!canEdit"
                     />
                   </td>
 
@@ -203,6 +208,7 @@
                       type="number"
                       min="0"
                       formControlName="goals"
+                      [readonly]="!canEdit"
                     />
                   </td>
 
@@ -212,6 +218,7 @@
                       type="number"
                       min="0"
                       formControlName="assists"
+                      [readonly]="!canEdit"
                     />
                   </td>
 
@@ -221,6 +228,7 @@
                       type="number"
                       min="0"
                       formControlName="penaltyMins"
+                      [readonly]="!canEdit"
                     />
                   </td>
 
@@ -230,7 +238,7 @@
                         type="button"
                         class="btn btn-outline-primary btn-sm"
                         (click)="savePlayerLine(line, i)"
-                        [disabled]="saving || isFinalized"
+                        [disabled]="!canEdit"
                       >
                         Save
                       </button>
@@ -239,7 +247,7 @@
                         type="button"
                         class="btn btn-outline-danger btn-sm"
                         (click)="deletePlayerLine(line)"
-                        [disabled]="saving || isFinalized"
+                        [disabled]="!canEdit"
                       >
                         Remove
                       </button>
@@ -261,8 +269,7 @@
           <h2 class="h5 mb-1">Finalize Scoresheet</h2>
 
           <div class="text-secondary">
-            Finalizing locks the scoresheet and adds these player lines to
-            season stats.
+            Finalizing locks the scoresheet and adds these player lines to season stats.
           </div>
         </div>
 
@@ -270,13 +277,7 @@
           type="button"
           class="btn btn-success"
           (click)="finalizeScoreSheet()"
-          [disabled]="
-            finalizing ||
-            saving ||
-            isFinalized ||
-            sheet.playerLines.length === 0 ||
-            linesForm.invalid
-          "
+          [disabled]="!canFinalize"
         >
           {{ finalizing ? "Finalizing..." : "Finalize Scoresheet" }}
         </button>

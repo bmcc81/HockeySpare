@@ -131,5 +131,21 @@ jobs:
         if: ${{ inputs.deploy == true }}
         run: |
           sleep 3
+
           curl -fsS http://127.0.0.1:3000/api/requests > /dev/null
-          echo "HockeySpare API is responding locally."
+          echo "GET /api/requests passed."
+
+          LOGIN_STATUS=$(curl -s -o /tmp/hockeyspare-login-check.txt -w "%{http_code}" \
+            -X POST http://127.0.0.1:3000/api/auth/login \
+            -H "Content-Type: application/json" \
+            -d '{"email":"ci-healthcheck@example.com","password":"wrong-password"}')
+
+          cat /tmp/hockeyspare-login-check.txt
+          echo ""
+
+          if [ "$LOGIN_STATUS" -ge 500 ]; then
+            echo "Login health check failed with server error: $LOGIN_STATUS"
+            exit 1
+          fi
+
+          echo "POST /api/auth/login returned $LOGIN_STATUS, API JSON parsing is working."

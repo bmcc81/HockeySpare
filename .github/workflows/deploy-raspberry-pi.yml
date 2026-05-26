@@ -23,7 +23,7 @@ jobs:
     timeout-minutes: 25
 
     env:
-      NODE_ENV: production
+      NODE_ENV: test
       DATABASE_URL: postgresql://hockeyspare:hockeyspare@localhost:5432/hockeyspare
       JWT_SECRET: ci-only-secret
       CORS_ORIGIN: https://hockeyspare.webinkgraphics.com
@@ -40,7 +40,7 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --include=dev --no-audit --fund=false
 
       - name: Generate Prisma client
         run: npx prisma generate --schema=apps/api/src/prisma/schema.prisma

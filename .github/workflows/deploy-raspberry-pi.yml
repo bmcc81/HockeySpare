@@ -17,103 +17,90 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
-    name: Build and deploy on Raspberry Pi
-    runs-on: [self-hosted, Linux, ARM, hockeyspare-pi]
-    timeout-minutes: 45
+  build:
+    name: Build artifacts on GitHub
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
 
     env:
-      PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING: "1"
-      BUILD_DIR: /home/pi/hockeyspare-build
+      NODE_ENV: production
+      DATABASE_URL: postgresql://hockeyspare:hockeyspare@localhost:5432/hockeyspare
+      JWT_SECRET: ci-only-secret
+      CORS_ORIGIN: https://hockeyspare.webinkgraphics.com
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Show runner info
-        run: |
-          whoami
-          hostname
-          pwd
-          node --version
-          npm --version
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
 
-      - name: Sync source to persistent build directory
-        run: |
-          mkdir -p "$BUILD_DIR"
-
-          rsync -a --delete \
-            --exclude node_modules \
-            --exclude .deploy-cache \
-            --exclude dist \
-            --exclude .git \
-            "$GITHUB_WORKSPACE/" \
-            "$BUILD_DIR/"
-
-      - name: Install dependencies only when lockfile changes
-        timeout-minutes: 25
-        run: |
-          cd "$BUILD_DIR"
-
-          mkdir -p .deploy-cache
-
-          CURRENT_LOCK_HASH=$(sha256sum package-lock.json | awk '{print $1}')
-          SAVED_LOCK_HASH=""
-
-          if [ -f .deploy-cache/package-lock.sha256 ]; then
-            SAVED_LOCK_HASH=$(cat .deploy-cache/package-lock.sha256)
-          fi
-
-          if [ -d node_modules ] && [ "$CURRENT_LOCK_HASH" = "$SAVED_LOCK_HASH" ]; then
-            echo "package-lock.json unchanged. Skipping npm ci."
-          else
-            echo "package-lock.json changed or node_modules missing. Running npm ci."
-            npm ci --prefer-offline --no-audit --fund=false
-            echo "$CURRENT_LOCK_HASH" > .deploy-cache/package-lock.sha256
-          fi
+      - name: Install dependencies
+        run: npm ci
 
       - name: Generate Prisma client
-        run: |
-          cd "$BUILD_DIR"
-
-          if [ ! -f /opt/hockeyspare/apps/api/.env ]; then
-            echo "Missing /opt/hockeyspare/apps/api/.env on Raspberry Pi"
-            exit 1
-          fi
-
-          DATABASE_URL=$(grep -E '^DATABASE_URL=' /opt/hockeyspare/apps/api/.env | head -n 1 | cut -d '=' -f 2-)
-          DATABASE_URL="${DATABASE_URL%\"}"
-          DATABASE_URL="${DATABASE_URL#\"}"
-          DATABASE_URL="${DATABASE_URL%\'}"
-          DATABASE_URL="${DATABASE_URL#\'}"
-
-          if [ -z "$DATABASE_URL" ]; then
-            echo "DATABASE_URL was not found in /opt/hockeyspare/apps/api/.env"
-            exit 1
-          fi
-
-          export DATABASE_URL
-          npx prisma generate --schema=apps/api/src/prisma/schema.prisma
+        run: npx prisma generate --schema=apps/api/src/prisma/schema.prisma
 
       - name: Build shared contracts
-        run: |
-          cd "$BUILD_DIR"
-          npm run build -w libs/contracts --if-present
+        run: npm run build -w libs/contracts --if-present
 
       - name: Build NestJS API
-        run: |
-          cd "$BUILD_DIR"
-          npm run build -w apps/api
+        run: npm run build -w apps/api
 
       - name: Build Angular app
+        run: npm run build -w apps/web
+
+      - name: Upload Angular artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: hockeyspare-angular-browser
+          path: apps/web/dist/hockeyspare-web/browser
+          if-no-files-found: error
+
+      - name: Upload API artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: hockeyspare-api-dist
+          path: apps/api/dist
+          if-no-files-found: error
+
+  deploy:
+    name: Deploy artifacts on Raspberry Pi
+    needs: build
+    runs-on: [self-hosted, Linux, ARM, hockeyspare-pi]
+    timeout-minutes: 10
+
+    steps:
+      - name: Prepare deployment directory
         run: |
-          cd "$BUILD_DIR"
-          npm run build -w apps/web
+          rm -rf /tmp/hockeyspare-deploy
+          mkdir -p /tmp/hockeyspare-deploy/angular
+          mkdir -p /tmp/hockeyspare-deploy/api
+
+      - name: Download Angular artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: hockeyspare-angular-browser
+          path: /tmp/hockeyspare-deploy/angular
+
+      - name: Download API artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: hockeyspare-api-dist
+          path: /tmp/hockeyspare-deploy/api
 
       - name: Dry run complete
         if: ${{ inputs.deploy != true }}
         run: |
-          echo "Build passed on the Raspberry Pi runner."
+          echo "Build artifacts were created successfully."
+          echo "Angular artifact:"
+          find /tmp/hockeyspare-deploy/angular -maxdepth 2 -type f | head
+          echo "API artifact:"
+          find /tmp/hockeyspare-deploy/api -maxdepth 2 -type f | head
           echo "No production files were changed because deploy=false."
 
       - name: Deploy Angular static files
@@ -122,7 +109,7 @@ jobs:
           sudo mkdir -p /var/www/hockeyspare/browser
 
           sudo rsync -av --delete \
-            "$BUILD_DIR/apps/web/dist/hockeyspare-web/browser/" \
+            /tmp/hockeyspare-deploy/angular/ \
             /var/www/hockeyspare/browser/
 
       - name: Deploy NestJS API dist
@@ -131,7 +118,7 @@ jobs:
           sudo mkdir -p /opt/hockeyspare/apps/api/dist
 
           sudo rsync -av --delete \
-            "$BUILD_DIR/apps/api/dist/" \
+            /tmp/hockeyspare-deploy/api/ \
             /opt/hockeyspare/apps/api/dist/
 
       - name: Restart NestJS API
@@ -144,5 +131,21 @@ jobs:
         if: ${{ inputs.deploy == true }}
         run: |
           sleep 3
+
           curl -fsS http://127.0.0.1:3000/api/requests > /dev/null
-          echo "HockeySpare API is responding locally."
+          echo "GET /api/requests passed."
+
+          LOGIN_STATUS=$(curl -s -o /tmp/hockeyspare-login-check.txt -w "%{http_code}" \
+            -X POST http://127.0.0.1:3000/api/auth/login \
+            -H "Content-Type: application/json" \
+            -d '{"email":"ci-healthcheck@example.com","password":"wrong-password"}')
+
+          cat /tmp/hockeyspare-login-check.txt
+          echo ""
+
+          if [ "$LOGIN_STATUS" -ge 500 ]; then
+            echo "Login health check failed with server error: $LOGIN_STATUS"
+            exit 1
+          fi
+
+          echo "POST /api/auth/login returned $LOGIN_STATUS, API JSON parsing is working."

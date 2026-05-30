@@ -14,6 +14,8 @@ import { BookingsModule } from './modules/bookings/bookings.module';
 import { EmailModule } from './email/email.module';
 import { LeaguesModule } from './leagues/leagues.module';
 import { ScoreSheetsModule } from './modules/score-sheets/score-sheets.module';
+import { AiModule } from './ai/ai.module';  
+
 
 @Module({
   imports: [
@@ -28,6 +30,7 @@ import { ScoreSheetsModule } from './modules/score-sheets/score-sheets.module';
     BookingsModule,
     EmailModule,
     LeaguesModule,
+    AiModule
   ],  
   controllers: [AppController],
   providers: [AppService],

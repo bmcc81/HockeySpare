@@ -93,6 +93,28 @@
             </div>
 
             <div class="col-12 col-md-6">
+              <label for="playersNeeded" class="form-label"
+                >Players Needed</label
+              >
+
+              <input
+                id="playersNeeded"
+                type="number"
+                formControlName="playersNeeded"
+                class="form-control custom-input"
+                min="1"
+                max="10"
+              />
+
+              <div
+                class="invalid-feedback d-block"
+                *ngIf="form.controls.playersNeeded.touched && form.controls.playersNeeded.invalid"
+              >
+                Enter a valid number of players.
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6">
               <label for="payAmount" class="form-label">Pay Amount</label>
 
               <input
@@ -192,14 +214,45 @@
             </div>
 
             <div class="col-12">
-              <label for="notes" class="form-label">Notes</label>
+              <div
+                class="d-flex justify-content-between align-items-center gap-2"
+              >
+                <label for="notes" class="form-label mb-0">Notes</label>
+
+                <button
+                  type="button"
+                  class="btn btn-outline-primary btn-sm"
+                  (click)="generateMessage()"
+                  [disabled]="loadingAiMessage || loading"
+                >
+                  {{ loadingAiMessage ? 'Generating...' : 'Generate with AI' }}
+                </button>
+              </div>
 
               <textarea
                 id="notes"
                 formControlName="notes"
-                class="form-control custom-input custom-textarea"
+                class="form-control custom-input custom-textarea mt-2"
                 placeholder="Add game details, dressing room info, level, or anything players should know"
               ></textarea>
+
+              <div class="text-secondary small mt-2" *ngIf="aiTitle">
+                Suggested title: {{ aiTitle }}
+              </div>
+
+              <div
+                class="alert alert-warning mt-2 mb-0"
+                *ngIf="missingFields.length > 0"
+              >
+                Missing info:
+                <span *ngFor="let field of missingFields; let last = last">
+                  {{ field }}{{ last ? '' : ', ' }}
+                </span>
+              </div>
+
+              <div class="alert alert-danger mt-2 mb-0" *ngIf="aiError">
+                {{ aiError }}
+              </div>
             </div>
 
             <div class="col-12" *ngIf="error">

@@ -22,6 +22,21 @@ export class AiService {
   async generateSpareMessage(
     dto: GenerateSpareMessageDto,
   ): Promise<GenerateSpareMessageResponse> {
+    if (process.env.AI_PROVIDER === 'mock') {
+      const positionLabel = dto.position.toLowerCase().replace('_', ' ');
+      const skillLabel = dto.skillLevel.toLowerCase().replace('_', ' ');
+
+      return {
+        title: `${dto.position} needed ${dto.date}`,
+        message: `${dto.playersNeeded} ${positionLabel}${
+          dto.playersNeeded > 1 ? 's' : ''
+        } needed ${dto.date} at ${dto.time} at ${dto.arena} in ${
+          dto.location
+        } for a ${skillLabel} game. Please reply if available.`,
+        missingFields: [],
+      };
+    }
+
     if (!process.env.OPENAI_API_KEY) {
       throw new InternalServerErrorException(
         'OPENAI_API_KEY is missing from the API environment.',

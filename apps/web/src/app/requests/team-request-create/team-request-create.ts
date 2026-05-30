@@ -14,6 +14,7 @@ import { catchError, forkJoin, of } from 'rxjs';
 import { RequestApiService } from '../../core/services/request-api';
 import { LeaguesApiService } from '../../core/services/leagues-api.service';
 import { TeamService } from '../../core/services/team';
+import { AiMessageService } from '../../core/services/ai-message.service';
 
 type TeamOption = {
   id: string;
@@ -30,6 +31,7 @@ type TeamOption = {
 })
 export class TeamRequestCreateComponent implements OnInit {
   private fb = inject(FormBuilder);
+  private aiMessageService = inject(AiMessageService);
   private requestApi = inject(RequestApiService);
   private leaguesApi = inject(LeaguesApiService);
   private teamApi = inject(TeamService);
@@ -49,9 +51,17 @@ export class TeamRequestCreateComponent implements OnInit {
 
   loading = false;
   error = '';
+  loadingAiMessage = false;
+  aiError = '';
+  aiTitle = '';
+  missingFields: string[] = [];
 
   form = this.fb.group({
     teamName: ['', [Validators.required, Validators.maxLength(80)]],
+    playersNeeded: [
+      1,
+      [Validators.required, Validators.min(1), Validators.max(10)],
+    ],
     position: [Position.FORWARD as Position, Validators.required],
     skillLevel: [SkillLevel.INTERMEDIATE as SkillLevel, Validators.required],
     payAmount: [40, [Validators.required, Validators.min(0)]],
@@ -181,5 +191,68 @@ export class TeamRequestCreateComponent implements OnInit {
       .toLowerCase()
       .replace(/^the\s+/, '')
       .replace(/\s+/g, ' ');
+  }
+
+  generateMessage(): void {
+    this.aiError = '';
+    this.aiTitle = '';
+    this.missingFields = [];
+
+    const requiredControls = [
+      'position',
+      'skillLevel',
+      'playersNeeded',
+      'date',
+      'time',
+      'arena',
+    ] as const;
+
+    for (const controlName of requiredControls) {
+      this.form.controls[controlName].markAsTouched();
+    }
+
+    const hasInvalidAiFields = requiredControls.some(
+      (controlName) => this.form.controls[controlName].invalid,
+    );
+
+    if (hasInvalidAiFields) {
+      this.aiError =
+        'Fill in the position, skill level, date, time, and arena before generating a message.';
+      return;
+    }
+
+    const raw = this.form.getRawValue();
+
+    const payload = {
+      position: raw.position ?? Position.FORWARD,
+      playersNeeded: Number(raw.playersNeeded ?? 1),
+      date: raw.date ?? '',
+      time: this.formatTime(raw.time),
+      arena: raw.arena?.trim() ?? '',
+      location: raw.arenaAddress?.trim() || raw.arena?.trim() || '',
+      skillLevel: raw.skillLevel ?? SkillLevel.INTERMEDIATE,
+      notes: raw.notes?.trim() || undefined,
+    };
+
+    this.loadingAiMessage = true;
+
+    this.aiMessageService.generateSpareMessage(payload).subscribe({
+      next: (result) => {
+        this.aiTitle = result.title;
+        this.missingFields = result.missingFields ?? [];
+
+        this.form.controls.notes.setValue(result.message);
+        this.form.controls.notes.markAsDirty();
+      },
+      error: (err) => {
+        this.aiError =
+          err?.error?.message ||
+          'Could not generate message. Please try again.';
+        this.loadingAiMessage = false;
+      },
+      complete: () => {
+        this.loadingAiMessage = false;
+      },
+    });
   }
 }

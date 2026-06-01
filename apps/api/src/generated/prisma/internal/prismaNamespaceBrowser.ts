@@ -67,7 +67,8 @@ export const ModelName = {
   Notification: 'Notification',
   Booking: 'Booking',
   GameScoreSheet: 'GameScoreSheet',
-  GameScoreSheetPlayer: 'GameScoreSheetPlayer'
+  GameScoreSheetPlayer: 'GameScoreSheetPlayer',
+  HelpArticle: 'HelpArticle'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -351,6 +352,20 @@ export const GameScoreSheetPlayerScalarFieldEnum = {
 } as const
 
 export type GameScoreSheetPlayerScalarFieldEnum = (typeof GameScoreSheetPlayerScalarFieldEnum)[keyof typeof GameScoreSheetPlayerScalarFieldEnum]
+
+
+export const HelpArticleScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  title: 'title',
+  content: 'content',
+  category: 'category',
+  embedding: 'embedding',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HelpArticleScalarFieldEnum = (typeof HelpArticleScalarFieldEnum)[keyof typeof HelpArticleScalarFieldEnum]
 
 
 export const SortOrder = {

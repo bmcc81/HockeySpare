@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -19,14 +20,17 @@ type HelpAnswerResponse = {
 };
 
 type OllamaEmbedResponse = {
+  model: string;
   embeddings: number[][];
 };
 
 type OllamaChatResponse = {
+  model: string;
   message?: {
     role: string;
     content: string;
   };
+  done: boolean;
 };
 
 @Injectable()
@@ -34,8 +38,7 @@ export class AiService {
   private readonly ollamaBaseUrl =
     process.env.OLLAMA_BASE_URL || 'http://localhost:11434';
 
-  private readonly chatModel =
-    process.env.OLLAMA_CHAT_MODEL || 'llama3.2';
+  private readonly chatModel = process.env.OLLAMA_CHAT_MODEL || 'llama3.2';
 
   private readonly embeddingModel =
     process.env.OLLAMA_EMBEDDING_MODEL || 'nomic-embed-text';
@@ -46,35 +49,28 @@ export class AiService {
     let count = 0;
 
     for (const article of HOCKEYSPARE_HELP_ARTICLES) {
-      const existing = await this.prisma.helpArticle.findFirst({
-        where: {
-          title: article.title,
-        },
-      });
-
       const embedding = await this.createEmbedding(
         `${article.title}\n\n${article.content}`,
       );
 
-      if (existing) {
-        await this.prisma.helpArticle.update({
-          where: { id: existing.id },
-          data: {
-            content: article.content,
-            category: article.category,
-            embedding,
-          },
-        });
-      } else {
-        await this.prisma.helpArticle.create({
-          data: {
-            title: article.title,
-            content: article.content,
-            category: article.category,
-            embedding,
-          },
-        });
-      }
+      await this.prisma.helpArticle.upsert({
+        where: {
+          slug: article.slug,
+        },
+        update: {
+          title: article.title,
+          content: article.content,
+          category: article.category,
+          embedding,
+        },
+        create: {
+          slug: article.slug,
+          title: article.title,
+          content: article.content,
+          category: article.category,
+          embedding,
+        },
+      });
 
       count++;
     }
@@ -83,10 +79,10 @@ export class AiService {
   }
 
   async askHelp(dto: AskHelpDto): Promise<HelpAnswerResponse> {
-    const question = dto.question.trim();
+    const question = dto.question?.trim();
 
     if (!question) {
-      throw new NotFoundException('Question is required.');
+      throw new BadRequestException('Question is required.');
     }
 
     const questionEmbedding = await this.createEmbedding(question);
@@ -101,7 +97,7 @@ export class AiService {
 
     const rankedArticles = articles
       .map((article) => {
-        const embedding = article.embedding as number[] | null;
+        const embedding = this.toNumberArray(article.embedding);
 
         return {
           article,
@@ -176,15 +172,14 @@ Rules:
 
     if (!response.ok) {
       throw new InternalServerErrorException(
-        'Failed to create Ollama embedding.',
+        `Failed to create Ollama embedding. Status: ${response.status}`,
       );
     }
 
     const data = (await response.json()) as OllamaEmbedResponse;
-
     const embedding = data.embeddings?.[0];
 
-    if (!embedding) {
+    if (!embedding || !Array.isArray(embedding)) {
       throw new InternalServerErrorException(
         'Ollama did not return an embedding.',
       );
@@ -216,13 +211,32 @@ Rules:
 
     if (!response.ok) {
       throw new InternalServerErrorException(
-        'Failed to generate Ollama chat answer.',
+        `Failed to generate Ollama chat answer. Status: ${response.status}`,
       );
     }
 
     const data = (await response.json()) as OllamaChatResponse;
+    const answer = data.message?.content?.trim();
 
-    return data.message?.content?.trim() || '';
+    if (!answer) {
+      throw new InternalServerErrorException(
+        'Ollama did not return a chat answer.',
+      );
+    }
+
+    return answer;
+  }
+
+  private toNumberArray(value: unknown): number[] | null {
+    if (!Array.isArray(value)) {
+      return null;
+    }
+
+    if (!value.every((item) => typeof item === 'number')) {
+      return null;
+    }
+
+    return value;
   }
 
   private cosineSimilarity(a: number[], b: number[]): number {
@@ -247,7 +261,6 @@ Rules:
     return dotProduct / (Math.sqrt(magnitudeA) * Math.sqrt(magnitudeB));
   }
 }
-
 // import {
 //   HttpException,
 //   HttpStatus,

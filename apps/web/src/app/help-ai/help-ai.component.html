@@ -1,0 +1,107 @@
+<section class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
+            <div>
+              <h1 class="h4 mb-1">Ask HockeySpare Help</h1>
+              <p class="text-muted mb-0">
+                Ask questions about teams, spare requests, availability, leagues,
+                and score sheets.
+              </p>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="helpQuestion" class="form-label">Question</label>
+            <textarea
+              id="helpQuestion"
+              class="form-control"
+              rows="3"
+              [(ngModel)]="question"
+              placeholder="Example: How do I assign a captain?"
+            ></textarea>
+          </div>
+
+          <div class="d-flex flex-wrap gap-2 mb-3">
+            <button
+              type="button"
+              class="btn btn-outline-secondary btn-sm"
+              (click)="useExample('How do I assign a captain?')"
+              [disabled]="loading()"
+            >
+              Assign a captain
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-outline-secondary btn-sm"
+              (click)="useExample('How do I notify spare players?')"
+              [disabled]="loading()"
+            >
+              Notify spares
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-outline-secondary btn-sm"
+              (click)="useExample('How do I finalize a score sheet?')"
+              [disabled]="loading()"
+            >
+              Finalize score sheet
+            </button>
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="askHelp()"
+            [disabled]="loading()"
+          >
+            {{ loading() ? 'Asking...' : 'Ask AI' }}
+          </button>
+
+          <div *ngIf="error()" class="alert alert-danger mt-3">
+            {{ error() }}
+          </div>
+
+          <div *ngIf="result()" class="mt-4">
+            <h2 class="h5">Answer</h2>
+
+            <div class="border rounded p-3 bg-light mb-3">
+              <p class="mb-0">{{ result()?.answer }}</p>
+            </div>
+
+            <h3 class="h6">Sources</h3>
+
+            <ul
+              *ngIf="result()?.sources?.length; else noSources"
+              class="list-group"
+            >
+              <li
+                *ngFor="let source of result()?.sources"
+                class="list-group-item d-flex justify-content-between align-items-center"
+              >
+                <span>
+                  <strong>{{ source.title }}</strong>
+                </span>
+
+                <span
+                  *ngIf="source.category"
+                  class="badge text-bg-secondary"
+                >
+                  {{ source.category }}
+                </span>
+              </li>
+            </ul>
+
+            <ng-template #noSources>
+              <p class="text-muted mb-0">No sources found.</p>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

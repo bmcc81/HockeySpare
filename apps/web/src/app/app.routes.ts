@@ -139,5 +139,11 @@ export const routes: Routes = [
         (m) => m.IncomingBookingsComponent,
       ),
   },
+  {
+    path: 'help-ai',
+    loadComponent: () =>
+      import('./help-ai/help-ai.component').then(
+        (m) => m.HelpAiComponent),
+  },
   { path: '**', redirectTo: '' },
 ];

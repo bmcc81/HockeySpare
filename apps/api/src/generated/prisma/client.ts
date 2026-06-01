@@ -124,3 +124,8 @@ export type GameScoreSheet = Prisma.GameScoreSheetModel
  * 
  */
 export type GameScoreSheetPlayer = Prisma.GameScoreSheetPlayerModel
+/**
+ * Model HelpArticle
+ * 
+ */
+export type HelpArticle = Prisma.HelpArticleModel

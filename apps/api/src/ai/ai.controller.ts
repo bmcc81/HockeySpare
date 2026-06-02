@@ -1,19 +1,18 @@
 import { Body, Controller, Post } from '@nestjs/common';
 // import { AiService, GenerateSpareMessageResponse } from './ai.service';
 import { GenerateSpareMessageDto } from './dto/generate-spare-message.dto';
-import { AiService } from './ai.service';
+// import { HelpAnswerResponse } from './dto/help-answer-response.dto';
 import { AskHelpDto } from './dto/ask-help.dto';
+import { AiService } from './ai.service';
 
 @Controller('ai')
 export class AiController {
   constructor(private readonly aiService: AiService) {}
 
-  //   @Post('generate-spare-message')
-  //   generateSpareMessage(
-  //     @Body() dto: GenerateSpareMessageDto,
-  //   ): Promise<GenerateSpareMessageResponse> {
-  //     return this.aiService.generateSpareMessage(dto);
-  //   }
+  @Post('generate-spare-message')
+  generateSpareMessage(@Body() dto: GenerateSpareMessageDto) {
+    return this.aiService.generateSpareMessage(dto);
+  }
 
   @Post('help/seed')
   seedHelpArticles() {

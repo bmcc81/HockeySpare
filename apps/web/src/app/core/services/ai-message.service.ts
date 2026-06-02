@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 export interface GenerateSpareMessageRequest {
+  teamName: string;
   position: string;
   playersNeeded: number;
   date: string;

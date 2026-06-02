@@ -18,15 +18,16 @@
                 id="teamName"
                 class="form-select custom-input"
                 formControlName="teamName"
+                [disabled]="teamsLoading()"
               >
                 <option value="" disabled>Select a team</option>
 
-                <option *ngFor="let team of teams" [value]="team.name">
+                <option *ngFor="let team of teams()" [value]="team.name">
                   {{ team.name }}
                 </option>
               </select>
 
-              <div class="text-secondary small mt-2" *ngIf="teamsLoading">
+              <div class="text-secondary small mt-2" *ngIf="teamsLoading()">
                 Loading teams...
               </div>
 
@@ -39,14 +40,14 @@
 
               <div
                 class="text-secondary small mt-2"
-                *ngIf="!teamsLoading && teams.length === 0"
+                *ngIf="!teamsLoading() && teams().length === 0"
               >
                 No teams found. Create your team first from the My Team screen.
                 <a routerLink="/my-team">Go to My Team</a>
               </div>
 
-              <div class="alert alert-warning mt-2 mb-0" *ngIf="teamsError">
-                {{ teamsError }}
+              <div class="alert alert-warning mt-2 mb-0" *ngIf="teamsError()">
+                {{ teamsError() }}
               </div>
             </div>
 
@@ -221,11 +222,12 @@
 
                 <button
                   type="button"
-                  class="btn btn-outline-primary btn-sm"
-                  (click)="generateMessage()"
-                  [disabled]="loadingAiMessage || loading"
+                  class="btn btn-outline-primary"
+                  (click)="generateAiMessage()"
+                  [disabled]="generatingAiMessage()"
                 >
-                  {{ loadingAiMessage ? 'Generating...' : 'Generate with AI' }}
+                  {{ generatingAiMessage() ? 'Generating...' : 'Generate with
+                  AI' }}
                 </button>
               </div>
 

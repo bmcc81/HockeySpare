@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -45,16 +45,17 @@ export class TeamRequestCreateComponent implements OnInit {
     (v): v is SkillLevel => typeof v === 'string',
   );
 
-  teams: TeamOption[] = [];
-  teamsLoading = false;
-  teamsError = '';
-
+  teams = signal<TeamOption[]>([]);
+  teamsLoading = signal(false);
+  teamsError = signal('');
   loading = false;
   error = '';
-  loadingAiMessage = false;
+
   aiError = '';
   aiTitle = '';
   missingFields: string[] = [];
+
+  generatingAiMessage = signal(false);
 
   form = this.fb.group({
     teamName: ['', [Validators.required, Validators.maxLength(80)]],
@@ -76,14 +77,12 @@ export class TeamRequestCreateComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.loadExistingTeams();
-    });
+    this.loadExistingTeams();
   }
 
   private loadExistingTeams(): void {
-    this.teamsLoading = true;
-    this.teamsError = '';
+    this.teamsLoading.set(true);
+    this.teamsError.set('');
 
     forkJoin({
       myTeam: this.teamApi.getMyTeam().pipe(catchError(() => of(null))),
@@ -118,20 +117,22 @@ export class TeamRequestCreateComponent implements OnInit {
           }
         }
 
-        this.teams = [...teamMap.values()].sort((a, b) =>
+        const sortedTeams = [...teamMap.values()].sort((a, b) =>
           a.name.localeCompare(b.name),
         );
 
-        if (this.teams.length === 1 && !this.form.controls.teamName.value) {
-          this.form.controls.teamName.setValue(this.teams[0].name);
+        this.teams.set(sortedTeams);
+
+        if (sortedTeams.length === 1 && !this.form.controls.teamName.value) {
+          this.form.controls.teamName.setValue(sortedTeams[0].name);
         }
 
-        this.teamsLoading = false;
+        this.teamsLoading.set(false);
       },
       error: () => {
-        this.teams = [];
-        this.teamsError = 'Could not load your teams.';
-        this.teamsLoading = false;
+        this.teams.set([]);
+        this.teamsError.set('Could not load your teams.');
+        this.teamsLoading.set(false);
       },
     });
   }
@@ -193,66 +194,46 @@ export class TeamRequestCreateComponent implements OnInit {
       .replace(/\s+/g, ' ');
   }
 
-  generateMessage(): void {
+  generateAiMessage(): void {
+    const value = this.form.getRawValue();
+
+    this.generatingAiMessage.set(true);
     this.aiError = '';
     this.aiTitle = '';
     this.missingFields = [];
 
-    const requiredControls = [
-      'position',
-      'skillLevel',
-      'playersNeeded',
-      'date',
-      'time',
-      'arena',
-    ] as const;
+    const notesParts = [
+      value.notes?.trim() || '',
+      value.payAmount ? `Pay amount: $${value.payAmount}` : '',
+    ].filter(Boolean);
 
-    for (const controlName of requiredControls) {
-      this.form.controls[controlName].markAsTouched();
-    }
+    this.aiMessageService
+      .generateSpareMessage({
+        teamName: value.teamName ?? '',
+        position: value.position ?? Position.FORWARD,
+        playersNeeded: Number(value.playersNeeded || 1),
+        date: value.date ?? '',
+        time: this.formatTime(value.time),
+        arena: value.arena ?? '',
+        location: value.arenaAddress ?? '',
+        skillLevel: value.skillLevel ?? SkillLevel.INTERMEDIATE,
+        notes: notesParts.join('\n'),
+      })
+      .subscribe({
+        next: (response) => {
+          this.aiTitle = response.title;
+          this.missingFields = response.missingFields ?? [];
 
-    const hasInvalidAiFields = requiredControls.some(
-      (controlName) => this.form.controls[controlName].invalid,
-    );
+          this.form.patchValue({
+            notes: response.message,
+          });
 
-    if (hasInvalidAiFields) {
-      this.aiError =
-        'Fill in the position, skill level, date, time, and arena before generating a message.';
-      return;
-    }
-
-    const raw = this.form.getRawValue();
-
-    const payload = {
-      position: raw.position ?? Position.FORWARD,
-      playersNeeded: Number(raw.playersNeeded ?? 1),
-      date: raw.date ?? '',
-      time: this.formatTime(raw.time),
-      arena: raw.arena?.trim() ?? '',
-      location: raw.arenaAddress?.trim() || raw.arena?.trim() || '',
-      skillLevel: raw.skillLevel ?? SkillLevel.INTERMEDIATE,
-      notes: raw.notes?.trim() || undefined,
-    };
-
-    this.loadingAiMessage = true;
-
-    this.aiMessageService.generateSpareMessage(payload).subscribe({
-      next: (result) => {
-        this.aiTitle = result.title;
-        this.missingFields = result.missingFields ?? [];
-
-        this.form.controls.notes.setValue(result.message);
-        this.form.controls.notes.markAsDirty();
-      },
-      error: (err) => {
-        this.aiError =
-          err?.error?.message ||
-          'Could not generate message. Please try again.';
-        this.loadingAiMessage = false;
-      },
-      complete: () => {
-        this.loadingAiMessage = false;
-      },
-    });
+          this.generatingAiMessage.set(false);
+        },
+        error: () => {
+          this.aiError = 'Could not generate a message.';
+          this.generatingAiMessage.set(false);
+        },
+      });
   }
 }

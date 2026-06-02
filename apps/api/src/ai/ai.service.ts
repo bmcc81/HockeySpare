@@ -7,6 +7,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { AskHelpDto } from './dto/ask-help.dto';
 import { HOCKEYSPARE_HELP_ARTICLES } from './help-seed';
+import { GenerateSpareMessageDto } from './dto/generate-spare-message.dto';
 
 type HelpSource = {
   id: string;
@@ -31,6 +32,12 @@ type OllamaChatResponse = {
     content: string;
   };
   done: boolean;
+};
+
+type GenerateSpareMessageResponse = {
+  title: string;
+  message: string;
+  missingFields: string[];
 };
 
 @Injectable()
@@ -259,6 +266,80 @@ Rules:
     }
 
     return dotProduct / (Math.sqrt(magnitudeA) * Math.sqrt(magnitudeB));
+  }
+
+  async generateSpareMessage(
+    dto: GenerateSpareMessageDto,
+  ): Promise<GenerateSpareMessageResponse> {
+    const prompt = `
+You are an AI assistant inside HockeySpare, a hockey team and spare player management app.
+
+Your task is to generate a spare player request message.
+
+Use only the request details provided.
+
+Request details:
+Team name: ${dto.teamName}
+Position: ${dto.position}
+Players needed: ${dto.playersNeeded}
+Date: ${dto.date}
+Time: ${dto.time}
+Arena: ${dto.arena}
+Location: ${dto.location}
+Skill level: ${dto.skillLevel}
+Notes: ${dto.notes || 'None provided'}
+
+Rules:
+- Include the team name in the message.
+- Use the wording "our game" when referring to the game.
+- Do not invent missing details.
+- Do not mention payment unless payment is provided in the notes.
+- Keep the message under 60 words.
+- Make it friendly and direct.
+- Return only valid JSON.
+- Do not include markdown.
+
+Example message style:
+"${dto.teamName} needs an intermediate forward player for our game on ${dto.date} at ${dto.time} at ${dto.arena}. Location is ${dto.location}. Please let us know if you're available."
+
+Return this exact JSON shape:
+{
+  "title": "",
+  "message": "",
+  "missingFields": []
+}
+`;
+
+    const answer = await this.generateChatAnswer(prompt);
+
+    return this.parseSpareMessageJson(answer);
+  }
+
+  private parseSpareMessageJson(text: string): GenerateSpareMessageResponse {
+    try {
+      const cleaned = text
+        .replace(/```json/g, '')
+        .replace(/```/g, '')
+        .trim();
+
+      const parsed = JSON.parse(
+        cleaned,
+      ) as Partial<GenerateSpareMessageResponse>;
+
+      return {
+        title: parsed.title || 'Spare player needed',
+        message: parsed.message || '',
+        missingFields: Array.isArray(parsed.missingFields)
+          ? parsed.missingFields
+          : [],
+      };
+    } catch {
+      return {
+        title: 'Spare player needed',
+        message: text.trim(),
+        missingFields: [],
+      };
+    }
   }
 }
 // import {

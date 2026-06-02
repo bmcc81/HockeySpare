@@ -220,15 +220,36 @@
               >
                 <label for="notes" class="form-label mb-0">Notes</label>
 
-                <button
-                  type="button"
-                  class="btn btn-outline-primary"
-                  (click)="generateAiMessage()"
-                  [disabled]="generatingAiMessage()"
-                >
-                  {{ generatingAiMessage() ? 'Generating...' : 'Generate with
-                  AI' }}
-                </button>
+                <div class="d-flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    class="btn btn-outline-primary"
+                    (click)="generateAiMessage()"
+                    [disabled]="generatingAiMessage() || rewritingAiMessage()"
+                  >
+                    {{ generatingAiMessage() ? 'Generating...' : 'Generate with
+                    AI' }}
+                  </button>
+
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    (click)="rewriteAiMessage('en')"
+                    [disabled]="generatingAiMessage() || rewritingAiMessage()"
+                  >
+                    {{ rewritingAiMessage() ? 'Rewriting...' : 'Improve Message'
+                    }}
+                  </button>
+
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    (click)="rewriteAiMessage('fr')"
+                    [disabled]="generatingAiMessage() || rewritingAiMessage()"
+                  >
+                    Translate to French
+                  </button>
+                </div>
               </div>
 
               <textarea

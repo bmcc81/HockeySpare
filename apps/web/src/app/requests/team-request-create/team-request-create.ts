@@ -56,6 +56,7 @@ export class TeamRequestCreateComponent implements OnInit {
   missingFields: string[] = [];
 
   generatingAiMessage = signal(false);
+  rewritingAiMessage = signal(false);
 
   form = this.fb.group({
     teamName: ['', [Validators.required, Validators.maxLength(80)]],
@@ -197,10 +198,21 @@ export class TeamRequestCreateComponent implements OnInit {
   generateAiMessage(): void {
     const value = this.form.getRawValue();
 
-    this.generatingAiMessage.set(true);
     this.aiError = '';
     this.aiTitle = '';
     this.missingFields = [];
+
+    const missingFields = this.getMissingAiFields(value);
+
+    if (missingFields.length > 0) {
+      this.missingFields = missingFields;
+      this.aiError =
+        'Please fill in the missing fields before generating a message.';
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    this.generatingAiMessage.set(true);
 
     const notesParts = [
       value.notes?.trim() || '',
@@ -210,13 +222,13 @@ export class TeamRequestCreateComponent implements OnInit {
     this.aiMessageService
       .generateSpareMessage({
         teamName: value.teamName ?? '',
-        position: value.position ?? Position.FORWARD,
+        position: value.position ?? '',
         playersNeeded: Number(value.playersNeeded || 1),
         date: value.date ?? '',
         time: this.formatTime(value.time),
         arena: value.arena ?? '',
         location: value.arenaAddress ?? '',
-        skillLevel: value.skillLevel ?? SkillLevel.INTERMEDIATE,
+        skillLevel: value.skillLevel ?? '',
         notes: notesParts.join('\n'),
       })
       .subscribe({
@@ -233,6 +245,62 @@ export class TeamRequestCreateComponent implements OnInit {
         error: () => {
           this.aiError = 'Could not generate a message.';
           this.generatingAiMessage.set(false);
+        },
+      });
+  }
+
+  private getMissingAiFields(value: {
+    teamName: string | null;
+    position: string | null;
+    skillLevel: string | null;
+    playersNeeded: number | null;
+    date: string | null;
+    time: { hour: number; minute: number; second?: number } | null;
+    arena: string | null;
+    arenaAddress: string | null;
+  }): string[] {
+    const missingFields: string[] = [];
+
+    if (!value.teamName) missingFields.push('teamName');
+    if (!value.position) missingFields.push('position');
+    if (!value.skillLevel) missingFields.push('skillLevel');
+    if (!value.playersNeeded) missingFields.push('playersNeeded');
+    if (!value.date) missingFields.push('date');
+    if (!value.time) missingFields.push('time');
+    if (!value.arena) missingFields.push('arena');
+    if (!value.arenaAddress) missingFields.push('arenaAddress');
+
+    return missingFields;
+  }
+
+  rewriteAiMessage(language: 'en' | 'fr' = 'en'): void {
+    const currentMessage = this.form.controls.notes.value?.trim();
+
+    if (!currentMessage) {
+      this.aiError = 'Add or generate a message first.';
+      return;
+    }
+
+    this.rewritingAiMessage.set(true);
+    this.aiError = '';
+
+    this.aiMessageService
+      .rewriteMessage({
+        message: currentMessage,
+        tone: 'friendly',
+        language,
+      })
+      .subscribe({
+        next: (response) => {
+          this.form.patchValue({
+            notes: response.message,
+          });
+
+          this.rewritingAiMessage.set(false);
+        },
+        error: () => {
+          this.aiError = 'Could not rewrite the message.';
+          this.rewritingAiMessage.set(false);
         },
       });
   }

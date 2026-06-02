@@ -8,6 +8,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { AskHelpDto } from './dto/ask-help.dto';
 import { HOCKEYSPARE_HELP_ARTICLES } from './help-seed';
 import { GenerateSpareMessageDto } from './dto/generate-spare-message.dto';
+import { RewriteMessageDto } from './dto/rewrite-message.dto';
 
 type HelpSource = {
   id: string;
@@ -38,6 +39,10 @@ type GenerateSpareMessageResponse = {
   title: string;
   message: string;
   missingFields: string[];
+};
+
+type RewriteMessageResponse = {
+  message: string;
 };
 
 @Injectable()
@@ -268,9 +273,34 @@ Rules:
     return dotProduct / (Math.sqrt(magnitudeA) * Math.sqrt(magnitudeB));
   }
 
+  private getMissingSpareMessageFields(dto: GenerateSpareMessageDto): string[] {
+    const missingFields: string[] = [];
+
+    if (!dto.teamName?.trim()) missingFields.push('teamName');
+    if (!dto.position?.trim()) missingFields.push('position');
+    if (!dto.playersNeeded) missingFields.push('playersNeeded');
+    if (!dto.date?.trim()) missingFields.push('date');
+    if (!dto.time?.trim()) missingFields.push('time');
+    if (!dto.arena?.trim()) missingFields.push('arena');
+    if (!dto.location?.trim()) missingFields.push('location');
+    if (!dto.skillLevel?.trim()) missingFields.push('skillLevel');
+
+    return missingFields;
+  }
+
   async generateSpareMessage(
     dto: GenerateSpareMessageDto,
   ): Promise<GenerateSpareMessageResponse> {
+    const missingFields = this.getMissingSpareMessageFields(dto);
+
+    if (missingFields.length > 0) {
+      return {
+        title: 'Missing request details',
+        message: '',
+        missingFields,
+      };
+    }
+
     const prompt = `
 You are an AI assistant inside HockeySpare, a hockey team and spare player management app.
 
@@ -313,6 +343,40 @@ Return this exact JSON shape:
     const answer = await this.generateChatAnswer(prompt);
 
     return this.parseSpareMessageJson(answer);
+  }
+
+  async rewriteMessage(
+    dto: RewriteMessageDto,
+  ): Promise<RewriteMessageResponse> {
+    const tone = dto.tone || 'friendly';
+    const language = dto.language || 'en';
+
+    const languageLabel = language === 'fr' ? 'French' : 'English';
+
+    const prompt = `
+You are an AI writing assistant inside HockeySpare, a hockey team and spare player management app.
+
+Rewrite the message below for a hockey spare player request.
+
+Message:
+${dto.message}
+
+Rules:
+- Keep the same meaning.
+- Do not invent missing details.
+- Do not add payment unless it already exists in the message.
+- Use a ${tone} tone.
+- Write the final message in ${languageLabel}.
+- Keep it under 80 words.
+- Return only the final message.
+- Do not include markdown.
+`;
+
+    const answer = await this.generateChatAnswer(prompt);
+
+    return {
+      message: answer.trim(),
+    };
   }
 
   private parseSpareMessageJson(text: string): GenerateSpareMessageResponse {

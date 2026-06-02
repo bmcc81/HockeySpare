@@ -20,6 +20,16 @@ export interface GenerateSpareMessageResponse {
   missingFields: string[];
 }
 
+export interface RewriteMessageRequest {
+  message: string;
+  tone?: 'friendly' | 'professional' | 'short' | 'urgent';
+  language?: 'en' | 'fr';
+}
+
+export interface RewriteMessageResponse {
+  message: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -31,6 +41,15 @@ export class AiMessageService {
   ): Observable<GenerateSpareMessageResponse> {
     return this.http.post<GenerateSpareMessageResponse>(
       '/api/ai/generate-spare-message',
+      payload,
+    );
+  }
+
+  rewriteMessage(
+    payload: RewriteMessageRequest,
+  ): Observable<RewriteMessageResponse> {
+    return this.http.post<RewriteMessageResponse>(
+      '/api/ai/rewrite-message',
       payload,
     );
   }

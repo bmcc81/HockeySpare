@@ -668,7 +668,7 @@
                 class="btn btn-outline-primary btn-sm"
                 (click)="openScoreSheet(game)"
               >
-                Scoresheet
+                {{ isPastGame(game) ? 'Enter Score' : 'Scorekeeper' }}
               </button>
 
               <button

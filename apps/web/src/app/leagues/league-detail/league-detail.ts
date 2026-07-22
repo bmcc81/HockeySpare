@@ -201,6 +201,10 @@ export class LeagueDetailComponent {
     return this.canManageTeamById(game.teamId);
   }
 
+  isPastGame(game: TeamGameDto): boolean {
+    return new Date(game.startsAt).getTime() < Date.now();
+  }
+
   manageableTeams = computed(() =>
     this.teams().filter((team) => this.canManageTeam(team)),
   );

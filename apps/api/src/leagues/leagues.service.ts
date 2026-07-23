@@ -833,34 +833,223 @@ export class LeaguesService {
     });
 
     if (dto.notifyByEmail !== false) {
-      const appUrl = (process.env.APP_URL ?? 'http://localhost:4200').replace(
-        /\/$/,
-        '',
-      );
+      await this.sendMemberInviteEmail({
+        email,
+        displayName,
+        memberType: member.memberType,
+        teamName: team.name,
+        leagueName: team.league?.name,
+      });
+    }
 
-      const registerUrl = `${appUrl}/register?email=${encodeURIComponent(email)}`;
-      const myTeamUrl = `${appUrl}/my-team`;
+    return member;
+  }
 
-      const memberTypeLabel =
-        member.memberType === 'SPARE' ? 'spare' : 'regular player';
+  async bulkAddMembersToLeagueTeam(
+    managerUserId: string,
+    leagueId: string,
+    teamId: string,
+    rows: AddLeagueTeamMemberDto[],
+  ) {
+    await this.assertUserCanManageLeagueTeam(managerUserId, leagueId, teamId);
 
-      await this.emailService.sendMail({
-        to: email,
-        subject: `You have been invited to join ${team.name} on HockeySpare`,
-        text:
-          `Hi ${displayName},\n\n` +
-          `You have been invited to join ${team.name} as a ${memberTypeLabel} in ${team.league?.name}.\n\n` +
-          `If you already have a HockeySpare account, log in here:\n${myTeamUrl}\n\n` +
-          `If you do not have an account yet, create one using this same email address:\n${registerUrl}\n\n` +
-          `Once registered, you will be linked to the team automatically.`,
-        html: `
+    const team = await this.prisma.team.findFirst({
+      where: {
+        id: teamId,
+        leagueId,
+      },
+      select: {
+        id: true,
+        name: true,
+        league: {
+          select: {
+            name: true,
+            season: true,
+          },
+        },
+      },
+    });
+
+    if (!team) {
+      throw new NotFoundException('Team not found in this league');
+    }
+
+    const existingActiveMembers = await this.prisma.teamMember.findMany({
+      where: {
+        teamId,
+        isActive: true,
+      },
+      select: {
+        email: true,
+        userId: true,
+      },
+    });
+
+    const existingEmails = new Set(
+      existingActiveMembers
+        .map((member) => member.email?.toLowerCase())
+        .filter((email): email is string => !!email),
+    );
+
+    const skipped: { displayName: string; email: string; reason: string }[] =
+      [];
+    const rowsToCreate: {
+      displayName: string;
+      email: string;
+      phone: string | null;
+      position: 'GOALIE' | 'DEFENSE' | 'FORWARD' | null;
+      memberType: 'REGULAR' | 'SPARE';
+      role: 'PLAYER' | 'CAPTAIN' | 'GENERAL_MANAGER';
+      notifyByEmail: boolean;
+    }[] = [];
+    const seenInBatch = new Set<string>();
+
+    for (const row of rows) {
+      const displayName = row.displayName.trim();
+      const email = row.email.trim().toLowerCase();
+
+      if (!displayName) {
+        skipped.push({ displayName, email, reason: 'Missing player name' });
+        continue;
+      }
+
+      if (!email) {
+        skipped.push({ displayName, email, reason: 'Missing email address' });
+        continue;
+      }
+
+      if (existingEmails.has(email)) {
+        skipped.push({
+          displayName,
+          email,
+          reason: 'Already on this team',
+        });
+        continue;
+      }
+
+      if (seenInBatch.has(email)) {
+        skipped.push({
+          displayName,
+          email,
+          reason: 'Duplicate email in this import',
+        });
+        continue;
+      }
+
+      seenInBatch.add(email);
+      rowsToCreate.push({
+        displayName,
+        email,
+        phone: row.phone?.trim() || null,
+        position: row.position ?? null,
+        memberType: row.memberType,
+        role: row.role ?? 'PLAYER',
+        notifyByEmail: row.notifyByEmail ?? true,
+      });
+    }
+
+    const usersByEmail = rowsToCreate.length
+      ? await this.prisma.user.findMany({
+          where: {
+            email: {
+              in: rowsToCreate.map((row) => row.email),
+            },
+          },
+          select: {
+            id: true,
+            email: true,
+          },
+        })
+      : [];
+
+    const userIdByEmail = new Map(
+      usersByEmail.map((user) => [user.email.toLowerCase(), user.id]),
+    );
+
+    const created = await this.prisma.$transaction(async (tx) => {
+      const createdMembers: Awaited<ReturnType<typeof tx.teamMember.create>>[] =
+        [];
+
+      for (const row of rowsToCreate) {
+        const member = await tx.teamMember.create({
+          data: {
+            teamId,
+            userId: userIdByEmail.get(row.email) ?? null,
+            displayName: row.displayName,
+            email: row.email,
+            phone: row.phone,
+            position: row.position,
+            memberType: row.memberType,
+            role: row.role,
+            notifyByApp: true,
+            notifyByEmail: row.notifyByEmail,
+            isActive: true,
+          },
+        });
+
+        createdMembers.push(member);
+      }
+
+      return createdMembers;
+    });
+
+    for (const member of created) {
+      if (!member.email || member.notifyByEmail === false) {
+        continue;
+      }
+
+      try {
+        await this.sendMemberInviteEmail({
+          email: member.email,
+          displayName: member.displayName,
+          memberType: member.memberType,
+          teamName: team.name,
+          leagueName: team.league?.name,
+        });
+      } catch {
+        // Import already succeeded; a failed invite email shouldn't fail the whole batch.
+      }
+    }
+
+    return { created, skipped };
+  }
+
+  private async sendMemberInviteEmail(params: {
+    email: string;
+    displayName: string;
+    memberType: string;
+    teamName: string;
+    leagueName?: string | null;
+  }): Promise<void> {
+    const { email, displayName, memberType, teamName, leagueName } = params;
+
+    const appUrl = (process.env.APP_URL ?? 'http://localhost:4200').replace(
+      /\/$/,
+      '',
+    );
+
+    const registerUrl = `${appUrl}/register?email=${encodeURIComponent(email)}`;
+    const myTeamUrl = `${appUrl}/my-team`;
+
+    const memberTypeLabel = memberType === 'SPARE' ? 'spare' : 'regular player';
+
+    await this.emailService.sendMail({
+      to: email,
+      subject: `You have been invited to join ${teamName} on HockeySpare`,
+      text:
+        `Hi ${displayName},\n\n` +
+        `You have been invited to join ${teamName} as a ${memberTypeLabel} in ${leagueName}.\n\n` +
+        `If you already have a HockeySpare account, log in here:\n${myTeamUrl}\n\n` +
+        `If you do not have an account yet, create one using this same email address:\n${registerUrl}\n\n` +
+        `Once registered, you will be linked to the team automatically.`,
+      html: `
         <p>Hi <strong>${displayName}</strong>,</p>
 
         <p>
           You have been invited to join
-          <strong>${team.name}</strong>
+          <strong>${teamName}</strong>
           as a <strong>${memberTypeLabel}</strong>
-          in <strong>${team.league?.name}</strong>.
+          in <strong>${leagueName}</strong>.
         </p>
 
         <p>
@@ -885,10 +1074,7 @@ export class LeaguesService {
 
         <p>Thanks,<br />HockeySpare</p>
       `,
-      });
-    }
-
-    return member;
+    });
   }
 
   private async assertUserIsLeagueManager(

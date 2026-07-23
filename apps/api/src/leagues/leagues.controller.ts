@@ -17,6 +17,7 @@ import { CreateLeagueTeamDto } from './dto/create-league-team.dto';
 import { CreateLeagueGameDto } from './dto/create-league-game.dto';
 import { CreateLeagueArenaDto } from './dto/create-league-arena.dto';
 import { AddLeagueTeamMemberDto } from './dto/add-league-team-member.dto';
+import { BulkAddLeagueTeamMembersDto } from './dto/bulk-add-league-team-members.dto';
 import { UpdateLeagueTeamMemberRoleDto } from './dto/update-league-team-member-role.dto';
 
 type AuthRequest = {
@@ -142,6 +143,22 @@ export class LeaguesController {
       leagueId,
       teamId,
       dto,
+    );
+  }
+
+  @Post(':leagueId/teams/:teamId/members/bulk')
+  @UseGuards(JwtAuthGuard)
+  bulkAddMembersToLeagueTeam(
+    @Req() req: any,
+    @Param('leagueId') leagueId: string,
+    @Param('teamId') teamId: string,
+    @Body() dto: BulkAddLeagueTeamMembersDto,
+  ) {
+    return this.leaguesService.bulkAddMembersToLeagueTeam(
+      this.getUserId(req),
+      leagueId,
+      teamId,
+      dto.members,
     );
   }
 

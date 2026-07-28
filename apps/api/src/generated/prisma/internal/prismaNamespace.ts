@@ -1808,7 +1808,8 @@ export const RequestScalarFieldEnum = {
   date: 'date',
   time: 'time',
   type: 'type',
-  status: 'status'
+  status: 'status',
+  teamGameId: 'teamGameId'
 } as const
 
 export type RequestScalarFieldEnum = (typeof RequestScalarFieldEnum)[keyof typeof RequestScalarFieldEnum]

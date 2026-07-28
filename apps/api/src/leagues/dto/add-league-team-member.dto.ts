@@ -33,4 +33,8 @@ export class AddLeagueTeamMemberDto {
   @IsOptional()
   @IsBoolean()
   notifyByEmail?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  notifyBySms?: boolean;
 }

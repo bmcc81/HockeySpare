@@ -470,12 +470,6 @@ export class ScoreSheetsService {
     await this.assertCanManageScoreSheet(userId, scoreSheet.leagueId);
     this.assertDraft(scoreSheet.status);
 
-    if (scoreSheet.playerLines.length === 0) {
-      throw new BadRequestException(
-        'Add at least one player line before finalizing the scoresheet.',
-      );
-    }
-
     const season = this.getSeasonFromScoreSheet(scoreSheet);
 
     await this.prisma.$transaction(async (tx) => {

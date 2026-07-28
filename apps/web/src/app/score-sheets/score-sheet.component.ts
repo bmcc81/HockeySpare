@@ -15,6 +15,15 @@ import {
 } from '@hockeyspare/contracts';
 import { ScoreSheetsApiService } from '../core/services/score-sheets-api.service';
 
+type ScoreSheetPlayerLineGroup = {
+  teamId: string;
+  teamName: string;
+  lines: {
+    line: ScoreSheetPlayerLineDto;
+    index: number;
+  }[];
+};
+
 @Component({
   selector: 'app-score-sheet',
   standalone: true,
@@ -83,7 +92,6 @@ export class ScoreSheetComponent implements OnInit {
       !this.isFinalized &&
       !this.saving &&
       !this.finalizing &&
-      this.lineArray.length > 0 &&
       this.linesForm.valid &&
       this.scoreForm.valid
     );
@@ -91,6 +99,39 @@ export class ScoreSheetComponent implements OnInit {
 
   get canEditOpponentScore(): boolean {
     return this.canEdit && !this.scoreSheet?.game.opponentTeamId;
+  }
+
+  get groupedPlayerLines(): ScoreSheetPlayerLineGroup[] {
+    if (!this.scoreSheet) {
+      return [];
+    }
+
+    const groups = new Map<string, ScoreSheetPlayerLineGroup>();
+
+    this.scoreSheet.playerLines.forEach((line, index) => {
+      const teamId = line.member.teamId;
+      const teamName =
+        line.member.team?.name ??
+        (teamId === this.scoreSheet?.teamId
+          ? this.scoreSheet.team.name
+          : null) ??
+        'Unknown team';
+
+      const group = groups.get(teamId);
+
+      if (group) {
+        group.lines.push({ line, index });
+        return;
+      }
+
+      groups.set(teamId, {
+        teamId,
+        teamName,
+        lines: [{ line, index }],
+      });
+    });
+
+    return [...groups.values()];
   }
 
   ngOnInit(): void {
@@ -243,49 +284,30 @@ export class ScoreSheetComponent implements OnInit {
     }
   }
 
-saveScore(): void {
-  if (!this.scoreSheet?.id || this.scoreForm.invalid || !this.canEdit) {
-    this.scoreForm.markAllAsTouched();
-    return;
+  saveScore(): void {
+    if (!this.scoreSheet?.id || this.scoreForm.invalid || !this.canEdit) {
+      this.scoreForm.markAllAsTouched();
+      return;
+    }
+
+    this.saving = true;
+    this.error = '';
+    this.success = '';
+
+    this.scoreSheetsApi
+      .updateScoreSheet(this.scoreSheet.id, this.getScorePayload())
+      .subscribe({
+        next: (scoreSheet) => {
+          this.saving = false;
+          this.success = 'Score saved.';
+          this.setScoreSheet(scoreSheet);
+        },
+        error: (err) => {
+          this.saving = false;
+          this.error = err?.error?.message || 'Could not save the score.';
+        },
+      });
   }
-
-  this.syncScoreFromPeriods();
-
-  const raw = this.scoreForm.getRawValue();
-
-  this.saving = true;
-  this.error = '';
-  this.success = '';
-
-  this.scoreSheetsApi
-    .updateScoreSheet(this.scoreSheet.id, {
-      teamPeriod1Score: Number(raw.teamPeriod1Score ?? 0),
-      teamPeriod2Score: Number(raw.teamPeriod2Score ?? 0),
-      teamPeriod3Score: Number(raw.teamPeriod3Score ?? 0),
-      teamOvertimeScore: Number(raw.teamOvertimeScore ?? 0),
-
-      opponentPeriod1Score: Number(raw.opponentPeriod1Score ?? 0),
-      opponentPeriod2Score: Number(raw.opponentPeriod2Score ?? 0),
-      opponentPeriod3Score: Number(raw.opponentPeriod3Score ?? 0),
-      opponentOvertimeScore: Number(raw.opponentOvertimeScore ?? 0),
-
-      teamScore: Number(raw.teamScore ?? 0),
-      opponentScore: Number(raw.opponentScore ?? 0),
-
-      notes: raw.notes ?? '',
-    })
-    .subscribe({
-      next: (scoreSheet) => {
-        this.saving = false;
-        this.success = 'Score saved.';
-        this.setScoreSheet(scoreSheet);
-      },
-      error: (err) => {
-        this.saving = false;
-        this.error = err?.error?.message || 'Could not save the score.';
-      },
-    });
-}
 
   savePlayerLine(line: ScoreSheetPlayerLineDto, index: number): void {
     if (!this.scoreSheet?.id || !this.canEdit) {
@@ -418,6 +440,16 @@ saveScore(): void {
       .pipe(
         switchMap(() =>
           this.scoreSheetsApi.updateScoreSheet(scoreSheetId, {
+            teamPeriod1Score: Number(raw.teamPeriod1Score ?? 0),
+            teamPeriod2Score: Number(raw.teamPeriod2Score ?? 0),
+            teamPeriod3Score: Number(raw.teamPeriod3Score ?? 0),
+            teamOvertimeScore: Number(raw.teamOvertimeScore ?? 0),
+
+            opponentPeriod1Score: Number(raw.opponentPeriod1Score ?? 0),
+            opponentPeriod2Score: Number(raw.opponentPeriod2Score ?? 0),
+            opponentPeriod3Score: Number(raw.opponentPeriod3Score ?? 0),
+            opponentOvertimeScore: Number(raw.opponentOvertimeScore ?? 0),
+
             teamScore: Number(raw.teamScore ?? 0),
             opponentScore: Number(raw.opponentScore ?? 0),
             notes: raw.notes ?? '',
@@ -463,6 +495,17 @@ saveScore(): void {
 
   trackByLineId(_: number, line: ScoreSheetPlayerLineDto): string {
     return line.id;
+  }
+
+  trackByLineGroup(_: number, group: ScoreSheetPlayerLineGroup): string {
+    return group.teamId;
+  }
+
+  trackByGroupedLine(
+    _: number,
+    item: ScoreSheetPlayerLineGroup['lines'][number],
+  ): string {
+    return item.line.id;
   }
 
   private getLineGoalsForTeam(teamId: string): number {
@@ -542,5 +585,28 @@ saveScore(): void {
       },
       { emitEvent: false },
     );
+  }
+
+  private getScorePayload() {
+    this.syncScoreFromPeriods();
+
+    const raw = this.scoreForm.getRawValue();
+
+    return {
+      teamPeriod1Score: Number(raw.teamPeriod1Score ?? 0),
+      teamPeriod2Score: Number(raw.teamPeriod2Score ?? 0),
+      teamPeriod3Score: Number(raw.teamPeriod3Score ?? 0),
+      teamOvertimeScore: Number(raw.teamOvertimeScore ?? 0),
+
+      opponentPeriod1Score: Number(raw.opponentPeriod1Score ?? 0),
+      opponentPeriod2Score: Number(raw.opponentPeriod2Score ?? 0),
+      opponentPeriod3Score: Number(raw.opponentPeriod3Score ?? 0),
+      opponentOvertimeScore: Number(raw.opponentOvertimeScore ?? 0),
+
+      teamScore: Number(raw.teamScore ?? 0),
+      opponentScore: Number(raw.opponentScore ?? 0),
+
+      notes: raw.notes ?? '',
+    };
   }
 }

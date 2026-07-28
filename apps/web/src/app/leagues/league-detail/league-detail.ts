@@ -7,6 +7,8 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
+  AddLeagueTeamMemberInput,
+  BulkAddLeagueTeamMembersResult,
   LeagueDto,
   TeamDto,
   TeamGameDto,
@@ -16,6 +18,106 @@ import {
 } from '@hockeyspare/contracts';
 import { LeaguesApiService } from '../../core/services/leagues-api.service';
 import { AuthStateService } from '../../auth/auth-state.service';
+
+type ParsedRosterRow = AddLeagueTeamMemberInput & {
+  raw: string;
+  valid: boolean;
+  error: string | null;
+};
+
+const ROSTER_HEADER_NAMES = new Set([
+  'name',
+  'player',
+  'player name',
+  'displayname',
+  'full name',
+]);
+
+function stripQuotes(value: string): string {
+  const trimmed = value.trim();
+
+  if (trimmed.length >= 2 && trimmed.startsWith('"') && trimmed.endsWith('"')) {
+    return trimmed.slice(1, -1).trim();
+  }
+
+  return trimmed;
+}
+
+function normalizeRosterPosition(
+  value: string | undefined,
+): 'GOALIE' | 'DEFENSE' | 'FORWARD' | null {
+  const normalized = (value ?? '').trim().toUpperCase();
+
+  if (['G', 'GOALIE', 'GOALTENDER'].includes(normalized)) {
+    return 'GOALIE';
+  }
+
+  if (['D', 'DEFENSE', 'DEFENCE', 'DEFENSEMAN'].includes(normalized)) {
+    return 'DEFENSE';
+  }
+
+  if (['F', 'FORWARD'].includes(normalized)) {
+    return 'FORWARD';
+  }
+
+  return null;
+}
+
+function normalizeRosterMemberType(
+  value: string | undefined,
+): 'REGULAR' | 'SPARE' {
+  const normalized = (value ?? '').trim().toUpperCase();
+
+  return ['S', 'SPARE'].includes(normalized) ? 'SPARE' : 'REGULAR';
+}
+
+function parseRosterText(text: string): ParsedRosterRow[] {
+  const lines = text
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
+
+  if (lines.length === 0) {
+    return [];
+  }
+
+  const delimiter = lines.some((line) => line.includes('\t')) ? '\t' : ',';
+
+  const firstCell = stripQuotes(
+    lines[0].split(delimiter)[0] ?? '',
+  ).toLowerCase();
+  const dataLines = ROSTER_HEADER_NAMES.has(firstCell) ? lines.slice(1) : lines;
+
+  return dataLines.map((line) => {
+    const cells = line.split(delimiter).map(stripQuotes);
+    const displayName = cells[0] ?? '';
+    const email = (cells[1] ?? '').toLowerCase();
+    const phone = cells[2] || null;
+    const position = normalizeRosterPosition(cells[3]);
+    const memberType = normalizeRosterMemberType(cells[4]);
+
+    let error: string | null = null;
+
+    if (!displayName) {
+      error = 'Missing player name';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      error = 'Missing or invalid email';
+    }
+
+    return {
+      raw: line,
+      displayName,
+      email,
+      phone,
+      position,
+      memberType,
+      role: 'PLAYER',
+      notifyByEmail: true,
+      valid: error === null,
+      error,
+    };
+  });
+}
 
 @Component({
   selector: 'app-league-detail',
@@ -70,6 +172,18 @@ export class LeagueDetailComponent {
   memberError = signal<string | null>(null);
   memberSuccess = signal<string | null>(null);
 
+  rosterImportTeamId = signal<string | null>(null);
+  rosterImportText = signal('');
+  savingRosterImport = signal(false);
+  rosterImportError = signal<string | null>(null);
+  rosterImportResult = signal<BulkAddLeagueTeamMembersResult | null>(null);
+
+  parsedRosterRows = computed(() => parseRosterText(this.rosterImportText()));
+
+  validParsedRosterRows = computed(() =>
+    this.parsedRosterRows().filter((row) => row.valid),
+  );
+
   savingRoleMemberId = signal<string | null>(null);
   roleError = signal<string | null>(null);
   roleSuccess = signal<string | null>(null);
@@ -95,6 +209,7 @@ export class LeagueDetailComponent {
     memberType: ['REGULAR'],
     role: ['PLAYER'],
     notifyByEmail: [true],
+    notifyBySms: [false],
   });
 
   gameForm = this.fb.group({
@@ -199,6 +314,10 @@ export class LeagueDetailComponent {
 
   canDeleteGame(game: TeamGameDto): boolean {
     return this.canManageTeamById(game.teamId);
+  }
+
+  isPastGame(game: TeamGameDto): boolean {
+    return new Date(game.startsAt).getTime() < Date.now();
   }
 
   manageableTeams = computed(() =>
@@ -599,6 +718,8 @@ export class LeagueDetailComponent {
   }
 
   openAddMember(team: TeamDto): void {
+    this.cancelRosterImport();
+
     this.memberTeamId.set(team.id);
     this.memberError.set(null);
     this.memberSuccess.set(null);
@@ -611,6 +732,7 @@ export class LeagueDetailComponent {
       memberType: 'REGULAR',
       role: 'PLAYER',
       notifyByEmail: true,
+      notifyBySms: false,
     });
   }
 
@@ -653,6 +775,7 @@ export class LeagueDetailComponent {
         memberType: value.memberType as 'REGULAR' | 'SPARE',
         role: value.role as 'PLAYER' | 'CAPTAIN' | 'GENERAL_MANAGER',
         notifyByEmail: !!value.notifyByEmail,
+        notifyBySms: !!value.notifyBySms,
       })
       .subscribe({
         next: (member) => {
@@ -689,6 +812,107 @@ export class LeagueDetailComponent {
             err?.error?.message || 'Could not invite player to this team.',
           );
           this.savingMember.set(false);
+        },
+      });
+  }
+
+  openRosterImport(team: TeamDto): void {
+    this.cancelAddMember();
+
+    this.rosterImportTeamId.set(team.id);
+    this.rosterImportText.set('');
+    this.rosterImportError.set(null);
+    this.rosterImportResult.set(null);
+  }
+
+  cancelRosterImport(): void {
+    this.rosterImportTeamId.set(null);
+    this.rosterImportText.set('');
+    this.rosterImportError.set(null);
+    this.rosterImportResult.set(null);
+  }
+
+  updateRosterImportText(event: Event): void {
+    const textarea = event.target as HTMLTextAreaElement;
+    this.rosterImportText.set(textarea.value);
+    this.rosterImportResult.set(null);
+  }
+
+  trackByParsedRosterRow(index: number, row: ParsedRosterRow): string {
+    return `${index}:${row.email}`;
+  }
+
+  submitRosterImport(): void {
+    const teamId = this.rosterImportTeamId();
+
+    if (!teamId) {
+      this.rosterImportError.set('Select a team first.');
+      return;
+    }
+
+    if (!this.canManageTeamById(teamId)) {
+      this.rosterImportError.set(
+        'You can only import players to teams you manage.',
+      );
+      return;
+    }
+
+    const validRows = this.validParsedRosterRows();
+
+    if (this.savingRosterImport()) {
+      return;
+    }
+
+    if (validRows.length === 0) {
+      this.rosterImportError.set(
+        'Paste at least one row with a name and email.',
+      );
+      return;
+    }
+
+    this.savingRosterImport.set(true);
+    this.rosterImportError.set(null);
+    this.rosterImportResult.set(null);
+
+    this.leaguesApi
+      .bulkAddTeamMembers(
+        this.leagueId,
+        teamId,
+        validRows.map(({ displayName, email, phone, position, memberType, role, notifyByEmail }) => ({
+          displayName,
+          email,
+          phone,
+          position,
+          memberType,
+          role,
+          notifyByEmail,
+        })),
+      )
+      .subscribe({
+        next: (result) => {
+          this.teams.update((teams) =>
+            teams.map((existingTeam) =>
+              existingTeam.id === teamId
+                ? {
+                    ...existingTeam,
+                    members: [
+                      ...(existingTeam.members ?? []),
+                      ...result.created,
+                    ].sort((a, b) => a.displayName.localeCompare(b.displayName)),
+                  }
+                : existingTeam,
+            ),
+          );
+
+          this.rosterImportResult.set(result);
+          this.rosterImportText.set('');
+          this.savingRosterImport.set(false);
+        },
+        error: (err) => {
+          this.rosterImportError.set(
+            err?.error?.message || 'Could not import roster for this team.',
+          );
+          this.savingRosterImport.set(false);
         },
       });
   }

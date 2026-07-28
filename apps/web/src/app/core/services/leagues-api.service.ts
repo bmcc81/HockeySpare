@@ -8,6 +8,7 @@ import {
   TeamDto,
   TeamGameDto,
   AddLeagueTeamMemberInput,
+  BulkAddLeagueTeamMembersResult,
   TeamMember,
 } from '@hockeyspare/contracts';
 import { Observable } from 'rxjs';
@@ -82,6 +83,17 @@ export class LeaguesApiService {
     return this.http.post<TeamMember>(
       `/api/leagues/${leagueId}/teams/${teamId}/members`,
       input,
+    );
+  }
+
+  bulkAddTeamMembers(
+    leagueId: string,
+    teamId: string,
+    members: AddLeagueTeamMemberInput[],
+  ) {
+    return this.http.post<BulkAddLeagueTeamMembersResult>(
+      `/api/leagues/${leagueId}/teams/${teamId}/members/bulk`,
+      { members },
     );
   }
 

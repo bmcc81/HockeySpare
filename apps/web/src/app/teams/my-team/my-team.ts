@@ -71,6 +71,7 @@ export class MyTeamComponent implements OnInit {
     memberType: ['REGULAR' as 'REGULAR' | 'SPARE', Validators.required],
     notifyByApp: [true],
     notifyByEmail: [false],
+    notifyBySms: [false],
   });
 
   availabilityForm = this.fb.group({
@@ -389,6 +390,7 @@ export class MyTeamComponent implements OnInit {
           memberType: raw.memberType ?? 'REGULAR',
           notifyByApp: !!raw.notifyByApp,
           notifyByEmail: !!raw.notifyByEmail,
+          notifyBySms: !!raw.notifyBySms,
         },
         this.selectedTeamId,
       )
@@ -402,6 +404,7 @@ export class MyTeamComponent implements OnInit {
             memberType: 'REGULAR',
             notifyByApp: true,
             notifyByEmail: false,
+            notifyBySms: false,
           });
           this.reload();
         },
@@ -450,12 +453,12 @@ export class MyTeamComponent implements OnInit {
         this.notifyingGameId = null;
 
         const emailSentCount = result?.emailSentCount ?? 0;
+        const smsSentCount = result?.smsSentCount ?? 0;
         const skippedCount = result?.skippedAlreadyNotifiedCount ?? 0;
 
         this.notifySuccess =
-          skippedCount > 0
-            ? `Team notified for ${game.title}. Emails sent: ${emailSentCount}. Already notified: ${skippedCount}.`
-            : `Team notified for ${game.title}. Emails sent: ${emailSentCount}.`;
+          `Team notified for ${game.title}. Emails sent: ${emailSentCount}. Texts sent: ${smsSentCount}.` +
+          (skippedCount > 0 ? ` Already notified: ${skippedCount}.` : '');
 
         this.reload();
       },
@@ -670,6 +673,12 @@ export class MyTeamComponent implements OnInit {
             smsPart;
         } else if (spareNotification?.spareSkippedAlreadyNotifiedCount > 0) {
           this.notifySuccess = `Spares were already notified for this game. Already notified: ${spareNotification.spareSkippedAlreadyNotifiedCount}.`;
+        }
+
+        if (result?.marketplaceRequestCreated) {
+          this.notifySuccess =
+            (this.notifySuccess ? `${this.notifySuccess} ` : '') +
+            'A spare request was also posted to the open marketplace.';
         }
 
         this.reload();

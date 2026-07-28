@@ -1,4 +1,10 @@
-import { IsBoolean, IsEmail, IsEnum, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsEmail,
+  IsEnum,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { Position, TeamMemberType } from '../../../generated/prisma/client';
 
 export class CreateTeamMemberDto {
@@ -27,4 +33,8 @@ export class CreateTeamMemberDto {
   @IsOptional()
   @IsBoolean()
   notifyByEmail?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  notifyBySms?: boolean;
 }

@@ -217,4 +217,20 @@ export interface AddLeagueTeamMemberInput {
   memberType: 'REGULAR' | 'SPARE';
   role?: 'PLAYER' | 'CAPTAIN' | 'GENERAL_MANAGER';
   notifyByEmail?: boolean;
+  notifyBySms?: boolean;
+}
+
+export interface BulkAddLeagueTeamMembersInput {
+  members: AddLeagueTeamMemberInput[];
+}
+
+export interface BulkAddLeagueTeamMembersSkippedRow {
+  displayName: string;
+  email: string;
+  reason: string;
+}
+
+export interface BulkAddLeagueTeamMembersResult {
+  created: TeamMember[];
+  skipped: BulkAddLeagueTeamMembersSkippedRow[];
 }

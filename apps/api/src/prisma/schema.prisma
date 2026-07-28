@@ -114,14 +114,17 @@ model Request {
   time         String
   type         RequestType
   status       RequestStatus @default(OPEN)
+  teamGameId   String?
 
   user      User              @relation("UserRequests", fields: [userId], references: [id], onDelete: Cascade)
+  teamGame  TeamGame?         @relation(fields: [teamGameId], references: [id], onDelete: SetNull)
   responses RequestResponse[]
   bookings  Booking[]
 
   @@index([type])
   @@index([position, skillLevel])
   @@index([userId, status])
+  @@index([teamGameId])
 }
 
 model RequestResponse {
@@ -326,6 +329,7 @@ model TeamGame {
   invites        TeamGameInvite[]
   availabilities TeamGameAvailability[]
   gameScoreSheet GameScoreSheet?
+  autoRequests   Request[]
 
   @@index([leagueId, startsAt])
   @@index([teamId, startsAt])

@@ -672,6 +672,12 @@ export class MyTeamComponent implements OnInit {
           this.notifySuccess = `Spares were already notified for this game. Already notified: ${spareNotification.spareSkippedAlreadyNotifiedCount}.`;
         }
 
+        if (result?.marketplaceRequestCreated) {
+          this.notifySuccess =
+            (this.notifySuccess ? `${this.notifySuccess} ` : '') +
+            'A spare request was also posted to the open marketplace.';
+        }
+
         this.reload();
       },
       error: () => {

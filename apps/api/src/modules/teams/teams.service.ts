@@ -20,6 +20,7 @@ import { CreateMyTeamDto } from './dto/create-my-team.dto';
 import { EmailService } from '../email/email.service';
 import { UpdateTeamMemberRoleDto } from './dto/update-team-member-role.dto';
 import { SmsService } from '../sms/sms.service';
+import { RequestsService } from '../requests/requests.service';
 
 @Injectable()
 export class TeamsService {
@@ -28,6 +29,7 @@ export class TeamsService {
     private readonly notifications: NotificationsService,
     private readonly emailService: EmailService,
     private readonly smsService: SmsService,
+    private readonly requestsService: RequestsService,
   ) {}
 
   private buildDisplayName(user: {
@@ -1092,6 +1094,8 @@ export class TeamsService {
       spareSkippedAlreadyNotifiedCount: 0,
     };
 
+    let marketplaceRequestCreated = false;
+
     if (status === 'UNAVAILABLE' || status === 'NEED_SPARE') {
       spareNotification = await this.notifySparesForGame({
         gameId,
@@ -1101,6 +1105,15 @@ export class TeamsService {
         status,
         note,
       });
+
+      const autoRequest =
+        await this.requestsService.createAutoRequestForTeamGame({
+          gameId,
+          unavailableMemberId: member.id,
+          note,
+        });
+
+      marketplaceRequestCreated = !!autoRequest;
     }
 
     const shouldEmailManagers =
@@ -1159,6 +1172,7 @@ export class TeamsService {
     return {
       ...response,
       spareNotification,
+      marketplaceRequestCreated,
     };
   }
 

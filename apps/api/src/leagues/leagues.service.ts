@@ -828,6 +828,7 @@ export class LeaguesService {
         role: dto.role ?? 'PLAYER',
         notifyByApp: true,
         notifyByEmail: dto.notifyByEmail ?? true,
+        notifyBySms: dto.notifyBySms ?? false,
         isActive: true,
       },
     });

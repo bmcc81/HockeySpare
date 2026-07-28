@@ -209,6 +209,7 @@ export class LeagueDetailComponent {
     memberType: ['REGULAR'],
     role: ['PLAYER'],
     notifyByEmail: [true],
+    notifyBySms: [false],
   });
 
   gameForm = this.fb.group({
@@ -731,6 +732,7 @@ export class LeagueDetailComponent {
       memberType: 'REGULAR',
       role: 'PLAYER',
       notifyByEmail: true,
+      notifyBySms: false,
     });
   }
 
@@ -773,6 +775,7 @@ export class LeagueDetailComponent {
         memberType: value.memberType as 'REGULAR' | 'SPARE',
         role: value.role as 'PLAYER' | 'CAPTAIN' | 'GENERAL_MANAGER',
         notifyByEmail: !!value.notifyByEmail,
+        notifyBySms: !!value.notifyBySms,
       })
       .subscribe({
         next: (member) => {

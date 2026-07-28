@@ -217,6 +217,7 @@ export interface AddLeagueTeamMemberInput {
   memberType: 'REGULAR' | 'SPARE';
   role?: 'PLAYER' | 'CAPTAIN' | 'GENERAL_MANAGER';
   notifyByEmail?: boolean;
+  notifyBySms?: boolean;
 }
 
 export interface BulkAddLeagueTeamMembersInput {

@@ -29,6 +29,7 @@ export interface CreateTeamMemberInput {
   memberType: TeamMemberType | string;
   notifyByApp?: boolean;
   notifyByEmail?: boolean;
+  notifyBySms?: boolean;
 }
 
 export interface CreateTeamGameInput {

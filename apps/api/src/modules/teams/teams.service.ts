@@ -468,6 +468,7 @@ export class TeamsService {
         role: TeamRole.PLAYER,
         notifyByApp: dto.notifyByApp ?? true,
         notifyByEmail: dto.notifyByEmail ?? false,
+        notifyBySms: dto.notifyBySms ?? false,
       },
     });
 
@@ -757,7 +758,10 @@ export class TeamsService {
     const gameUrl = `${appUrl}/my-team`;
 
     const emailMembers = membersToNotify.filter(
-      (member) => !!member.email && member.email.trim().length > 0,
+      (member) =>
+        member.notifyByEmail &&
+        !!member.email &&
+        member.email.trim().length > 0,
     );
 
     const emailResults = await Promise.allSettled(
@@ -805,13 +809,54 @@ export class TeamsService {
 
     const emailFailedCount = emailResults.length - emailSentCount;
 
+    const smsMembers = membersToNotify.filter(
+      (member) =>
+        member.notifyBySms && !!member.phone && member.phone.trim().length > 0,
+    );
+
+    const smsResults = await Promise.allSettled(
+      smsMembers.map((member) =>
+        this.smsService.sendSms({
+          to: member.phone!.trim(),
+          tag: 'game-notify',
+          body:
+            `HockeySpare: ${team.name} vs ${opponentName} on ` +
+            `${game.startsAt.toLocaleString()} at ${arenaName}. ` +
+            `Please respond: ${gameUrl}`,
+        }),
+      ),
+    );
+
+    const smsSentCount = smsResults.filter((result) => {
+      if (result.status !== 'fulfilled') {
+        return false;
+      }
+
+      return !result.value?.skipped;
+    }).length;
+
+    const smsSkippedCount = smsResults.filter((result) => {
+      if (result.status !== 'fulfilled') {
+        return false;
+      }
+
+      return result.value?.skipped === true;
+    }).length;
+
+    const smsFailedCount = smsResults.filter(
+      (result) => result.status === 'rejected',
+    ).length;
+
     return {
-      success: emailFailedCount === 0,
+      success: emailFailedCount === 0 && smsFailedCount === 0,
       sentCount: membersToNotify.length,
       inviteCount: membersToNotify.length,
       inAppSentCount: inAppNotifications.length,
       emailSentCount,
       emailFailedCount,
+      smsSentCount,
+      smsSkippedCount,
+      smsFailedCount,
       skippedAlreadyNotifiedCount: members.length - membersToNotify.length,
     };
   }
@@ -927,7 +972,12 @@ export class TeamsService {
 
     const emailResults = await Promise.allSettled(
       sparesToNotify
-        .filter((spare) => !!spare.email && spare.email.trim().length > 0)
+        .filter(
+          (spare) =>
+            spare.notifyByEmail &&
+            !!spare.email &&
+            spare.email.trim().length > 0,
+        )
         .map((spare) =>
           this.emailService.sendMail({
             to: spare.email!.trim(),
@@ -970,7 +1020,10 @@ export class TeamsService {
 
     const smsResults = await Promise.allSettled(
       sparesToNotify
-        .filter((spare) => !!spare.phone && spare.phone.trim().length > 0)
+        .filter(
+          (spare) =>
+            spare.notifyBySms && !!spare.phone && spare.phone.trim().length > 0,
+        )
         .map((spare) =>
           this.smsService.sendSms({
             to: spare.phone!.trim(),

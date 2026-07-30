@@ -189,6 +189,7 @@ export type LeagueWhereInput = {
   memberFees?: Prisma.MemberFeeListRelationFilter
   arenas?: Prisma.LeagueArenaListRelationFilter
   games?: Prisma.TeamGameListRelationFilter
+  tournaments?: Prisma.TournamentListRelationFilter
 }
 
 export type LeagueOrderByWithRelationInput = {
@@ -204,6 +205,7 @@ export type LeagueOrderByWithRelationInput = {
   memberFees?: Prisma.MemberFeeOrderByRelationAggregateInput
   arenas?: Prisma.LeagueArenaOrderByRelationAggregateInput
   games?: Prisma.TeamGameOrderByRelationAggregateInput
+  tournaments?: Prisma.TournamentOrderByRelationAggregateInput
 }
 
 export type LeagueWhereUniqueInput = Prisma.AtLeast<{
@@ -222,6 +224,7 @@ export type LeagueWhereUniqueInput = Prisma.AtLeast<{
   memberFees?: Prisma.MemberFeeListRelationFilter
   arenas?: Prisma.LeagueArenaListRelationFilter
   games?: Prisma.TeamGameListRelationFilter
+  tournaments?: Prisma.TournamentListRelationFilter
 }, "id">
 
 export type LeagueOrderByWithAggregationInput = {
@@ -259,6 +262,7 @@ export type LeagueCreateInput = {
   memberFees?: Prisma.MemberFeeCreateNestedManyWithoutLeagueInput
   arenas?: Prisma.LeagueArenaCreateNestedManyWithoutLeagueInput
   games?: Prisma.TeamGameCreateNestedManyWithoutLeagueInput
+  tournaments?: Prisma.TournamentCreateNestedManyWithoutLeagueInput
 }
 
 export type LeagueUncheckedCreateInput = {
@@ -274,6 +278,7 @@ export type LeagueUncheckedCreateInput = {
   memberFees?: Prisma.MemberFeeUncheckedCreateNestedManyWithoutLeagueInput
   arenas?: Prisma.LeagueArenaUncheckedCreateNestedManyWithoutLeagueInput
   games?: Prisma.TeamGameUncheckedCreateNestedManyWithoutLeagueInput
+  tournaments?: Prisma.TournamentUncheckedCreateNestedManyWithoutLeagueInput
 }
 
 export type LeagueUpdateInput = {
@@ -289,6 +294,7 @@ export type LeagueUpdateInput = {
   memberFees?: Prisma.MemberFeeUpdateManyWithoutLeagueNestedInput
   arenas?: Prisma.LeagueArenaUpdateManyWithoutLeagueNestedInput
   games?: Prisma.TeamGameUpdateManyWithoutLeagueNestedInput
+  tournaments?: Prisma.TournamentUpdateManyWithoutLeagueNestedInput
 }
 
 export type LeagueUncheckedUpdateInput = {
@@ -304,6 +310,7 @@ export type LeagueUncheckedUpdateInput = {
   memberFees?: Prisma.MemberFeeUncheckedUpdateManyWithoutLeagueNestedInput
   arenas?: Prisma.LeagueArenaUncheckedUpdateManyWithoutLeagueNestedInput
   games?: Prisma.TeamGameUncheckedUpdateManyWithoutLeagueNestedInput
+  tournaments?: Prisma.TournamentUncheckedUpdateManyWithoutLeagueNestedInput
 }
 
 export type LeagueCreateManyInput = {
@@ -470,6 +477,22 @@ export type LeagueUpdateOneRequiredWithoutScoreSheetsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.LeagueUpdateToOneWithWhereWithoutScoreSheetsInput, Prisma.LeagueUpdateWithoutScoreSheetsInput>, Prisma.LeagueUncheckedUpdateWithoutScoreSheetsInput>
 }
 
+export type LeagueCreateNestedOneWithoutTournamentsInput = {
+  create?: Prisma.XOR<Prisma.LeagueCreateWithoutTournamentsInput, Prisma.LeagueUncheckedCreateWithoutTournamentsInput>
+  connectOrCreate?: Prisma.LeagueCreateOrConnectWithoutTournamentsInput
+  connect?: Prisma.LeagueWhereUniqueInput
+}
+
+export type LeagueUpdateOneWithoutTournamentsNestedInput = {
+  create?: Prisma.XOR<Prisma.LeagueCreateWithoutTournamentsInput, Prisma.LeagueUncheckedCreateWithoutTournamentsInput>
+  connectOrCreate?: Prisma.LeagueCreateOrConnectWithoutTournamentsInput
+  upsert?: Prisma.LeagueUpsertWithoutTournamentsInput
+  disconnect?: Prisma.LeagueWhereInput | boolean
+  delete?: Prisma.LeagueWhereInput | boolean
+  connect?: Prisma.LeagueWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LeagueUpdateToOneWithWhereWithoutTournamentsInput, Prisma.LeagueUpdateWithoutTournamentsInput>, Prisma.LeagueUncheckedUpdateWithoutTournamentsInput>
+}
+
 export type LeagueCreateWithoutArenasInput = {
   id?: string
   name: string
@@ -482,6 +505,7 @@ export type LeagueCreateWithoutArenasInput = {
   playerStats?: Prisma.PlayerStatCreateNestedManyWithoutLeagueInput
   memberFees?: Prisma.MemberFeeCreateNestedManyWithoutLeagueInput
   games?: Prisma.TeamGameCreateNestedManyWithoutLeagueInput
+  tournaments?: Prisma.TournamentCreateNestedManyWithoutLeagueInput
 }
 
 export type LeagueUncheckedCreateWithoutArenasInput = {
@@ -496,6 +520,7 @@ export type LeagueUncheckedCreateWithoutArenasInput = {
   playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutLeagueInput
   memberFees?: Prisma.MemberFeeUncheckedCreateNestedManyWithoutLeagueInput
   games?: Prisma.TeamGameUncheckedCreateNestedManyWithoutLeagueInput
+  tournaments?: Prisma.TournamentUncheckedCreateNestedManyWithoutLeagueInput
 }
 
 export type LeagueCreateOrConnectWithoutArenasInput = {
@@ -526,6 +551,7 @@ export type LeagueUpdateWithoutArenasInput = {
   playerStats?: Prisma.PlayerStatUpdateManyWithoutLeagueNestedInput
   memberFees?: Prisma.MemberFeeUpdateManyWithoutLeagueNestedInput
   games?: Prisma.TeamGameUpdateManyWithoutLeagueNestedInput
+  tournaments?: Prisma.TournamentUpdateManyWithoutLeagueNestedInput
 }
 
 export type LeagueUncheckedUpdateWithoutArenasInput = {
@@ -540,6 +566,7 @@ export type LeagueUncheckedUpdateWithoutArenasInput = {
   playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutLeagueNestedInput
   memberFees?: Prisma.MemberFeeUncheckedUpdateManyWithoutLeagueNestedInput
   games?: Prisma.TeamGameUncheckedUpdateManyWithoutLeagueNestedInput
+  tournaments?: Prisma.TournamentUncheckedUpdateManyWithoutLeagueNestedInput
 }
 
 export type LeagueCreateWithoutMembersInput = {
@@ -554,6 +581,7 @@ export type LeagueCreateWithoutMembersInput = {
   memberFees?: Prisma.MemberFeeCreateNestedManyWithoutLeagueInput
   arenas?: Prisma.LeagueArenaCreateNestedManyWithoutLeagueInput
   games?: Prisma.TeamGameCreateNestedManyWithoutLeagueInput
+  tournaments?: Prisma.TournamentCreateNestedManyWithoutLeagueInput
 }
 
 export type LeagueUncheckedCreateWithoutMembersInput = {
@@ -568,6 +596,7 @@ export type LeagueUncheckedCreateWithoutMembersInput = {
   memberFees?: Prisma.MemberFeeUncheckedCreateNestedManyWithoutLeagueInput
   arenas?: Prisma.LeagueArenaUncheckedCreateNestedManyWithoutLeagueInput
   games?: Prisma.TeamGameUncheckedCreateNestedManyWithoutLeagueInput
+  tournaments?: Prisma.TournamentUncheckedCreateNestedManyWithoutLeagueInput
 }
 
 export type LeagueCreateOrConnectWithoutMembersInput = {
@@ -598,6 +627,7 @@ export type LeagueUpdateWithoutMembersInput = {
   memberFees?: Prisma.MemberFeeUpdateManyWithoutLeagueNestedInput
   arenas?: Prisma.LeagueArenaUpdateManyWithoutLeagueNestedInput
   games?: Prisma.TeamGameUpdateManyWithoutLeagueNestedInput
+  tournaments?: Prisma.TournamentUpdateManyWithoutLeagueNestedInput
 }
 
 export type LeagueUncheckedUpdateWithoutMembersInput = {
@@ -612,6 +642,7 @@ export type LeagueUncheckedUpdateWithoutMembersInput = {
   memberFees?: Prisma.MemberFeeUncheckedUpdateManyWithoutLeagueNestedInput
   arenas?: Prisma.LeagueArenaUncheckedUpdateManyWithoutLeagueNestedInput
   games?: Prisma.TeamGameUncheckedUpdateManyWithoutLeagueNestedInput
+  tournaments?: Prisma.TournamentUncheckedUpdateManyWithoutLeagueNestedInput
 }
 
 export type LeagueCreateWithoutTeamsInput = {
@@ -626,6 +657,7 @@ export type LeagueCreateWithoutTeamsInput = {
   memberFees?: Prisma.MemberFeeCreateNestedManyWithoutLeagueInput
   arenas?: Prisma.LeagueArenaCreateNestedManyWithoutLeagueInput
   games?: Prisma.TeamGameCreateNestedManyWithoutLeagueInput
+  tournaments?: Prisma.TournamentCreateNestedManyWithoutLeagueInput
 }
 
 export type LeagueUncheckedCreateWithoutTeamsInput = {
@@ -640,6 +672,7 @@ export type LeagueUncheckedCreateWithoutTeamsInput = {
   memberFees?: Prisma.MemberFeeUncheckedCreateNestedManyWithoutLeagueInput
   arenas?: Prisma.LeagueArenaUncheckedCreateNestedManyWithoutLeagueInput
   games?: Prisma.TeamGameUncheckedCreateNestedManyWithoutLeagueInput
+  tournaments?: Prisma.TournamentUncheckedCreateNestedManyWithoutLeagueInput
 }
 
 export type LeagueCreateOrConnectWithoutTeamsInput = {
@@ -670,6 +703,7 @@ export type LeagueUpdateWithoutTeamsInput = {
   memberFees?: Prisma.MemberFeeUpdateManyWithoutLeagueNestedInput
   arenas?: Prisma.LeagueArenaUpdateManyWithoutLeagueNestedInput
   games?: Prisma.TeamGameUpdateManyWithoutLeagueNestedInput
+  tournaments?: Prisma.TournamentUpdateManyWithoutLeagueNestedInput
 }
 
 export type LeagueUncheckedUpdateWithoutTeamsInput = {
@@ -684,6 +718,7 @@ export type LeagueUncheckedUpdateWithoutTeamsInput = {
   memberFees?: Prisma.MemberFeeUncheckedUpdateManyWithoutLeagueNestedInput
   arenas?: Prisma.LeagueArenaUncheckedUpdateManyWithoutLeagueNestedInput
   games?: Prisma.TeamGameUncheckedUpdateManyWithoutLeagueNestedInput
+  tournaments?: Prisma.TournamentUncheckedUpdateManyWithoutLeagueNestedInput
 }
 
 export type LeagueCreateWithoutPlayerStatsInput = {
@@ -698,6 +733,7 @@ export type LeagueCreateWithoutPlayerStatsInput = {
   memberFees?: Prisma.MemberFeeCreateNestedManyWithoutLeagueInput
   arenas?: Prisma.LeagueArenaCreateNestedManyWithoutLeagueInput
   games?: Prisma.TeamGameCreateNestedManyWithoutLeagueInput
+  tournaments?: Prisma.TournamentCreateNestedManyWithoutLeagueInput
 }
 
 export type LeagueUncheckedCreateWithoutPlayerStatsInput = {
@@ -712,6 +748,7 @@ export type LeagueUncheckedCreateWithoutPlayerStatsInput = {
   memberFees?: Prisma.MemberFeeUncheckedCreateNestedManyWithoutLeagueInput
   arenas?: Prisma.LeagueArenaUncheckedCreateNestedManyWithoutLeagueInput
   games?: Prisma.TeamGameUncheckedCreateNestedManyWithoutLeagueInput
+  tournaments?: Prisma.TournamentUncheckedCreateNestedManyWithoutLeagueInput
 }
 
 export type LeagueCreateOrConnectWithoutPlayerStatsInput = {
@@ -742,6 +779,7 @@ export type LeagueUpdateWithoutPlayerStatsInput = {
   memberFees?: Prisma.MemberFeeUpdateManyWithoutLeagueNestedInput
   arenas?: Prisma.LeagueArenaUpdateManyWithoutLeagueNestedInput
   games?: Prisma.TeamGameUpdateManyWithoutLeagueNestedInput
+  tournaments?: Prisma.TournamentUpdateManyWithoutLeagueNestedInput
 }
 
 export type LeagueUncheckedUpdateWithoutPlayerStatsInput = {
@@ -756,6 +794,7 @@ export type LeagueUncheckedUpdateWithoutPlayerStatsInput = {
   memberFees?: Prisma.MemberFeeUncheckedUpdateManyWithoutLeagueNestedInput
   arenas?: Prisma.LeagueArenaUncheckedUpdateManyWithoutLeagueNestedInput
   games?: Prisma.TeamGameUncheckedUpdateManyWithoutLeagueNestedInput
+  tournaments?: Prisma.TournamentUncheckedUpdateManyWithoutLeagueNestedInput
 }
 
 export type LeagueCreateWithoutMemberFeesInput = {
@@ -770,6 +809,7 @@ export type LeagueCreateWithoutMemberFeesInput = {
   playerStats?: Prisma.PlayerStatCreateNestedManyWithoutLeagueInput
   arenas?: Prisma.LeagueArenaCreateNestedManyWithoutLeagueInput
   games?: Prisma.TeamGameCreateNestedManyWithoutLeagueInput
+  tournaments?: Prisma.TournamentCreateNestedManyWithoutLeagueInput
 }
 
 export type LeagueUncheckedCreateWithoutMemberFeesInput = {
@@ -784,6 +824,7 @@ export type LeagueUncheckedCreateWithoutMemberFeesInput = {
   playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutLeagueInput
   arenas?: Prisma.LeagueArenaUncheckedCreateNestedManyWithoutLeagueInput
   games?: Prisma.TeamGameUncheckedCreateNestedManyWithoutLeagueInput
+  tournaments?: Prisma.TournamentUncheckedCreateNestedManyWithoutLeagueInput
 }
 
 export type LeagueCreateOrConnectWithoutMemberFeesInput = {
@@ -814,6 +855,7 @@ export type LeagueUpdateWithoutMemberFeesInput = {
   playerStats?: Prisma.PlayerStatUpdateManyWithoutLeagueNestedInput
   arenas?: Prisma.LeagueArenaUpdateManyWithoutLeagueNestedInput
   games?: Prisma.TeamGameUpdateManyWithoutLeagueNestedInput
+  tournaments?: Prisma.TournamentUpdateManyWithoutLeagueNestedInput
 }
 
 export type LeagueUncheckedUpdateWithoutMemberFeesInput = {
@@ -828,6 +870,7 @@ export type LeagueUncheckedUpdateWithoutMemberFeesInput = {
   playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutLeagueNestedInput
   arenas?: Prisma.LeagueArenaUncheckedUpdateManyWithoutLeagueNestedInput
   games?: Prisma.TeamGameUncheckedUpdateManyWithoutLeagueNestedInput
+  tournaments?: Prisma.TournamentUncheckedUpdateManyWithoutLeagueNestedInput
 }
 
 export type LeagueCreateWithoutGamesInput = {
@@ -842,6 +885,7 @@ export type LeagueCreateWithoutGamesInput = {
   playerStats?: Prisma.PlayerStatCreateNestedManyWithoutLeagueInput
   memberFees?: Prisma.MemberFeeCreateNestedManyWithoutLeagueInput
   arenas?: Prisma.LeagueArenaCreateNestedManyWithoutLeagueInput
+  tournaments?: Prisma.TournamentCreateNestedManyWithoutLeagueInput
 }
 
 export type LeagueUncheckedCreateWithoutGamesInput = {
@@ -856,6 +900,7 @@ export type LeagueUncheckedCreateWithoutGamesInput = {
   playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutLeagueInput
   memberFees?: Prisma.MemberFeeUncheckedCreateNestedManyWithoutLeagueInput
   arenas?: Prisma.LeagueArenaUncheckedCreateNestedManyWithoutLeagueInput
+  tournaments?: Prisma.TournamentUncheckedCreateNestedManyWithoutLeagueInput
 }
 
 export type LeagueCreateOrConnectWithoutGamesInput = {
@@ -886,6 +931,7 @@ export type LeagueUpdateWithoutGamesInput = {
   playerStats?: Prisma.PlayerStatUpdateManyWithoutLeagueNestedInput
   memberFees?: Prisma.MemberFeeUpdateManyWithoutLeagueNestedInput
   arenas?: Prisma.LeagueArenaUpdateManyWithoutLeagueNestedInput
+  tournaments?: Prisma.TournamentUpdateManyWithoutLeagueNestedInput
 }
 
 export type LeagueUncheckedUpdateWithoutGamesInput = {
@@ -900,6 +946,7 @@ export type LeagueUncheckedUpdateWithoutGamesInput = {
   playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutLeagueNestedInput
   memberFees?: Prisma.MemberFeeUncheckedUpdateManyWithoutLeagueNestedInput
   arenas?: Prisma.LeagueArenaUncheckedUpdateManyWithoutLeagueNestedInput
+  tournaments?: Prisma.TournamentUncheckedUpdateManyWithoutLeagueNestedInput
 }
 
 export type LeagueCreateWithoutScoreSheetsInput = {
@@ -914,6 +961,7 @@ export type LeagueCreateWithoutScoreSheetsInput = {
   memberFees?: Prisma.MemberFeeCreateNestedManyWithoutLeagueInput
   arenas?: Prisma.LeagueArenaCreateNestedManyWithoutLeagueInput
   games?: Prisma.TeamGameCreateNestedManyWithoutLeagueInput
+  tournaments?: Prisma.TournamentCreateNestedManyWithoutLeagueInput
 }
 
 export type LeagueUncheckedCreateWithoutScoreSheetsInput = {
@@ -928,6 +976,7 @@ export type LeagueUncheckedCreateWithoutScoreSheetsInput = {
   memberFees?: Prisma.MemberFeeUncheckedCreateNestedManyWithoutLeagueInput
   arenas?: Prisma.LeagueArenaUncheckedCreateNestedManyWithoutLeagueInput
   games?: Prisma.TeamGameUncheckedCreateNestedManyWithoutLeagueInput
+  tournaments?: Prisma.TournamentUncheckedCreateNestedManyWithoutLeagueInput
 }
 
 export type LeagueCreateOrConnectWithoutScoreSheetsInput = {
@@ -958,6 +1007,7 @@ export type LeagueUpdateWithoutScoreSheetsInput = {
   memberFees?: Prisma.MemberFeeUpdateManyWithoutLeagueNestedInput
   arenas?: Prisma.LeagueArenaUpdateManyWithoutLeagueNestedInput
   games?: Prisma.TeamGameUpdateManyWithoutLeagueNestedInput
+  tournaments?: Prisma.TournamentUpdateManyWithoutLeagueNestedInput
 }
 
 export type LeagueUncheckedUpdateWithoutScoreSheetsInput = {
@@ -966,6 +1016,83 @@ export type LeagueUncheckedUpdateWithoutScoreSheetsInput = {
   season?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  teams?: Prisma.TeamUncheckedUpdateManyWithoutLeagueNestedInput
+  members?: Prisma.LeagueMemberUncheckedUpdateManyWithoutLeagueNestedInput
+  playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutLeagueNestedInput
+  memberFees?: Prisma.MemberFeeUncheckedUpdateManyWithoutLeagueNestedInput
+  arenas?: Prisma.LeagueArenaUncheckedUpdateManyWithoutLeagueNestedInput
+  games?: Prisma.TeamGameUncheckedUpdateManyWithoutLeagueNestedInput
+  tournaments?: Prisma.TournamentUncheckedUpdateManyWithoutLeagueNestedInput
+}
+
+export type LeagueCreateWithoutTournamentsInput = {
+  id?: string
+  name: string
+  season?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  scoreSheets?: Prisma.GameScoreSheetCreateNestedManyWithoutLeagueInput
+  teams?: Prisma.TeamCreateNestedManyWithoutLeagueInput
+  members?: Prisma.LeagueMemberCreateNestedManyWithoutLeagueInput
+  playerStats?: Prisma.PlayerStatCreateNestedManyWithoutLeagueInput
+  memberFees?: Prisma.MemberFeeCreateNestedManyWithoutLeagueInput
+  arenas?: Prisma.LeagueArenaCreateNestedManyWithoutLeagueInput
+  games?: Prisma.TeamGameCreateNestedManyWithoutLeagueInput
+}
+
+export type LeagueUncheckedCreateWithoutTournamentsInput = {
+  id?: string
+  name: string
+  season?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  scoreSheets?: Prisma.GameScoreSheetUncheckedCreateNestedManyWithoutLeagueInput
+  teams?: Prisma.TeamUncheckedCreateNestedManyWithoutLeagueInput
+  members?: Prisma.LeagueMemberUncheckedCreateNestedManyWithoutLeagueInput
+  playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutLeagueInput
+  memberFees?: Prisma.MemberFeeUncheckedCreateNestedManyWithoutLeagueInput
+  arenas?: Prisma.LeagueArenaUncheckedCreateNestedManyWithoutLeagueInput
+  games?: Prisma.TeamGameUncheckedCreateNestedManyWithoutLeagueInput
+}
+
+export type LeagueCreateOrConnectWithoutTournamentsInput = {
+  where: Prisma.LeagueWhereUniqueInput
+  create: Prisma.XOR<Prisma.LeagueCreateWithoutTournamentsInput, Prisma.LeagueUncheckedCreateWithoutTournamentsInput>
+}
+
+export type LeagueUpsertWithoutTournamentsInput = {
+  update: Prisma.XOR<Prisma.LeagueUpdateWithoutTournamentsInput, Prisma.LeagueUncheckedUpdateWithoutTournamentsInput>
+  create: Prisma.XOR<Prisma.LeagueCreateWithoutTournamentsInput, Prisma.LeagueUncheckedCreateWithoutTournamentsInput>
+  where?: Prisma.LeagueWhereInput
+}
+
+export type LeagueUpdateToOneWithWhereWithoutTournamentsInput = {
+  where?: Prisma.LeagueWhereInput
+  data: Prisma.XOR<Prisma.LeagueUpdateWithoutTournamentsInput, Prisma.LeagueUncheckedUpdateWithoutTournamentsInput>
+}
+
+export type LeagueUpdateWithoutTournamentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  season?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  scoreSheets?: Prisma.GameScoreSheetUpdateManyWithoutLeagueNestedInput
+  teams?: Prisma.TeamUpdateManyWithoutLeagueNestedInput
+  members?: Prisma.LeagueMemberUpdateManyWithoutLeagueNestedInput
+  playerStats?: Prisma.PlayerStatUpdateManyWithoutLeagueNestedInput
+  memberFees?: Prisma.MemberFeeUpdateManyWithoutLeagueNestedInput
+  arenas?: Prisma.LeagueArenaUpdateManyWithoutLeagueNestedInput
+  games?: Prisma.TeamGameUpdateManyWithoutLeagueNestedInput
+}
+
+export type LeagueUncheckedUpdateWithoutTournamentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  season?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  scoreSheets?: Prisma.GameScoreSheetUncheckedUpdateManyWithoutLeagueNestedInput
   teams?: Prisma.TeamUncheckedUpdateManyWithoutLeagueNestedInput
   members?: Prisma.LeagueMemberUncheckedUpdateManyWithoutLeagueNestedInput
   playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutLeagueNestedInput
@@ -987,6 +1114,7 @@ export type LeagueCountOutputType = {
   memberFees: number
   arenas: number
   games: number
+  tournaments: number
 }
 
 export type LeagueCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -997,6 +1125,7 @@ export type LeagueCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions
   memberFees?: boolean | LeagueCountOutputTypeCountMemberFeesArgs
   arenas?: boolean | LeagueCountOutputTypeCountArenasArgs
   games?: boolean | LeagueCountOutputTypeCountGamesArgs
+  tournaments?: boolean | LeagueCountOutputTypeCountTournamentsArgs
 }
 
 /**
@@ -1058,6 +1187,13 @@ export type LeagueCountOutputTypeCountGamesArgs<ExtArgs extends runtime.Types.Ex
   where?: Prisma.TeamGameWhereInput
 }
 
+/**
+ * LeagueCountOutputType without action
+ */
+export type LeagueCountOutputTypeCountTournamentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TournamentWhereInput
+}
+
 
 export type LeagueSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1072,6 +1208,7 @@ export type LeagueSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   memberFees?: boolean | Prisma.League$memberFeesArgs<ExtArgs>
   arenas?: boolean | Prisma.League$arenasArgs<ExtArgs>
   games?: boolean | Prisma.League$gamesArgs<ExtArgs>
+  tournaments?: boolean | Prisma.League$tournamentsArgs<ExtArgs>
   _count?: boolean | Prisma.LeagueCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["league"]>
 
@@ -1108,6 +1245,7 @@ export type LeagueInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   memberFees?: boolean | Prisma.League$memberFeesArgs<ExtArgs>
   arenas?: boolean | Prisma.League$arenasArgs<ExtArgs>
   games?: boolean | Prisma.League$gamesArgs<ExtArgs>
+  tournaments?: boolean | Prisma.League$tournamentsArgs<ExtArgs>
   _count?: boolean | Prisma.LeagueCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type LeagueIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1123,6 +1261,7 @@ export type $LeaguePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     memberFees: Prisma.$MemberFeePayload<ExtArgs>[]
     arenas: Prisma.$LeagueArenaPayload<ExtArgs>[]
     games: Prisma.$TeamGamePayload<ExtArgs>[]
+    tournaments: Prisma.$TournamentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1531,6 +1670,7 @@ export interface Prisma__LeagueClient<T, Null = never, ExtArgs extends runtime.T
   memberFees<T extends Prisma.League$memberFeesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.League$memberFeesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MemberFeePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   arenas<T extends Prisma.League$arenasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.League$arenasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeagueArenaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   games<T extends Prisma.League$gamesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.League$gamesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamGamePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  tournaments<T extends Prisma.League$tournamentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.League$tournamentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TournamentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2123,6 +2263,30 @@ export type League$gamesArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   distinct?: Prisma.TeamGameScalarFieldEnum | Prisma.TeamGameScalarFieldEnum[]
+}
+
+/**
+ * League.tournaments
+ */
+export type League$tournamentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Tournament
+   */
+  select?: Prisma.TournamentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Tournament
+   */
+  omit?: Prisma.TournamentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TournamentInclude<ExtArgs> | null
+  where?: Prisma.TournamentWhereInput
+  orderBy?: Prisma.TournamentOrderByWithRelationInput | Prisma.TournamentOrderByWithRelationInput[]
+  cursor?: Prisma.TournamentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TournamentScalarFieldEnum | Prisma.TournamentScalarFieldEnum[]
 }
 
 /**

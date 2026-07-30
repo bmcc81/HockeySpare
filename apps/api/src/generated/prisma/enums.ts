@@ -146,3 +146,12 @@ export const ScoreSheetStatus = {
 } as const
 
 export type ScoreSheetStatus = (typeof ScoreSheetStatus)[keyof typeof ScoreSheetStatus]
+
+
+export const TournamentGameStatus = {
+  SCHEDULED: 'SCHEDULED',
+  LIVE: 'LIVE',
+  FINAL: 'FINAL'
+} as const
+
+export type TournamentGameStatus = (typeof TournamentGameStatus)[keyof typeof TournamentGameStatus]

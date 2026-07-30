@@ -14,8 +14,8 @@ import { BookingsModule } from './modules/bookings/bookings.module';
 import { EmailModule } from './email/email.module';
 import { LeaguesModule } from './leagues/leagues.module';
 import { ScoreSheetsModule } from './modules/score-sheets/score-sheets.module';
-import { AiModule } from './ai/ai.module';  
-
+import { AiModule } from './ai/ai.module';
+import { TournamentsModule } from './modules/tournaments/tournaments.module';
 
 @Module({
   imports: [
@@ -30,8 +30,9 @@ import { AiModule } from './ai/ai.module';
     BookingsModule,
     EmailModule,
     LeaguesModule,
-    AiModule
-  ],  
+    AiModule,
+    TournamentsModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

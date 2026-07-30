@@ -181,11 +181,12 @@ model User {
 
   finalizedScoreSheets GameScoreSheet[]
 
-  createdTeams      Team[]         @relation("CreatedTeams")
-  teamMemberships   TeamMember[]   @relation("UserTeamMemberships")
-  leagueMemberships LeagueMember[]
-  playerStats       PlayerStat[]
-  memberFees        MemberFee[]
+  createdTeams       Team[]         @relation("CreatedTeams")
+  teamMemberships    TeamMember[]   @relation("UserTeamMemberships")
+  leagueMemberships  LeagueMember[]
+  playerStats        PlayerStat[]
+  memberFees         MemberFee[]
+  createdTournaments Tournament[]   @relation("CreatedTournaments")
 }
 
 model League {
@@ -203,6 +204,7 @@ model League {
   memberFees  MemberFee[]
   arenas      LeagueArena[]
   games       TeamGame[]
+  tournaments Tournament[]
 }
 
 model LeagueArena {
@@ -498,4 +500,49 @@ model HelpArticle {
   embedding Json?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum TournamentGameStatus {
+  SCHEDULED
+  LIVE
+  FINAL
+}
+
+model Tournament {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  rules       String?
+  startDate   DateTime?
+  endDate     DateTime?
+  leagueId    String?
+  createdById String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  league    League?          @relation(fields: [leagueId], references: [id], onDelete: SetNull)
+  createdBy User             @relation("CreatedTournaments", fields: [createdById], references: [id], onDelete: Cascade)
+  games     TournamentGame[]
+
+  @@index([leagueId])
+  @@index([createdById])
+}
+
+model TournamentGame {
+  id           String               @id @default(cuid())
+  tournamentId String
+  homeTeamName String
+  awayTeamName String
+  startsAt     DateTime
+  arenaName    String?
+  notes        String?
+  homeScore    Int?
+  awayScore    Int?
+  status       TournamentGameStatus @default(SCHEDULED)
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  @@index([tournamentId, startsAt])
 }

@@ -1,0 +1,55 @@
+<section class="container py-4" *ngIf="!loading(); else loadingTpl">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">My Tournaments</h1>
+    <a routerLink="/tournaments/new" class="btn btn-primary">New Tournament</a>
+  </div>
+
+  <div *ngIf="error()" class="alert alert-danger">{{ error() }}</div>
+
+  <div class="card">
+    <div class="card-body">
+      <div *ngIf="tournaments().length === 0" class="text-secondary py-3">
+        You haven't created any tournaments yet.
+      </div>
+
+      <div class="table-responsive" *ngIf="tournaments().length > 0">
+        <table class="table align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Games</th>
+              <th></th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr
+              *ngFor="let tournament of tournaments(); trackBy: trackByTournamentId"
+            >
+              <td class="fw-semibold">{{ tournament.name }}</td>
+              <td>{{ tournament.games.length }}</td>
+              <td class="text-end">
+                <a
+                  [routerLink]="['/tournaments', tournament.id, 'manage']"
+                  class="btn btn-sm btn-outline-secondary me-2"
+                >
+                  Manage
+                </a>
+                <a
+                  [routerLink]="['/tournaments', tournament.id]"
+                  class="btn btn-sm btn-outline-primary"
+                >
+                  View public page
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<ng-template #loadingTpl>
+  <div class="container py-5 text-center text-secondary">Loading...</div>
+</ng-template>

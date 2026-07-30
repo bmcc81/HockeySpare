@@ -134,3 +134,13 @@ export type GameScoreSheetPlayer = Prisma.GameScoreSheetPlayerModel
  * 
  */
 export type HelpArticle = Prisma.HelpArticleModel
+/**
+ * Model Tournament
+ * 
+ */
+export type Tournament = Prisma.TournamentModel
+/**
+ * Model TournamentGame
+ * 
+ */
+export type TournamentGame = Prisma.TournamentGameModel

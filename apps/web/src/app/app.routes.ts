@@ -145,5 +145,40 @@ export const routes: Routes = [
       import('./help-ai/help-ai.component').then(
         (m) => m.HelpAiComponent),
   },
+
+  // Tournament routes
+  {
+    path: 'tournaments',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./tournaments/tournaments-list/tournaments-list').then(
+        (m) => m.TournamentsListComponent,
+      ),
+  },
+  {
+    path: 'tournaments/new',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./tournaments/create-tournament/create-tournament').then(
+        (m) => m.CreateTournamentComponent,
+      ),
+  },
+  {
+    path: 'tournaments/:id/manage',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./tournaments/tournament-manage/tournament-manage').then(
+        (m) => m.TournamentManageComponent,
+      ),
+  },
+  {
+    // Public - no auth guard. Anyone with the link can view the schedule/rules.
+    path: 'tournaments/:id',
+    loadComponent: () =>
+      import('./tournaments/tournament-public/tournament-public').then(
+        (m) => m.TournamentPublicComponent,
+      ),
+  },
+
   { path: '**', redirectTo: '' },
 ];

@@ -1,0 +1,80 @@
+<section class="container py-4" *ngIf="!loading(); else loadingTpl">
+  <div *ngIf="error()" class="alert alert-danger">{{ error() }}</div>
+
+  <ng-container *ngIf="tournament() as t">
+    <div class="mb-4">
+      <h1 class="mb-1">{{ t.name }}</h1>
+      <p class="text-secondary mb-0" *ngIf="t.description">
+        {{ t.description }}
+      </p>
+      <p class="text-secondary mb-0" *ngIf="t.startDate || t.endDate">
+        {{ t.startDate | date: 'mediumDate' }}
+        <ng-container *ngIf="t.endDate"> – {{ t.endDate | date: 'mediumDate' }}</ng-container>
+      </p>
+    </div>
+
+    <ul class="nav nav-tabs mb-4">
+      <li class="nav-item">
+        <button
+          class="nav-link"
+          type="button"
+          [class.active]="activeTab() === 'schedule'"
+          (click)="setTab('schedule')"
+        >
+          Schedule
+        </button>
+      </li>
+
+      <li class="nav-item">
+        <button
+          class="nav-link"
+          type="button"
+          [class.active]="activeTab() === 'rules'"
+          (click)="setTab('rules')"
+        >
+          Rules
+        </button>
+      </li>
+    </ul>
+
+    <div *ngIf="activeTab() === 'schedule'">
+      <div *ngIf="t.games.length === 0" class="text-secondary">
+        No games have been scheduled yet. Check back soon.
+      </div>
+
+      <div class="table-responsive" *ngIf="t.games.length > 0">
+        <table class="table align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Matchup</th>
+              <th>Time</th>
+              <th>Arena</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let game of t.games">
+              <td class="fw-semibold">
+                {{ game.homeTeamName }} vs {{ game.awayTeamName }}
+              </td>
+              <td>{{ game.startsAt | date: 'short' }}</td>
+              <td>{{ game.arenaName || 'TBD' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div *ngIf="activeTab() === 'rules'">
+      <div *ngIf="!t.rules" class="text-secondary">
+        Rules haven't been posted yet.
+      </div>
+
+      <p style="white-space: pre-wrap" *ngIf="t.rules">{{ t.rules }}</p>
+    </div>
+  </ng-container>
+</section>
+
+<ng-template #loadingTpl>
+  <div class="container py-5 text-center text-secondary">Loading...</div>
+</ng-template>

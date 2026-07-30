@@ -69,7 +69,9 @@ export const ModelName = {
   Booking: 'Booking',
   GameScoreSheet: 'GameScoreSheet',
   GameScoreSheetPlayer: 'GameScoreSheetPlayer',
-  HelpArticle: 'HelpArticle'
+  HelpArticle: 'HelpArticle',
+  Tournament: 'Tournament',
+  TournamentGame: 'TournamentGame'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -385,6 +387,40 @@ export const HelpArticleScalarFieldEnum = {
 } as const
 
 export type HelpArticleScalarFieldEnum = (typeof HelpArticleScalarFieldEnum)[keyof typeof HelpArticleScalarFieldEnum]
+
+
+export const TournamentScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  rules: 'rules',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  leagueId: 'leagueId',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TournamentScalarFieldEnum = (typeof TournamentScalarFieldEnum)[keyof typeof TournamentScalarFieldEnum]
+
+
+export const TournamentGameScalarFieldEnum = {
+  id: 'id',
+  tournamentId: 'tournamentId',
+  homeTeamName: 'homeTeamName',
+  awayTeamName: 'awayTeamName',
+  startsAt: 'startsAt',
+  arenaName: 'arenaName',
+  notes: 'notes',
+  homeScore: 'homeScore',
+  awayScore: 'awayScore',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TournamentGameScalarFieldEnum = (typeof TournamentGameScalarFieldEnum)[keyof typeof TournamentGameScalarFieldEnum]
 
 
 export const SortOrder = {

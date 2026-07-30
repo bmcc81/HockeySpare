@@ -62,6 +62,12 @@ export interface CreateTournamentGameInput {
 
 export type UpdateTournamentGameInput = Partial<CreateTournamentGameInput>;
 
+export interface UpdateTournamentGameScoreInput {
+  homeScore?: number;
+  awayScore?: number;
+  status?: TournamentGameStatus;
+}
+
 export interface TournamentRegistration {
   id: string;
   tournamentId: string;

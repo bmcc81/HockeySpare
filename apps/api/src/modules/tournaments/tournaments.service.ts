@@ -173,6 +173,9 @@ export class TournamentsService {
           ? { arenaName: dto.arenaName.trim() || null }
           : {}),
         ...(dto.notes !== undefined ? { notes: dto.notes.trim() || null } : {}),
+        ...(dto.homeScore !== undefined ? { homeScore: dto.homeScore } : {}),
+        ...(dto.awayScore !== undefined ? { awayScore: dto.awayScore } : {}),
+        ...(dto.status !== undefined ? { status: dto.status } : {}),
       },
     });
   }

@@ -181,35 +181,123 @@
                     <th>Matchup</th>
                     <th>Time</th>
                     <th>Arena</th>
+                    <th>Score</th>
                     <th *ngIf="isOwner"></th>
                   </tr>
                 </thead>
 
                 <tbody>
-                  <tr *ngFor="let game of t.games; trackBy: trackByGameId">
-                    <td>{{ game.homeTeamName }} vs {{ game.awayTeamName }}</td>
-                    <td>{{ game.startsAt | date: 'short' }}</td>
-                    <td>{{ game.arenaName || 'TBD' }}</td>
-                    <td class="text-end" *ngIf="isOwner">
-                      <button
-                        class="btn btn-sm btn-outline-secondary me-2"
-                        type="button"
-                        (click)="openEditGame(game)"
-                      >
-                        Edit
-                      </button>
+                  <ng-container *ngFor="let game of t.games; trackBy: trackByGameId">
+                    <tr>
+                      <td>{{ game.homeTeamName }} vs {{ game.awayTeamName }}</td>
+                      <td>{{ game.startsAt | date: 'short' }}</td>
+                      <td>{{ game.arenaName || 'TBD' }}</td>
+                      <td>
+                        <ng-container *ngIf="game.status === 'SCHEDULED'">
+                          <span class="text-secondary">Not started</span>
+                        </ng-container>
+                        <ng-container *ngIf="game.status !== 'SCHEDULED'">
+                          {{ game.homeScore ?? 0 }} - {{ game.awayScore ?? 0 }}
+                          <span
+                            class="badge rounded-pill ms-1"
+                            [class.text-bg-danger]="game.status === 'LIVE'"
+                            [class.text-bg-secondary]="game.status === 'FINAL'"
+                          >
+                            {{ game.status === 'LIVE' ? 'LIVE' : 'Final' }}
+                          </span>
+                        </ng-container>
+                      </td>
+                      <td class="text-end" *ngIf="isOwner">
+                        <button
+                          class="btn btn-sm btn-outline-primary me-2"
+                          type="button"
+                          (click)="openScoreEditor(game)"
+                        >
+                          Score
+                        </button>
 
-                      <button
-                        class="btn btn-sm btn-outline-danger"
-                        type="button"
-                        [disabled]="deletingGameId() === game.id"
-                        (click)="deleteGame(game.id)"
-                      >
-                        {{ deletingGameId() === game.id ? 'Removing...' :
-                        'Remove' }}
-                      </button>
-                    </td>
-                  </tr>
+                        <button
+                          class="btn btn-sm btn-outline-secondary me-2"
+                          type="button"
+                          (click)="openEditGame(game)"
+                        >
+                          Edit
+                        </button>
+
+                        <button
+                          class="btn btn-sm btn-outline-danger"
+                          type="button"
+                          [disabled]="deletingGameId() === game.id"
+                          (click)="deleteGame(game.id)"
+                        >
+                          {{ deletingGameId() === game.id ? 'Removing...' :
+                          'Remove' }}
+                        </button>
+                      </td>
+                    </tr>
+
+                    <tr *ngIf="isOwner && scoreEditorGameId() === game.id">
+                      <td colspan="5" class="bg-transparent">
+                        <div *ngIf="scoreError()" class="alert alert-danger py-2 mb-2">
+                          {{ scoreError() }}
+                        </div>
+
+                        <form
+                          [formGroup]="scoreForm"
+                          (ngSubmit)="saveScore(game.id)"
+                          class="row g-2 align-items-end"
+                        >
+                          <div class="col-6 col-md-2">
+                            <label class="form-label">Home score</label>
+                            <input
+                              class="form-control"
+                              type="number"
+                              formControlName="homeScore"
+                            />
+                          </div>
+
+                          <div class="col-6 col-md-2">
+                            <label class="form-label">Away score</label>
+                            <input
+                              class="form-control"
+                              type="number"
+                              formControlName="awayScore"
+                            />
+                          </div>
+
+                          <div class="col-12 col-md-3">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" formControlName="status">
+                              <option value="LIVE">Live</option>
+                              <option value="FINAL">Final</option>
+                              <option value="SCHEDULED">Not started</option>
+                            </select>
+                          </div>
+
+                          <div class="col-12 col-md-2 d-flex gap-2">
+                            <button
+                              class="btn btn-primary btn-sm w-100"
+                              type="submit"
+                              [disabled]="savingScore()"
+                            >
+                              {{ savingScore() ? 'Saving...' : 'Save' }}
+                            </button>
+                          </div>
+
+                          <div class="col-12">
+                            <button
+                              class="btn btn-outline-secondary btn-sm"
+                              type="button"
+                              (click)="cancelScoreEdit()"
+                              [disabled]="savingScore()"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </form>
+                      </td>
+                    </tr>
+                  </ng-container>
                 </tbody>
               </table>
             </div>

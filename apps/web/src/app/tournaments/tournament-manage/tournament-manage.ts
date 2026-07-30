@@ -48,6 +48,10 @@ export class TournamentManageComponent implements OnInit {
   sponsorError = signal<string | null>(null);
   deletingSponsorId = signal<string | null>(null);
 
+  scoreEditorGameId = signal<string | null>(null);
+  savingScore = signal(false);
+  scoreError = signal<string | null>(null);
+
   detailsForm = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
     description: [''],
@@ -68,6 +72,12 @@ export class TournamentManageComponent implements OnInit {
     name: ['', Validators.required],
     logoUrl: [''],
     linkUrl: [''],
+  });
+
+  scoreForm = this.fb.group({
+    homeScore: [0, [Validators.required, Validators.min(0)]],
+    awayScore: [0, [Validators.required, Validators.min(0)]],
+    status: ['LIVE' as 'SCHEDULED' | 'LIVE' | 'FINAL', Validators.required],
   });
 
   get isOwner(): boolean {
@@ -276,6 +286,54 @@ export class TournamentManageComponent implements OnInit {
 
   trackByGameId(_index: number, game: TournamentGame): string {
     return game.id;
+  }
+
+  openScoreEditor(game: TournamentGame): void {
+    this.scoreEditorGameId.set(game.id);
+    this.scoreError.set(null);
+
+    this.scoreForm.reset({
+      homeScore: game.homeScore ?? 0,
+      awayScore: game.awayScore ?? 0,
+      status: game.status === 'SCHEDULED' ? 'LIVE' : game.status,
+    });
+  }
+
+  cancelScoreEdit(): void {
+    this.scoreEditorGameId.set(null);
+    this.scoreError.set(null);
+  }
+
+  saveScore(gameId: string): void {
+    if (this.scoreForm.invalid || this.savingScore()) {
+      this.scoreForm.markAllAsTouched();
+      return;
+    }
+
+    const value = this.scoreForm.getRawValue();
+
+    this.savingScore.set(true);
+    this.scoreError.set(null);
+
+    this.tournamentsApi
+      .updateGameScore(this.tournamentId, gameId, {
+        homeScore: Number(value.homeScore),
+        awayScore: Number(value.awayScore),
+        status: value.status,
+      })
+      .subscribe({
+        next: () => {
+          this.savingScore.set(false);
+          this.scoreEditorGameId.set(null);
+          this.load();
+        },
+        error: (err) => {
+          this.scoreError.set(
+            err?.error?.message || 'Could not update the score.',
+          );
+          this.savingScore.set(false);
+        },
+      });
   }
 
   addSponsor(): void {

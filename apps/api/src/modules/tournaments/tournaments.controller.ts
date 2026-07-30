@@ -17,6 +17,7 @@ import { UpdateTournamentDto } from './dto/update-tournament.dto';
 import { CreateTournamentGameDto } from './dto/create-tournament-game.dto';
 import { UpdateTournamentGameDto } from './dto/update-tournament-game.dto';
 import { CreateTournamentRegistrationDto } from './dto/create-tournament-registration.dto';
+import { CreateTournamentSponsorDto } from './dto/create-tournament-sponsor.dto';
 
 type AuthRequest = {
   user?: {
@@ -129,6 +130,30 @@ export class TournamentsController {
       this.getUserId(req),
       id,
       registrationId,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/sponsors')
+  addSponsor(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Body() dto: CreateTournamentSponsorDto,
+  ) {
+    return this.tournamentsService.addSponsor(this.getUserId(req), id, dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/sponsors/:sponsorId')
+  deleteSponsor(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('sponsorId') sponsorId: string,
+  ) {
+    return this.tournamentsService.deleteSponsor(
+      this.getUserId(req),
+      id,
+      sponsorId,
     );
   }
 }

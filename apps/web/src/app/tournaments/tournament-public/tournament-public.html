@@ -40,6 +40,17 @@
         <button
           class="nav-link"
           type="button"
+          [class.active]="activeTab() === 'sponsors'"
+          (click)="setTab('sponsors')"
+        >
+          Sponsors
+        </button>
+      </li>
+
+      <li class="nav-item">
+        <button
+          class="nav-link"
+          type="button"
           [class.active]="activeTab() === 'register'"
           (click)="setTab('register')"
         >
@@ -82,6 +93,36 @@
       </div>
 
       <p style="white-space: pre-wrap" *ngIf="t.rules">{{ t.rules }}</p>
+    </div>
+
+    <div *ngIf="activeTab() === 'sponsors'">
+      <div *ngIf="t.sponsors.length === 0" class="text-secondary">
+        No sponsors have been added yet.
+      </div>
+
+      <div
+        class="d-flex flex-wrap gap-4 align-items-center"
+        *ngIf="t.sponsors.length > 0"
+      >
+        <a
+          *ngFor="let sponsor of t.sponsors"
+          [href]="sponsor.linkUrl || null"
+          [class.disabled]="!sponsor.linkUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-decoration-none text-center"
+          style="width: 160px"
+        >
+          <img
+            *ngIf="sponsor.logoUrl"
+            [src]="sponsor.logoUrl"
+            [alt]="sponsor.name"
+            class="img-fluid mb-1"
+            style="max-height: 90px"
+          />
+          <div class="small text-secondary">{{ sponsor.name }}</div>
+        </a>
+      </div>
     </div>
 
     <div *ngIf="activeTab() === 'register'" style="max-width: 560px">

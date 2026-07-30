@@ -4,9 +4,11 @@ import {
   CreateTournamentGameInput,
   CreateTournamentInput,
   CreateTournamentRegistrationInput,
+  CreateTournamentSponsorInput,
   Tournament,
   TournamentGame,
   TournamentRegistration,
+  TournamentSponsor,
   UpdateTournamentGameInput,
   UpdateTournamentInput,
 } from '@hockeyspare/contracts';
@@ -88,6 +90,25 @@ export class TournamentsApiService {
   ): Observable<{ id: string; deleted: boolean }> {
     return this.http.delete<{ id: string; deleted: boolean }>(
       `/api/tournaments/${tournamentId}/registrations/${registrationId}`,
+    );
+  }
+
+  addSponsor(
+    tournamentId: string,
+    input: CreateTournamentSponsorInput,
+  ): Observable<TournamentSponsor> {
+    return this.http.post<TournamentSponsor>(
+      `/api/tournaments/${tournamentId}/sponsors`,
+      input,
+    );
+  }
+
+  deleteSponsor(
+    tournamentId: string,
+    sponsorId: string,
+  ): Observable<{ id: string; deleted: boolean }> {
+    return this.http.delete<{ id: string; deleted: boolean }>(
+      `/api/tournaments/${tournamentId}/sponsors/${sponsorId}`,
     );
   }
 }

@@ -10,6 +10,7 @@ import {
   Tournament,
   TournamentGame,
   TournamentRegistration,
+  TournamentSponsor,
 } from '@hockeyspare/contracts';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
 import { AuthStateService } from '../../auth/auth-state.service';
@@ -43,6 +44,10 @@ export class TournamentManageComponent implements OnInit {
   registrations = signal<TournamentRegistration[]>([]);
   deletingRegistrationId = signal<string | null>(null);
 
+  savingSponsor = signal(false);
+  sponsorError = signal<string | null>(null);
+  deletingSponsorId = signal<string | null>(null);
+
   detailsForm = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
     description: [''],
@@ -57,6 +62,12 @@ export class TournamentManageComponent implements OnInit {
     startsAt: ['', Validators.required],
     arenaName: [''],
     notes: [''],
+  });
+
+  sponsorForm = this.fb.group({
+    name: ['', Validators.required],
+    logoUrl: [''],
+    linkUrl: [''],
   });
 
   get isOwner(): boolean {
@@ -265,5 +276,57 @@ export class TournamentManageComponent implements OnInit {
 
   trackByGameId(_index: number, game: TournamentGame): string {
     return game.id;
+  }
+
+  addSponsor(): void {
+    if (this.sponsorForm.invalid || this.savingSponsor()) {
+      this.sponsorForm.markAllAsTouched();
+      return;
+    }
+
+    const value = this.sponsorForm.getRawValue();
+
+    this.savingSponsor.set(true);
+    this.sponsorError.set(null);
+
+    this.tournamentsApi
+      .addSponsor(this.tournamentId, {
+        name: value.name.trim(),
+        logoUrl: value.logoUrl.trim() || null,
+        linkUrl: value.linkUrl.trim() || null,
+      })
+      .subscribe({
+        next: () => {
+          this.savingSponsor.set(false);
+          this.sponsorForm.reset({ name: '', logoUrl: '', linkUrl: '' });
+          this.load();
+        },
+        error: (err) => {
+          this.sponsorError.set(
+            err?.error?.message || 'Could not add this sponsor.',
+          );
+          this.savingSponsor.set(false);
+        },
+      });
+  }
+
+  deleteSponsor(sponsorId: string): void {
+    this.deletingSponsorId.set(sponsorId);
+    this.error.set(null);
+
+    this.tournamentsApi.deleteSponsor(this.tournamentId, sponsorId).subscribe({
+      next: () => {
+        this.deletingSponsorId.set(null);
+        this.load();
+      },
+      error: () => {
+        this.error.set('Could not remove this sponsor.');
+        this.deletingSponsorId.set(null);
+      },
+    });
+  }
+
+  trackBySponsorId(_index: number, sponsor: TournamentSponsor): string {
+    return sponsor.id;
   }
 }

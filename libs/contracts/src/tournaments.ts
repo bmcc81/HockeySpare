@@ -13,6 +13,21 @@ export interface TournamentGame {
   status: TournamentGameStatus;
 }
 
+export interface TournamentSponsor {
+  id: string;
+  tournamentId: string;
+  name: string;
+  logoUrl?: string | null;
+  linkUrl?: string | null;
+  createdAt: string;
+}
+
+export interface CreateTournamentSponsorInput {
+  name: string;
+  logoUrl?: string | null;
+  linkUrl?: string | null;
+}
+
 export interface Tournament {
   id: string;
   name: string;
@@ -23,6 +38,7 @@ export interface Tournament {
   leagueId?: string | null;
   createdById: string;
   games: TournamentGame[];
+  sponsors: TournamentSponsor[];
 }
 
 export interface CreateTournamentInput {

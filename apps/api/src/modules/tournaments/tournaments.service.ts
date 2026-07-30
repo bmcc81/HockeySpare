@@ -9,6 +9,7 @@ import { UpdateTournamentDto } from './dto/update-tournament.dto';
 import { CreateTournamentGameDto } from './dto/create-tournament-game.dto';
 import { UpdateTournamentGameDto } from './dto/update-tournament-game.dto';
 import { CreateTournamentRegistrationDto } from './dto/create-tournament-registration.dto';
+import { CreateTournamentSponsorDto } from './dto/create-tournament-sponsor.dto';
 
 @Injectable()
 export class TournamentsService {
@@ -18,6 +19,11 @@ export class TournamentsService {
     games: {
       orderBy: {
         startsAt: 'asc' as const,
+      },
+    },
+    sponsors: {
+      orderBy: {
+        createdAt: 'asc' as const,
       },
     },
   };
@@ -268,6 +274,49 @@ export class TournamentsService {
 
     return {
       id: registration.id,
+      deleted: true,
+    };
+  }
+
+  async addSponsor(
+    userId: string,
+    tournamentId: string,
+    dto: CreateTournamentSponsorDto,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    return this.prisma.tournamentSponsor.create({
+      data: {
+        tournamentId,
+        name: dto.name.trim(),
+        logoUrl: dto.logoUrl?.trim() || null,
+        linkUrl: dto.linkUrl?.trim() || null,
+      },
+    });
+  }
+
+  async deleteSponsor(userId: string, tournamentId: string, sponsorId: string) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const sponsor = await this.prisma.tournamentSponsor.findFirst({
+      where: {
+        id: sponsorId,
+        tournamentId,
+      },
+    });
+
+    if (!sponsor) {
+      throw new NotFoundException('Sponsor not found');
+    }
+
+    await this.prisma.tournamentSponsor.delete({
+      where: {
+        id: sponsorId,
+      },
+    });
+
+    return {
+      id: sponsor.id,
       deleted: true,
     };
   }

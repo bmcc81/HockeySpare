@@ -524,6 +524,7 @@ model Tournament {
   createdBy     User                     @relation("CreatedTournaments", fields: [createdById], references: [id], onDelete: Cascade)
   games         TournamentGame[]
   registrations TournamentRegistration[]
+  sponsors      TournamentSponsor[]
 
   @@index([leagueId])
   @@index([createdById])
@@ -557,6 +558,19 @@ model TournamentRegistration {
   contactEmail String
   contactPhone String?
   notes        String?
+  createdAt    DateTime @default(now())
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  @@index([tournamentId, createdAt])
+}
+
+model TournamentSponsor {
+  id           String   @id @default(cuid())
+  tournamentId String
+  name         String
+  logoUrl      String?
+  linkUrl      String?
   createdAt    DateTime @default(now())
 
   tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)

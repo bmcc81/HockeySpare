@@ -149,3 +149,8 @@ export type TournamentGame = Prisma.TournamentGameModel
  * 
  */
 export type TournamentRegistration = Prisma.TournamentRegistrationModel
+/**
+ * Model TournamentSponsor
+ * 
+ */
+export type TournamentSponsor = Prisma.TournamentSponsorModel

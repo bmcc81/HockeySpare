@@ -226,6 +226,7 @@ export type TournamentWhereInput = {
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   games?: Prisma.TournamentGameListRelationFilter
   registrations?: Prisma.TournamentRegistrationListRelationFilter
+  sponsors?: Prisma.TournamentSponsorListRelationFilter
 }
 
 export type TournamentOrderByWithRelationInput = {
@@ -243,6 +244,7 @@ export type TournamentOrderByWithRelationInput = {
   createdBy?: Prisma.UserOrderByWithRelationInput
   games?: Prisma.TournamentGameOrderByRelationAggregateInput
   registrations?: Prisma.TournamentRegistrationOrderByRelationAggregateInput
+  sponsors?: Prisma.TournamentSponsorOrderByRelationAggregateInput
 }
 
 export type TournamentWhereUniqueInput = Prisma.AtLeast<{
@@ -263,6 +265,7 @@ export type TournamentWhereUniqueInput = Prisma.AtLeast<{
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   games?: Prisma.TournamentGameListRelationFilter
   registrations?: Prisma.TournamentRegistrationListRelationFilter
+  sponsors?: Prisma.TournamentSponsorListRelationFilter
 }, "id">
 
 export type TournamentOrderByWithAggregationInput = {
@@ -310,6 +313,7 @@ export type TournamentCreateInput = {
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedTournamentsInput
   games?: Prisma.TournamentGameCreateNestedManyWithoutTournamentInput
   registrations?: Prisma.TournamentRegistrationCreateNestedManyWithoutTournamentInput
+  sponsors?: Prisma.TournamentSponsorCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateInput = {
@@ -325,6 +329,7 @@ export type TournamentUncheckedCreateInput = {
   updatedAt?: Date | string
   games?: Prisma.TournamentGameUncheckedCreateNestedManyWithoutTournamentInput
   registrations?: Prisma.TournamentRegistrationUncheckedCreateNestedManyWithoutTournamentInput
+  sponsors?: Prisma.TournamentSponsorUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUpdateInput = {
@@ -340,6 +345,7 @@ export type TournamentUpdateInput = {
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedTournamentsNestedInput
   games?: Prisma.TournamentGameUpdateManyWithoutTournamentNestedInput
   registrations?: Prisma.TournamentRegistrationUpdateManyWithoutTournamentNestedInput
+  sponsors?: Prisma.TournamentSponsorUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateInput = {
@@ -355,6 +361,7 @@ export type TournamentUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   games?: Prisma.TournamentGameUncheckedUpdateManyWithoutTournamentNestedInput
   registrations?: Prisma.TournamentRegistrationUncheckedUpdateManyWithoutTournamentNestedInput
+  sponsors?: Prisma.TournamentSponsorUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateManyInput = {
@@ -560,6 +567,20 @@ export type TournamentUpdateOneRequiredWithoutRegistrationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TournamentUpdateToOneWithWhereWithoutRegistrationsInput, Prisma.TournamentUpdateWithoutRegistrationsInput>, Prisma.TournamentUncheckedUpdateWithoutRegistrationsInput>
 }
 
+export type TournamentCreateNestedOneWithoutSponsorsInput = {
+  create?: Prisma.XOR<Prisma.TournamentCreateWithoutSponsorsInput, Prisma.TournamentUncheckedCreateWithoutSponsorsInput>
+  connectOrCreate?: Prisma.TournamentCreateOrConnectWithoutSponsorsInput
+  connect?: Prisma.TournamentWhereUniqueInput
+}
+
+export type TournamentUpdateOneRequiredWithoutSponsorsNestedInput = {
+  create?: Prisma.XOR<Prisma.TournamentCreateWithoutSponsorsInput, Prisma.TournamentUncheckedCreateWithoutSponsorsInput>
+  connectOrCreate?: Prisma.TournamentCreateOrConnectWithoutSponsorsInput
+  upsert?: Prisma.TournamentUpsertWithoutSponsorsInput
+  connect?: Prisma.TournamentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TournamentUpdateToOneWithWhereWithoutSponsorsInput, Prisma.TournamentUpdateWithoutSponsorsInput>, Prisma.TournamentUncheckedUpdateWithoutSponsorsInput>
+}
+
 export type TournamentCreateWithoutCreatedByInput = {
   id?: string
   name: string
@@ -572,6 +593,7 @@ export type TournamentCreateWithoutCreatedByInput = {
   league?: Prisma.LeagueCreateNestedOneWithoutTournamentsInput
   games?: Prisma.TournamentGameCreateNestedManyWithoutTournamentInput
   registrations?: Prisma.TournamentRegistrationCreateNestedManyWithoutTournamentInput
+  sponsors?: Prisma.TournamentSponsorCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutCreatedByInput = {
@@ -586,6 +608,7 @@ export type TournamentUncheckedCreateWithoutCreatedByInput = {
   updatedAt?: Date | string
   games?: Prisma.TournamentGameUncheckedCreateNestedManyWithoutTournamentInput
   registrations?: Prisma.TournamentRegistrationUncheckedCreateNestedManyWithoutTournamentInput
+  sponsors?: Prisma.TournamentSponsorUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutCreatedByInput = {
@@ -642,6 +665,7 @@ export type TournamentCreateWithoutLeagueInput = {
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedTournamentsInput
   games?: Prisma.TournamentGameCreateNestedManyWithoutTournamentInput
   registrations?: Prisma.TournamentRegistrationCreateNestedManyWithoutTournamentInput
+  sponsors?: Prisma.TournamentSponsorCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutLeagueInput = {
@@ -656,6 +680,7 @@ export type TournamentUncheckedCreateWithoutLeagueInput = {
   updatedAt?: Date | string
   games?: Prisma.TournamentGameUncheckedCreateNestedManyWithoutTournamentInput
   registrations?: Prisma.TournamentRegistrationUncheckedCreateNestedManyWithoutTournamentInput
+  sponsors?: Prisma.TournamentSponsorUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutLeagueInput = {
@@ -696,6 +721,7 @@ export type TournamentCreateWithoutGamesInput = {
   league?: Prisma.LeagueCreateNestedOneWithoutTournamentsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedTournamentsInput
   registrations?: Prisma.TournamentRegistrationCreateNestedManyWithoutTournamentInput
+  sponsors?: Prisma.TournamentSponsorCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutGamesInput = {
@@ -710,6 +736,7 @@ export type TournamentUncheckedCreateWithoutGamesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   registrations?: Prisma.TournamentRegistrationUncheckedCreateNestedManyWithoutTournamentInput
+  sponsors?: Prisma.TournamentSponsorUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutGamesInput = {
@@ -740,6 +767,7 @@ export type TournamentUpdateWithoutGamesInput = {
   league?: Prisma.LeagueUpdateOneWithoutTournamentsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedTournamentsNestedInput
   registrations?: Prisma.TournamentRegistrationUpdateManyWithoutTournamentNestedInput
+  sponsors?: Prisma.TournamentSponsorUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutGamesInput = {
@@ -754,6 +782,7 @@ export type TournamentUncheckedUpdateWithoutGamesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   registrations?: Prisma.TournamentRegistrationUncheckedUpdateManyWithoutTournamentNestedInput
+  sponsors?: Prisma.TournamentSponsorUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutRegistrationsInput = {
@@ -768,6 +797,7 @@ export type TournamentCreateWithoutRegistrationsInput = {
   league?: Prisma.LeagueCreateNestedOneWithoutTournamentsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedTournamentsInput
   games?: Prisma.TournamentGameCreateNestedManyWithoutTournamentInput
+  sponsors?: Prisma.TournamentSponsorCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutRegistrationsInput = {
@@ -782,6 +812,7 @@ export type TournamentUncheckedCreateWithoutRegistrationsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   games?: Prisma.TournamentGameUncheckedCreateNestedManyWithoutTournamentInput
+  sponsors?: Prisma.TournamentSponsorUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutRegistrationsInput = {
@@ -812,6 +843,7 @@ export type TournamentUpdateWithoutRegistrationsInput = {
   league?: Prisma.LeagueUpdateOneWithoutTournamentsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedTournamentsNestedInput
   games?: Prisma.TournamentGameUpdateManyWithoutTournamentNestedInput
+  sponsors?: Prisma.TournamentSponsorUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutRegistrationsInput = {
@@ -826,6 +858,83 @@ export type TournamentUncheckedUpdateWithoutRegistrationsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   games?: Prisma.TournamentGameUncheckedUpdateManyWithoutTournamentNestedInput
+  sponsors?: Prisma.TournamentSponsorUncheckedUpdateManyWithoutTournamentNestedInput
+}
+
+export type TournamentCreateWithoutSponsorsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  rules?: string | null
+  startDate?: Date | string | null
+  endDate?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  league?: Prisma.LeagueCreateNestedOneWithoutTournamentsInput
+  createdBy: Prisma.UserCreateNestedOneWithoutCreatedTournamentsInput
+  games?: Prisma.TournamentGameCreateNestedManyWithoutTournamentInput
+  registrations?: Prisma.TournamentRegistrationCreateNestedManyWithoutTournamentInput
+}
+
+export type TournamentUncheckedCreateWithoutSponsorsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  rules?: string | null
+  startDate?: Date | string | null
+  endDate?: Date | string | null
+  leagueId?: string | null
+  createdById: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  games?: Prisma.TournamentGameUncheckedCreateNestedManyWithoutTournamentInput
+  registrations?: Prisma.TournamentRegistrationUncheckedCreateNestedManyWithoutTournamentInput
+}
+
+export type TournamentCreateOrConnectWithoutSponsorsInput = {
+  where: Prisma.TournamentWhereUniqueInput
+  create: Prisma.XOR<Prisma.TournamentCreateWithoutSponsorsInput, Prisma.TournamentUncheckedCreateWithoutSponsorsInput>
+}
+
+export type TournamentUpsertWithoutSponsorsInput = {
+  update: Prisma.XOR<Prisma.TournamentUpdateWithoutSponsorsInput, Prisma.TournamentUncheckedUpdateWithoutSponsorsInput>
+  create: Prisma.XOR<Prisma.TournamentCreateWithoutSponsorsInput, Prisma.TournamentUncheckedCreateWithoutSponsorsInput>
+  where?: Prisma.TournamentWhereInput
+}
+
+export type TournamentUpdateToOneWithWhereWithoutSponsorsInput = {
+  where?: Prisma.TournamentWhereInput
+  data: Prisma.XOR<Prisma.TournamentUpdateWithoutSponsorsInput, Prisma.TournamentUncheckedUpdateWithoutSponsorsInput>
+}
+
+export type TournamentUpdateWithoutSponsorsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rules?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  league?: Prisma.LeagueUpdateOneWithoutTournamentsNestedInput
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedTournamentsNestedInput
+  games?: Prisma.TournamentGameUpdateManyWithoutTournamentNestedInput
+  registrations?: Prisma.TournamentRegistrationUpdateManyWithoutTournamentNestedInput
+}
+
+export type TournamentUncheckedUpdateWithoutSponsorsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rules?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  leagueId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  games?: Prisma.TournamentGameUncheckedUpdateManyWithoutTournamentNestedInput
+  registrations?: Prisma.TournamentRegistrationUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateManyCreatedByInput = {
@@ -852,6 +961,7 @@ export type TournamentUpdateWithoutCreatedByInput = {
   league?: Prisma.LeagueUpdateOneWithoutTournamentsNestedInput
   games?: Prisma.TournamentGameUpdateManyWithoutTournamentNestedInput
   registrations?: Prisma.TournamentRegistrationUpdateManyWithoutTournamentNestedInput
+  sponsors?: Prisma.TournamentSponsorUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutCreatedByInput = {
@@ -866,6 +976,7 @@ export type TournamentUncheckedUpdateWithoutCreatedByInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   games?: Prisma.TournamentGameUncheckedUpdateManyWithoutTournamentNestedInput
   registrations?: Prisma.TournamentRegistrationUncheckedUpdateManyWithoutTournamentNestedInput
+  sponsors?: Prisma.TournamentSponsorUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateManyWithoutCreatedByInput = {
@@ -904,6 +1015,7 @@ export type TournamentUpdateWithoutLeagueInput = {
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedTournamentsNestedInput
   games?: Prisma.TournamentGameUpdateManyWithoutTournamentNestedInput
   registrations?: Prisma.TournamentRegistrationUpdateManyWithoutTournamentNestedInput
+  sponsors?: Prisma.TournamentSponsorUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutLeagueInput = {
@@ -918,6 +1030,7 @@ export type TournamentUncheckedUpdateWithoutLeagueInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   games?: Prisma.TournamentGameUncheckedUpdateManyWithoutTournamentNestedInput
   registrations?: Prisma.TournamentRegistrationUncheckedUpdateManyWithoutTournamentNestedInput
+  sponsors?: Prisma.TournamentSponsorUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateManyWithoutLeagueInput = {
@@ -940,11 +1053,13 @@ export type TournamentUncheckedUpdateManyWithoutLeagueInput = {
 export type TournamentCountOutputType = {
   games: number
   registrations: number
+  sponsors: number
 }
 
 export type TournamentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   games?: boolean | TournamentCountOutputTypeCountGamesArgs
   registrations?: boolean | TournamentCountOutputTypeCountRegistrationsArgs
+  sponsors?: boolean | TournamentCountOutputTypeCountSponsorsArgs
 }
 
 /**
@@ -971,6 +1086,13 @@ export type TournamentCountOutputTypeCountRegistrationsArgs<ExtArgs extends runt
   where?: Prisma.TournamentRegistrationWhereInput
 }
 
+/**
+ * TournamentCountOutputType without action
+ */
+export type TournamentCountOutputTypeCountSponsorsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TournamentSponsorWhereInput
+}
+
 
 export type TournamentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -987,6 +1109,7 @@ export type TournamentSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   games?: boolean | Prisma.Tournament$gamesArgs<ExtArgs>
   registrations?: boolean | Prisma.Tournament$registrationsArgs<ExtArgs>
+  sponsors?: boolean | Prisma.Tournament$sponsorsArgs<ExtArgs>
   _count?: boolean | Prisma.TournamentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tournament"]>
 
@@ -1039,6 +1162,7 @@ export type TournamentInclude<ExtArgs extends runtime.Types.Extensions.InternalA
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   games?: boolean | Prisma.Tournament$gamesArgs<ExtArgs>
   registrations?: boolean | Prisma.Tournament$registrationsArgs<ExtArgs>
+  sponsors?: boolean | Prisma.Tournament$sponsorsArgs<ExtArgs>
   _count?: boolean | Prisma.TournamentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TournamentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1057,6 +1181,7 @@ export type $TournamentPayload<ExtArgs extends runtime.Types.Extensions.Internal
     createdBy: Prisma.$UserPayload<ExtArgs>
     games: Prisma.$TournamentGamePayload<ExtArgs>[]
     registrations: Prisma.$TournamentRegistrationPayload<ExtArgs>[]
+    sponsors: Prisma.$TournamentSponsorPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1467,6 +1592,7 @@ export interface Prisma__TournamentClient<T, Null = never, ExtArgs extends runti
   createdBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   games<T extends Prisma.Tournament$gamesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tournament$gamesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TournamentGamePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   registrations<T extends Prisma.Tournament$registrationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tournament$registrationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TournamentRegistrationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sponsors<T extends Prisma.Tournament$sponsorsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tournament$sponsorsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TournamentSponsorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1971,6 +2097,30 @@ export type Tournament$registrationsArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.TournamentRegistrationScalarFieldEnum | Prisma.TournamentRegistrationScalarFieldEnum[]
+}
+
+/**
+ * Tournament.sponsors
+ */
+export type Tournament$sponsorsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TournamentSponsor
+   */
+  select?: Prisma.TournamentSponsorSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TournamentSponsor
+   */
+  omit?: Prisma.TournamentSponsorOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TournamentSponsorInclude<ExtArgs> | null
+  where?: Prisma.TournamentSponsorWhereInput
+  orderBy?: Prisma.TournamentSponsorOrderByWithRelationInput | Prisma.TournamentSponsorOrderByWithRelationInput[]
+  cursor?: Prisma.TournamentSponsorWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TournamentSponsorScalarFieldEnum | Prisma.TournamentSponsorScalarFieldEnum[]
 }
 
 /**

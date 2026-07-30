@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Tournament } from '@hockeyspare/contracts';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
 
-type TournamentTab = 'schedule' | 'rules' | 'register';
+type TournamentTab = 'schedule' | 'rules' | 'sponsors' | 'register';
 
 @Component({
   selector: 'app-tournament-public',

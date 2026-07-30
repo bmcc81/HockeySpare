@@ -217,6 +217,62 @@
         </div>
       </div>
     </div>
+
+    <div class="card mt-4" *ngIf="isOwner">
+      <div class="card-body">
+        <h2 class="h5">Registrations ({{ registrations().length }})</h2>
+
+        <div *ngIf="registrations().length === 0" class="text-secondary py-3">
+          No teams have registered yet.
+        </div>
+
+        <div class="table-responsive" *ngIf="registrations().length > 0">
+          <table class="table align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Team</th>
+                <th>Division</th>
+                <th>Contact</th>
+                <th>Notes</th>
+                <th></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr
+                *ngFor="
+                  let registration of registrations();
+                  trackBy: trackByRegistrationId
+                "
+              >
+                <td class="fw-semibold">{{ registration.teamName }}</td>
+                <td>{{ registration.division || '—' }}</td>
+                <td>
+                  {{ registration.contactName }}<br />
+                  <span class="text-secondary small">
+                    {{ registration.contactEmail
+                    }}{{ registration.contactPhone ? ' · ' +
+                    registration.contactPhone : '' }}
+                  </span>
+                </td>
+                <td>{{ registration.notes || '—' }}</td>
+                <td class="text-end">
+                  <button
+                    class="btn btn-sm btn-outline-danger"
+                    type="button"
+                    [disabled]="deletingRegistrationId() === registration.id"
+                    (click)="deleteRegistration(registration.id)"
+                  >
+                    {{ deletingRegistrationId() === registration.id ?
+                    'Removing...' : 'Remove' }}
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </ng-container>
 </section>
 

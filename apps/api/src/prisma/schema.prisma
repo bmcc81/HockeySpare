@@ -520,9 +520,10 @@ model Tournament {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  league    League?          @relation(fields: [leagueId], references: [id], onDelete: SetNull)
-  createdBy User             @relation("CreatedTournaments", fields: [createdById], references: [id], onDelete: Cascade)
-  games     TournamentGame[]
+  league        League?                  @relation(fields: [leagueId], references: [id], onDelete: SetNull)
+  createdBy     User                     @relation("CreatedTournaments", fields: [createdById], references: [id], onDelete: Cascade)
+  games         TournamentGame[]
+  registrations TournamentRegistration[]
 
   @@index([leagueId])
   @@index([createdById])
@@ -545,4 +546,20 @@ model TournamentGame {
   tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
 
   @@index([tournamentId, startsAt])
+}
+
+model TournamentRegistration {
+  id           String   @id @default(cuid())
+  tournamentId String
+  teamName     String
+  division     String?
+  contactName  String
+  contactEmail String
+  contactPhone String?
+  notes        String?
+  createdAt    DateTime @default(now())
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  @@index([tournamentId, createdAt])
 }

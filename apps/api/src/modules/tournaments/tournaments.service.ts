@@ -8,6 +8,7 @@ import { CreateTournamentDto } from './dto/create-tournament.dto';
 import { UpdateTournamentDto } from './dto/update-tournament.dto';
 import { CreateTournamentGameDto } from './dto/create-tournament-game.dto';
 import { UpdateTournamentGameDto } from './dto/update-tournament-game.dto';
+import { CreateTournamentRegistrationDto } from './dto/create-tournament-registration.dto';
 
 @Injectable()
 export class TournamentsService {
@@ -192,6 +193,81 @@ export class TournamentsService {
 
     return {
       id: game.id,
+      deleted: true,
+    };
+  }
+
+  // Public - no ownership check. Anyone with the tournament link can submit
+  // a registration; only the creator can view/manage the submitted list.
+  async submitRegistration(
+    tournamentId: string,
+    dto: CreateTournamentRegistrationDto,
+  ) {
+    const tournament = await this.prisma.tournament.findUnique({
+      where: {
+        id: tournamentId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException('Tournament not found');
+    }
+
+    return this.prisma.tournamentRegistration.create({
+      data: {
+        tournamentId,
+        teamName: dto.teamName.trim(),
+        division: dto.division?.trim() || null,
+        contactName: dto.contactName.trim(),
+        contactEmail: dto.contactEmail.trim().toLowerCase(),
+        contactPhone: dto.contactPhone?.trim() || null,
+        notes: dto.notes?.trim() || null,
+      },
+    });
+  }
+
+  async listRegistrations(userId: string, tournamentId: string) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    return this.prisma.tournamentRegistration.findMany({
+      where: {
+        tournamentId,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
+
+  async deleteRegistration(
+    userId: string,
+    tournamentId: string,
+    registrationId: string,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const registration = await this.prisma.tournamentRegistration.findFirst({
+      where: {
+        id: registrationId,
+        tournamentId,
+      },
+    });
+
+    if (!registration) {
+      throw new NotFoundException('Registration not found');
+    }
+
+    await this.prisma.tournamentRegistration.delete({
+      where: {
+        id: registrationId,
+      },
+    });
+
+    return {
+      id: registration.id,
       deleted: true,
     };
   }

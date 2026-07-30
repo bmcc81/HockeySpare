@@ -35,6 +35,17 @@
           Rules
         </button>
       </li>
+
+      <li class="nav-item">
+        <button
+          class="nav-link"
+          type="button"
+          [class.active]="activeTab() === 'register'"
+          (click)="setTab('register')"
+        >
+          Register
+        </button>
+      </li>
     </ul>
 
     <div *ngIf="activeTab() === 'schedule'">
@@ -71,6 +82,76 @@
       </div>
 
       <p style="white-space: pre-wrap" *ngIf="t.rules">{{ t.rules }}</p>
+    </div>
+
+    <div *ngIf="activeTab() === 'register'" style="max-width: 560px">
+      <div *ngIf="registrationSuccess()" class="alert alert-success">
+        Thanks! Your registration has been received.
+      </div>
+
+      <ng-container *ngIf="!registrationSuccess()">
+        <div *ngIf="registrationError()" class="alert alert-danger">
+          {{ registrationError() }}
+        </div>
+
+        <form [formGroup]="registrationForm" (ngSubmit)="submitRegistration()">
+          <div class="mb-3">
+            <label class="form-label">Team name</label>
+            <input class="form-control" formControlName="teamName" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Division / category</label>
+            <input
+              class="form-control"
+              formControlName="division"
+              placeholder="Optional, e.g. U15 AA"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Contact name</label>
+            <input class="form-control" formControlName="contactName" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Contact email</label>
+            <input
+              class="form-control"
+              type="email"
+              formControlName="contactEmail"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Contact phone</label>
+            <input
+              class="form-control"
+              formControlName="contactPhone"
+              placeholder="Optional"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Notes</label>
+            <textarea
+              class="form-control"
+              formControlName="notes"
+              rows="3"
+              placeholder="Optional"
+            ></textarea>
+          </div>
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="registrationForm.invalid || submittingRegistration()"
+          >
+            {{ submittingRegistration() ? 'Submitting...' : 'Submit
+            registration' }}
+          </button>
+        </form>
+      </ng-container>
     </div>
   </ng-container>
 </section>

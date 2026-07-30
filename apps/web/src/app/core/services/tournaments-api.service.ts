@@ -3,8 +3,10 @@ import { Injectable, inject } from '@angular/core';
 import {
   CreateTournamentGameInput,
   CreateTournamentInput,
+  CreateTournamentRegistrationInput,
   Tournament,
   TournamentGame,
+  TournamentRegistration,
   UpdateTournamentGameInput,
   UpdateTournamentInput,
 } from '@hockeyspare/contracts';
@@ -59,6 +61,33 @@ export class TournamentsApiService {
   ): Observable<{ id: string; deleted: boolean }> {
     return this.http.delete<{ id: string; deleted: boolean }>(
       `/api/tournaments/${tournamentId}/games/${gameId}`,
+    );
+  }
+
+  submitRegistration(
+    tournamentId: string,
+    input: CreateTournamentRegistrationInput,
+  ): Observable<TournamentRegistration> {
+    return this.http.post<TournamentRegistration>(
+      `/api/tournaments/${tournamentId}/registrations`,
+      input,
+    );
+  }
+
+  listRegistrations(
+    tournamentId: string,
+  ): Observable<TournamentRegistration[]> {
+    return this.http.get<TournamentRegistration[]>(
+      `/api/tournaments/${tournamentId}/registrations`,
+    );
+  }
+
+  deleteRegistration(
+    tournamentId: string,
+    registrationId: string,
+  ): Observable<{ id: string; deleted: boolean }> {
+    return this.http.delete<{ id: string; deleted: boolean }>(
+      `/api/tournaments/${tournamentId}/registrations/${registrationId}`,
     );
   }
 }

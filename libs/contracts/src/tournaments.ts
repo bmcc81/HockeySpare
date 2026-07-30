@@ -45,3 +45,24 @@ export interface CreateTournamentGameInput {
 }
 
 export type UpdateTournamentGameInput = Partial<CreateTournamentGameInput>;
+
+export interface TournamentRegistration {
+  id: string;
+  tournamentId: string;
+  teamName: string;
+  division?: string | null;
+  contactName: string;
+  contactEmail: string;
+  contactPhone?: string | null;
+  notes?: string | null;
+  createdAt: string;
+}
+
+export interface CreateTournamentRegistrationInput {
+  teamName: string;
+  division?: string | null;
+  contactName: string;
+  contactEmail: string;
+  contactPhone?: string | null;
+  notes?: string | null;
+}

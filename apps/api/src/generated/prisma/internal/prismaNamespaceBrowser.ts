@@ -71,7 +71,8 @@ export const ModelName = {
   GameScoreSheetPlayer: 'GameScoreSheetPlayer',
   HelpArticle: 'HelpArticle',
   Tournament: 'Tournament',
-  TournamentGame: 'TournamentGame'
+  TournamentGame: 'TournamentGame',
+  TournamentRegistration: 'TournamentRegistration'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -421,6 +422,21 @@ export const TournamentGameScalarFieldEnum = {
 } as const
 
 export type TournamentGameScalarFieldEnum = (typeof TournamentGameScalarFieldEnum)[keyof typeof TournamentGameScalarFieldEnum]
+
+
+export const TournamentRegistrationScalarFieldEnum = {
+  id: 'id',
+  tournamentId: 'tournamentId',
+  teamName: 'teamName',
+  division: 'division',
+  contactName: 'contactName',
+  contactEmail: 'contactEmail',
+  contactPhone: 'contactPhone',
+  notes: 'notes',
+  createdAt: 'createdAt'
+} as const
+
+export type TournamentRegistrationScalarFieldEnum = (typeof TournamentRegistrationScalarFieldEnum)[keyof typeof TournamentRegistrationScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -6,7 +6,11 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Tournament, TournamentGame } from '@hockeyspare/contracts';
+import {
+  Tournament,
+  TournamentGame,
+  TournamentRegistration,
+} from '@hockeyspare/contracts';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
 import { AuthStateService } from '../../auth/auth-state.service';
 
@@ -35,6 +39,9 @@ export class TournamentManageComponent implements OnInit {
   gameError = signal<string | null>(null);
   editingGameId = signal<string | null>(null);
   deletingGameId = signal<string | null>(null);
+
+  registrations = signal<TournamentRegistration[]>([]);
+  deletingRegistrationId = signal<string | null>(null);
 
   detailsForm = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
@@ -90,12 +97,49 @@ export class TournamentManageComponent implements OnInit {
         });
 
         this.loading.set(false);
+
+        if (this.isOwner) {
+          this.loadRegistrations();
+        }
       },
       error: () => {
         this.error.set('Could not load this tournament.');
         this.loading.set(false);
       },
     });
+  }
+
+  private loadRegistrations(): void {
+    this.tournamentsApi.listRegistrations(this.tournamentId).subscribe({
+      next: (registrations) => {
+        this.registrations.set(registrations);
+      },
+      error: () => {
+        this.registrations.set([]);
+      },
+    });
+  }
+
+  deleteRegistration(registrationId: string): void {
+    this.deletingRegistrationId.set(registrationId);
+    this.error.set(null);
+
+    this.tournamentsApi
+      .deleteRegistration(this.tournamentId, registrationId)
+      .subscribe({
+        next: () => {
+          this.deletingRegistrationId.set(null);
+          this.loadRegistrations();
+        },
+        error: () => {
+          this.error.set('Could not remove this registration.');
+          this.deletingRegistrationId.set(null);
+        },
+      });
+  }
+
+  trackByRegistrationId(_index: number, registration: TournamentRegistration): string {
+    return registration.id;
   }
 
   saveDetails(): void {

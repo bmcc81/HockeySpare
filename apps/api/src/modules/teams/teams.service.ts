@@ -21,6 +21,7 @@ import { EmailService } from '../email/email.service';
 import { UpdateTeamMemberRoleDto } from './dto/update-team-member-role.dto';
 import { SmsService } from '../sms/sms.service';
 import { RequestsService } from '../requests/requests.service';
+import { UpsertMemberFeeDto } from './dto/upsert-member-fee.dto';
 
 @Injectable()
 export class TeamsService {
@@ -1580,6 +1581,121 @@ export class TeamsService {
       : await this.getUserTeam(userId);
 
     return this.prisma.playerStat.findMany({
+      where: {
+        teamId: team.id,
+      },
+      include: {
+        member: true,
+        team: true,
+      },
+      orderBy: [
+        {
+          season: 'desc',
+        },
+        {
+          member: {
+            displayName: 'asc',
+          },
+        },
+      ],
+    });
+  }
+
+  async getMemberFee(
+    managerUserId: string,
+    memberId: string,
+    season?: string,
+    teamId?: string,
+  ) {
+    const team = await this.getManagedTeam(managerUserId, teamId);
+
+    const member = await this.prisma.teamMember.findFirst({
+      where: {
+        id: memberId,
+        teamId: team.id,
+        isActive: true,
+      },
+    });
+
+    if (!member) {
+      throw new NotFoundException('Team member not found');
+    }
+
+    return this.prisma.memberFee.findFirst({
+      where: {
+        memberId: member.id,
+        ...(season
+          ? {
+              season,
+            }
+          : {}),
+      },
+      include: {
+        member: true,
+        team: true,
+      },
+      orderBy: {
+        season: 'desc',
+      },
+    });
+  }
+
+  async upsertMemberFee(
+    managerUserId: string,
+    memberId: string,
+    dto: UpsertMemberFeeDto,
+    teamId?: string,
+  ) {
+    const team = await this.getManagedTeam(managerUserId, teamId);
+
+    const member = await this.prisma.teamMember.findFirst({
+      where: {
+        id: memberId,
+        teamId: team.id,
+        isActive: true,
+      },
+    });
+
+    if (!member) {
+      throw new NotFoundException('Team member not found');
+    }
+
+    return this.prisma.memberFee.upsert({
+      where: {
+        memberId_season: {
+          memberId: member.id,
+          season: dto.season,
+        },
+      },
+      update: {
+        amountOwed: dto.amountOwed,
+        amountPaid: dto.amountPaid,
+        notes: dto.notes ?? null,
+        teamId: team.id,
+      },
+      create: {
+        memberId: member.id,
+        teamId: team.id,
+        season: dto.season,
+        amountOwed: dto.amountOwed,
+        amountPaid: dto.amountPaid,
+        notes: dto.notes ?? null,
+      },
+      include: {
+        member: true,
+        team: true,
+      },
+    });
+  }
+
+  /**
+   * Unlike getTeamStats, this is always commissioner/manager-gated - fee
+   * balances shouldn't be visible to the whole roster the way stats are.
+   */
+  async getTeamFees(managerUserId: string, teamId?: string) {
+    const team = await this.getManagedTeam(managerUserId, teamId);
+
+    return this.prisma.memberFee.findMany({
       where: {
         teamId: team.id,
       },

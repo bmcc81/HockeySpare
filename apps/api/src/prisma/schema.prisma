@@ -181,10 +181,12 @@ model User {
 
   finalizedScoreSheets GameScoreSheet[]
 
-  createdTeams      Team[]         @relation("CreatedTeams")
-  teamMemberships   TeamMember[]   @relation("UserTeamMemberships")
-  leagueMemberships LeagueMember[]
-  playerStats       PlayerStat[]
+  createdTeams       Team[]         @relation("CreatedTeams")
+  teamMemberships    TeamMember[]   @relation("UserTeamMemberships")
+  leagueMemberships  LeagueMember[]
+  playerStats        PlayerStat[]
+  memberFees         MemberFee[]
+  createdTournaments Tournament[]   @relation("CreatedTournaments")
 }
 
 model League {
@@ -199,8 +201,10 @@ model League {
   teams       Team[]
   members     LeagueMember[]
   playerStats PlayerStat[]
+  memberFees  MemberFee[]
   arenas      LeagueArena[]
   games       TeamGame[]
+  tournaments Tournament[]
 }
 
 model LeagueArena {
@@ -252,6 +256,7 @@ model Team {
   games         TeamGame[]   @relation("TeamGameTeam")
   opponentGames TeamGame[]   @relation("TeamGameOpponentTeam")
   playerStats   PlayerStat[]
+  memberFees    MemberFee[]
 
   @@index([leagueId])
 }
@@ -278,6 +283,7 @@ model TeamMember {
   invites               TeamGameInvite[]
   availabilities        TeamGameAvailability[]
   playerStats           PlayerStat[]
+  memberFees            MemberFee[]
   gameScoreSheetPlayers GameScoreSheetPlayer[]
 
   @@index([teamId, memberType])
@@ -295,6 +301,30 @@ model PlayerStat {
   goals       Int      @default(0)
   assists     Int      @default(0)
   penaltyMins Int      @default(0)
+  updatedAt   DateTime @updatedAt
+
+  member TeamMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  user   User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  team   Team       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  league League?    @relation(fields: [leagueId], references: [id], onDelete: SetNull)
+
+  @@unique([memberId, season])
+  @@index([teamId])
+  @@index([leagueId])
+  @@index([userId])
+}
+
+model MemberFee {
+  id          String   @id @default(cuid())
+  memberId    String
+  userId      String?
+  teamId      String
+  leagueId    String?
+  season      String
+  amountOwed  Int      @default(0)
+  amountPaid  Int      @default(0)
+  notes       String?
+  createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   member TeamMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
@@ -470,4 +500,66 @@ model HelpArticle {
   embedding Json?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum TournamentGameStatus {
+  SCHEDULED
+  LIVE
+  FINAL
+}
+
+model Tournament {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  rules       String?
+  startDate   DateTime?
+  endDate     DateTime?
+  leagueId    String?
+  createdById String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  league        League?                  @relation(fields: [leagueId], references: [id], onDelete: SetNull)
+  createdBy     User                     @relation("CreatedTournaments", fields: [createdById], references: [id], onDelete: Cascade)
+  games         TournamentGame[]
+  registrations TournamentRegistration[]
+
+  @@index([leagueId])
+  @@index([createdById])
+}
+
+model TournamentGame {
+  id           String               @id @default(cuid())
+  tournamentId String
+  homeTeamName String
+  awayTeamName String
+  startsAt     DateTime
+  arenaName    String?
+  notes        String?
+  homeScore    Int?
+  awayScore    Int?
+  status       TournamentGameStatus @default(SCHEDULED)
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  @@index([tournamentId, startsAt])
+}
+
+model TournamentRegistration {
+  id           String   @id @default(cuid())
+  tournamentId String
+  teamName     String
+  division     String?
+  contactName  String
+  contactEmail String
+  contactPhone String?
+  notes        String?
+  createdAt    DateTime @default(now())
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  @@index([tournamentId, createdAt])
 }

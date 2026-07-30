@@ -161,6 +161,27 @@ export interface PlayerStat {
   };
 }
 
+export interface MemberFee {
+  id: string;
+  memberId: string;
+  userId?: string | null;
+  teamId: string;
+  leagueId?: string | null;
+  season: string;
+  amountOwed: number;
+  amountPaid: number;
+  notes?: string | null;
+  updatedAt: string;
+  team: {
+    id: string;
+    name: string;
+  };
+  member?: {
+    id: string;
+    displayName: string;
+  };
+}
+
 export type UpcomingGame = {
   id: string;
   title: string;

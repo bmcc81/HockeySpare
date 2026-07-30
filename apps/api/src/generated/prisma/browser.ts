@@ -68,6 +68,11 @@ export type TeamMember = Prisma.TeamMemberModel
  */
 export type PlayerStat = Prisma.PlayerStatModel
 /**
+ * Model MemberFee
+ * 
+ */
+export type MemberFee = Prisma.MemberFeeModel
+/**
  * Model TeamGame
  * 
  */
@@ -107,3 +112,18 @@ export type GameScoreSheetPlayer = Prisma.GameScoreSheetPlayerModel
  * 
  */
 export type HelpArticle = Prisma.HelpArticleModel
+/**
+ * Model Tournament
+ * 
+ */
+export type Tournament = Prisma.TournamentModel
+/**
+ * Model TournamentGame
+ * 
+ */
+export type TournamentGame = Prisma.TournamentGameModel
+/**
+ * Model TournamentRegistration
+ * 
+ */
+export type TournamentRegistration = Prisma.TournamentRegistrationModel

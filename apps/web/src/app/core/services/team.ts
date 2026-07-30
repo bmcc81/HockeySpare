@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import {
+  MemberFee,
   MyTeamResponse,
   PlayerStat,
   TeamGame,
@@ -46,6 +47,13 @@ export interface UpsertPlayerStatInput {
   goals: number;
   assists: number;
   penaltyMins: number;
+}
+
+export interface UpsertMemberFeeInput {
+  season: string;
+  amountOwed: number;
+  amountPaid: number;
+  notes?: string;
 }
 
 export interface NotifyTeamGameResult {
@@ -206,6 +214,45 @@ export class TeamService {
   ): Observable<PlayerStat> {
     return this.http.post<PlayerStat>(
       `${this.baseUrl}/stats/member/${memberId}`,
+      input,
+      {
+        params: this.teamParams(teamId),
+      },
+    );
+  }
+
+  getTeamFees(teamId?: string | null): Observable<MemberFee[]> {
+    return this.http.get<MemberFee[]>(`${this.baseUrl}/fees/team`, {
+      params: this.teamParams(teamId),
+    });
+  }
+
+  getMemberFee(
+    memberId: string,
+    season?: string | null,
+    teamId?: string | null,
+  ): Observable<MemberFee | null> {
+    let params = this.teamParams(teamId);
+
+    if (season) {
+      params = params.set('season', season);
+    }
+
+    return this.http.get<MemberFee | null>(
+      `${this.baseUrl}/fees/member/${memberId}`,
+      {
+        params,
+      },
+    );
+  }
+
+  upsertMemberFee(
+    memberId: string,
+    input: UpsertMemberFeeInput,
+    teamId?: string | null,
+  ): Observable<MemberFee> {
+    return this.http.post<MemberFee>(
+      `${this.baseUrl}/fees/member/${memberId}`,
       input,
       {
         params: this.teamParams(teamId),

@@ -1,0 +1,87 @@
+<section class="container py-4" style="max-width: 760px">
+  <a routerLink="/tournaments" class="d-inline-block mb-3">← Back to tournaments</a>
+
+  <div class="card">
+    <div class="card-body">
+      <h1 class="h3">Create a Tournament</h1>
+      <p class="text-secondary">
+        Set up the tournament first. You can add the schedule and rules after
+        it's created.
+      </p>
+
+      <div *ngIf="error()" class="alert alert-danger">{{ error() }}</div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="mb-3">
+          <label class="form-label" for="name">Tournament name</label>
+          <input
+            id="name"
+            type="text"
+            class="form-control"
+            formControlName="name"
+            placeholder="PCOHL Tournament 2027"
+          />
+
+          <div
+            class="text-danger small mt-1"
+            *ngIf="form.controls.name.touched && form.controls.name.invalid"
+          >
+            Tournament name is required.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="description">Description</label>
+          <textarea
+            id="description"
+            class="form-control"
+            formControlName="description"
+            rows="2"
+            placeholder="Optional short description"
+          ></textarea>
+        </div>
+
+        <div class="row g-2 mb-3">
+          <div class="col-6">
+            <label class="form-label" for="startDate">Start date</label>
+            <input
+              id="startDate"
+              type="date"
+              class="form-control"
+              formControlName="startDate"
+            />
+          </div>
+
+          <div class="col-6">
+            <label class="form-label" for="endDate">End date</label>
+            <input
+              id="endDate"
+              type="date"
+              class="form-control"
+              formControlName="endDate"
+            />
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label" for="rules">Rules</label>
+          <textarea
+            id="rules"
+            class="form-control"
+            formControlName="rules"
+            rows="6"
+            placeholder="Tournament rules, format, tiebreakers, etc."
+          ></textarea>
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="form.invalid || saving()"
+        >
+          {{ saving() ? 'Creating...' : 'Create Tournament' }}
+        </button>
+      </form>
+    </div>
+  </div>
+</section>

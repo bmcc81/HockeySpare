@@ -267,6 +267,7 @@ export type TeamMemberWhereInput = {
   invites?: Prisma.TeamGameInviteListRelationFilter
   availabilities?: Prisma.TeamGameAvailabilityListRelationFilter
   playerStats?: Prisma.PlayerStatListRelationFilter
+  memberFees?: Prisma.MemberFeeListRelationFilter
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerListRelationFilter
 }
 
@@ -291,6 +292,7 @@ export type TeamMemberOrderByWithRelationInput = {
   invites?: Prisma.TeamGameInviteOrderByRelationAggregateInput
   availabilities?: Prisma.TeamGameAvailabilityOrderByRelationAggregateInput
   playerStats?: Prisma.PlayerStatOrderByRelationAggregateInput
+  memberFees?: Prisma.MemberFeeOrderByRelationAggregateInput
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerOrderByRelationAggregateInput
 }
 
@@ -318,6 +320,7 @@ export type TeamMemberWhereUniqueInput = Prisma.AtLeast<{
   invites?: Prisma.TeamGameInviteListRelationFilter
   availabilities?: Prisma.TeamGameAvailabilityListRelationFilter
   playerStats?: Prisma.PlayerStatListRelationFilter
+  memberFees?: Prisma.MemberFeeListRelationFilter
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerListRelationFilter
 }, "id">
 
@@ -382,6 +385,7 @@ export type TeamMemberCreateInput = {
   invites?: Prisma.TeamGameInviteCreateNestedManyWithoutMemberInput
   availabilities?: Prisma.TeamGameAvailabilityCreateNestedManyWithoutMemberInput
   playerStats?: Prisma.PlayerStatCreateNestedManyWithoutMemberInput
+  memberFees?: Prisma.MemberFeeCreateNestedManyWithoutMemberInput
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerCreateNestedManyWithoutMemberInput
 }
 
@@ -404,6 +408,7 @@ export type TeamMemberUncheckedCreateInput = {
   invites?: Prisma.TeamGameInviteUncheckedCreateNestedManyWithoutMemberInput
   availabilities?: Prisma.TeamGameAvailabilityUncheckedCreateNestedManyWithoutMemberInput
   playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutMemberInput
+  memberFees?: Prisma.MemberFeeUncheckedCreateNestedManyWithoutMemberInput
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerUncheckedCreateNestedManyWithoutMemberInput
 }
 
@@ -426,6 +431,7 @@ export type TeamMemberUpdateInput = {
   invites?: Prisma.TeamGameInviteUpdateManyWithoutMemberNestedInput
   availabilities?: Prisma.TeamGameAvailabilityUpdateManyWithoutMemberNestedInput
   playerStats?: Prisma.PlayerStatUpdateManyWithoutMemberNestedInput
+  memberFees?: Prisma.MemberFeeUpdateManyWithoutMemberNestedInput
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerUpdateManyWithoutMemberNestedInput
 }
 
@@ -448,6 +454,7 @@ export type TeamMemberUncheckedUpdateInput = {
   invites?: Prisma.TeamGameInviteUncheckedUpdateManyWithoutMemberNestedInput
   availabilities?: Prisma.TeamGameAvailabilityUncheckedUpdateManyWithoutMemberNestedInput
   playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutMemberNestedInput
+  memberFees?: Prisma.MemberFeeUncheckedUpdateManyWithoutMemberNestedInput
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerUncheckedUpdateManyWithoutMemberNestedInput
 }
 
@@ -686,6 +693,20 @@ export type TeamMemberUpdateOneRequiredWithoutPlayerStatsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TeamMemberUpdateToOneWithWhereWithoutPlayerStatsInput, Prisma.TeamMemberUpdateWithoutPlayerStatsInput>, Prisma.TeamMemberUncheckedUpdateWithoutPlayerStatsInput>
 }
 
+export type TeamMemberCreateNestedOneWithoutMemberFeesInput = {
+  create?: Prisma.XOR<Prisma.TeamMemberCreateWithoutMemberFeesInput, Prisma.TeamMemberUncheckedCreateWithoutMemberFeesInput>
+  connectOrCreate?: Prisma.TeamMemberCreateOrConnectWithoutMemberFeesInput
+  connect?: Prisma.TeamMemberWhereUniqueInput
+}
+
+export type TeamMemberUpdateOneRequiredWithoutMemberFeesNestedInput = {
+  create?: Prisma.XOR<Prisma.TeamMemberCreateWithoutMemberFeesInput, Prisma.TeamMemberUncheckedCreateWithoutMemberFeesInput>
+  connectOrCreate?: Prisma.TeamMemberCreateOrConnectWithoutMemberFeesInput
+  upsert?: Prisma.TeamMemberUpsertWithoutMemberFeesInput
+  connect?: Prisma.TeamMemberWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TeamMemberUpdateToOneWithWhereWithoutMemberFeesInput, Prisma.TeamMemberUpdateWithoutMemberFeesInput>, Prisma.TeamMemberUncheckedUpdateWithoutMemberFeesInput>
+}
+
 export type TeamMemberCreateNestedOneWithoutInvitesInput = {
   create?: Prisma.XOR<Prisma.TeamMemberCreateWithoutInvitesInput, Prisma.TeamMemberUncheckedCreateWithoutInvitesInput>
   connectOrCreate?: Prisma.TeamMemberCreateOrConnectWithoutInvitesInput
@@ -746,6 +767,7 @@ export type TeamMemberCreateWithoutUserInput = {
   invites?: Prisma.TeamGameInviteCreateNestedManyWithoutMemberInput
   availabilities?: Prisma.TeamGameAvailabilityCreateNestedManyWithoutMemberInput
   playerStats?: Prisma.PlayerStatCreateNestedManyWithoutMemberInput
+  memberFees?: Prisma.MemberFeeCreateNestedManyWithoutMemberInput
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerCreateNestedManyWithoutMemberInput
 }
 
@@ -767,6 +789,7 @@ export type TeamMemberUncheckedCreateWithoutUserInput = {
   invites?: Prisma.TeamGameInviteUncheckedCreateNestedManyWithoutMemberInput
   availabilities?: Prisma.TeamGameAvailabilityUncheckedCreateNestedManyWithoutMemberInput
   playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutMemberInput
+  memberFees?: Prisma.MemberFeeUncheckedCreateNestedManyWithoutMemberInput
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerUncheckedCreateNestedManyWithoutMemberInput
 }
 
@@ -835,6 +858,7 @@ export type TeamMemberCreateWithoutTeamInput = {
   invites?: Prisma.TeamGameInviteCreateNestedManyWithoutMemberInput
   availabilities?: Prisma.TeamGameAvailabilityCreateNestedManyWithoutMemberInput
   playerStats?: Prisma.PlayerStatCreateNestedManyWithoutMemberInput
+  memberFees?: Prisma.MemberFeeCreateNestedManyWithoutMemberInput
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerCreateNestedManyWithoutMemberInput
 }
 
@@ -856,6 +880,7 @@ export type TeamMemberUncheckedCreateWithoutTeamInput = {
   invites?: Prisma.TeamGameInviteUncheckedCreateNestedManyWithoutMemberInput
   availabilities?: Prisma.TeamGameAvailabilityUncheckedCreateNestedManyWithoutMemberInput
   playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutMemberInput
+  memberFees?: Prisma.MemberFeeUncheckedCreateNestedManyWithoutMemberInput
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerUncheckedCreateNestedManyWithoutMemberInput
 }
 
@@ -903,6 +928,7 @@ export type TeamMemberCreateWithoutPlayerStatsInput = {
   user?: Prisma.UserCreateNestedOneWithoutTeamMembershipsInput
   invites?: Prisma.TeamGameInviteCreateNestedManyWithoutMemberInput
   availabilities?: Prisma.TeamGameAvailabilityCreateNestedManyWithoutMemberInput
+  memberFees?: Prisma.MemberFeeCreateNestedManyWithoutMemberInput
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerCreateNestedManyWithoutMemberInput
 }
 
@@ -924,6 +950,7 @@ export type TeamMemberUncheckedCreateWithoutPlayerStatsInput = {
   updatedAt?: Date | string
   invites?: Prisma.TeamGameInviteUncheckedCreateNestedManyWithoutMemberInput
   availabilities?: Prisma.TeamGameAvailabilityUncheckedCreateNestedManyWithoutMemberInput
+  memberFees?: Prisma.MemberFeeUncheckedCreateNestedManyWithoutMemberInput
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerUncheckedCreateNestedManyWithoutMemberInput
 }
 
@@ -961,6 +988,7 @@ export type TeamMemberUpdateWithoutPlayerStatsInput = {
   user?: Prisma.UserUpdateOneWithoutTeamMembershipsNestedInput
   invites?: Prisma.TeamGameInviteUpdateManyWithoutMemberNestedInput
   availabilities?: Prisma.TeamGameAvailabilityUpdateManyWithoutMemberNestedInput
+  memberFees?: Prisma.MemberFeeUpdateManyWithoutMemberNestedInput
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerUpdateManyWithoutMemberNestedInput
 }
 
@@ -982,6 +1010,111 @@ export type TeamMemberUncheckedUpdateWithoutPlayerStatsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   invites?: Prisma.TeamGameInviteUncheckedUpdateManyWithoutMemberNestedInput
   availabilities?: Prisma.TeamGameAvailabilityUncheckedUpdateManyWithoutMemberNestedInput
+  memberFees?: Prisma.MemberFeeUncheckedUpdateManyWithoutMemberNestedInput
+  gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerUncheckedUpdateManyWithoutMemberNestedInput
+}
+
+export type TeamMemberCreateWithoutMemberFeesInput = {
+  id?: string
+  displayName: string
+  email?: string | null
+  phone?: string | null
+  position?: $Enums.Position | null
+  memberType: $Enums.TeamMemberType
+  role?: $Enums.TeamRole
+  notifyByApp?: boolean
+  notifyByEmail?: boolean
+  notifyBySms?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  team: Prisma.TeamCreateNestedOneWithoutMembersInput
+  user?: Prisma.UserCreateNestedOneWithoutTeamMembershipsInput
+  invites?: Prisma.TeamGameInviteCreateNestedManyWithoutMemberInput
+  availabilities?: Prisma.TeamGameAvailabilityCreateNestedManyWithoutMemberInput
+  playerStats?: Prisma.PlayerStatCreateNestedManyWithoutMemberInput
+  gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerCreateNestedManyWithoutMemberInput
+}
+
+export type TeamMemberUncheckedCreateWithoutMemberFeesInput = {
+  id?: string
+  teamId: string
+  userId?: string | null
+  displayName: string
+  email?: string | null
+  phone?: string | null
+  position?: $Enums.Position | null
+  memberType: $Enums.TeamMemberType
+  role?: $Enums.TeamRole
+  notifyByApp?: boolean
+  notifyByEmail?: boolean
+  notifyBySms?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  invites?: Prisma.TeamGameInviteUncheckedCreateNestedManyWithoutMemberInput
+  availabilities?: Prisma.TeamGameAvailabilityUncheckedCreateNestedManyWithoutMemberInput
+  playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutMemberInput
+  gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerUncheckedCreateNestedManyWithoutMemberInput
+}
+
+export type TeamMemberCreateOrConnectWithoutMemberFeesInput = {
+  where: Prisma.TeamMemberWhereUniqueInput
+  create: Prisma.XOR<Prisma.TeamMemberCreateWithoutMemberFeesInput, Prisma.TeamMemberUncheckedCreateWithoutMemberFeesInput>
+}
+
+export type TeamMemberUpsertWithoutMemberFeesInput = {
+  update: Prisma.XOR<Prisma.TeamMemberUpdateWithoutMemberFeesInput, Prisma.TeamMemberUncheckedUpdateWithoutMemberFeesInput>
+  create: Prisma.XOR<Prisma.TeamMemberCreateWithoutMemberFeesInput, Prisma.TeamMemberUncheckedCreateWithoutMemberFeesInput>
+  where?: Prisma.TeamMemberWhereInput
+}
+
+export type TeamMemberUpdateToOneWithWhereWithoutMemberFeesInput = {
+  where?: Prisma.TeamMemberWhereInput
+  data: Prisma.XOR<Prisma.TeamMemberUpdateWithoutMemberFeesInput, Prisma.TeamMemberUncheckedUpdateWithoutMemberFeesInput>
+}
+
+export type TeamMemberUpdateWithoutMemberFeesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+  memberType?: Prisma.EnumTeamMemberTypeFieldUpdateOperationsInput | $Enums.TeamMemberType
+  role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
+  notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBySms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  team?: Prisma.TeamUpdateOneRequiredWithoutMembersNestedInput
+  user?: Prisma.UserUpdateOneWithoutTeamMembershipsNestedInput
+  invites?: Prisma.TeamGameInviteUpdateManyWithoutMemberNestedInput
+  availabilities?: Prisma.TeamGameAvailabilityUpdateManyWithoutMemberNestedInput
+  playerStats?: Prisma.PlayerStatUpdateManyWithoutMemberNestedInput
+  gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerUpdateManyWithoutMemberNestedInput
+}
+
+export type TeamMemberUncheckedUpdateWithoutMemberFeesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  teamId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
+  memberType?: Prisma.EnumTeamMemberTypeFieldUpdateOperationsInput | $Enums.TeamMemberType
+  role?: Prisma.EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
+  notifyByApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyByEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBySms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  invites?: Prisma.TeamGameInviteUncheckedUpdateManyWithoutMemberNestedInput
+  availabilities?: Prisma.TeamGameAvailabilityUncheckedUpdateManyWithoutMemberNestedInput
+  playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutMemberNestedInput
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerUncheckedUpdateManyWithoutMemberNestedInput
 }
 
@@ -1003,6 +1136,7 @@ export type TeamMemberCreateWithoutInvitesInput = {
   user?: Prisma.UserCreateNestedOneWithoutTeamMembershipsInput
   availabilities?: Prisma.TeamGameAvailabilityCreateNestedManyWithoutMemberInput
   playerStats?: Prisma.PlayerStatCreateNestedManyWithoutMemberInput
+  memberFees?: Prisma.MemberFeeCreateNestedManyWithoutMemberInput
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerCreateNestedManyWithoutMemberInput
 }
 
@@ -1024,6 +1158,7 @@ export type TeamMemberUncheckedCreateWithoutInvitesInput = {
   updatedAt?: Date | string
   availabilities?: Prisma.TeamGameAvailabilityUncheckedCreateNestedManyWithoutMemberInput
   playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutMemberInput
+  memberFees?: Prisma.MemberFeeUncheckedCreateNestedManyWithoutMemberInput
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerUncheckedCreateNestedManyWithoutMemberInput
 }
 
@@ -1061,6 +1196,7 @@ export type TeamMemberUpdateWithoutInvitesInput = {
   user?: Prisma.UserUpdateOneWithoutTeamMembershipsNestedInput
   availabilities?: Prisma.TeamGameAvailabilityUpdateManyWithoutMemberNestedInput
   playerStats?: Prisma.PlayerStatUpdateManyWithoutMemberNestedInput
+  memberFees?: Prisma.MemberFeeUpdateManyWithoutMemberNestedInput
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerUpdateManyWithoutMemberNestedInput
 }
 
@@ -1082,6 +1218,7 @@ export type TeamMemberUncheckedUpdateWithoutInvitesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   availabilities?: Prisma.TeamGameAvailabilityUncheckedUpdateManyWithoutMemberNestedInput
   playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutMemberNestedInput
+  memberFees?: Prisma.MemberFeeUncheckedUpdateManyWithoutMemberNestedInput
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerUncheckedUpdateManyWithoutMemberNestedInput
 }
 
@@ -1103,6 +1240,7 @@ export type TeamMemberCreateWithoutAvailabilitiesInput = {
   user?: Prisma.UserCreateNestedOneWithoutTeamMembershipsInput
   invites?: Prisma.TeamGameInviteCreateNestedManyWithoutMemberInput
   playerStats?: Prisma.PlayerStatCreateNestedManyWithoutMemberInput
+  memberFees?: Prisma.MemberFeeCreateNestedManyWithoutMemberInput
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerCreateNestedManyWithoutMemberInput
 }
 
@@ -1124,6 +1262,7 @@ export type TeamMemberUncheckedCreateWithoutAvailabilitiesInput = {
   updatedAt?: Date | string
   invites?: Prisma.TeamGameInviteUncheckedCreateNestedManyWithoutMemberInput
   playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutMemberInput
+  memberFees?: Prisma.MemberFeeUncheckedCreateNestedManyWithoutMemberInput
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerUncheckedCreateNestedManyWithoutMemberInput
 }
 
@@ -1161,6 +1300,7 @@ export type TeamMemberUpdateWithoutAvailabilitiesInput = {
   user?: Prisma.UserUpdateOneWithoutTeamMembershipsNestedInput
   invites?: Prisma.TeamGameInviteUpdateManyWithoutMemberNestedInput
   playerStats?: Prisma.PlayerStatUpdateManyWithoutMemberNestedInput
+  memberFees?: Prisma.MemberFeeUpdateManyWithoutMemberNestedInput
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerUpdateManyWithoutMemberNestedInput
 }
 
@@ -1182,6 +1322,7 @@ export type TeamMemberUncheckedUpdateWithoutAvailabilitiesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   invites?: Prisma.TeamGameInviteUncheckedUpdateManyWithoutMemberNestedInput
   playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutMemberNestedInput
+  memberFees?: Prisma.MemberFeeUncheckedUpdateManyWithoutMemberNestedInput
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerUncheckedUpdateManyWithoutMemberNestedInput
 }
 
@@ -1204,6 +1345,7 @@ export type TeamMemberCreateWithoutGameScoreSheetPlayersInput = {
   invites?: Prisma.TeamGameInviteCreateNestedManyWithoutMemberInput
   availabilities?: Prisma.TeamGameAvailabilityCreateNestedManyWithoutMemberInput
   playerStats?: Prisma.PlayerStatCreateNestedManyWithoutMemberInput
+  memberFees?: Prisma.MemberFeeCreateNestedManyWithoutMemberInput
 }
 
 export type TeamMemberUncheckedCreateWithoutGameScoreSheetPlayersInput = {
@@ -1225,6 +1367,7 @@ export type TeamMemberUncheckedCreateWithoutGameScoreSheetPlayersInput = {
   invites?: Prisma.TeamGameInviteUncheckedCreateNestedManyWithoutMemberInput
   availabilities?: Prisma.TeamGameAvailabilityUncheckedCreateNestedManyWithoutMemberInput
   playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutMemberInput
+  memberFees?: Prisma.MemberFeeUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type TeamMemberCreateOrConnectWithoutGameScoreSheetPlayersInput = {
@@ -1262,6 +1405,7 @@ export type TeamMemberUpdateWithoutGameScoreSheetPlayersInput = {
   invites?: Prisma.TeamGameInviteUpdateManyWithoutMemberNestedInput
   availabilities?: Prisma.TeamGameAvailabilityUpdateManyWithoutMemberNestedInput
   playerStats?: Prisma.PlayerStatUpdateManyWithoutMemberNestedInput
+  memberFees?: Prisma.MemberFeeUpdateManyWithoutMemberNestedInput
 }
 
 export type TeamMemberUncheckedUpdateWithoutGameScoreSheetPlayersInput = {
@@ -1283,6 +1427,7 @@ export type TeamMemberUncheckedUpdateWithoutGameScoreSheetPlayersInput = {
   invites?: Prisma.TeamGameInviteUncheckedUpdateManyWithoutMemberNestedInput
   availabilities?: Prisma.TeamGameAvailabilityUncheckedUpdateManyWithoutMemberNestedInput
   playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutMemberNestedInput
+  memberFees?: Prisma.MemberFeeUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type TeamMemberCreateManyUserInput = {
@@ -1320,6 +1465,7 @@ export type TeamMemberUpdateWithoutUserInput = {
   invites?: Prisma.TeamGameInviteUpdateManyWithoutMemberNestedInput
   availabilities?: Prisma.TeamGameAvailabilityUpdateManyWithoutMemberNestedInput
   playerStats?: Prisma.PlayerStatUpdateManyWithoutMemberNestedInput
+  memberFees?: Prisma.MemberFeeUpdateManyWithoutMemberNestedInput
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerUpdateManyWithoutMemberNestedInput
 }
 
@@ -1341,6 +1487,7 @@ export type TeamMemberUncheckedUpdateWithoutUserInput = {
   invites?: Prisma.TeamGameInviteUncheckedUpdateManyWithoutMemberNestedInput
   availabilities?: Prisma.TeamGameAvailabilityUncheckedUpdateManyWithoutMemberNestedInput
   playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutMemberNestedInput
+  memberFees?: Prisma.MemberFeeUncheckedUpdateManyWithoutMemberNestedInput
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerUncheckedUpdateManyWithoutMemberNestedInput
 }
 
@@ -1396,6 +1543,7 @@ export type TeamMemberUpdateWithoutTeamInput = {
   invites?: Prisma.TeamGameInviteUpdateManyWithoutMemberNestedInput
   availabilities?: Prisma.TeamGameAvailabilityUpdateManyWithoutMemberNestedInput
   playerStats?: Prisma.PlayerStatUpdateManyWithoutMemberNestedInput
+  memberFees?: Prisma.MemberFeeUpdateManyWithoutMemberNestedInput
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerUpdateManyWithoutMemberNestedInput
 }
 
@@ -1417,6 +1565,7 @@ export type TeamMemberUncheckedUpdateWithoutTeamInput = {
   invites?: Prisma.TeamGameInviteUncheckedUpdateManyWithoutMemberNestedInput
   availabilities?: Prisma.TeamGameAvailabilityUncheckedUpdateManyWithoutMemberNestedInput
   playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutMemberNestedInput
+  memberFees?: Prisma.MemberFeeUncheckedUpdateManyWithoutMemberNestedInput
   gameScoreSheetPlayers?: Prisma.GameScoreSheetPlayerUncheckedUpdateManyWithoutMemberNestedInput
 }
 
@@ -1446,6 +1595,7 @@ export type TeamMemberCountOutputType = {
   invites: number
   availabilities: number
   playerStats: number
+  memberFees: number
   gameScoreSheetPlayers: number
 }
 
@@ -1453,6 +1603,7 @@ export type TeamMemberCountOutputTypeSelect<ExtArgs extends runtime.Types.Extens
   invites?: boolean | TeamMemberCountOutputTypeCountInvitesArgs
   availabilities?: boolean | TeamMemberCountOutputTypeCountAvailabilitiesArgs
   playerStats?: boolean | TeamMemberCountOutputTypeCountPlayerStatsArgs
+  memberFees?: boolean | TeamMemberCountOutputTypeCountMemberFeesArgs
   gameScoreSheetPlayers?: boolean | TeamMemberCountOutputTypeCountGameScoreSheetPlayersArgs
 }
 
@@ -1490,6 +1641,13 @@ export type TeamMemberCountOutputTypeCountPlayerStatsArgs<ExtArgs extends runtim
 /**
  * TeamMemberCountOutputType without action
  */
+export type TeamMemberCountOutputTypeCountMemberFeesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MemberFeeWhereInput
+}
+
+/**
+ * TeamMemberCountOutputType without action
+ */
 export type TeamMemberCountOutputTypeCountGameScoreSheetPlayersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.GameScoreSheetPlayerWhereInput
 }
@@ -1516,6 +1674,7 @@ export type TeamMemberSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   invites?: boolean | Prisma.TeamMember$invitesArgs<ExtArgs>
   availabilities?: boolean | Prisma.TeamMember$availabilitiesArgs<ExtArgs>
   playerStats?: boolean | Prisma.TeamMember$playerStatsArgs<ExtArgs>
+  memberFees?: boolean | Prisma.TeamMember$memberFeesArgs<ExtArgs>
   gameScoreSheetPlayers?: boolean | Prisma.TeamMember$gameScoreSheetPlayersArgs<ExtArgs>
   _count?: boolean | Prisma.TeamMemberCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["teamMember"]>
@@ -1585,6 +1744,7 @@ export type TeamMemberInclude<ExtArgs extends runtime.Types.Extensions.InternalA
   invites?: boolean | Prisma.TeamMember$invitesArgs<ExtArgs>
   availabilities?: boolean | Prisma.TeamMember$availabilitiesArgs<ExtArgs>
   playerStats?: boolean | Prisma.TeamMember$playerStatsArgs<ExtArgs>
+  memberFees?: boolean | Prisma.TeamMember$memberFeesArgs<ExtArgs>
   gameScoreSheetPlayers?: boolean | Prisma.TeamMember$gameScoreSheetPlayersArgs<ExtArgs>
   _count?: boolean | Prisma.TeamMemberCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -1605,6 +1765,7 @@ export type $TeamMemberPayload<ExtArgs extends runtime.Types.Extensions.Internal
     invites: Prisma.$TeamGameInvitePayload<ExtArgs>[]
     availabilities: Prisma.$TeamGameAvailabilityPayload<ExtArgs>[]
     playerStats: Prisma.$PlayerStatPayload<ExtArgs>[]
+    memberFees: Prisma.$MemberFeePayload<ExtArgs>[]
     gameScoreSheetPlayers: Prisma.$GameScoreSheetPlayerPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -2022,6 +2183,7 @@ export interface Prisma__TeamMemberClient<T, Null = never, ExtArgs extends runti
   invites<T extends Prisma.TeamMember$invitesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TeamMember$invitesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamGameInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   availabilities<T extends Prisma.TeamMember$availabilitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TeamMember$availabilitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamGameAvailabilityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   playerStats<T extends Prisma.TeamMember$playerStatsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TeamMember$playerStatsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlayerStatPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  memberFees<T extends Prisma.TeamMember$memberFeesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TeamMember$memberFeesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MemberFeePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   gameScoreSheetPlayers<T extends Prisma.TeamMember$gameScoreSheetPlayersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TeamMember$gameScoreSheetPlayersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GameScoreSheetPlayerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2556,6 +2718,30 @@ export type TeamMember$playerStatsArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.PlayerStatScalarFieldEnum | Prisma.PlayerStatScalarFieldEnum[]
+}
+
+/**
+ * TeamMember.memberFees
+ */
+export type TeamMember$memberFeesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MemberFee
+   */
+  select?: Prisma.MemberFeeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MemberFee
+   */
+  omit?: Prisma.MemberFeeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MemberFeeInclude<ExtArgs> | null
+  where?: Prisma.MemberFeeWhereInput
+  orderBy?: Prisma.MemberFeeOrderByWithRelationInput | Prisma.MemberFeeOrderByWithRelationInput[]
+  cursor?: Prisma.MemberFeeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MemberFeeScalarFieldEnum | Prisma.MemberFeeScalarFieldEnum[]
 }
 
 /**

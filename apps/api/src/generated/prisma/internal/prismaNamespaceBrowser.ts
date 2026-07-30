@@ -61,6 +61,7 @@ export const ModelName = {
   Team: 'Team',
   TeamMember: 'TeamMember',
   PlayerStat: 'PlayerStat',
+  MemberFee: 'MemberFee',
   TeamGame: 'TeamGame',
   TeamGameInvite: 'TeamGameInvite',
   TeamGameAvailability: 'TeamGameAvailability',
@@ -240,6 +241,23 @@ export const PlayerStatScalarFieldEnum = {
 } as const
 
 export type PlayerStatScalarFieldEnum = (typeof PlayerStatScalarFieldEnum)[keyof typeof PlayerStatScalarFieldEnum]
+
+
+export const MemberFeeScalarFieldEnum = {
+  id: 'id',
+  memberId: 'memberId',
+  userId: 'userId',
+  teamId: 'teamId',
+  leagueId: 'leagueId',
+  season: 'season',
+  amountOwed: 'amountOwed',
+  amountPaid: 'amountPaid',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MemberFeeScalarFieldEnum = (typeof MemberFeeScalarFieldEnum)[keyof typeof MemberFeeScalarFieldEnum]
 
 
 export const TeamGameScalarFieldEnum = {

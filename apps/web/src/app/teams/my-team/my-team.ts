@@ -15,6 +15,7 @@ import {
   TeamGameAvailabilityStatus,
   UpcomingGame,
   PlayerStat,
+  MemberFee,
 } from '@hockeyspare/contracts';
 import { TeamService } from '../../core/services/team';
 
@@ -37,6 +38,7 @@ export class MyTeamComponent implements OnInit {
   selectedTeamId: string | null = null;
   isLeagueManagerView = false;
   myStats: PlayerStat[] = [];
+  myFees: MemberFee[] = [];
 
   availabilitySavingGameId: string | null = null;
   availabilityComposerGameId: string | null = null;
@@ -46,6 +48,11 @@ export class MyTeamComponent implements OnInit {
   statsSavingMemberId: string | null = null;
   statsLoadingMemberId: string | null = null;
   statsSeasonHasRecord: boolean | null = null;
+
+  feeEditorMemberId: string | null = null;
+  feesSavingMemberId: string | null = null;
+  feesLoadingMemberId: string | null = null;
+  feeSeasonHasRecord: boolean | null = null;
 
   creatingTeam = false;
 
@@ -92,6 +99,22 @@ export class MyTeamComponent implements OnInit {
   statsFilterForm = this.fb.group({
     season: [''],
     team: [''],
+  });
+
+  feeForm = this.fb.group({
+    season: [
+      `${new Date().getFullYear()}-${new Date().getFullYear() + 1}`,
+      Validators.required,
+    ],
+    amountOwed: [0, [Validators.required, Validators.min(0)]],
+    amountPaid: [0, [Validators.required, Validators.min(0)]],
+    notes: [''],
+  });
+
+  feesFilterForm = this.fb.group({
+    season: [''],
+    team: [''],
+    status: [''],
   });
 
   statsSortKey:
@@ -194,6 +217,174 @@ export class MyTeamComponent implements OnInit {
     return this.statsSortDirection === 'asc' ? '↑' : '↓';
   }
 
+  feesSortKey:
+    | 'player'
+    | 'season'
+    | 'team'
+    | 'amountOwed'
+    | 'amountPaid'
+    | 'balance'
+    | 'status' = 'season';
+
+  feesSortDirection: 'asc' | 'desc' = 'desc';
+
+  feeBalance(fee: MemberFee): number {
+    return fee.amountOwed - fee.amountPaid;
+  }
+
+  feeStatus(fee: MemberFee): 'Paid' | 'Partial' | 'Unpaid' {
+    if (fee.amountOwed <= 0 || fee.amountPaid >= fee.amountOwed) {
+      return 'Paid';
+    }
+
+    return fee.amountPaid > 0 ? 'Partial' : 'Unpaid';
+  }
+
+  get filteredAndSortedMyFees(): MemberFee[] {
+    const seasonFilter = (this.feesFilterForm.get('season')?.value ?? '')
+      .trim()
+      .toLowerCase();
+
+    const teamFilter = (this.feesFilterForm.get('team')?.value ?? '')
+      .trim()
+      .toLowerCase();
+
+    const statusFilter = this.feesFilterForm.get('status')?.value ?? '';
+
+    const filtered = this.myFees.filter((fee: MemberFee) => {
+      const matchesSeason =
+        !seasonFilter || fee.season.toLowerCase().includes(seasonFilter);
+
+      const matchesTeam =
+        !teamFilter || fee.team.name.toLowerCase().includes(teamFilter);
+
+      const matchesStatus =
+        !statusFilter || this.feeStatus(fee) === statusFilter;
+
+      return matchesSeason && matchesTeam && matchesStatus;
+    });
+
+    return [...filtered].sort((a: MemberFee, b: MemberFee) => {
+      const dir = this.feesSortDirection === 'asc' ? 1 : -1;
+
+      const aPlayer = a.member?.displayName ?? '';
+      const bPlayer = b.member?.displayName ?? '';
+
+      switch (this.feesSortKey) {
+        case 'player':
+          return aPlayer.localeCompare(bPlayer) * dir;
+        case 'season':
+          return a.season.localeCompare(b.season) * dir;
+        case 'team':
+          return a.team.name.localeCompare(b.team.name) * dir;
+        case 'amountOwed':
+          return (a.amountOwed - b.amountOwed) * dir;
+        case 'amountPaid':
+          return (a.amountPaid - b.amountPaid) * dir;
+        case 'balance':
+          return (this.feeBalance(a) - this.feeBalance(b)) * dir;
+        case 'status':
+          return this.feeStatus(a).localeCompare(this.feeStatus(b)) * dir;
+        default:
+          return 0;
+      }
+    });
+  }
+
+  setFeesSort(
+    key:
+      | 'player'
+      | 'season'
+      | 'team'
+      | 'amountOwed'
+      | 'amountPaid'
+      | 'balance'
+      | 'status',
+  ) {
+    if (this.feesSortKey === key) {
+      this.feesSortDirection = this.feesSortDirection === 'asc' ? 'desc' : 'asc';
+      return;
+    }
+
+    this.feesSortKey = key;
+    this.feesSortDirection =
+      key === 'player' || key === 'team' || key === 'status' ? 'asc' : 'desc';
+  }
+
+  feesSortIcon(
+    key:
+      | 'player'
+      | 'season'
+      | 'team'
+      | 'amountOwed'
+      | 'amountPaid'
+      | 'balance'
+      | 'status',
+  ): string {
+    if (this.feesSortKey !== key) return '↕';
+    return this.feesSortDirection === 'asc' ? '↑' : '↓';
+  }
+
+  clearFeesFilters() {
+    this.feesFilterForm.reset({
+      season: '',
+      team: '',
+      status: '',
+    });
+  }
+
+  exportFeesCsv(): void {
+    const rows = this.filteredAndSortedMyFees;
+
+    const header = [
+      'Player',
+      'Season',
+      'Team',
+      'Amount Owed',
+      'Amount Paid',
+      'Balance',
+      'Status',
+      'Notes',
+    ];
+
+    const csvEscape = (value: string): string => {
+      if (value.includes(',') || value.includes('"') || value.includes('\n')) {
+        return `"${value.replace(/"/g, '""')}"`;
+      }
+
+      return value;
+    };
+
+    const lines = [
+      header.join(','),
+      ...rows.map((fee) =>
+        [
+          fee.member?.displayName ?? 'N/A',
+          fee.season,
+          fee.team.name,
+          fee.amountOwed.toString(),
+          fee.amountPaid.toString(),
+          this.feeBalance(fee).toString(),
+          this.feeStatus(fee),
+          fee.notes ?? '',
+        ]
+          .map((value) => csvEscape(String(value)))
+          .join(','),
+      ),
+    ];
+
+    const blob = new Blob([lines.join('\n')], {
+      type: 'text/csv;charset=utf-8;',
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `team-fees-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
   ngOnInit(): void {
     this.route.queryParamMap.subscribe((params) => {
       this.selectedTeamId = params.get('teamId');
@@ -210,6 +401,15 @@ export class MyTeamComponent implements OnInit {
       if (!normalizedSeason) return;
 
       this.loadMemberStatsIntoForm(this.statEditorMemberId, normalizedSeason);
+    });
+
+    this.feeForm.controls.season.valueChanges.subscribe((season) => {
+      if (!this.feeEditorMemberId) return;
+
+      const normalizedSeason = (season ?? '').trim();
+      if (!normalizedSeason) return;
+
+      this.loadMemberFeeIntoForm(this.feeEditorMemberId, normalizedSeason);
     });
   }
 
@@ -276,6 +476,12 @@ export class MyTeamComponent implements OnInit {
         this.loadMyStats();
         this.loadUpcomingGames();
 
+        if (this.team?.canManageTeam) {
+          this.loadMyFees();
+        } else {
+          this.myFees = [];
+        }
+
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -285,6 +491,7 @@ export class MyTeamComponent implements OnInit {
           this.error = '';
           this.upcomingGames = [];
           this.upcomingGamesError = null;
+          this.myFees = [];
           this.cdr.detectChanges();
           return;
         }
@@ -306,6 +513,20 @@ export class MyTeamComponent implements OnInit {
       error: (err) => {
         console.error('Failed to load team stats', err);
         this.myStats = [];
+      },
+    });
+  }
+
+  private loadMyFees(): void {
+    this.teamApi.getTeamFees(this.selectedTeamId).subscribe({
+      next: (fees) => {
+        this.myFees = fees;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Failed to load team fees', err);
+        this.myFees = [];
+        this.cdr.detectChanges();
       },
     });
   }
@@ -821,6 +1042,132 @@ export class MyTeamComponent implements OnInit {
     const player =
       this.regulars.find((p) => p.id === this.statEditorMemberId) ??
       this.spares.find((p) => p.id === this.statEditorMemberId);
+
+    return player?.displayName ?? 'Player';
+  }
+
+  loadMemberFeeIntoForm(memberId: string, season?: string) {
+    this.feesLoadingMemberId = memberId;
+    this.feeSeasonHasRecord = null;
+    this.error = '';
+
+    const fallbackSeason = season || this.defaultSeason();
+
+    this.teamApi.getMemberFee(memberId, season, this.selectedTeamId).subscribe({
+      next: (fee) => {
+        if (fee) {
+          this.feeSeasonHasRecord = true;
+
+          this.feeForm.patchValue(
+            {
+              season: fee.season ?? fallbackSeason,
+              amountOwed: fee.amountOwed ?? 0,
+              amountPaid: fee.amountPaid ?? 0,
+              notes: fee.notes ?? '',
+            },
+            { emitEvent: false },
+          );
+        } else {
+          this.feeSeasonHasRecord = false;
+
+          this.feeForm.patchValue(
+            {
+              season: fallbackSeason,
+              amountOwed: 0,
+              amountPaid: 0,
+              notes: '',
+            },
+            { emitEvent: false },
+          );
+        }
+
+        this.feesLoadingMemberId = null;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.feesLoadingMemberId = null;
+        this.feeSeasonHasRecord = null;
+        this.error = 'Could not load player fees.';
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  openFeeEditor(memberId: string) {
+    this.feeEditorMemberId = memberId;
+    this.feeSeasonHasRecord = null;
+
+    this.feeForm.reset({
+      season: this.defaultSeason(),
+      amountOwed: 0,
+      amountPaid: 0,
+      notes: '',
+    });
+
+    this.loadMemberFeeIntoForm(memberId);
+  }
+
+  cancelFeeEditor() {
+    this.feeEditorMemberId = null;
+    this.feesSavingMemberId = null;
+    this.feesLoadingMemberId = null;
+    this.feeSeasonHasRecord = null;
+
+    this.feeForm.reset({
+      season: this.defaultSeason(),
+      amountOwed: 0,
+      amountPaid: 0,
+      notes: '',
+    });
+  }
+
+  saveMemberFee(memberId: string) {
+    if (!this.canManageTeam) {
+      this.error = 'You do not have permission to update fees.';
+      return;
+    }
+
+    if (this.feeForm.invalid) {
+      this.feeForm.markAllAsTouched();
+      return;
+    }
+
+    const raw = this.feeForm.getRawValue();
+
+    this.feesSavingMemberId = memberId;
+    this.error = '';
+
+    this.teamApi
+      .upsertMemberFee(
+        memberId,
+        {
+          season: raw.season ?? '',
+          amountOwed: Number(raw.amountOwed ?? 0),
+          amountPaid: Number(raw.amountPaid ?? 0),
+          notes: raw.notes?.trim() || undefined,
+        },
+        this.selectedTeamId,
+      )
+      .subscribe({
+        next: () => {
+          this.feesSavingMemberId = null;
+          this.cancelFeeEditor();
+          this.loadMyFees();
+        },
+        error: () => {
+          this.feesSavingMemberId = null;
+          this.error = 'Could not save player fees.';
+          this.cdr.detectChanges();
+        },
+      });
+  }
+
+  feeEditorPlayerName(): string {
+    if (!this.feeEditorMemberId) return 'Player';
+
+    const player =
+      this.regulars.find((p) => p.id === this.feeEditorMemberId) ??
+      this.spares.find((p) => p.id === this.feeEditorMemberId);
 
     return player?.displayName ?? 'Player';
   }

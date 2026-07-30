@@ -185,6 +185,7 @@ model User {
   teamMemberships   TeamMember[]   @relation("UserTeamMemberships")
   leagueMemberships LeagueMember[]
   playerStats       PlayerStat[]
+  memberFees        MemberFee[]
 }
 
 model League {
@@ -199,6 +200,7 @@ model League {
   teams       Team[]
   members     LeagueMember[]
   playerStats PlayerStat[]
+  memberFees  MemberFee[]
   arenas      LeagueArena[]
   games       TeamGame[]
 }
@@ -252,6 +254,7 @@ model Team {
   games         TeamGame[]   @relation("TeamGameTeam")
   opponentGames TeamGame[]   @relation("TeamGameOpponentTeam")
   playerStats   PlayerStat[]
+  memberFees    MemberFee[]
 
   @@index([leagueId])
 }
@@ -278,6 +281,7 @@ model TeamMember {
   invites               TeamGameInvite[]
   availabilities        TeamGameAvailability[]
   playerStats           PlayerStat[]
+  memberFees            MemberFee[]
   gameScoreSheetPlayers GameScoreSheetPlayer[]
 
   @@index([teamId, memberType])
@@ -295,6 +299,30 @@ model PlayerStat {
   goals       Int      @default(0)
   assists     Int      @default(0)
   penaltyMins Int      @default(0)
+  updatedAt   DateTime @updatedAt
+
+  member TeamMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  user   User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  team   Team       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  league League?    @relation(fields: [leagueId], references: [id], onDelete: SetNull)
+
+  @@unique([memberId, season])
+  @@index([teamId])
+  @@index([leagueId])
+  @@index([userId])
+}
+
+model MemberFee {
+  id          String   @id @default(cuid())
+  memberId    String
+  userId      String?
+  teamId      String
+  leagueId    String?
+  season      String
+  amountOwed  Int      @default(0)
+  amountPaid  Int      @default(0)
+  notes       String?
+  createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   member TeamMember @relation(fields: [memberId], references: [id], onDelete: Cascade)

@@ -19,6 +19,7 @@ import { NotifyTeamGameDto } from './dto/notify-team-game.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { RespondToGameDto } from './dto/respond-to-game.dto';
 import { UpsertPlayerStatDto } from './dto/upsert-player-stat.dto';
+import { UpsertMemberFeeDto } from './dto/upsert-member-fee.dto';
 import { CreateMyTeamDto } from './dto/create-my-team.dto';
 import { UpdateTeamMemberRoleDto } from './dto/update-team-member-role.dto';
 
@@ -145,6 +146,41 @@ export class TeamsController {
     @Query('teamId') teamId?: string,
   ) {
     return this.teamsService.getMemberStats(
+      this.getUserId(req),
+      memberId,
+      season,
+      teamId,
+    );
+  }
+
+  @Get('fees/team')
+  getTeamFees(@Req() req: any, @Query('teamId') teamId?: string) {
+    return this.teamsService.getTeamFees(this.getUserId(req), teamId);
+  }
+
+  @Post('fees/member/:memberId')
+  upsertMemberFee(
+    @Req() req: any,
+    @Param('memberId') memberId: string,
+    @Body() dto: UpsertMemberFeeDto,
+    @Query('teamId') teamId?: string,
+  ) {
+    return this.teamsService.upsertMemberFee(
+      this.getUserId(req),
+      memberId,
+      dto,
+      teamId,
+    );
+  }
+
+  @Get('fees/member/:memberId')
+  getMemberFee(
+    @Req() req: any,
+    @Param('memberId') memberId: string,
+    @Query('season') season?: string,
+    @Query('teamId') teamId?: string,
+  ) {
+    return this.teamsService.getMemberFee(
       this.getUserId(req),
       memberId,
       season,

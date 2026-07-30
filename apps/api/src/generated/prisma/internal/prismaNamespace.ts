@@ -394,6 +394,7 @@ export const ModelName = {
   Team: 'Team',
   TeamMember: 'TeamMember',
   PlayerStat: 'PlayerStat',
+  MemberFee: 'MemberFee',
   TeamGame: 'TeamGame',
   TeamGameInvite: 'TeamGameInvite',
   TeamGameAvailability: 'TeamGameAvailability',
@@ -417,7 +418,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "request" | "requestResponse" | "playerOffer" | "user" | "league" | "leagueArena" | "leagueMember" | "team" | "teamMember" | "playerStat" | "teamGame" | "teamGameInvite" | "teamGameAvailability" | "notification" | "booking" | "gameScoreSheet" | "gameScoreSheetPlayer" | "helpArticle"
+    modelProps: "request" | "requestResponse" | "playerOffer" | "user" | "league" | "leagueArena" | "leagueMember" | "team" | "teamMember" | "playerStat" | "memberFee" | "teamGame" | "teamGameInvite" | "teamGameAvailability" | "notification" | "booking" | "gameScoreSheet" | "gameScoreSheetPlayer" | "helpArticle"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1158,6 +1159,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.PlayerStatCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.PlayerStatCountAggregateOutputType> | number
+        }
+      }
+    }
+    MemberFee: {
+      payload: Prisma.$MemberFeePayload<ExtArgs>
+      fields: Prisma.MemberFeeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MemberFeeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberFeePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MemberFeeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberFeePayload>
+        }
+        findFirst: {
+          args: Prisma.MemberFeeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberFeePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MemberFeeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberFeePayload>
+        }
+        findMany: {
+          args: Prisma.MemberFeeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberFeePayload>[]
+        }
+        create: {
+          args: Prisma.MemberFeeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberFeePayload>
+        }
+        createMany: {
+          args: Prisma.MemberFeeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MemberFeeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberFeePayload>[]
+        }
+        delete: {
+          args: Prisma.MemberFeeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberFeePayload>
+        }
+        update: {
+          args: Prisma.MemberFeeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberFeePayload>
+        }
+        deleteMany: {
+          args: Prisma.MemberFeeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MemberFeeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MemberFeeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberFeePayload>[]
+        }
+        upsert: {
+          args: Prisma.MemberFeeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberFeePayload>
+        }
+        aggregate: {
+          args: Prisma.MemberFeeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMemberFee>
+        }
+        groupBy: {
+          args: Prisma.MemberFeeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MemberFeeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MemberFeeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MemberFeeCountAggregateOutputType> | number
         }
       }
     }
@@ -1947,6 +2022,23 @@ export const PlayerStatScalarFieldEnum = {
 export type PlayerStatScalarFieldEnum = (typeof PlayerStatScalarFieldEnum)[keyof typeof PlayerStatScalarFieldEnum]
 
 
+export const MemberFeeScalarFieldEnum = {
+  id: 'id',
+  memberId: 'memberId',
+  userId: 'userId',
+  teamId: 'teamId',
+  leagueId: 'leagueId',
+  season: 'season',
+  amountOwed: 'amountOwed',
+  amountPaid: 'amountPaid',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MemberFeeScalarFieldEnum = (typeof MemberFeeScalarFieldEnum)[keyof typeof MemberFeeScalarFieldEnum]
+
+
 export const TeamGameScalarFieldEnum = {
   id: 'id',
   leagueId: 'leagueId',
@@ -2498,6 +2590,7 @@ export type GlobalOmitConfig = {
   team?: Prisma.TeamOmit
   teamMember?: Prisma.TeamMemberOmit
   playerStat?: Prisma.PlayerStatOmit
+  memberFee?: Prisma.MemberFeeOmit
   teamGame?: Prisma.TeamGameOmit
   teamGameInvite?: Prisma.TeamGameInviteOmit
   teamGameAvailability?: Prisma.TeamGameAvailabilityOmit

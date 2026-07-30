@@ -10,6 +10,7 @@ import {
   TournamentRegistration,
   TournamentSponsor,
   UpdateTournamentGameInput,
+  UpdateTournamentGameScoreInput,
   UpdateTournamentInput,
 } from '@hockeyspare/contracts';
 import { Observable } from 'rxjs';
@@ -63,6 +64,17 @@ export class TournamentsApiService {
   ): Observable<{ id: string; deleted: boolean }> {
     return this.http.delete<{ id: string; deleted: boolean }>(
       `/api/tournaments/${tournamentId}/games/${gameId}`,
+    );
+  }
+
+  updateGameScore(
+    tournamentId: string,
+    gameId: string,
+    input: UpdateTournamentGameScoreInput,
+  ): Observable<TournamentGame> {
+    return this.http.patch<TournamentGame>(
+      `/api/tournaments/${tournamentId}/games/${gameId}`,
+      input,
     );
   }
 

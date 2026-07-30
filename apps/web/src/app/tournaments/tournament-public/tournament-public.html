@@ -71,6 +71,7 @@
               <th>Matchup</th>
               <th>Time</th>
               <th>Arena</th>
+              <th>Score</th>
             </tr>
           </thead>
 
@@ -81,6 +82,21 @@
               </td>
               <td>{{ game.startsAt | date: 'short' }}</td>
               <td>{{ game.arenaName || 'TBD' }}</td>
+              <td>
+                <ng-container *ngIf="game.status === 'SCHEDULED'">
+                  <span class="text-secondary">—</span>
+                </ng-container>
+                <ng-container *ngIf="game.status !== 'SCHEDULED'">
+                  {{ game.homeScore ?? 0 }} - {{ game.awayScore ?? 0 }}
+                  <span
+                    class="badge rounded-pill ms-1"
+                    [class.text-bg-danger]="game.status === 'LIVE'"
+                    [class.text-bg-secondary]="game.status === 'FINAL'"
+                  >
+                    {{ game.status === 'LIVE' ? 'LIVE' : 'Final' }}
+                  </span>
+                </ng-container>
+              </td>
             </tr>
           </tbody>
         </table>

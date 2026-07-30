@@ -1,4 +1,13 @@
-import { IsDateString, IsOptional, IsString, MaxLength } from 'class-validator';
+import {
+  IsDateString,
+  IsIn,
+  IsInt,
+  IsOptional,
+  IsString,
+  Min,
+  MaxLength,
+} from 'class-validator';
+import { TournamentGameStatus } from '../../../generated/prisma/client';
 
 export class UpdateTournamentGameDto {
   @IsOptional()
@@ -24,4 +33,18 @@ export class UpdateTournamentGameDto {
   @IsString()
   @MaxLength(500)
   notes?: string;
+
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  homeScore?: number;
+
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  awayScore?: number;
+
+  @IsOptional()
+  @IsIn(['SCHEDULED', 'LIVE', 'FINAL'])
+  status?: TournamentGameStatus;
 }

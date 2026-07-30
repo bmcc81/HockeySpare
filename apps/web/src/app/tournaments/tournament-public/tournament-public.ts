@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import {
   NonNullableFormBuilder,
   ReactiveFormsModule,
@@ -7,9 +7,12 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Tournament } from '@hockeyspare/contracts';
+import { Subscription, interval, switchMap } from 'rxjs';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
 
 type TournamentTab = 'schedule' | 'rules' | 'sponsors' | 'register';
+
+const LIVE_SCORE_POLL_INTERVAL_MS = 20000;
 
 @Component({
   selector: 'app-tournament-public',
@@ -17,10 +20,12 @@ type TournamentTab = 'schedule' | 'rules' | 'sponsors' | 'register';
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './tournament-public.html',
 })
-export class TournamentPublicComponent implements OnInit {
+export class TournamentPublicComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly tournamentsApi = inject(TournamentsApiService);
+
+  private pollSubscription: Subscription | null = null;
 
   tournamentId = this.route.snapshot.paramMap.get('id') ?? '';
 
@@ -53,6 +58,18 @@ export class TournamentPublicComponent implements OnInit {
         this.loading.set(false);
       },
     });
+
+    // Lightweight polling so anyone viewing the schedule sees live scores
+    // update without a manual refresh, without needing a websocket setup.
+    this.pollSubscription = interval(LIVE_SCORE_POLL_INTERVAL_MS)
+      .pipe(switchMap(() => this.tournamentsApi.getPublic(this.tournamentId)))
+      .subscribe({
+        next: (tournament) => this.tournament.set(tournament),
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.pollSubscription?.unsubscribe();
   }
 
   setTab(tab: TournamentTab): void {

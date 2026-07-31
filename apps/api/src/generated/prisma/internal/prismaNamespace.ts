@@ -392,6 +392,7 @@ export const ModelName = {
   LeagueArena: 'LeagueArena',
   LeagueMember: 'LeagueMember',
   Team: 'Team',
+  TeamMessage: 'TeamMessage',
   TeamMember: 'TeamMember',
   PlayerStat: 'PlayerStat',
   MemberFee: 'MemberFee',
@@ -422,7 +423,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "request" | "requestResponse" | "playerOffer" | "user" | "league" | "leagueArena" | "leagueMember" | "team" | "teamMember" | "playerStat" | "memberFee" | "teamGame" | "teamGameInvite" | "teamGameAvailability" | "notification" | "booking" | "gameScoreSheet" | "gameScoreSheetPlayer" | "helpArticle" | "tournament" | "tournamentGame" | "tournamentRegistration" | "tournamentSponsor"
+    modelProps: "request" | "requestResponse" | "playerOffer" | "user" | "league" | "leagueArena" | "leagueMember" | "team" | "teamMessage" | "teamMember" | "playerStat" | "memberFee" | "teamGame" | "teamGameInvite" | "teamGameAvailability" | "notification" | "booking" | "gameScoreSheet" | "gameScoreSheetPlayer" | "helpArticle" | "tournament" | "tournamentGame" | "tournamentRegistration" | "tournamentSponsor"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1015,6 +1016,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.TeamCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.TeamCountAggregateOutputType> | number
+        }
+      }
+    }
+    TeamMessage: {
+      payload: Prisma.$TeamMessagePayload<ExtArgs>
+      fields: Prisma.TeamMessageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TeamMessageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMessagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TeamMessageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMessagePayload>
+        }
+        findFirst: {
+          args: Prisma.TeamMessageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMessagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TeamMessageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMessagePayload>
+        }
+        findMany: {
+          args: Prisma.TeamMessageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMessagePayload>[]
+        }
+        create: {
+          args: Prisma.TeamMessageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMessagePayload>
+        }
+        createMany: {
+          args: Prisma.TeamMessageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TeamMessageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMessagePayload>[]
+        }
+        delete: {
+          args: Prisma.TeamMessageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMessagePayload>
+        }
+        update: {
+          args: Prisma.TeamMessageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMessagePayload>
+        }
+        deleteMany: {
+          args: Prisma.TeamMessageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TeamMessageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TeamMessageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMessagePayload>[]
+        }
+        upsert: {
+          args: Prisma.TeamMessageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMessagePayload>
+        }
+        aggregate: {
+          args: Prisma.TeamMessageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTeamMessage>
+        }
+        groupBy: {
+          args: Prisma.TeamMessageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TeamMessageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TeamMessageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TeamMessageCountAggregateOutputType> | number
         }
       }
     }
@@ -2284,6 +2359,17 @@ export const TeamScalarFieldEnum = {
 export type TeamScalarFieldEnum = (typeof TeamScalarFieldEnum)[keyof typeof TeamScalarFieldEnum]
 
 
+export const TeamMessageScalarFieldEnum = {
+  id: 'id',
+  teamId: 'teamId',
+  authorId: 'authorId',
+  body: 'body',
+  createdAt: 'createdAt'
+} as const
+
+export type TeamMessageScalarFieldEnum = (typeof TeamMessageScalarFieldEnum)[keyof typeof TeamMessageScalarFieldEnum]
+
+
 export const TeamMemberScalarFieldEnum = {
   id: 'id',
   teamId: 'teamId',
@@ -2965,6 +3051,7 @@ export type GlobalOmitConfig = {
   leagueArena?: Prisma.LeagueArenaOmit
   leagueMember?: Prisma.LeagueMemberOmit
   team?: Prisma.TeamOmit
+  teamMessage?: Prisma.TeamMessageOmit
   teamMember?: Prisma.TeamMemberOmit
   playerStat?: Prisma.PlayerStatOmit
   memberFee?: Prisma.MemberFeeOmit

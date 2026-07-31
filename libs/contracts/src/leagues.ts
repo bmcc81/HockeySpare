@@ -257,6 +257,35 @@ export interface BulkAddLeagueTeamMembersResult {
   skipped: BulkAddLeagueTeamMembersSkippedRow[];
 }
 
+export interface MyTeamSummary {
+  id: string;
+  name: string;
+  league?: {
+    id: string;
+    name: string;
+  } | null;
+}
+
+export interface TeamMessageAuthor {
+  id: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  email: string;
+}
+
+export interface TeamMessage {
+  id: string;
+  teamId: string;
+  authorId: string;
+  body: string;
+  createdAt: string;
+  author: TeamMessageAuthor;
+}
+
+export interface CreateTeamMessageInput {
+  body: string;
+}
+
 export interface LeagueStandingRow {
   teamId: string;
   teamName: string;

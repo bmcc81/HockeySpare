@@ -1,1 +1,75 @@
-<p>chat-window works!</p>
+<section class="container py-4 d-flex flex-column" style="max-width: 640px; min-height: 80vh">
+  <a routerLink="/messages" class="btn btn-link px-0 mb-2 align-self-start">
+    ← All chats
+  </a>
+
+  <h1 class="h5 mb-3">{{ teamName() || 'Team Chat' }}</h1>
+
+  <div *ngIf="error()" class="alert alert-danger">{{ error() }}</div>
+
+  <div *ngIf="loading()" class="text-secondary">Loading messages...</div>
+
+  <div
+    class="flex-grow-1 overflow-auto border rounded p-3 mb-3 bg-light"
+    style="min-height: 300px"
+  >
+    <div
+      *ngIf="!loading() && messages().length === 0"
+      class="text-secondary text-center mt-4"
+    >
+      No messages yet. Say hello to your team.
+    </div>
+
+    <div
+      *ngFor="let message of messages(); trackBy: trackByMessageId"
+      class="d-flex mb-2"
+      [class.justify-content-end]="isOwnMessage(message)"
+    >
+      <div
+        class="p-2 rounded"
+        style="max-width: 75%"
+        [class.bg-primary]="isOwnMessage(message)"
+        [class.text-white]="isOwnMessage(message)"
+        [class.bg-white]="!isOwnMessage(message)"
+        [class.border]="!isOwnMessage(message)"
+      >
+        <div
+          class="small fw-semibold mb-1"
+          [class.text-white-50]="isOwnMessage(message)"
+          [class.text-secondary]="!isOwnMessage(message)"
+        >
+          {{ authorName(message) }}
+        </div>
+
+        <div style="white-space: pre-wrap">{{ message.body }}</div>
+
+        <div
+          class="small mt-1"
+          [class.text-white-50]="isOwnMessage(message)"
+          [class.text-secondary]="!isOwnMessage(message)"
+        >
+          {{ message.createdAt | date: 'short' }}
+        </div>
+      </div>
+    </div>
+
+    <div #scrollAnchor></div>
+  </div>
+
+  <form [formGroup]="messageForm" (ngSubmit)="send()" class="d-flex gap-2">
+    <input
+      class="form-control"
+      type="text"
+      formControlName="body"
+      placeholder="Type a message..."
+    />
+
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [disabled]="sending() || messageForm.invalid"
+    >
+      {{ sending() ? 'Sending...' : 'Send' }}
+    </button>
+  </form>
+</section>

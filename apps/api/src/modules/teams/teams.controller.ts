@@ -22,6 +22,7 @@ import { UpsertPlayerStatDto } from './dto/upsert-player-stat.dto';
 import { UpsertMemberFeeDto } from './dto/upsert-member-fee.dto';
 import { CreateMyTeamDto } from './dto/create-my-team.dto';
 import { UpdateTeamMemberRoleDto } from './dto/update-team-member-role.dto';
+import { CreateTeamMessageDto } from './dto/create-team-message.dto';
 
 @Controller('my-team')
 @UseGuards(JwtAuthGuard)
@@ -191,5 +192,28 @@ export class TeamsController {
   @Post('members/:memberId/link-user')
   linkMemberToUser(@Req() req: any, @Param('memberId') memberId: string) {
     return this.teamsService.linkMemberToUser(this.getUserId(req), memberId);
+  }
+
+  @Get('teams')
+  listMyTeams(@Req() req: any) {
+    return this.teamsService.listMyTeams(this.getUserId(req));
+  }
+
+  @Get('messages')
+  getTeamMessages(@Req() req: any, @Query('teamId') teamId: string) {
+    return this.teamsService.getTeamMessages(this.getUserId(req), teamId);
+  }
+
+  @Post('messages')
+  createTeamMessage(
+    @Req() req: any,
+    @Body() dto: CreateTeamMessageDto,
+    @Query('teamId') teamId: string,
+  ) {
+    return this.teamsService.createTeamMessage(
+      this.getUserId(req),
+      teamId,
+      dto,
+    );
   }
 }

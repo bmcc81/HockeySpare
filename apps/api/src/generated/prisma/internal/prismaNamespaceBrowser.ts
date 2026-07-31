@@ -63,6 +63,7 @@ export const ModelName = {
   TeamMember: 'TeamMember',
   PlayerStat: 'PlayerStat',
   MemberFee: 'MemberFee',
+  Payment: 'Payment',
   TeamGame: 'TeamGame',
   TeamGameInvite: 'TeamGameInvite',
   TeamGameAvailability: 'TeamGameAvailability',
@@ -204,7 +205,10 @@ export const TeamScalarFieldEnum = {
   leagueId: 'leagueId',
   joinCode: 'joinCode',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  stripeAccountId: 'stripeAccountId',
+  stripePayoutsEnabled: 'stripePayoutsEnabled',
+  stripeOnboardingUrl: 'stripeOnboardingUrl'
 } as const
 
 export type TeamScalarFieldEnum = (typeof TeamScalarFieldEnum)[keyof typeof TeamScalarFieldEnum]
@@ -275,6 +279,23 @@ export const MemberFeeScalarFieldEnum = {
 } as const
 
 export type MemberFeeScalarFieldEnum = (typeof MemberFeeScalarFieldEnum)[keyof typeof MemberFeeScalarFieldEnum]
+
+
+export const PaymentScalarFieldEnum = {
+  id: 'id',
+  memberFeeId: 'memberFeeId',
+  teamId: 'teamId',
+  payerUserId: 'payerUserId',
+  amountCents: 'amountCents',
+  currency: 'currency',
+  status: 'status',
+  stripeCheckoutSessionId: 'stripeCheckoutSessionId',
+  stripePaymentIntentId: 'stripePaymentIntentId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
 
 
 export const TeamGameScalarFieldEnum = {

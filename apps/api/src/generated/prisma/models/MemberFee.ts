@@ -272,6 +272,7 @@ export type MemberFeeWhereInput = {
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   team?: Prisma.XOR<Prisma.TeamScalarRelationFilter, Prisma.TeamWhereInput>
   league?: Prisma.XOR<Prisma.LeagueNullableScalarRelationFilter, Prisma.LeagueWhereInput> | null
+  payments?: Prisma.PaymentListRelationFilter
 }
 
 export type MemberFeeOrderByWithRelationInput = {
@@ -290,6 +291,7 @@ export type MemberFeeOrderByWithRelationInput = {
   user?: Prisma.UserOrderByWithRelationInput
   team?: Prisma.TeamOrderByWithRelationInput
   league?: Prisma.LeagueOrderByWithRelationInput
+  payments?: Prisma.PaymentOrderByRelationAggregateInput
 }
 
 export type MemberFeeWhereUniqueInput = Prisma.AtLeast<{
@@ -312,6 +314,7 @@ export type MemberFeeWhereUniqueInput = Prisma.AtLeast<{
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   team?: Prisma.XOR<Prisma.TeamScalarRelationFilter, Prisma.TeamWhereInput>
   league?: Prisma.XOR<Prisma.LeagueNullableScalarRelationFilter, Prisma.LeagueWhereInput> | null
+  payments?: Prisma.PaymentListRelationFilter
 }, "id" | "memberId_season">
 
 export type MemberFeeOrderByWithAggregationInput = {
@@ -362,6 +365,7 @@ export type MemberFeeCreateInput = {
   user?: Prisma.UserCreateNestedOneWithoutMemberFeesInput
   team: Prisma.TeamCreateNestedOneWithoutMemberFeesInput
   league?: Prisma.LeagueCreateNestedOneWithoutMemberFeesInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutMemberFeeInput
 }
 
 export type MemberFeeUncheckedCreateInput = {
@@ -376,6 +380,7 @@ export type MemberFeeUncheckedCreateInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutMemberFeeInput
 }
 
 export type MemberFeeUpdateInput = {
@@ -390,6 +395,7 @@ export type MemberFeeUpdateInput = {
   user?: Prisma.UserUpdateOneWithoutMemberFeesNestedInput
   team?: Prisma.TeamUpdateOneRequiredWithoutMemberFeesNestedInput
   league?: Prisma.LeagueUpdateOneWithoutMemberFeesNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutMemberFeeNestedInput
 }
 
 export type MemberFeeUncheckedUpdateInput = {
@@ -404,6 +410,7 @@ export type MemberFeeUncheckedUpdateInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutMemberFeeNestedInput
 }
 
 export type MemberFeeCreateManyInput = {
@@ -509,6 +516,11 @@ export type MemberFeeMinOrderByAggregateInput = {
 export type MemberFeeSumOrderByAggregateInput = {
   amountOwed?: Prisma.SortOrder
   amountPaid?: Prisma.SortOrder
+}
+
+export type MemberFeeScalarRelationFilter = {
+  is?: Prisma.MemberFeeWhereInput
+  isNot?: Prisma.MemberFeeWhereInput
 }
 
 export type MemberFeeCreateNestedManyWithoutUserInput = {
@@ -679,6 +691,20 @@ export type MemberFeeUncheckedUpdateManyWithoutMemberNestedInput = {
   deleteMany?: Prisma.MemberFeeScalarWhereInput | Prisma.MemberFeeScalarWhereInput[]
 }
 
+export type MemberFeeCreateNestedOneWithoutPaymentsInput = {
+  create?: Prisma.XOR<Prisma.MemberFeeCreateWithoutPaymentsInput, Prisma.MemberFeeUncheckedCreateWithoutPaymentsInput>
+  connectOrCreate?: Prisma.MemberFeeCreateOrConnectWithoutPaymentsInput
+  connect?: Prisma.MemberFeeWhereUniqueInput
+}
+
+export type MemberFeeUpdateOneRequiredWithoutPaymentsNestedInput = {
+  create?: Prisma.XOR<Prisma.MemberFeeCreateWithoutPaymentsInput, Prisma.MemberFeeUncheckedCreateWithoutPaymentsInput>
+  connectOrCreate?: Prisma.MemberFeeCreateOrConnectWithoutPaymentsInput
+  upsert?: Prisma.MemberFeeUpsertWithoutPaymentsInput
+  connect?: Prisma.MemberFeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MemberFeeUpdateToOneWithWhereWithoutPaymentsInput, Prisma.MemberFeeUpdateWithoutPaymentsInput>, Prisma.MemberFeeUncheckedUpdateWithoutPaymentsInput>
+}
+
 export type MemberFeeCreateWithoutUserInput = {
   id?: string
   season: string
@@ -690,6 +716,7 @@ export type MemberFeeCreateWithoutUserInput = {
   member: Prisma.TeamMemberCreateNestedOneWithoutMemberFeesInput
   team: Prisma.TeamCreateNestedOneWithoutMemberFeesInput
   league?: Prisma.LeagueCreateNestedOneWithoutMemberFeesInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutMemberFeeInput
 }
 
 export type MemberFeeUncheckedCreateWithoutUserInput = {
@@ -703,6 +730,7 @@ export type MemberFeeUncheckedCreateWithoutUserInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutMemberFeeInput
 }
 
 export type MemberFeeCreateOrConnectWithoutUserInput = {
@@ -759,6 +787,7 @@ export type MemberFeeCreateWithoutLeagueInput = {
   member: Prisma.TeamMemberCreateNestedOneWithoutMemberFeesInput
   user?: Prisma.UserCreateNestedOneWithoutMemberFeesInput
   team: Prisma.TeamCreateNestedOneWithoutMemberFeesInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutMemberFeeInput
 }
 
 export type MemberFeeUncheckedCreateWithoutLeagueInput = {
@@ -772,6 +801,7 @@ export type MemberFeeUncheckedCreateWithoutLeagueInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutMemberFeeInput
 }
 
 export type MemberFeeCreateOrConnectWithoutLeagueInput = {
@@ -811,6 +841,7 @@ export type MemberFeeCreateWithoutTeamInput = {
   member: Prisma.TeamMemberCreateNestedOneWithoutMemberFeesInput
   user?: Prisma.UserCreateNestedOneWithoutMemberFeesInput
   league?: Prisma.LeagueCreateNestedOneWithoutMemberFeesInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutMemberFeeInput
 }
 
 export type MemberFeeUncheckedCreateWithoutTeamInput = {
@@ -824,6 +855,7 @@ export type MemberFeeUncheckedCreateWithoutTeamInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutMemberFeeInput
 }
 
 export type MemberFeeCreateOrConnectWithoutTeamInput = {
@@ -863,6 +895,7 @@ export type MemberFeeCreateWithoutMemberInput = {
   user?: Prisma.UserCreateNestedOneWithoutMemberFeesInput
   team: Prisma.TeamCreateNestedOneWithoutMemberFeesInput
   league?: Prisma.LeagueCreateNestedOneWithoutMemberFeesInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutMemberFeeInput
 }
 
 export type MemberFeeUncheckedCreateWithoutMemberInput = {
@@ -876,6 +909,7 @@ export type MemberFeeUncheckedCreateWithoutMemberInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutMemberFeeInput
 }
 
 export type MemberFeeCreateOrConnectWithoutMemberInput = {
@@ -904,6 +938,78 @@ export type MemberFeeUpdateManyWithWhereWithoutMemberInput = {
   data: Prisma.XOR<Prisma.MemberFeeUpdateManyMutationInput, Prisma.MemberFeeUncheckedUpdateManyWithoutMemberInput>
 }
 
+export type MemberFeeCreateWithoutPaymentsInput = {
+  id?: string
+  season: string
+  amountOwed?: number
+  amountPaid?: number
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  member: Prisma.TeamMemberCreateNestedOneWithoutMemberFeesInput
+  user?: Prisma.UserCreateNestedOneWithoutMemberFeesInput
+  team: Prisma.TeamCreateNestedOneWithoutMemberFeesInput
+  league?: Prisma.LeagueCreateNestedOneWithoutMemberFeesInput
+}
+
+export type MemberFeeUncheckedCreateWithoutPaymentsInput = {
+  id?: string
+  memberId: string
+  userId?: string | null
+  teamId: string
+  leagueId?: string | null
+  season: string
+  amountOwed?: number
+  amountPaid?: number
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type MemberFeeCreateOrConnectWithoutPaymentsInput = {
+  where: Prisma.MemberFeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.MemberFeeCreateWithoutPaymentsInput, Prisma.MemberFeeUncheckedCreateWithoutPaymentsInput>
+}
+
+export type MemberFeeUpsertWithoutPaymentsInput = {
+  update: Prisma.XOR<Prisma.MemberFeeUpdateWithoutPaymentsInput, Prisma.MemberFeeUncheckedUpdateWithoutPaymentsInput>
+  create: Prisma.XOR<Prisma.MemberFeeCreateWithoutPaymentsInput, Prisma.MemberFeeUncheckedCreateWithoutPaymentsInput>
+  where?: Prisma.MemberFeeWhereInput
+}
+
+export type MemberFeeUpdateToOneWithWhereWithoutPaymentsInput = {
+  where?: Prisma.MemberFeeWhereInput
+  data: Prisma.XOR<Prisma.MemberFeeUpdateWithoutPaymentsInput, Prisma.MemberFeeUncheckedUpdateWithoutPaymentsInput>
+}
+
+export type MemberFeeUpdateWithoutPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  season?: Prisma.StringFieldUpdateOperationsInput | string
+  amountOwed?: Prisma.IntFieldUpdateOperationsInput | number
+  amountPaid?: Prisma.IntFieldUpdateOperationsInput | number
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  member?: Prisma.TeamMemberUpdateOneRequiredWithoutMemberFeesNestedInput
+  user?: Prisma.UserUpdateOneWithoutMemberFeesNestedInput
+  team?: Prisma.TeamUpdateOneRequiredWithoutMemberFeesNestedInput
+  league?: Prisma.LeagueUpdateOneWithoutMemberFeesNestedInput
+}
+
+export type MemberFeeUncheckedUpdateWithoutPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  memberId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  teamId?: Prisma.StringFieldUpdateOperationsInput | string
+  leagueId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  season?: Prisma.StringFieldUpdateOperationsInput | string
+  amountOwed?: Prisma.IntFieldUpdateOperationsInput | number
+  amountPaid?: Prisma.IntFieldUpdateOperationsInput | number
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type MemberFeeCreateManyUserInput = {
   id?: string
   memberId: string
@@ -928,6 +1034,7 @@ export type MemberFeeUpdateWithoutUserInput = {
   member?: Prisma.TeamMemberUpdateOneRequiredWithoutMemberFeesNestedInput
   team?: Prisma.TeamUpdateOneRequiredWithoutMemberFeesNestedInput
   league?: Prisma.LeagueUpdateOneWithoutMemberFeesNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutMemberFeeNestedInput
 }
 
 export type MemberFeeUncheckedUpdateWithoutUserInput = {
@@ -941,6 +1048,7 @@ export type MemberFeeUncheckedUpdateWithoutUserInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutMemberFeeNestedInput
 }
 
 export type MemberFeeUncheckedUpdateManyWithoutUserInput = {
@@ -980,6 +1088,7 @@ export type MemberFeeUpdateWithoutLeagueInput = {
   member?: Prisma.TeamMemberUpdateOneRequiredWithoutMemberFeesNestedInput
   user?: Prisma.UserUpdateOneWithoutMemberFeesNestedInput
   team?: Prisma.TeamUpdateOneRequiredWithoutMemberFeesNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutMemberFeeNestedInput
 }
 
 export type MemberFeeUncheckedUpdateWithoutLeagueInput = {
@@ -993,6 +1102,7 @@ export type MemberFeeUncheckedUpdateWithoutLeagueInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutMemberFeeNestedInput
 }
 
 export type MemberFeeUncheckedUpdateManyWithoutLeagueInput = {
@@ -1032,6 +1142,7 @@ export type MemberFeeUpdateWithoutTeamInput = {
   member?: Prisma.TeamMemberUpdateOneRequiredWithoutMemberFeesNestedInput
   user?: Prisma.UserUpdateOneWithoutMemberFeesNestedInput
   league?: Prisma.LeagueUpdateOneWithoutMemberFeesNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutMemberFeeNestedInput
 }
 
 export type MemberFeeUncheckedUpdateWithoutTeamInput = {
@@ -1045,6 +1156,7 @@ export type MemberFeeUncheckedUpdateWithoutTeamInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutMemberFeeNestedInput
 }
 
 export type MemberFeeUncheckedUpdateManyWithoutTeamInput = {
@@ -1084,6 +1196,7 @@ export type MemberFeeUpdateWithoutMemberInput = {
   user?: Prisma.UserUpdateOneWithoutMemberFeesNestedInput
   team?: Prisma.TeamUpdateOneRequiredWithoutMemberFeesNestedInput
   league?: Prisma.LeagueUpdateOneWithoutMemberFeesNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutMemberFeeNestedInput
 }
 
 export type MemberFeeUncheckedUpdateWithoutMemberInput = {
@@ -1097,6 +1210,7 @@ export type MemberFeeUncheckedUpdateWithoutMemberInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutMemberFeeNestedInput
 }
 
 export type MemberFeeUncheckedUpdateManyWithoutMemberInput = {
@@ -1112,6 +1226,35 @@ export type MemberFeeUncheckedUpdateManyWithoutMemberInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type MemberFeeCountOutputType
+ */
+
+export type MemberFeeCountOutputType = {
+  payments: number
+}
+
+export type MemberFeeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  payments?: boolean | MemberFeeCountOutputTypeCountPaymentsArgs
+}
+
+/**
+ * MemberFeeCountOutputType without action
+ */
+export type MemberFeeCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MemberFeeCountOutputType
+   */
+  select?: Prisma.MemberFeeCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * MemberFeeCountOutputType without action
+ */
+export type MemberFeeCountOutputTypeCountPaymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PaymentWhereInput
+}
 
 
 export type MemberFeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1130,6 +1273,8 @@ export type MemberFeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   user?: boolean | Prisma.MemberFee$userArgs<ExtArgs>
   team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
   league?: boolean | Prisma.MemberFee$leagueArgs<ExtArgs>
+  payments?: boolean | Prisma.MemberFee$paymentsArgs<ExtArgs>
+  _count?: boolean | Prisma.MemberFeeCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["memberFee"]>
 
 export type MemberFeeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1188,6 +1333,8 @@ export type MemberFeeInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   user?: boolean | Prisma.MemberFee$userArgs<ExtArgs>
   team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
   league?: boolean | Prisma.MemberFee$leagueArgs<ExtArgs>
+  payments?: boolean | Prisma.MemberFee$paymentsArgs<ExtArgs>
+  _count?: boolean | Prisma.MemberFeeCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type MemberFeeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   member?: boolean | Prisma.TeamMemberDefaultArgs<ExtArgs>
@@ -1209,6 +1356,7 @@ export type $MemberFeePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     user: Prisma.$UserPayload<ExtArgs> | null
     team: Prisma.$TeamPayload<ExtArgs>
     league: Prisma.$LeaguePayload<ExtArgs> | null
+    payments: Prisma.$PaymentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1620,6 +1768,7 @@ export interface Prisma__MemberFeeClient<T, Null = never, ExtArgs extends runtim
   user<T extends Prisma.MemberFee$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MemberFee$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   team<T extends Prisma.TeamDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TeamDefaultArgs<ExtArgs>>): Prisma.Prisma__TeamClient<runtime.Types.Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   league<T extends Prisma.MemberFee$leagueArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MemberFee$leagueArgs<ExtArgs>>): Prisma.Prisma__LeagueClient<runtime.Types.Result.GetResult<Prisma.$LeaguePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  payments<T extends Prisma.MemberFee$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MemberFee$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2096,6 +2245,30 @@ export type MemberFee$leagueArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   include?: Prisma.LeagueInclude<ExtArgs> | null
   where?: Prisma.LeagueWhereInput
+}
+
+/**
+ * MemberFee.payments
+ */
+export type MemberFee$paymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Payment
+   */
+  select?: Prisma.PaymentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Payment
+   */
+  omit?: Prisma.PaymentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PaymentInclude<ExtArgs> | null
+  where?: Prisma.PaymentWhereInput
+  orderBy?: Prisma.PaymentOrderByWithRelationInput | Prisma.PaymentOrderByWithRelationInput[]
+  cursor?: Prisma.PaymentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PaymentScalarFieldEnum | Prisma.PaymentScalarFieldEnum[]
 }
 
 /**

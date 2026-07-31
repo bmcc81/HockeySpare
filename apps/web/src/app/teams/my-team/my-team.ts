@@ -16,6 +16,7 @@ import {
   UpcomingGame,
   PlayerStat,
   MemberFee,
+  PaymentsStatus,
 } from '@hockeyspare/contracts';
 import { TeamService } from '../../core/services/team';
 
@@ -39,6 +40,13 @@ export class MyTeamComponent implements OnInit {
   isLeagueManagerView = false;
   myStats: PlayerStat[] = [];
   myFees: MemberFee[] = [];
+
+  paymentsStatus: PaymentsStatus | null = null;
+  paymentsStatusLoading = false;
+  connectingStripe = false;
+  payingFeeId: string | null = null;
+  paymentSuccessMessage = '';
+  paymentError = '';
 
   availabilitySavingGameId: string | null = null;
   availabilityComposerGameId: string | null = null;
@@ -398,6 +406,16 @@ export class MyTeamComponent implements OnInit {
 
       this.reload();
       this.loadMyStats();
+
+      if (params.get('stripeReturn') === '1') {
+        this.handleStripeReturn();
+      }
+
+      const paymentSessionId = params.get('paymentSessionId');
+
+      if (paymentSessionId) {
+        this.handlePaymentReturn(paymentSessionId);
+      }
     });
 
     this.statForm.controls.season.valueChanges.subscribe((season) => {
@@ -484,6 +502,7 @@ export class MyTeamComponent implements OnInit {
 
         if (this.team?.canManageTeam) {
           this.loadMyFees();
+          this.loadPaymentsStatus();
         } else {
           this.myFees = [];
         }
@@ -535,6 +554,114 @@ export class MyTeamComponent implements OnInit {
         this.cdr.detectChanges();
       },
     });
+  }
+
+  private loadPaymentsStatus(): void {
+    this.paymentsStatusLoading = true;
+
+    this.teamApi.getPaymentsStatus(this.selectedTeamId).subscribe({
+      next: (status) => {
+        this.paymentsStatus = status;
+        this.paymentsStatusLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Failed to load payments status', err);
+        this.paymentsStatus = null;
+        this.paymentsStatusLoading = false;
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  private handleStripeReturn(): void {
+    this.teamApi.refreshStripeStatus(this.selectedTeamId).subscribe({
+      next: (status) => {
+        this.paymentsStatus = status;
+
+        this.paymentSuccessMessage = status.payoutsEnabled
+          ? 'Stripe account connected. You can now collect fee payments.'
+          : 'Stripe onboarding is not finished yet. Connect again to continue.';
+
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Failed to refresh Stripe status', err);
+        this.paymentError = 'Could not confirm Stripe connection status.';
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  private handlePaymentReturn(sessionId: string): void {
+    this.teamApi.verifyFeeCheckout(sessionId).subscribe({
+      next: (result) => {
+        if (result.status === 'SUCCEEDED') {
+          this.paymentSuccessMessage = `Payment received for ${result.memberFee.member?.displayName ?? 'this player'}.`;
+        } else {
+          this.paymentError =
+            'Payment has not completed yet. It may still be processing.';
+        }
+
+        this.loadMyFees();
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Failed to verify payment', err);
+        this.paymentError = 'Could not confirm this payment.';
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  connectStripe(): void {
+    if (this.connectingStripe) {
+      return;
+    }
+
+    this.connectingStripe = true;
+    this.paymentError = '';
+
+    this.teamApi.connectStripe(this.selectedTeamId).subscribe({
+      next: (result) => {
+        window.location.href = result.url;
+      },
+      error: (err) => {
+        this.connectingStripe = false;
+        this.paymentError =
+          err?.error?.message || 'Could not start Stripe onboarding.';
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  payFee(fee: MemberFee): void {
+    if (this.payingFeeId) {
+      return;
+    }
+
+    this.payingFeeId = fee.id;
+    this.paymentError = '';
+
+    this.teamApi.createFeeCheckout(fee.id).subscribe({
+      next: (result) => {
+        window.location.href = result.url;
+      },
+      error: (err) => {
+        this.payingFeeId = null;
+        this.paymentError =
+          err?.error?.message || 'Could not start checkout for this fee.';
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  canPayFee(fee: MemberFee): boolean {
+    return (
+      this.feeBalance(fee) > 0 &&
+      !!this.paymentsStatus?.connected &&
+      !!this.paymentsStatus?.payoutsEnabled
+    );
   }
 
   createMyTeam(): void {

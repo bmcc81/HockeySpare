@@ -100,6 +100,11 @@ export type PlayerStat = Prisma.PlayerStatModel
  */
 export type MemberFee = Prisma.MemberFeeModel
 /**
+ * Model Payment
+ * 
+ */
+export type Payment = Prisma.PaymentModel
+/**
  * Model TeamGame
  * 
  */

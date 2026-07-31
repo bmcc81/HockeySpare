@@ -1025,6 +1025,63 @@
         <div class="card panel-card mb-4" *ngIf="canManageTeam">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
+              <h3 class="panel-title mb-0">Payments</h3>
+            </div>
+
+            <div *ngIf="paymentError" class="alert alert-danger">
+              {{ paymentError }}
+            </div>
+
+            <div *ngIf="paymentSuccessMessage" class="alert alert-success">
+              {{ paymentSuccessMessage }}
+            </div>
+
+            <div *ngIf="paymentsStatusLoading" class="text-secondary">
+              Loading payment settings...
+            </div>
+
+            <ng-container *ngIf="!paymentsStatusLoading">
+              <div
+                *ngIf="paymentsStatus?.connected && paymentsStatus?.payoutsEnabled"
+                class="d-flex align-items-center gap-2"
+              >
+                <span class="badge rounded-pill text-bg-success">Connected</span>
+                <span class="text-secondary small">
+                  Fee payments go directly to this team's connected bank
+                  account.
+                </span>
+              </div>
+
+              <div
+                *ngIf="!(paymentsStatus?.connected && paymentsStatus?.payoutsEnabled)"
+              >
+                <p class="text-secondary small mb-2">
+                  Connect a Stripe account so players can pay their team fees
+                  online, straight into your own bank account.
+                </p>
+
+                <button
+                  type="button"
+                  class="btn btn-primary btn-sm"
+                  [disabled]="connectingStripe"
+                  (click)="connectStripe()"
+                >
+                  {{
+                    connectingStripe
+                      ? "Redirecting..."
+                      : paymentsStatus?.connected
+                        ? "Finish connecting Stripe"
+                        : "Connect Stripe"
+                  }}
+                </button>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="card panel-card mb-4" *ngIf="canManageTeam">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
               <h3 class="panel-title mb-0">Team Fees</h3>
 
               <div class="d-flex align-items-center gap-3">
@@ -1159,6 +1216,8 @@
                           Status {{ feesSortIcon('status') }}
                         </button>
                       </th>
+
+                      <th></th>
                     </tr>
                   </thead>
 
@@ -1179,6 +1238,21 @@
                         >
                           {{ feeStatus(fee) }}
                         </span>
+                      </td>
+                      <td>
+                        <button
+                          *ngIf="canPayFee(fee)"
+                          type="button"
+                          class="btn btn-outline-primary btn-sm"
+                          [disabled]="payingFeeId === fee.id"
+                          (click)="payFee(fee)"
+                        >
+                          {{
+                            payingFeeId === fee.id
+                              ? "Redirecting..."
+                              : "Pay $" + feeBalance(fee)
+                          }}
+                        </button>
                       </td>
                     </tr>
                   </tbody>

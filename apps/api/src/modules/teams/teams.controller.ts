@@ -216,4 +216,47 @@ export class TeamsController {
       dto,
     );
   }
+
+  @Get('payments/status')
+  getPaymentsStatus(@Req() req: any, @Query('teamId') teamId?: string) {
+    return this.teamsService.getPaymentsStatus(this.getUserId(req), teamId);
+  }
+
+  @Post('payments/connect')
+  connectStripeAccount(@Req() req: any, @Query('teamId') teamId?: string) {
+    return this.teamsService.connectStripeAccount(this.getUserId(req), teamId);
+  }
+
+  @Post('payments/refresh')
+  refreshStripeAccountStatus(
+    @Req() req: any,
+    @Query('teamId') teamId?: string,
+  ) {
+    return this.teamsService.refreshStripeAccountStatus(
+      this.getUserId(req),
+      teamId,
+    );
+  }
+
+  @Post('payments/checkout/:memberFeeId')
+  createFeeCheckoutSession(
+    @Req() req: any,
+    @Param('memberFeeId') memberFeeId: string,
+  ) {
+    return this.teamsService.createFeeCheckoutSession(
+      this.getUserId(req),
+      memberFeeId,
+    );
+  }
+
+  @Get('payments/verify/:sessionId')
+  verifyFeeCheckoutSession(
+    @Req() req: any,
+    @Param('sessionId') sessionId: string,
+  ) {
+    return this.teamsService.verifyFeeCheckoutSession(
+      this.getUserId(req),
+      sessionId,
+    );
+  }
 }

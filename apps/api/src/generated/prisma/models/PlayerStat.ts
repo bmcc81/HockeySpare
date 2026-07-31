@@ -31,6 +31,7 @@ export type PlayerStatAvgAggregateOutputType = {
   goals: number | null
   assists: number | null
   penaltyMins: number | null
+  plusMinus: number | null
 }
 
 export type PlayerStatSumAggregateOutputType = {
@@ -38,6 +39,7 @@ export type PlayerStatSumAggregateOutputType = {
   goals: number | null
   assists: number | null
   penaltyMins: number | null
+  plusMinus: number | null
 }
 
 export type PlayerStatMinAggregateOutputType = {
@@ -51,6 +53,7 @@ export type PlayerStatMinAggregateOutputType = {
   goals: number | null
   assists: number | null
   penaltyMins: number | null
+  plusMinus: number | null
   updatedAt: Date | null
 }
 
@@ -65,6 +68,7 @@ export type PlayerStatMaxAggregateOutputType = {
   goals: number | null
   assists: number | null
   penaltyMins: number | null
+  plusMinus: number | null
   updatedAt: Date | null
 }
 
@@ -79,6 +83,7 @@ export type PlayerStatCountAggregateOutputType = {
   goals: number
   assists: number
   penaltyMins: number
+  plusMinus: number
   updatedAt: number
   _all: number
 }
@@ -89,6 +94,7 @@ export type PlayerStatAvgAggregateInputType = {
   goals?: true
   assists?: true
   penaltyMins?: true
+  plusMinus?: true
 }
 
 export type PlayerStatSumAggregateInputType = {
@@ -96,6 +102,7 @@ export type PlayerStatSumAggregateInputType = {
   goals?: true
   assists?: true
   penaltyMins?: true
+  plusMinus?: true
 }
 
 export type PlayerStatMinAggregateInputType = {
@@ -109,6 +116,7 @@ export type PlayerStatMinAggregateInputType = {
   goals?: true
   assists?: true
   penaltyMins?: true
+  plusMinus?: true
   updatedAt?: true
 }
 
@@ -123,6 +131,7 @@ export type PlayerStatMaxAggregateInputType = {
   goals?: true
   assists?: true
   penaltyMins?: true
+  plusMinus?: true
   updatedAt?: true
 }
 
@@ -137,6 +146,7 @@ export type PlayerStatCountAggregateInputType = {
   goals?: true
   assists?: true
   penaltyMins?: true
+  plusMinus?: true
   updatedAt?: true
   _all?: true
 }
@@ -238,6 +248,7 @@ export type PlayerStatGroupByOutputType = {
   goals: number
   assists: number
   penaltyMins: number
+  plusMinus: number
   updatedAt: Date
   _count: PlayerStatCountAggregateOutputType | null
   _avg: PlayerStatAvgAggregateOutputType | null
@@ -275,6 +286,7 @@ export type PlayerStatWhereInput = {
   goals?: Prisma.IntFilter<"PlayerStat"> | number
   assists?: Prisma.IntFilter<"PlayerStat"> | number
   penaltyMins?: Prisma.IntFilter<"PlayerStat"> | number
+  plusMinus?: Prisma.IntFilter<"PlayerStat"> | number
   updatedAt?: Prisma.DateTimeFilter<"PlayerStat"> | Date | string
   member?: Prisma.XOR<Prisma.TeamMemberScalarRelationFilter, Prisma.TeamMemberWhereInput>
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -293,6 +305,7 @@ export type PlayerStatOrderByWithRelationInput = {
   goals?: Prisma.SortOrder
   assists?: Prisma.SortOrder
   penaltyMins?: Prisma.SortOrder
+  plusMinus?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   member?: Prisma.TeamMemberOrderByWithRelationInput
   user?: Prisma.UserOrderByWithRelationInput
@@ -315,6 +328,7 @@ export type PlayerStatWhereUniqueInput = Prisma.AtLeast<{
   goals?: Prisma.IntFilter<"PlayerStat"> | number
   assists?: Prisma.IntFilter<"PlayerStat"> | number
   penaltyMins?: Prisma.IntFilter<"PlayerStat"> | number
+  plusMinus?: Prisma.IntFilter<"PlayerStat"> | number
   updatedAt?: Prisma.DateTimeFilter<"PlayerStat"> | Date | string
   member?: Prisma.XOR<Prisma.TeamMemberScalarRelationFilter, Prisma.TeamMemberWhereInput>
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -333,6 +347,7 @@ export type PlayerStatOrderByWithAggregationInput = {
   goals?: Prisma.SortOrder
   assists?: Prisma.SortOrder
   penaltyMins?: Prisma.SortOrder
+  plusMinus?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.PlayerStatCountOrderByAggregateInput
   _avg?: Prisma.PlayerStatAvgOrderByAggregateInput
@@ -355,6 +370,7 @@ export type PlayerStatScalarWhereWithAggregatesInput = {
   goals?: Prisma.IntWithAggregatesFilter<"PlayerStat"> | number
   assists?: Prisma.IntWithAggregatesFilter<"PlayerStat"> | number
   penaltyMins?: Prisma.IntWithAggregatesFilter<"PlayerStat"> | number
+  plusMinus?: Prisma.IntWithAggregatesFilter<"PlayerStat"> | number
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"PlayerStat"> | Date | string
 }
 
@@ -365,6 +381,7 @@ export type PlayerStatCreateInput = {
   goals?: number
   assists?: number
   penaltyMins?: number
+  plusMinus?: number
   updatedAt?: Date | string
   member: Prisma.TeamMemberCreateNestedOneWithoutPlayerStatsInput
   user?: Prisma.UserCreateNestedOneWithoutPlayerStatsInput
@@ -383,6 +400,7 @@ export type PlayerStatUncheckedCreateInput = {
   goals?: number
   assists?: number
   penaltyMins?: number
+  plusMinus?: number
   updatedAt?: Date | string
 }
 
@@ -393,6 +411,7 @@ export type PlayerStatUpdateInput = {
   goals?: Prisma.IntFieldUpdateOperationsInput | number
   assists?: Prisma.IntFieldUpdateOperationsInput | number
   penaltyMins?: Prisma.IntFieldUpdateOperationsInput | number
+  plusMinus?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   member?: Prisma.TeamMemberUpdateOneRequiredWithoutPlayerStatsNestedInput
   user?: Prisma.UserUpdateOneWithoutPlayerStatsNestedInput
@@ -411,6 +430,7 @@ export type PlayerStatUncheckedUpdateInput = {
   goals?: Prisma.IntFieldUpdateOperationsInput | number
   assists?: Prisma.IntFieldUpdateOperationsInput | number
   penaltyMins?: Prisma.IntFieldUpdateOperationsInput | number
+  plusMinus?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -425,6 +445,7 @@ export type PlayerStatCreateManyInput = {
   goals?: number
   assists?: number
   penaltyMins?: number
+  plusMinus?: number
   updatedAt?: Date | string
 }
 
@@ -435,6 +456,7 @@ export type PlayerStatUpdateManyMutationInput = {
   goals?: Prisma.IntFieldUpdateOperationsInput | number
   assists?: Prisma.IntFieldUpdateOperationsInput | number
   penaltyMins?: Prisma.IntFieldUpdateOperationsInput | number
+  plusMinus?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -449,6 +471,7 @@ export type PlayerStatUncheckedUpdateManyInput = {
   goals?: Prisma.IntFieldUpdateOperationsInput | number
   assists?: Prisma.IntFieldUpdateOperationsInput | number
   penaltyMins?: Prisma.IntFieldUpdateOperationsInput | number
+  plusMinus?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -478,6 +501,7 @@ export type PlayerStatCountOrderByAggregateInput = {
   goals?: Prisma.SortOrder
   assists?: Prisma.SortOrder
   penaltyMins?: Prisma.SortOrder
+  plusMinus?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -486,6 +510,7 @@ export type PlayerStatAvgOrderByAggregateInput = {
   goals?: Prisma.SortOrder
   assists?: Prisma.SortOrder
   penaltyMins?: Prisma.SortOrder
+  plusMinus?: Prisma.SortOrder
 }
 
 export type PlayerStatMaxOrderByAggregateInput = {
@@ -499,6 +524,7 @@ export type PlayerStatMaxOrderByAggregateInput = {
   goals?: Prisma.SortOrder
   assists?: Prisma.SortOrder
   penaltyMins?: Prisma.SortOrder
+  plusMinus?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -513,6 +539,7 @@ export type PlayerStatMinOrderByAggregateInput = {
   goals?: Prisma.SortOrder
   assists?: Prisma.SortOrder
   penaltyMins?: Prisma.SortOrder
+  plusMinus?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -521,6 +548,7 @@ export type PlayerStatSumOrderByAggregateInput = {
   goals?: Prisma.SortOrder
   assists?: Prisma.SortOrder
   penaltyMins?: Prisma.SortOrder
+  plusMinus?: Prisma.SortOrder
 }
 
 export type PlayerStatCreateNestedManyWithoutUserInput = {
@@ -698,6 +726,7 @@ export type PlayerStatCreateWithoutUserInput = {
   goals?: number
   assists?: number
   penaltyMins?: number
+  plusMinus?: number
   updatedAt?: Date | string
   member: Prisma.TeamMemberCreateNestedOneWithoutPlayerStatsInput
   team: Prisma.TeamCreateNestedOneWithoutPlayerStatsInput
@@ -714,6 +743,7 @@ export type PlayerStatUncheckedCreateWithoutUserInput = {
   goals?: number
   assists?: number
   penaltyMins?: number
+  plusMinus?: number
   updatedAt?: Date | string
 }
 
@@ -757,6 +787,7 @@ export type PlayerStatScalarWhereInput = {
   goals?: Prisma.IntFilter<"PlayerStat"> | number
   assists?: Prisma.IntFilter<"PlayerStat"> | number
   penaltyMins?: Prisma.IntFilter<"PlayerStat"> | number
+  plusMinus?: Prisma.IntFilter<"PlayerStat"> | number
   updatedAt?: Prisma.DateTimeFilter<"PlayerStat"> | Date | string
 }
 
@@ -767,6 +798,7 @@ export type PlayerStatCreateWithoutLeagueInput = {
   goals?: number
   assists?: number
   penaltyMins?: number
+  plusMinus?: number
   updatedAt?: Date | string
   member: Prisma.TeamMemberCreateNestedOneWithoutPlayerStatsInput
   user?: Prisma.UserCreateNestedOneWithoutPlayerStatsInput
@@ -783,6 +815,7 @@ export type PlayerStatUncheckedCreateWithoutLeagueInput = {
   goals?: number
   assists?: number
   penaltyMins?: number
+  plusMinus?: number
   updatedAt?: Date | string
 }
 
@@ -819,6 +852,7 @@ export type PlayerStatCreateWithoutTeamInput = {
   goals?: number
   assists?: number
   penaltyMins?: number
+  plusMinus?: number
   updatedAt?: Date | string
   member: Prisma.TeamMemberCreateNestedOneWithoutPlayerStatsInput
   user?: Prisma.UserCreateNestedOneWithoutPlayerStatsInput
@@ -835,6 +869,7 @@ export type PlayerStatUncheckedCreateWithoutTeamInput = {
   goals?: number
   assists?: number
   penaltyMins?: number
+  plusMinus?: number
   updatedAt?: Date | string
 }
 
@@ -871,6 +906,7 @@ export type PlayerStatCreateWithoutMemberInput = {
   goals?: number
   assists?: number
   penaltyMins?: number
+  plusMinus?: number
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutPlayerStatsInput
   team: Prisma.TeamCreateNestedOneWithoutPlayerStatsInput
@@ -887,6 +923,7 @@ export type PlayerStatUncheckedCreateWithoutMemberInput = {
   goals?: number
   assists?: number
   penaltyMins?: number
+  plusMinus?: number
   updatedAt?: Date | string
 }
 
@@ -926,6 +963,7 @@ export type PlayerStatCreateManyUserInput = {
   goals?: number
   assists?: number
   penaltyMins?: number
+  plusMinus?: number
   updatedAt?: Date | string
 }
 
@@ -936,6 +974,7 @@ export type PlayerStatUpdateWithoutUserInput = {
   goals?: Prisma.IntFieldUpdateOperationsInput | number
   assists?: Prisma.IntFieldUpdateOperationsInput | number
   penaltyMins?: Prisma.IntFieldUpdateOperationsInput | number
+  plusMinus?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   member?: Prisma.TeamMemberUpdateOneRequiredWithoutPlayerStatsNestedInput
   team?: Prisma.TeamUpdateOneRequiredWithoutPlayerStatsNestedInput
@@ -952,6 +991,7 @@ export type PlayerStatUncheckedUpdateWithoutUserInput = {
   goals?: Prisma.IntFieldUpdateOperationsInput | number
   assists?: Prisma.IntFieldUpdateOperationsInput | number
   penaltyMins?: Prisma.IntFieldUpdateOperationsInput | number
+  plusMinus?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -965,6 +1005,7 @@ export type PlayerStatUncheckedUpdateManyWithoutUserInput = {
   goals?: Prisma.IntFieldUpdateOperationsInput | number
   assists?: Prisma.IntFieldUpdateOperationsInput | number
   penaltyMins?: Prisma.IntFieldUpdateOperationsInput | number
+  plusMinus?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -978,6 +1019,7 @@ export type PlayerStatCreateManyLeagueInput = {
   goals?: number
   assists?: number
   penaltyMins?: number
+  plusMinus?: number
   updatedAt?: Date | string
 }
 
@@ -988,6 +1030,7 @@ export type PlayerStatUpdateWithoutLeagueInput = {
   goals?: Prisma.IntFieldUpdateOperationsInput | number
   assists?: Prisma.IntFieldUpdateOperationsInput | number
   penaltyMins?: Prisma.IntFieldUpdateOperationsInput | number
+  plusMinus?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   member?: Prisma.TeamMemberUpdateOneRequiredWithoutPlayerStatsNestedInput
   user?: Prisma.UserUpdateOneWithoutPlayerStatsNestedInput
@@ -1004,6 +1047,7 @@ export type PlayerStatUncheckedUpdateWithoutLeagueInput = {
   goals?: Prisma.IntFieldUpdateOperationsInput | number
   assists?: Prisma.IntFieldUpdateOperationsInput | number
   penaltyMins?: Prisma.IntFieldUpdateOperationsInput | number
+  plusMinus?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -1017,6 +1061,7 @@ export type PlayerStatUncheckedUpdateManyWithoutLeagueInput = {
   goals?: Prisma.IntFieldUpdateOperationsInput | number
   assists?: Prisma.IntFieldUpdateOperationsInput | number
   penaltyMins?: Prisma.IntFieldUpdateOperationsInput | number
+  plusMinus?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -1030,6 +1075,7 @@ export type PlayerStatCreateManyTeamInput = {
   goals?: number
   assists?: number
   penaltyMins?: number
+  plusMinus?: number
   updatedAt?: Date | string
 }
 
@@ -1040,6 +1086,7 @@ export type PlayerStatUpdateWithoutTeamInput = {
   goals?: Prisma.IntFieldUpdateOperationsInput | number
   assists?: Prisma.IntFieldUpdateOperationsInput | number
   penaltyMins?: Prisma.IntFieldUpdateOperationsInput | number
+  plusMinus?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   member?: Prisma.TeamMemberUpdateOneRequiredWithoutPlayerStatsNestedInput
   user?: Prisma.UserUpdateOneWithoutPlayerStatsNestedInput
@@ -1056,6 +1103,7 @@ export type PlayerStatUncheckedUpdateWithoutTeamInput = {
   goals?: Prisma.IntFieldUpdateOperationsInput | number
   assists?: Prisma.IntFieldUpdateOperationsInput | number
   penaltyMins?: Prisma.IntFieldUpdateOperationsInput | number
+  plusMinus?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -1069,6 +1117,7 @@ export type PlayerStatUncheckedUpdateManyWithoutTeamInput = {
   goals?: Prisma.IntFieldUpdateOperationsInput | number
   assists?: Prisma.IntFieldUpdateOperationsInput | number
   penaltyMins?: Prisma.IntFieldUpdateOperationsInput | number
+  plusMinus?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -1082,6 +1131,7 @@ export type PlayerStatCreateManyMemberInput = {
   goals?: number
   assists?: number
   penaltyMins?: number
+  plusMinus?: number
   updatedAt?: Date | string
 }
 
@@ -1092,6 +1142,7 @@ export type PlayerStatUpdateWithoutMemberInput = {
   goals?: Prisma.IntFieldUpdateOperationsInput | number
   assists?: Prisma.IntFieldUpdateOperationsInput | number
   penaltyMins?: Prisma.IntFieldUpdateOperationsInput | number
+  plusMinus?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutPlayerStatsNestedInput
   team?: Prisma.TeamUpdateOneRequiredWithoutPlayerStatsNestedInput
@@ -1108,6 +1159,7 @@ export type PlayerStatUncheckedUpdateWithoutMemberInput = {
   goals?: Prisma.IntFieldUpdateOperationsInput | number
   assists?: Prisma.IntFieldUpdateOperationsInput | number
   penaltyMins?: Prisma.IntFieldUpdateOperationsInput | number
+  plusMinus?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -1121,6 +1173,7 @@ export type PlayerStatUncheckedUpdateManyWithoutMemberInput = {
   goals?: Prisma.IntFieldUpdateOperationsInput | number
   assists?: Prisma.IntFieldUpdateOperationsInput | number
   penaltyMins?: Prisma.IntFieldUpdateOperationsInput | number
+  plusMinus?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -1137,6 +1190,7 @@ export type PlayerStatSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   goals?: boolean
   assists?: boolean
   penaltyMins?: boolean
+  plusMinus?: boolean
   updatedAt?: boolean
   member?: boolean | Prisma.TeamMemberDefaultArgs<ExtArgs>
   user?: boolean | Prisma.PlayerStat$userArgs<ExtArgs>
@@ -1155,6 +1209,7 @@ export type PlayerStatSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   goals?: boolean
   assists?: boolean
   penaltyMins?: boolean
+  plusMinus?: boolean
   updatedAt?: boolean
   member?: boolean | Prisma.TeamMemberDefaultArgs<ExtArgs>
   user?: boolean | Prisma.PlayerStat$userArgs<ExtArgs>
@@ -1173,6 +1228,7 @@ export type PlayerStatSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   goals?: boolean
   assists?: boolean
   penaltyMins?: boolean
+  plusMinus?: boolean
   updatedAt?: boolean
   member?: boolean | Prisma.TeamMemberDefaultArgs<ExtArgs>
   user?: boolean | Prisma.PlayerStat$userArgs<ExtArgs>
@@ -1191,10 +1247,11 @@ export type PlayerStatSelectScalar = {
   goals?: boolean
   assists?: boolean
   penaltyMins?: boolean
+  plusMinus?: boolean
   updatedAt?: boolean
 }
 
-export type PlayerStatOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "memberId" | "userId" | "teamId" | "leagueId" | "season" | "gamesPlayed" | "goals" | "assists" | "penaltyMins" | "updatedAt", ExtArgs["result"]["playerStat"]>
+export type PlayerStatOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "memberId" | "userId" | "teamId" | "leagueId" | "season" | "gamesPlayed" | "goals" | "assists" | "penaltyMins" | "plusMinus" | "updatedAt", ExtArgs["result"]["playerStat"]>
 export type PlayerStatInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   member?: boolean | Prisma.TeamMemberDefaultArgs<ExtArgs>
   user?: boolean | Prisma.PlayerStat$userArgs<ExtArgs>
@@ -1233,6 +1290,7 @@ export type $PlayerStatPayload<ExtArgs extends runtime.Types.Extensions.Internal
     goals: number
     assists: number
     penaltyMins: number
+    plusMinus: number
     updatedAt: Date
   }, ExtArgs["result"]["playerStat"]>
   composites: {}
@@ -1671,6 +1729,7 @@ export interface PlayerStatFieldRefs {
   readonly goals: Prisma.FieldRef<"PlayerStat", 'Int'>
   readonly assists: Prisma.FieldRef<"PlayerStat", 'Int'>
   readonly penaltyMins: Prisma.FieldRef<"PlayerStat", 'Int'>
+  readonly plusMinus: Prisma.FieldRef<"PlayerStat", 'Int'>
   readonly updatedAt: Prisma.FieldRef<"PlayerStat", 'DateTime'>
 }
     

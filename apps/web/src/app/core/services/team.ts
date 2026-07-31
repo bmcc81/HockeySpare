@@ -47,6 +47,7 @@ export interface UpsertPlayerStatInput {
   goals: number;
   assists: number;
   penaltyMins: number;
+  plusMinus?: number;
 }
 
 export interface UpsertMemberFeeInput {

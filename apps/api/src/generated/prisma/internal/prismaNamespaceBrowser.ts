@@ -241,6 +241,7 @@ export const PlayerStatScalarFieldEnum = {
   goals: 'goals',
   assists: 'assists',
   penaltyMins: 'penaltyMins',
+  plusMinus: 'plusMinus',
   updatedAt: 'updatedAt'
 } as const
 
@@ -370,6 +371,7 @@ export const GameScoreSheetPlayerScalarFieldEnum = {
   goals: 'goals',
   assists: 'assists',
   penaltyMins: 'penaltyMins',
+  plusMinus: 'plusMinus',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

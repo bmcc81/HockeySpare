@@ -317,6 +317,81 @@
         <div
           class="d-flex justify-content-between align-items-center gap-3 flex-wrap mb-3"
         >
+          <h2 class="mb-0">Standings</h2>
+
+          <button
+            type="button"
+            class="btn btn-outline-secondary btn-sm collapse-toggle"
+            (click)="toggleStandingsCollapsed()"
+          >
+            {{ standingsCollapsed() ? 'Show Standings' : 'Hide Standings' }}
+          </button>
+        </div>
+
+        <div *ngIf="!standingsCollapsed()">
+          <div *ngIf="standingsError()" class="alert alert-danger">
+            {{ standingsError() }}
+          </div>
+
+          <div *ngIf="standingsLoading()" class="empty">
+            Loading standings...
+          </div>
+
+          <div
+            *ngIf="!standingsLoading() && standings().length === 0"
+            class="empty"
+          >
+            No standings yet. Standings are calculated once game results are
+            finalized.
+          </div>
+
+          <div
+            *ngIf="!standingsLoading() && standings().length > 0"
+            class="table-responsive"
+          >
+            <table class="table table-sm align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Team</th>
+                  <th>GP</th>
+                  <th>W</th>
+                  <th>L</th>
+                  <th>T</th>
+                  <th>GF</th>
+                  <th>GA</th>
+                  <th>DIFF</th>
+                  <th>PTS</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr *ngFor="let row of standings()">
+                  <td class="fw-semibold">{{ row.teamName }}</td>
+                  <td>{{ row.gamesPlayed }}</td>
+                  <td>{{ row.wins }}</td>
+                  <td>{{ row.losses }}</td>
+                  <td>{{ row.ties }}</td>
+                  <td>{{ row.goalsFor }}</td>
+                  <td>{{ row.goalsAgainst }}</td>
+                  <td>
+                    {{
+                      row.goalDifferential > 0
+                        ? '+' + row.goalDifferential
+                        : row.goalDifferential
+                    }}
+                  </td>
+                  <td class="fw-bold">{{ row.points }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div
+          class="d-flex justify-content-between align-items-center gap-3 flex-wrap mb-3"
+        >
           <div class="d-flex align-items-center gap-2 flex-wrap">
             <h2 class="mb-0">Teams</h2>
 

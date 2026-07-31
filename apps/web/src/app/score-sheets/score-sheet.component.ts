@@ -8,7 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { finalize, forkJoin, switchMap, timeout } from 'rxjs';
+import { finalize, forkJoin, of, switchMap, timeout } from 'rxjs';
 import {
   GameScoreSheetDto,
   ScoreSheetPlayerLineDto,
@@ -274,6 +274,7 @@ export class ScoreSheetComponent implements OnInit {
           line.penaltyMins ?? 0,
           [Validators.required, Validators.min(0)],
         ],
+        plusMinus: [line.plusMinus ?? 0, Validators.required],
       });
 
       group.valueChanges.subscribe(() => {
@@ -386,7 +387,7 @@ export class ScoreSheetComponent implements OnInit {
 
   private saveAllPlayerLinesBeforeFinalize() {
     if (!this.scoreSheet?.id || this.scoreSheet.playerLines.length === 0) {
-      return forkJoin([]);
+      return of([]);
     }
 
     const scoreSheetId = this.scoreSheet.id;
@@ -401,6 +402,7 @@ export class ScoreSheetComponent implements OnInit {
         goals: Number(raw.goals ?? 0),
         assists: Number(raw.assists ?? 0),
         penaltyMins: Number(raw.penaltyMins ?? 0),
+        plusMinus: Number(raw.plusMinus ?? 0),
       });
     });
 

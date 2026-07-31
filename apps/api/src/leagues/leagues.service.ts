@@ -1178,6 +1178,119 @@ export class LeaguesService {
     });
   }
 
+  async getStandings(userId: string, leagueId: string) {
+    await this.assertUserCanAccessLeague(userId, leagueId);
+
+    const teams = await this.prisma.team.findMany({
+      where: { leagueId },
+      select: { id: true, name: true },
+      orderBy: { name: 'asc' },
+    });
+
+    const teamIds = new Set(teams.map((team) => team.id));
+
+    const scoreSheets = await this.prisma.gameScoreSheet.findMany({
+      where: {
+        leagueId,
+        status: 'FINALIZED',
+      },
+      select: {
+        teamId: true,
+        teamScore: true,
+        opponentScore: true,
+        game: {
+          select: {
+            opponentTeamId: true,
+          },
+        },
+      },
+    });
+
+    type StandingRow = {
+      teamId: string;
+      teamName: string;
+      gamesPlayed: number;
+      wins: number;
+      losses: number;
+      ties: number;
+      goalsFor: number;
+      goalsAgainst: number;
+      goalDifferential: number;
+      points: number;
+    };
+
+    const standingsByTeamId = new Map<string, StandingRow>(
+      teams.map((team) => [
+        team.id,
+        {
+          teamId: team.id,
+          teamName: team.name,
+          gamesPlayed: 0,
+          wins: 0,
+          losses: 0,
+          ties: 0,
+          goalsFor: 0,
+          goalsAgainst: 0,
+          goalDifferential: 0,
+          points: 0,
+        },
+      ]),
+    );
+
+    const creditResult = (
+      teamId: string,
+      goalsFor: number,
+      goalsAgainst: number,
+    ) => {
+      const row = standingsByTeamId.get(teamId);
+
+      if (!row) {
+        return;
+      }
+
+      row.gamesPlayed += 1;
+      row.goalsFor += goalsFor;
+      row.goalsAgainst += goalsAgainst;
+      row.goalDifferential = row.goalsFor - row.goalsAgainst;
+
+      if (goalsFor > goalsAgainst) {
+        row.wins += 1;
+        row.points += 2;
+      } else if (goalsFor < goalsAgainst) {
+        row.losses += 1;
+      } else {
+        row.ties += 1;
+        row.points += 1;
+      }
+    };
+
+    for (const sheet of scoreSheets) {
+      creditResult(sheet.teamId, sheet.teamScore, sheet.opponentScore);
+
+      const opponentTeamId = sheet.game.opponentTeamId;
+
+      if (opponentTeamId && teamIds.has(opponentTeamId)) {
+        creditResult(opponentTeamId, sheet.opponentScore, sheet.teamScore);
+      }
+    }
+
+    return Array.from(standingsByTeamId.values()).sort((a, b) => {
+      if (b.points !== a.points) {
+        return b.points - a.points;
+      }
+
+      if (b.wins !== a.wins) {
+        return b.wins - a.wins;
+      }
+
+      if (b.goalDifferential !== a.goalDifferential) {
+        return b.goalDifferential - a.goalDifferential;
+      }
+
+      return a.teamName.localeCompare(b.teamName);
+    });
+  }
+
   private async canManageScoreSheet(userId: string, leagueId: string) {
     const membership = await this.prisma.leagueMember.findFirst({
       where: {

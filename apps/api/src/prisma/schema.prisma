@@ -301,6 +301,7 @@ model PlayerStat {
   goals       Int      @default(0)
   assists     Int      @default(0)
   penaltyMins Int      @default(0)
+  plusMinus   Int      @default(0)
   updatedAt   DateTime @updatedAt
 
   member TeamMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
@@ -481,6 +482,7 @@ model GameScoreSheetPlayer {
   goals       Int @default(0)
   assists     Int @default(0)
   penaltyMins Int @default(0)
+  plusMinus   Int @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

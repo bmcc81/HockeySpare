@@ -54,6 +54,11 @@ export class LeaguesController {
     return this.leaguesService.listTeams(this.getUserId(req), id);
   }
 
+  @Get(':id/standings')
+  getStandings(@Req() req: AuthRequest, @Param('id') id: string) {
+    return this.leaguesService.getStandings(this.getUserId(req), id);
+  }
+
   @Post(':id/teams')
   addTeam(
     @Req() req: AuthRequest,

@@ -369,6 +369,15 @@
                             />
                           </div>
 
+                          <div class="col-6 col-md-2">
+                            <label class="form-label">+/-</label>
+                            <input
+                              class="form-control"
+                              type="number"
+                              formControlName="plusMinus"
+                            />
+                          </div>
+
                           <div class="col-12 col-md-1 d-flex gap-2">
                             <button
                               class="btn btn-primary btn-sm w-100"
@@ -699,6 +708,15 @@
                             />
                           </div>
 
+                          <div class="col-6 col-md-2">
+                            <label class="form-label">+/-</label>
+                            <input
+                              class="form-control"
+                              type="number"
+                              formControlName="plusMinus"
+                            />
+                          </div>
+
                           <div class="col-12 col-md-1 d-flex gap-2">
                             <button
                               class="btn btn-primary btn-sm w-100"
@@ -966,6 +984,16 @@
                         PIM {{ statsSortIcon('penaltyMins') }}
                       </button>
                     </th>
+
+                    <th>
+                      <button
+                        class="btn btn-link btn-sm p-0 text-decoration-none text-reset fw-semibold"
+                        type="button"
+                        (click)="setStatsSort('plusMinus')"
+                      >
+                        +/- {{ statsSortIcon('plusMinus') }}
+                      </button>
+                    </th>
                   </tr>
                 </thead>
 
@@ -979,6 +1007,7 @@
                     <td>{{ stat.assists }}</td>
                     <td>{{ stat.goals + stat.assists }}</td>
                     <td>{{ stat.penaltyMins }}</td>
+                    <td>{{ stat.plusMinus > 0 ? '+' + stat.plusMinus : stat.plusMinus }}</td>
                   </tr>
                 </tbody>
               </table>

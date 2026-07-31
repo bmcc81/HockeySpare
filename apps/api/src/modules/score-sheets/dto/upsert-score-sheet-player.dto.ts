@@ -28,4 +28,9 @@ export class UpsertScoreSheetPlayerDto {
   @IsInt()
   @Min(0)
   penaltyMins?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  plusMinus?: number;
 }

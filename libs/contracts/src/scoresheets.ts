@@ -68,6 +68,7 @@ export interface ScoreSheetPlayerLineDto {
   goals: number;
   assists: number;
   penaltyMins: number;
+  plusMinus: number;
   createdAt: string;
   updatedAt: string;
   member: ScoreSheetMemberDto;
@@ -132,4 +133,5 @@ export interface UpsertScoreSheetPlayerInput {
   goals?: number;
   assists?: number;
   penaltyMins?: number;
+  plusMinus?: number;
 }

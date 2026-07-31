@@ -31,6 +31,7 @@ export type GameScoreSheetPlayerAvgAggregateOutputType = {
   goals: number | null
   assists: number | null
   penaltyMins: number | null
+  plusMinus: number | null
 }
 
 export type GameScoreSheetPlayerSumAggregateOutputType = {
@@ -38,6 +39,7 @@ export type GameScoreSheetPlayerSumAggregateOutputType = {
   goals: number | null
   assists: number | null
   penaltyMins: number | null
+  plusMinus: number | null
 }
 
 export type GameScoreSheetPlayerMinAggregateOutputType = {
@@ -48,6 +50,7 @@ export type GameScoreSheetPlayerMinAggregateOutputType = {
   goals: number | null
   assists: number | null
   penaltyMins: number | null
+  plusMinus: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -60,6 +63,7 @@ export type GameScoreSheetPlayerMaxAggregateOutputType = {
   goals: number | null
   assists: number | null
   penaltyMins: number | null
+  plusMinus: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -72,6 +76,7 @@ export type GameScoreSheetPlayerCountAggregateOutputType = {
   goals: number
   assists: number
   penaltyMins: number
+  plusMinus: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -83,6 +88,7 @@ export type GameScoreSheetPlayerAvgAggregateInputType = {
   goals?: true
   assists?: true
   penaltyMins?: true
+  plusMinus?: true
 }
 
 export type GameScoreSheetPlayerSumAggregateInputType = {
@@ -90,6 +96,7 @@ export type GameScoreSheetPlayerSumAggregateInputType = {
   goals?: true
   assists?: true
   penaltyMins?: true
+  plusMinus?: true
 }
 
 export type GameScoreSheetPlayerMinAggregateInputType = {
@@ -100,6 +107,7 @@ export type GameScoreSheetPlayerMinAggregateInputType = {
   goals?: true
   assists?: true
   penaltyMins?: true
+  plusMinus?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -112,6 +120,7 @@ export type GameScoreSheetPlayerMaxAggregateInputType = {
   goals?: true
   assists?: true
   penaltyMins?: true
+  plusMinus?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -124,6 +133,7 @@ export type GameScoreSheetPlayerCountAggregateInputType = {
   goals?: true
   assists?: true
   penaltyMins?: true
+  plusMinus?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -223,6 +233,7 @@ export type GameScoreSheetPlayerGroupByOutputType = {
   goals: number
   assists: number
   penaltyMins: number
+  plusMinus: number
   createdAt: Date
   updatedAt: Date
   _count: GameScoreSheetPlayerCountAggregateOutputType | null
@@ -258,6 +269,7 @@ export type GameScoreSheetPlayerWhereInput = {
   goals?: Prisma.IntFilter<"GameScoreSheetPlayer"> | number
   assists?: Prisma.IntFilter<"GameScoreSheetPlayer"> | number
   penaltyMins?: Prisma.IntFilter<"GameScoreSheetPlayer"> | number
+  plusMinus?: Prisma.IntFilter<"GameScoreSheetPlayer"> | number
   createdAt?: Prisma.DateTimeFilter<"GameScoreSheetPlayer"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"GameScoreSheetPlayer"> | Date | string
   scoreSheet?: Prisma.XOR<Prisma.GameScoreSheetScalarRelationFilter, Prisma.GameScoreSheetWhereInput>
@@ -272,6 +284,7 @@ export type GameScoreSheetPlayerOrderByWithRelationInput = {
   goals?: Prisma.SortOrder
   assists?: Prisma.SortOrder
   penaltyMins?: Prisma.SortOrder
+  plusMinus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   scoreSheet?: Prisma.GameScoreSheetOrderByWithRelationInput
@@ -290,6 +303,7 @@ export type GameScoreSheetPlayerWhereUniqueInput = Prisma.AtLeast<{
   goals?: Prisma.IntFilter<"GameScoreSheetPlayer"> | number
   assists?: Prisma.IntFilter<"GameScoreSheetPlayer"> | number
   penaltyMins?: Prisma.IntFilter<"GameScoreSheetPlayer"> | number
+  plusMinus?: Prisma.IntFilter<"GameScoreSheetPlayer"> | number
   createdAt?: Prisma.DateTimeFilter<"GameScoreSheetPlayer"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"GameScoreSheetPlayer"> | Date | string
   scoreSheet?: Prisma.XOR<Prisma.GameScoreSheetScalarRelationFilter, Prisma.GameScoreSheetWhereInput>
@@ -304,6 +318,7 @@ export type GameScoreSheetPlayerOrderByWithAggregationInput = {
   goals?: Prisma.SortOrder
   assists?: Prisma.SortOrder
   penaltyMins?: Prisma.SortOrder
+  plusMinus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.GameScoreSheetPlayerCountOrderByAggregateInput
@@ -324,6 +339,7 @@ export type GameScoreSheetPlayerScalarWhereWithAggregatesInput = {
   goals?: Prisma.IntWithAggregatesFilter<"GameScoreSheetPlayer"> | number
   assists?: Prisma.IntWithAggregatesFilter<"GameScoreSheetPlayer"> | number
   penaltyMins?: Prisma.IntWithAggregatesFilter<"GameScoreSheetPlayer"> | number
+  plusMinus?: Prisma.IntWithAggregatesFilter<"GameScoreSheetPlayer"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"GameScoreSheetPlayer"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"GameScoreSheetPlayer"> | Date | string
 }
@@ -334,6 +350,7 @@ export type GameScoreSheetPlayerCreateInput = {
   goals?: number
   assists?: number
   penaltyMins?: number
+  plusMinus?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   scoreSheet: Prisma.GameScoreSheetCreateNestedOneWithoutPlayerLinesInput
@@ -348,6 +365,7 @@ export type GameScoreSheetPlayerUncheckedCreateInput = {
   goals?: number
   assists?: number
   penaltyMins?: number
+  plusMinus?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -358,6 +376,7 @@ export type GameScoreSheetPlayerUpdateInput = {
   goals?: Prisma.IntFieldUpdateOperationsInput | number
   assists?: Prisma.IntFieldUpdateOperationsInput | number
   penaltyMins?: Prisma.IntFieldUpdateOperationsInput | number
+  plusMinus?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   scoreSheet?: Prisma.GameScoreSheetUpdateOneRequiredWithoutPlayerLinesNestedInput
@@ -372,6 +391,7 @@ export type GameScoreSheetPlayerUncheckedUpdateInput = {
   goals?: Prisma.IntFieldUpdateOperationsInput | number
   assists?: Prisma.IntFieldUpdateOperationsInput | number
   penaltyMins?: Prisma.IntFieldUpdateOperationsInput | number
+  plusMinus?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -384,6 +404,7 @@ export type GameScoreSheetPlayerCreateManyInput = {
   goals?: number
   assists?: number
   penaltyMins?: number
+  plusMinus?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -394,6 +415,7 @@ export type GameScoreSheetPlayerUpdateManyMutationInput = {
   goals?: Prisma.IntFieldUpdateOperationsInput | number
   assists?: Prisma.IntFieldUpdateOperationsInput | number
   penaltyMins?: Prisma.IntFieldUpdateOperationsInput | number
+  plusMinus?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -406,6 +428,7 @@ export type GameScoreSheetPlayerUncheckedUpdateManyInput = {
   goals?: Prisma.IntFieldUpdateOperationsInput | number
   assists?: Prisma.IntFieldUpdateOperationsInput | number
   penaltyMins?: Prisma.IntFieldUpdateOperationsInput | number
+  plusMinus?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -433,6 +456,7 @@ export type GameScoreSheetPlayerCountOrderByAggregateInput = {
   goals?: Prisma.SortOrder
   assists?: Prisma.SortOrder
   penaltyMins?: Prisma.SortOrder
+  plusMinus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -442,6 +466,7 @@ export type GameScoreSheetPlayerAvgOrderByAggregateInput = {
   goals?: Prisma.SortOrder
   assists?: Prisma.SortOrder
   penaltyMins?: Prisma.SortOrder
+  plusMinus?: Prisma.SortOrder
 }
 
 export type GameScoreSheetPlayerMaxOrderByAggregateInput = {
@@ -452,6 +477,7 @@ export type GameScoreSheetPlayerMaxOrderByAggregateInput = {
   goals?: Prisma.SortOrder
   assists?: Prisma.SortOrder
   penaltyMins?: Prisma.SortOrder
+  plusMinus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -464,6 +490,7 @@ export type GameScoreSheetPlayerMinOrderByAggregateInput = {
   goals?: Prisma.SortOrder
   assists?: Prisma.SortOrder
   penaltyMins?: Prisma.SortOrder
+  plusMinus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -473,6 +500,7 @@ export type GameScoreSheetPlayerSumOrderByAggregateInput = {
   goals?: Prisma.SortOrder
   assists?: Prisma.SortOrder
   penaltyMins?: Prisma.SortOrder
+  plusMinus?: Prisma.SortOrder
 }
 
 export type GameScoreSheetPlayerCreateNestedManyWithoutMemberInput = {
@@ -565,6 +593,7 @@ export type GameScoreSheetPlayerCreateWithoutMemberInput = {
   goals?: number
   assists?: number
   penaltyMins?: number
+  plusMinus?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   scoreSheet: Prisma.GameScoreSheetCreateNestedOneWithoutPlayerLinesInput
@@ -577,6 +606,7 @@ export type GameScoreSheetPlayerUncheckedCreateWithoutMemberInput = {
   goals?: number
   assists?: number
   penaltyMins?: number
+  plusMinus?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -618,6 +648,7 @@ export type GameScoreSheetPlayerScalarWhereInput = {
   goals?: Prisma.IntFilter<"GameScoreSheetPlayer"> | number
   assists?: Prisma.IntFilter<"GameScoreSheetPlayer"> | number
   penaltyMins?: Prisma.IntFilter<"GameScoreSheetPlayer"> | number
+  plusMinus?: Prisma.IntFilter<"GameScoreSheetPlayer"> | number
   createdAt?: Prisma.DateTimeFilter<"GameScoreSheetPlayer"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"GameScoreSheetPlayer"> | Date | string
 }
@@ -628,6 +659,7 @@ export type GameScoreSheetPlayerCreateWithoutScoreSheetInput = {
   goals?: number
   assists?: number
   penaltyMins?: number
+  plusMinus?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   member: Prisma.TeamMemberCreateNestedOneWithoutGameScoreSheetPlayersInput
@@ -640,6 +672,7 @@ export type GameScoreSheetPlayerUncheckedCreateWithoutScoreSheetInput = {
   goals?: number
   assists?: number
   penaltyMins?: number
+  plusMinus?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -677,6 +710,7 @@ export type GameScoreSheetPlayerCreateManyMemberInput = {
   goals?: number
   assists?: number
   penaltyMins?: number
+  plusMinus?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -687,6 +721,7 @@ export type GameScoreSheetPlayerUpdateWithoutMemberInput = {
   goals?: Prisma.IntFieldUpdateOperationsInput | number
   assists?: Prisma.IntFieldUpdateOperationsInput | number
   penaltyMins?: Prisma.IntFieldUpdateOperationsInput | number
+  plusMinus?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   scoreSheet?: Prisma.GameScoreSheetUpdateOneRequiredWithoutPlayerLinesNestedInput
@@ -699,6 +734,7 @@ export type GameScoreSheetPlayerUncheckedUpdateWithoutMemberInput = {
   goals?: Prisma.IntFieldUpdateOperationsInput | number
   assists?: Prisma.IntFieldUpdateOperationsInput | number
   penaltyMins?: Prisma.IntFieldUpdateOperationsInput | number
+  plusMinus?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -710,6 +746,7 @@ export type GameScoreSheetPlayerUncheckedUpdateManyWithoutMemberInput = {
   goals?: Prisma.IntFieldUpdateOperationsInput | number
   assists?: Prisma.IntFieldUpdateOperationsInput | number
   penaltyMins?: Prisma.IntFieldUpdateOperationsInput | number
+  plusMinus?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -721,6 +758,7 @@ export type GameScoreSheetPlayerCreateManyScoreSheetInput = {
   goals?: number
   assists?: number
   penaltyMins?: number
+  plusMinus?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -731,6 +769,7 @@ export type GameScoreSheetPlayerUpdateWithoutScoreSheetInput = {
   goals?: Prisma.IntFieldUpdateOperationsInput | number
   assists?: Prisma.IntFieldUpdateOperationsInput | number
   penaltyMins?: Prisma.IntFieldUpdateOperationsInput | number
+  plusMinus?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   member?: Prisma.TeamMemberUpdateOneRequiredWithoutGameScoreSheetPlayersNestedInput
@@ -743,6 +782,7 @@ export type GameScoreSheetPlayerUncheckedUpdateWithoutScoreSheetInput = {
   goals?: Prisma.IntFieldUpdateOperationsInput | number
   assists?: Prisma.IntFieldUpdateOperationsInput | number
   penaltyMins?: Prisma.IntFieldUpdateOperationsInput | number
+  plusMinus?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -754,6 +794,7 @@ export type GameScoreSheetPlayerUncheckedUpdateManyWithoutScoreSheetInput = {
   goals?: Prisma.IntFieldUpdateOperationsInput | number
   assists?: Prisma.IntFieldUpdateOperationsInput | number
   penaltyMins?: Prisma.IntFieldUpdateOperationsInput | number
+  plusMinus?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -768,6 +809,7 @@ export type GameScoreSheetPlayerSelect<ExtArgs extends runtime.Types.Extensions.
   goals?: boolean
   assists?: boolean
   penaltyMins?: boolean
+  plusMinus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   scoreSheet?: boolean | Prisma.GameScoreSheetDefaultArgs<ExtArgs>
@@ -782,6 +824,7 @@ export type GameScoreSheetPlayerSelectCreateManyAndReturn<ExtArgs extends runtim
   goals?: boolean
   assists?: boolean
   penaltyMins?: boolean
+  plusMinus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   scoreSheet?: boolean | Prisma.GameScoreSheetDefaultArgs<ExtArgs>
@@ -796,6 +839,7 @@ export type GameScoreSheetPlayerSelectUpdateManyAndReturn<ExtArgs extends runtim
   goals?: boolean
   assists?: boolean
   penaltyMins?: boolean
+  plusMinus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   scoreSheet?: boolean | Prisma.GameScoreSheetDefaultArgs<ExtArgs>
@@ -810,11 +854,12 @@ export type GameScoreSheetPlayerSelectScalar = {
   goals?: boolean
   assists?: boolean
   penaltyMins?: boolean
+  plusMinus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type GameScoreSheetPlayerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "scoreSheetId" | "memberId" | "gamesPlayed" | "goals" | "assists" | "penaltyMins" | "createdAt" | "updatedAt", ExtArgs["result"]["gameScoreSheetPlayer"]>
+export type GameScoreSheetPlayerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "scoreSheetId" | "memberId" | "gamesPlayed" | "goals" | "assists" | "penaltyMins" | "plusMinus" | "createdAt" | "updatedAt", ExtArgs["result"]["gameScoreSheetPlayer"]>
 export type GameScoreSheetPlayerInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   scoreSheet?: boolean | Prisma.GameScoreSheetDefaultArgs<ExtArgs>
   member?: boolean | Prisma.TeamMemberDefaultArgs<ExtArgs>
@@ -842,6 +887,7 @@ export type $GameScoreSheetPlayerPayload<ExtArgs extends runtime.Types.Extension
     goals: number
     assists: number
     penaltyMins: number
+    plusMinus: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["gameScoreSheetPlayer"]>
@@ -1276,6 +1322,7 @@ export interface GameScoreSheetPlayerFieldRefs {
   readonly goals: Prisma.FieldRef<"GameScoreSheetPlayer", 'Int'>
   readonly assists: Prisma.FieldRef<"GameScoreSheetPlayer", 'Int'>
   readonly penaltyMins: Prisma.FieldRef<"GameScoreSheetPlayer", 'Int'>
+  readonly plusMinus: Prisma.FieldRef<"GameScoreSheetPlayer", 'Int'>
   readonly createdAt: Prisma.FieldRef<"GameScoreSheetPlayer", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"GameScoreSheetPlayer", 'DateTime'>
 }

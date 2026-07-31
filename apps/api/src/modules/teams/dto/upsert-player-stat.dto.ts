@@ -1,4 +1,4 @@
-import { IsInt, IsString, MaxLength, Min } from 'class-validator';
+import { IsInt, IsOptional, IsString, MaxLength, Min } from 'class-validator';
 
 export class UpsertPlayerStatDto {
   @IsString()
@@ -20,4 +20,8 @@ export class UpsertPlayerStatDto {
   @IsInt()
   @Min(0)
   penaltyMins!: number;
+
+  @IsOptional()
+  @IsInt()
+  plusMinus?: number;
 }

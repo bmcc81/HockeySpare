@@ -371,6 +371,7 @@ export class ScoreSheetsService {
         goals: dto.goals ?? 0,
         assists: dto.assists ?? 0,
         penaltyMins: dto.penaltyMins ?? 0,
+        plusMinus: dto.plusMinus ?? 0,
       },
       create: {
         scoreSheetId: scoreSheet.id,
@@ -379,6 +380,7 @@ export class ScoreSheetsService {
         goals: dto.goals ?? 0,
         assists: dto.assists ?? 0,
         penaltyMins: dto.penaltyMins ?? 0,
+        plusMinus: dto.plusMinus ?? 0,
       },
     });
 
@@ -430,6 +432,11 @@ export class ScoreSheetsService {
         ...(dto.penaltyMins !== undefined
           ? {
               penaltyMins: dto.penaltyMins,
+            }
+          : {}),
+        ...(dto.plusMinus !== undefined
+          ? {
+              plusMinus: dto.plusMinus,
             }
           : {}),
       },
@@ -494,6 +501,9 @@ export class ScoreSheetsService {
             penaltyMins: {
               increment: line.penaltyMins,
             },
+            plusMinus: {
+              increment: line.plusMinus,
+            },
             teamId: line.member.teamId,
             leagueId: scoreSheet.leagueId,
             ...(line.member.userId
@@ -512,6 +522,7 @@ export class ScoreSheetsService {
             goals: line.goals,
             assists: line.assists,
             penaltyMins: line.penaltyMins,
+            plusMinus: line.plusMinus,
           },
         });
       }

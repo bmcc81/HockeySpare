@@ -10,6 +10,7 @@ import {
   AddLeagueTeamMemberInput,
   BulkAddLeagueTeamMembersResult,
   LeagueDto,
+  LeagueStandingRow,
   TeamDto,
   TeamGameDto,
   LeagueArenaDto,
@@ -161,6 +162,11 @@ export class LeagueDetailComponent {
 
   teamsCollapsed = signal(false);
   arenasCollapsed = signal(false);
+  standingsCollapsed = signal(false);
+
+  standings = signal<LeagueStandingRow[]>([]);
+  standingsLoading = signal(false);
+  standingsError = signal<string | null>(null);
 
   deletingGameId = signal<string | null>(null);
 
@@ -230,9 +236,14 @@ export class LeagueDetailComponent {
     this.arenasCollapsed.update((collapsed) => !collapsed);
   }
 
+  toggleStandingsCollapsed(): void {
+    this.standingsCollapsed.update((collapsed) => !collapsed);
+  }
+
   ngOnInit(): void {
     this.setupAutoGameTitle();
     this.load();
+    this.loadStandings();
   }
 
   canManageLeague = computed(() => {
@@ -447,6 +458,26 @@ export class LeagueDetailComponent {
       error: () => {
         this.error.set('Could not load league.');
         this.loading.set(false);
+      },
+    });
+  }
+
+  loadStandings(): void {
+    if (!this.leagueId) {
+      return;
+    }
+
+    this.standingsLoading.set(true);
+    this.standingsError.set(null);
+
+    this.leaguesApi.getStandings(this.leagueId).subscribe({
+      next: (standings) => {
+        this.standings.set(standings);
+        this.standingsLoading.set(false);
+      },
+      error: () => {
+        this.standingsError.set('Could not load standings.');
+        this.standingsLoading.set(false);
       },
     });
   }

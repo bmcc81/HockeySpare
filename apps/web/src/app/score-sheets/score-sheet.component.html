@@ -279,6 +279,7 @@
                   <th>G</th>
                   <th>A</th>
                   <th>PIM</th>
+                  <th>+/-</th>
                   <th></th>
                 </tr>
               </thead>
@@ -291,7 +292,7 @@
                   "
                 >
                   <tr class="table-light">
-                    <th colspan="7" class="text-uppercase small text-secondary">
+                    <th colspan="8" class="text-uppercase small text-secondary">
                       {{ group.teamName }}
                     </th>
                   </tr>
@@ -350,6 +351,15 @@
                         type="number"
                         min="0"
                         formControlName="penaltyMins"
+                        [readonly]="!canEdit"
+                      />
+                    </td>
+
+                    <td style="width: 90px">
+                      <input
+                        class="form-control form-control-sm"
+                        type="number"
+                        formControlName="plusMinus"
                         [readonly]="!canEdit"
                       />
                     </td>

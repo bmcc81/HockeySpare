@@ -1377,6 +1377,7 @@ export class TeamsService {
       goals: number;
       assists: number;
       penaltyMins: number;
+      plusMinus?: number;
     },
     teamId?: string,
   ) {
@@ -1406,6 +1407,7 @@ export class TeamsService {
         goals: dto.goals,
         assists: dto.assists,
         penaltyMins: dto.penaltyMins,
+        plusMinus: dto.plusMinus ?? 0,
         teamId: team.id,
       },
       create: {
@@ -1416,6 +1418,7 @@ export class TeamsService {
         goals: dto.goals,
         assists: dto.assists,
         penaltyMins: dto.penaltyMins,
+        plusMinus: dto.plusMinus ?? 0,
       },
       include: {
         member: true,

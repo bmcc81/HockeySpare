@@ -9,6 +9,7 @@ import {
   TeamGameDto,
   AddLeagueTeamMemberInput,
   BulkAddLeagueTeamMembersResult,
+  LeagueStandingRow,
   TeamMember,
 } from '@hockeyspare/contracts';
 import { Observable } from 'rxjs';
@@ -42,6 +43,12 @@ export class LeaguesApiService {
 
   listGames(leagueId: string): Observable<TeamGameDto[]> {
     return this.http.get<TeamGameDto[]>(`/api/leagues/${leagueId}/games`);
+  }
+
+  getStandings(leagueId: string): Observable<LeagueStandingRow[]> {
+    return this.http.get<LeagueStandingRow[]>(
+      `/api/leagues/${leagueId}/standings`,
+    );
   }
 
   addGame(

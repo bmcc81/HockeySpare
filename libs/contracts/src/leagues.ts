@@ -145,6 +145,7 @@ export interface PlayerStat {
   goals: number;
   assists: number;
   penaltyMins: number;
+  plusMinus: number;
   updatedAt: string;
   team: {
     id: string;
@@ -254,4 +255,17 @@ export interface BulkAddLeagueTeamMembersSkippedRow {
 export interface BulkAddLeagueTeamMembersResult {
   created: TeamMember[];
   skipped: BulkAddLeagueTeamMembersSkippedRow[];
+}
+
+export interface LeagueStandingRow {
+  teamId: string;
+  teamName: string;
+  gamesPlayed: number;
+  wins: number;
+  losses: number;
+  ties: number;
+  goalsFor: number;
+  goalsAgainst: number;
+  goalDifferential: number;
+  points: number;
 }

@@ -94,6 +94,7 @@ export class MyTeamComponent implements OnInit {
     goals: [0, [Validators.required, Validators.min(0)]],
     assists: [0, [Validators.required, Validators.min(0)]],
     penaltyMins: [0, [Validators.required, Validators.min(0)]],
+    plusMinus: [0, Validators.required],
   });
 
   statsFilterForm = this.fb.group({
@@ -125,7 +126,8 @@ export class MyTeamComponent implements OnInit {
     | 'goals'
     | 'assists'
     | 'points'
-    | 'penaltyMins' = 'season';
+    | 'penaltyMins'
+    | 'plusMinus' = 'season';
 
   statsSortDirection: 'asc' | 'desc' = 'desc';
 
@@ -174,6 +176,8 @@ export class MyTeamComponent implements OnInit {
           return (aPoints - bPoints) * dir;
         case 'penaltyMins':
           return (a.penaltyMins - b.penaltyMins) * dir;
+        case 'plusMinus':
+          return (a.plusMinus - b.plusMinus) * dir;
         default:
           return 0;
       }
@@ -189,7 +193,8 @@ export class MyTeamComponent implements OnInit {
       | 'goals'
       | 'assists'
       | 'points'
-      | 'penaltyMins',
+      | 'penaltyMins'
+      | 'plusMinus',
   ) {
     if (this.statsSortKey === key) {
       this.statsSortDirection =
@@ -211,7 +216,8 @@ export class MyTeamComponent implements OnInit {
       | 'goals'
       | 'assists'
       | 'points'
-      | 'penaltyMins',
+      | 'penaltyMins'
+      | 'plusMinus',
   ): string {
     if (this.statsSortKey !== key) return '↕';
     return this.statsSortDirection === 'asc' ? '↑' : '↓';
@@ -933,6 +939,7 @@ export class MyTeamComponent implements OnInit {
                 goals: stat.goals ?? 0,
                 assists: stat.assists ?? 0,
                 penaltyMins: stat.penaltyMins ?? 0,
+                plusMinus: stat.plusMinus ?? 0,
               },
               { emitEvent: false },
             );
@@ -946,6 +953,7 @@ export class MyTeamComponent implements OnInit {
                 goals: 0,
                 assists: 0,
                 penaltyMins: 0,
+                plusMinus: 0,
               },
               { emitEvent: false },
             );
@@ -973,6 +981,7 @@ export class MyTeamComponent implements OnInit {
       goals: 0,
       assists: 0,
       penaltyMins: 0,
+      plusMinus: 0,
     });
 
     this.loadMemberStatsIntoForm(memberId);
@@ -990,6 +999,7 @@ export class MyTeamComponent implements OnInit {
       goals: 0,
       assists: 0,
       penaltyMins: 0,
+      plusMinus: 0,
     });
   }
 
@@ -1018,6 +1028,7 @@ export class MyTeamComponent implements OnInit {
           goals: Number(raw.goals ?? 0),
           assists: Number(raw.assists ?? 0),
           penaltyMins: Number(raw.penaltyMins ?? 0),
+          plusMinus: Number(raw.plusMinus ?? 0),
         },
         this.selectedTeamId,
       )

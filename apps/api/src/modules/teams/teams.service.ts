@@ -22,6 +22,7 @@ import { UpdateTeamMemberRoleDto } from './dto/update-team-member-role.dto';
 import { SmsService } from '../sms/sms.service';
 import { RequestsService } from '../requests/requests.service';
 import { UpsertMemberFeeDto } from './dto/upsert-member-fee.dto';
+import { CreateTeamMessageDto } from './dto/create-team-message.dto';
 
 @Injectable()
 export class TeamsService {
@@ -1716,6 +1717,131 @@ export class TeamsService {
           },
         },
       ],
+    });
+  }
+
+  private async assertActiveTeamMember(
+    userId: string,
+    teamId: string,
+  ): Promise<{ id: string; name: string }> {
+    const team = await this.prisma.team.findUnique({
+      where: {
+        id: teamId,
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    if (!team) {
+      throw new NotFoundException('Team not found.');
+    }
+
+    const membership = await this.prisma.teamMember.findFirst({
+      where: {
+        userId,
+        teamId,
+        isActive: true,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!membership) {
+      throw new ForbiddenException('You are not a member of this team.');
+    }
+
+    return team;
+  }
+
+  async listMyTeams(userId: string) {
+    await this.linkPendingTeamMembershipsByEmail(userId);
+
+    const memberships = await this.prisma.teamMember.findMany({
+      where: {
+        userId,
+        isActive: true,
+      },
+      include: {
+        team: {
+          include: {
+            league: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        team: {
+          name: 'asc',
+        },
+      },
+    });
+
+    return memberships.map((membership) => ({
+      id: membership.team.id,
+      name: membership.team.name,
+      league: membership.team.league,
+    }));
+  }
+
+  async getTeamMessages(userId: string, teamId: string) {
+    await this.assertActiveTeamMember(userId, teamId);
+
+    return this.prisma.teamMessage.findMany({
+      where: {
+        teamId,
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
+  }
+
+  async createTeamMessage(
+    userId: string,
+    teamId: string,
+    dto: CreateTeamMessageDto,
+  ) {
+    await this.assertActiveTeamMember(userId, teamId);
+
+    const body = dto.body.trim();
+
+    if (!body) {
+      throw new BadRequestException('Message body is required.');
+    }
+
+    return this.prisma.teamMessage.create({
+      data: {
+        teamId,
+        authorId: userId,
+        body,
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+      },
     });
   }
 }

@@ -1,12 +1,15 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import {
+  CreateTeamMessageInput,
   MemberFee,
   MyTeamResponse,
+  MyTeamSummary,
   PlayerStat,
   TeamGame,
   TeamGameAvailabilityStatus,
   TeamMember,
+  TeamMessage,
 } from '@hockeyspare/contracts';
 import { Observable } from 'rxjs';
 
@@ -259,5 +262,24 @@ export class TeamService {
         params: this.teamParams(teamId),
       },
     );
+  }
+
+  listMyTeams(): Observable<MyTeamSummary[]> {
+    return this.http.get<MyTeamSummary[]>(`${this.baseUrl}/teams`);
+  }
+
+  getTeamMessages(teamId: string): Observable<TeamMessage[]> {
+    return this.http.get<TeamMessage[]>(`${this.baseUrl}/messages`, {
+      params: this.teamParams(teamId),
+    });
+  }
+
+  postTeamMessage(
+    teamId: string,
+    input: CreateTeamMessageInput,
+  ): Observable<TeamMessage> {
+    return this.http.post<TeamMessage>(`${this.baseUrl}/messages`, input, {
+      params: this.teamParams(teamId),
+    });
   }
 }

@@ -58,6 +58,11 @@ export type LeagueMember = Prisma.LeagueMemberModel
  */
 export type Team = Prisma.TeamModel
 /**
+ * Model TeamMessage
+ * 
+ */
+export type TeamMessage = Prisma.TeamMessageModel
+/**
  * Model TeamMember
  * 
  */

@@ -1,1 +1,28 @@
-<p>chat-list works!</p>
+<section class="container py-4" style="max-width: 640px">
+  <h1 class="h3 mb-3">Messages</h1>
+
+  <div *ngIf="loading()" class="text-secondary">Loading your teams...</div>
+
+  <div *ngIf="error()" class="alert alert-danger">{{ error() }}</div>
+
+  <div *ngIf="!loading() && !error() && teams().length === 0" class="empty">
+    You are not on any teams yet. Join or create a team to start chatting.
+  </div>
+
+  <div class="list-group" *ngIf="!loading() && teams().length > 0">
+    <a
+      *ngFor="let team of teams(); trackBy: trackByTeamId"
+      class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+      [routerLink]="['/messages', team.id]"
+    >
+      <div>
+        <div class="fw-semibold">{{ team.name }}</div>
+        <div class="text-secondary small" *ngIf="team.league">
+          {{ team.league.name }}
+        </div>
+      </div>
+
+      <span class="text-secondary">&rsaquo;</span>
+    </a>
+  </div>
+</section>

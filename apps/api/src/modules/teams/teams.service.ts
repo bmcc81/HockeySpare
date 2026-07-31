@@ -23,6 +23,8 @@ import { SmsService } from '../sms/sms.service';
 import { RequestsService } from '../requests/requests.service';
 import { UpsertMemberFeeDto } from './dto/upsert-member-fee.dto';
 import { CreateTeamMessageDto } from './dto/create-team-message.dto';
+import { StripeService } from '../stripe/stripe.service';
+import type Stripe from 'stripe';
 
 @Injectable()
 export class TeamsService {
@@ -32,6 +34,7 @@ export class TeamsService {
     private readonly emailService: EmailService,
     private readonly smsService: SmsService,
     private readonly requestsService: RequestsService,
+    private readonly stripeService: StripeService,
   ) {}
 
   private buildDisplayName(user: {
@@ -1843,5 +1846,308 @@ export class TeamsService {
         },
       },
     });
+  }
+
+  private appUrl(): string {
+    return (process.env.APP_URL ?? 'http://localhost:4200').replace(/\/$/, '');
+  }
+
+  async getPaymentsStatus(userId: string, teamId?: string) {
+    const team = await this.getManagedTeam(userId, teamId);
+
+    return {
+      teamId: team.id,
+      connected: !!team.stripeAccountId,
+      payoutsEnabled: team.stripePayoutsEnabled,
+      stripeConfigured: this.stripeService.isConfigured(),
+    };
+  }
+
+  async connectStripeAccount(userId: string, teamId?: string) {
+    const team = await this.getManagedTeam(userId, teamId);
+    const client = this.stripeService.getClient();
+
+    let accountId = team.stripeAccountId;
+
+    if (!accountId) {
+      const account = await client.accounts.create({
+        type: 'express',
+        capabilities: {
+          card_payments: { requested: true },
+          transfers: { requested: true },
+        },
+      });
+
+      accountId = account.id;
+
+      await this.prisma.team.update({
+        where: { id: team.id },
+        data: { stripeAccountId: accountId },
+      });
+    }
+
+    const returnUrl = `${this.appUrl()}/my-team?teamId=${team.id}&stripeReturn=1`;
+
+    const accountLink = await client.accountLinks.create({
+      account: accountId,
+      refresh_url: returnUrl,
+      return_url: returnUrl,
+      type: 'account_onboarding',
+    });
+
+    return { url: accountLink.url };
+  }
+
+  async refreshStripeAccountStatus(userId: string, teamId?: string) {
+    const team = await this.getManagedTeam(userId, teamId);
+
+    if (!team.stripeAccountId) {
+      return {
+        teamId: team.id,
+        connected: false,
+        payoutsEnabled: false,
+      };
+    }
+
+    const client = this.stripeService.getClient();
+    const account = await client.accounts.retrieve(team.stripeAccountId);
+    const payoutsEnabled = !!account.payouts_enabled;
+
+    await this.prisma.team.update({
+      where: { id: team.id },
+      data: { stripePayoutsEnabled: payoutsEnabled },
+    });
+
+    return {
+      teamId: team.id,
+      connected: true,
+      payoutsEnabled,
+    };
+  }
+
+  private async canPayForMemberFee(
+    userId: string,
+    fee: { teamId: string; member: { userId: string | null } },
+  ): Promise<boolean> {
+    if (fee.member.userId === userId) {
+      return true;
+    }
+
+    const managerMembership = await this.prisma.teamMember.findFirst({
+      where: {
+        userId,
+        teamId: fee.teamId,
+        isActive: true,
+        role: {
+          in: [TeamRole.CAPTAIN, TeamRole.GENERAL_MANAGER],
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    return !!managerMembership;
+  }
+
+  async createFeeCheckoutSession(userId: string, memberFeeId: string) {
+    const fee = await this.prisma.memberFee.findUnique({
+      where: { id: memberFeeId },
+      include: {
+        member: true,
+        team: true,
+      },
+    });
+
+    if (!fee) {
+      throw new NotFoundException('Fee record not found.');
+    }
+
+    const canPay = await this.canPayForMemberFee(userId, fee);
+
+    if (!canPay) {
+      throw new ForbiddenException('You cannot pay this fee.');
+    }
+
+    const balance = fee.amountOwed - fee.amountPaid;
+
+    if (balance <= 0) {
+      throw new BadRequestException('This fee is already paid in full.');
+    }
+
+    if (!fee.team.stripeAccountId || !fee.team.stripePayoutsEnabled) {
+      throw new BadRequestException(
+        'This team has not finished connecting a payout account yet.',
+      );
+    }
+
+    const amountCents = balance * 100;
+    const returnBase = `${this.appUrl()}/my-team?teamId=${fee.teamId}`;
+
+    const session = await this.stripeService
+      .getClient()
+      .checkout.sessions.create(
+        {
+          mode: 'payment',
+          payment_method_types: ['card'],
+          line_items: [
+            {
+              quantity: 1,
+              price_data: {
+                currency: 'usd',
+                unit_amount: amountCents,
+                product_data: {
+                  name: `${fee.team.name} - ${fee.season} team fee`,
+                  description: `Fee balance for ${fee.member.displayName}`,
+                },
+              },
+            },
+          ],
+          success_url: `${returnBase}&paymentSessionId={CHECKOUT_SESSION_ID}`,
+          cancel_url: returnBase,
+          metadata: {
+            memberFeeId: fee.id,
+          },
+        },
+        {
+          stripeAccount: fee.team.stripeAccountId,
+        },
+      );
+
+    await this.prisma.payment.create({
+      data: {
+        memberFeeId: fee.id,
+        teamId: fee.teamId,
+        payerUserId: userId,
+        amountCents,
+        status: 'PENDING',
+        stripeCheckoutSessionId: session.id,
+      },
+    });
+
+    return { url: session.url };
+  }
+
+  async verifyFeeCheckoutSession(userId: string, sessionId: string) {
+    const payment = await this.prisma.payment.findUnique({
+      where: { stripeCheckoutSessionId: sessionId },
+      include: {
+        memberFee: {
+          include: {
+            member: true,
+            team: true,
+          },
+        },
+        team: true,
+      },
+    });
+
+    if (!payment) {
+      throw new NotFoundException('Payment session not found.');
+    }
+
+    const canView = await this.canPayForMemberFee(userId, payment.memberFee);
+
+    if (!canView) {
+      throw new ForbiddenException('You cannot view this payment.');
+    }
+
+    if (payment.status === 'SUCCEEDED') {
+      return { status: payment.status, memberFee: payment.memberFee };
+    }
+
+    if (!payment.team.stripeAccountId) {
+      throw new BadRequestException('This team is no longer connected.');
+    }
+
+    const session = await this.stripeService
+      .getClient()
+      .checkout.sessions.retrieve(
+        payment.stripeCheckoutSessionId!,
+        {},
+        { stripeAccount: payment.team.stripeAccountId },
+      );
+
+    if (session.payment_status === 'paid') {
+      const result = await this.claimPaymentSuccess(payment.id, session);
+
+      if (!result) {
+        const current = await this.prisma.memberFee.findUniqueOrThrow({
+          where: { id: payment.memberFeeId },
+          include: { member: true, team: true },
+        });
+
+        return { status: 'SUCCEEDED', memberFee: current };
+      }
+
+      return { status: 'SUCCEEDED', memberFee: result };
+    }
+
+    return { status: payment.status, memberFee: payment.memberFee };
+  }
+
+  /**
+   * Atomically transitions a Payment PENDING -> SUCCEEDED and credits the
+   * fee exactly once, even if the webhook and the checkout-return
+   * verification race each other for the same session.
+   */
+  private async claimPaymentSuccess(
+    paymentId: string,
+    session: Stripe.Checkout.Session,
+  ) {
+    return this.prisma.$transaction(async (tx) => {
+      const claim = await tx.payment.updateMany({
+        where: {
+          id: paymentId,
+          status: { not: 'SUCCEEDED' },
+        },
+        data: {
+          status: 'SUCCEEDED',
+          stripePaymentIntentId:
+            typeof session.payment_intent === 'string'
+              ? session.payment_intent
+              : (session.payment_intent?.id ?? null),
+        },
+      });
+
+      if (claim.count === 0) {
+        return null;
+      }
+
+      const payment = await tx.payment.findUniqueOrThrow({
+        where: { id: paymentId },
+      });
+
+      return tx.memberFee.update({
+        where: { id: payment.memberFeeId },
+        data: {
+          amountPaid: {
+            increment: payment.amountCents / 100,
+          },
+        },
+        include: {
+          member: true,
+          team: true,
+        },
+      });
+    });
+  }
+
+  async handleStripeCheckoutSessionCompleted(
+    session: Stripe.Checkout.Session,
+  ): Promise<void> {
+    const payment = await this.prisma.payment.findUnique({
+      where: { stripeCheckoutSessionId: session.id },
+    });
+
+    if (!payment || payment.status === 'SUCCEEDED') {
+      return;
+    }
+
+    if (session.payment_status !== 'paid') {
+      return;
+    }
+
+    await this.claimPaymentSuccess(payment.id, session);
   }
 }

@@ -1,10 +1,12 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import {
+  CheckoutSessionResult,
   CreateTeamMessageInput,
   MemberFee,
   MyTeamResponse,
   MyTeamSummary,
+  PaymentsStatus,
   PlayerStat,
   TeamGame,
   TeamGameAvailabilityStatus,
@@ -281,5 +283,46 @@ export class TeamService {
     return this.http.post<TeamMessage>(`${this.baseUrl}/messages`, input, {
       params: this.teamParams(teamId),
     });
+  }
+
+  getPaymentsStatus(teamId?: string | null): Observable<PaymentsStatus> {
+    return this.http.get<PaymentsStatus>(`${this.baseUrl}/payments/status`, {
+      params: this.teamParams(teamId),
+    });
+  }
+
+  connectStripe(teamId?: string | null): Observable<CheckoutSessionResult> {
+    return this.http.post<CheckoutSessionResult>(
+      `${this.baseUrl}/payments/connect`,
+      {},
+      {
+        params: this.teamParams(teamId),
+      },
+    );
+  }
+
+  refreshStripeStatus(teamId?: string | null): Observable<PaymentsStatus> {
+    return this.http.post<PaymentsStatus>(
+      `${this.baseUrl}/payments/refresh`,
+      {},
+      {
+        params: this.teamParams(teamId),
+      },
+    );
+  }
+
+  createFeeCheckout(memberFeeId: string): Observable<CheckoutSessionResult> {
+    return this.http.post<CheckoutSessionResult>(
+      `${this.baseUrl}/payments/checkout/${memberFeeId}`,
+      {},
+    );
+  }
+
+  verifyFeeCheckout(
+    sessionId: string,
+  ): Observable<{ status: string; memberFee: MemberFee }> {
+    return this.http.get<{ status: string; memberFee: MemberFee }>(
+      `${this.baseUrl}/payments/verify/${sessionId}`,
+    );
   }
 }

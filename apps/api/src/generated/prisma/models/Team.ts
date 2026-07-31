@@ -32,6 +32,9 @@ export type TeamMinAggregateOutputType = {
   joinCode: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  stripeAccountId: string | null
+  stripePayoutsEnabled: boolean | null
+  stripeOnboardingUrl: string | null
 }
 
 export type TeamMaxAggregateOutputType = {
@@ -42,6 +45,9 @@ export type TeamMaxAggregateOutputType = {
   joinCode: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  stripeAccountId: string | null
+  stripePayoutsEnabled: boolean | null
+  stripeOnboardingUrl: string | null
 }
 
 export type TeamCountAggregateOutputType = {
@@ -52,6 +58,9 @@ export type TeamCountAggregateOutputType = {
   joinCode: number
   createdAt: number
   updatedAt: number
+  stripeAccountId: number
+  stripePayoutsEnabled: number
+  stripeOnboardingUrl: number
   _all: number
 }
 
@@ -64,6 +73,9 @@ export type TeamMinAggregateInputType = {
   joinCode?: true
   createdAt?: true
   updatedAt?: true
+  stripeAccountId?: true
+  stripePayoutsEnabled?: true
+  stripeOnboardingUrl?: true
 }
 
 export type TeamMaxAggregateInputType = {
@@ -74,6 +86,9 @@ export type TeamMaxAggregateInputType = {
   joinCode?: true
   createdAt?: true
   updatedAt?: true
+  stripeAccountId?: true
+  stripePayoutsEnabled?: true
+  stripeOnboardingUrl?: true
 }
 
 export type TeamCountAggregateInputType = {
@@ -84,6 +99,9 @@ export type TeamCountAggregateInputType = {
   joinCode?: true
   createdAt?: true
   updatedAt?: true
+  stripeAccountId?: true
+  stripePayoutsEnabled?: true
+  stripeOnboardingUrl?: true
   _all?: true
 }
 
@@ -167,6 +185,9 @@ export type TeamGroupByOutputType = {
   joinCode: string | null
   createdAt: Date
   updatedAt: Date
+  stripeAccountId: string | null
+  stripePayoutsEnabled: boolean
+  stripeOnboardingUrl: string | null
   _count: TeamCountAggregateOutputType | null
   _min: TeamMinAggregateOutputType | null
   _max: TeamMaxAggregateOutputType | null
@@ -198,6 +219,9 @@ export type TeamWhereInput = {
   joinCode?: Prisma.StringNullableFilter<"Team"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Team"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Team"> | Date | string
+  stripeAccountId?: Prisma.StringNullableFilter<"Team"> | string | null
+  stripePayoutsEnabled?: Prisma.BoolFilter<"Team"> | boolean
+  stripeOnboardingUrl?: Prisma.StringNullableFilter<"Team"> | string | null
   scoreSheets?: Prisma.GameScoreSheetListRelationFilter
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   league?: Prisma.XOR<Prisma.LeagueNullableScalarRelationFilter, Prisma.LeagueWhereInput> | null
@@ -207,6 +231,7 @@ export type TeamWhereInput = {
   playerStats?: Prisma.PlayerStatListRelationFilter
   memberFees?: Prisma.MemberFeeListRelationFilter
   messages?: Prisma.TeamMessageListRelationFilter
+  payments?: Prisma.PaymentListRelationFilter
 }
 
 export type TeamOrderByWithRelationInput = {
@@ -217,6 +242,9 @@ export type TeamOrderByWithRelationInput = {
   joinCode?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  stripeAccountId?: Prisma.SortOrderInput | Prisma.SortOrder
+  stripePayoutsEnabled?: Prisma.SortOrder
+  stripeOnboardingUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   scoreSheets?: Prisma.GameScoreSheetOrderByRelationAggregateInput
   createdBy?: Prisma.UserOrderByWithRelationInput
   league?: Prisma.LeagueOrderByWithRelationInput
@@ -226,11 +254,13 @@ export type TeamOrderByWithRelationInput = {
   playerStats?: Prisma.PlayerStatOrderByRelationAggregateInput
   memberFees?: Prisma.MemberFeeOrderByRelationAggregateInput
   messages?: Prisma.TeamMessageOrderByRelationAggregateInput
+  payments?: Prisma.PaymentOrderByRelationAggregateInput
 }
 
 export type TeamWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   joinCode?: string
+  stripeAccountId?: string
   AND?: Prisma.TeamWhereInput | Prisma.TeamWhereInput[]
   OR?: Prisma.TeamWhereInput[]
   NOT?: Prisma.TeamWhereInput | Prisma.TeamWhereInput[]
@@ -239,6 +269,8 @@ export type TeamWhereUniqueInput = Prisma.AtLeast<{
   leagueId?: Prisma.StringNullableFilter<"Team"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Team"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Team"> | Date | string
+  stripePayoutsEnabled?: Prisma.BoolFilter<"Team"> | boolean
+  stripeOnboardingUrl?: Prisma.StringNullableFilter<"Team"> | string | null
   scoreSheets?: Prisma.GameScoreSheetListRelationFilter
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   league?: Prisma.XOR<Prisma.LeagueNullableScalarRelationFilter, Prisma.LeagueWhereInput> | null
@@ -248,7 +280,8 @@ export type TeamWhereUniqueInput = Prisma.AtLeast<{
   playerStats?: Prisma.PlayerStatListRelationFilter
   memberFees?: Prisma.MemberFeeListRelationFilter
   messages?: Prisma.TeamMessageListRelationFilter
-}, "id" | "joinCode">
+  payments?: Prisma.PaymentListRelationFilter
+}, "id" | "joinCode" | "stripeAccountId">
 
 export type TeamOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -258,6 +291,9 @@ export type TeamOrderByWithAggregationInput = {
   joinCode?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  stripeAccountId?: Prisma.SortOrderInput | Prisma.SortOrder
+  stripePayoutsEnabled?: Prisma.SortOrder
+  stripeOnboardingUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.TeamCountOrderByAggregateInput
   _max?: Prisma.TeamMaxOrderByAggregateInput
   _min?: Prisma.TeamMinOrderByAggregateInput
@@ -274,6 +310,9 @@ export type TeamScalarWhereWithAggregatesInput = {
   joinCode?: Prisma.StringNullableWithAggregatesFilter<"Team"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Team"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Team"> | Date | string
+  stripeAccountId?: Prisma.StringNullableWithAggregatesFilter<"Team"> | string | null
+  stripePayoutsEnabled?: Prisma.BoolWithAggregatesFilter<"Team"> | boolean
+  stripeOnboardingUrl?: Prisma.StringNullableWithAggregatesFilter<"Team"> | string | null
 }
 
 export type TeamCreateInput = {
@@ -282,6 +321,9 @@ export type TeamCreateInput = {
   joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: string | null
   scoreSheets?: Prisma.GameScoreSheetCreateNestedManyWithoutTeamInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedTeamsInput
   league?: Prisma.LeagueCreateNestedOneWithoutTeamsInput
@@ -291,6 +333,7 @@ export type TeamCreateInput = {
   playerStats?: Prisma.PlayerStatCreateNestedManyWithoutTeamInput
   memberFees?: Prisma.MemberFeeCreateNestedManyWithoutTeamInput
   messages?: Prisma.TeamMessageCreateNestedManyWithoutTeamInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutTeamInput
 }
 
 export type TeamUncheckedCreateInput = {
@@ -301,6 +344,9 @@ export type TeamUncheckedCreateInput = {
   joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: string | null
   scoreSheets?: Prisma.GameScoreSheetUncheckedCreateNestedManyWithoutTeamInput
   members?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutTeamInput
   games?: Prisma.TeamGameUncheckedCreateNestedManyWithoutTeamInput
@@ -308,6 +354,7 @@ export type TeamUncheckedCreateInput = {
   playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutTeamInput
   memberFees?: Prisma.MemberFeeUncheckedCreateNestedManyWithoutTeamInput
   messages?: Prisma.TeamMessageUncheckedCreateNestedManyWithoutTeamInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutTeamInput
 }
 
 export type TeamUpdateInput = {
@@ -316,6 +363,9 @@ export type TeamUpdateInput = {
   joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeOnboardingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scoreSheets?: Prisma.GameScoreSheetUpdateManyWithoutTeamNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedTeamsNestedInput
   league?: Prisma.LeagueUpdateOneWithoutTeamsNestedInput
@@ -325,6 +375,7 @@ export type TeamUpdateInput = {
   playerStats?: Prisma.PlayerStatUpdateManyWithoutTeamNestedInput
   memberFees?: Prisma.MemberFeeUpdateManyWithoutTeamNestedInput
   messages?: Prisma.TeamMessageUpdateManyWithoutTeamNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamUncheckedUpdateInput = {
@@ -335,6 +386,9 @@ export type TeamUncheckedUpdateInput = {
   joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeOnboardingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scoreSheets?: Prisma.GameScoreSheetUncheckedUpdateManyWithoutTeamNestedInput
   members?: Prisma.TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
   games?: Prisma.TeamGameUncheckedUpdateManyWithoutTeamNestedInput
@@ -342,6 +396,7 @@ export type TeamUncheckedUpdateInput = {
   playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutTeamNestedInput
   memberFees?: Prisma.MemberFeeUncheckedUpdateManyWithoutTeamNestedInput
   messages?: Prisma.TeamMessageUncheckedUpdateManyWithoutTeamNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamCreateManyInput = {
@@ -352,6 +407,9 @@ export type TeamCreateManyInput = {
   joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: string | null
 }
 
 export type TeamUpdateManyMutationInput = {
@@ -360,6 +418,9 @@ export type TeamUpdateManyMutationInput = {
   joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeOnboardingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TeamUncheckedUpdateManyInput = {
@@ -370,6 +431,9 @@ export type TeamUncheckedUpdateManyInput = {
   joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeOnboardingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TeamListRelationFilter = {
@@ -390,6 +454,9 @@ export type TeamCountOrderByAggregateInput = {
   joinCode?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  stripeAccountId?: Prisma.SortOrder
+  stripePayoutsEnabled?: Prisma.SortOrder
+  stripeOnboardingUrl?: Prisma.SortOrder
 }
 
 export type TeamMaxOrderByAggregateInput = {
@@ -400,6 +467,9 @@ export type TeamMaxOrderByAggregateInput = {
   joinCode?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  stripeAccountId?: Prisma.SortOrder
+  stripePayoutsEnabled?: Prisma.SortOrder
+  stripeOnboardingUrl?: Prisma.SortOrder
 }
 
 export type TeamMinOrderByAggregateInput = {
@@ -410,6 +480,9 @@ export type TeamMinOrderByAggregateInput = {
   joinCode?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  stripeAccountId?: Prisma.SortOrder
+  stripePayoutsEnabled?: Prisma.SortOrder
+  stripeOnboardingUrl?: Prisma.SortOrder
 }
 
 export type TeamScalarRelationFilter = {
@@ -506,6 +579,10 @@ export type TeamUncheckedUpdateManyWithoutLeagueNestedInput = {
   deleteMany?: Prisma.TeamScalarWhereInput | Prisma.TeamScalarWhereInput[]
 }
 
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
 export type TeamCreateNestedOneWithoutMessagesInput = {
   create?: Prisma.XOR<Prisma.TeamCreateWithoutMessagesInput, Prisma.TeamUncheckedCreateWithoutMessagesInput>
   connectOrCreate?: Prisma.TeamCreateOrConnectWithoutMessagesInput
@@ -562,6 +639,20 @@ export type TeamUpdateOneRequiredWithoutMemberFeesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TeamUpdateToOneWithWhereWithoutMemberFeesInput, Prisma.TeamUpdateWithoutMemberFeesInput>, Prisma.TeamUncheckedUpdateWithoutMemberFeesInput>
 }
 
+export type TeamCreateNestedOneWithoutPaymentsInput = {
+  create?: Prisma.XOR<Prisma.TeamCreateWithoutPaymentsInput, Prisma.TeamUncheckedCreateWithoutPaymentsInput>
+  connectOrCreate?: Prisma.TeamCreateOrConnectWithoutPaymentsInput
+  connect?: Prisma.TeamWhereUniqueInput
+}
+
+export type TeamUpdateOneRequiredWithoutPaymentsNestedInput = {
+  create?: Prisma.XOR<Prisma.TeamCreateWithoutPaymentsInput, Prisma.TeamUncheckedCreateWithoutPaymentsInput>
+  connectOrCreate?: Prisma.TeamCreateOrConnectWithoutPaymentsInput
+  upsert?: Prisma.TeamUpsertWithoutPaymentsInput
+  connect?: Prisma.TeamWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TeamUpdateToOneWithWhereWithoutPaymentsInput, Prisma.TeamUpdateWithoutPaymentsInput>, Prisma.TeamUncheckedUpdateWithoutPaymentsInput>
+}
+
 export type TeamCreateNestedOneWithoutGamesInput = {
   create?: Prisma.XOR<Prisma.TeamCreateWithoutGamesInput, Prisma.TeamUncheckedCreateWithoutGamesInput>
   connectOrCreate?: Prisma.TeamCreateOrConnectWithoutGamesInput
@@ -612,6 +703,9 @@ export type TeamCreateWithoutCreatedByInput = {
   joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: string | null
   scoreSheets?: Prisma.GameScoreSheetCreateNestedManyWithoutTeamInput
   league?: Prisma.LeagueCreateNestedOneWithoutTeamsInput
   members?: Prisma.TeamMemberCreateNestedManyWithoutTeamInput
@@ -620,6 +714,7 @@ export type TeamCreateWithoutCreatedByInput = {
   playerStats?: Prisma.PlayerStatCreateNestedManyWithoutTeamInput
   memberFees?: Prisma.MemberFeeCreateNestedManyWithoutTeamInput
   messages?: Prisma.TeamMessageCreateNestedManyWithoutTeamInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutTeamInput
 }
 
 export type TeamUncheckedCreateWithoutCreatedByInput = {
@@ -629,6 +724,9 @@ export type TeamUncheckedCreateWithoutCreatedByInput = {
   joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: string | null
   scoreSheets?: Prisma.GameScoreSheetUncheckedCreateNestedManyWithoutTeamInput
   members?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutTeamInput
   games?: Prisma.TeamGameUncheckedCreateNestedManyWithoutTeamInput
@@ -636,6 +734,7 @@ export type TeamUncheckedCreateWithoutCreatedByInput = {
   playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutTeamInput
   memberFees?: Prisma.MemberFeeUncheckedCreateNestedManyWithoutTeamInput
   messages?: Prisma.TeamMessageUncheckedCreateNestedManyWithoutTeamInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutTeamInput
 }
 
 export type TeamCreateOrConnectWithoutCreatedByInput = {
@@ -675,6 +774,9 @@ export type TeamScalarWhereInput = {
   joinCode?: Prisma.StringNullableFilter<"Team"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Team"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Team"> | Date | string
+  stripeAccountId?: Prisma.StringNullableFilter<"Team"> | string | null
+  stripePayoutsEnabled?: Prisma.BoolFilter<"Team"> | boolean
+  stripeOnboardingUrl?: Prisma.StringNullableFilter<"Team"> | string | null
 }
 
 export type TeamCreateWithoutLeagueInput = {
@@ -683,6 +785,9 @@ export type TeamCreateWithoutLeagueInput = {
   joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: string | null
   scoreSheets?: Prisma.GameScoreSheetCreateNestedManyWithoutTeamInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedTeamsInput
   members?: Prisma.TeamMemberCreateNestedManyWithoutTeamInput
@@ -691,6 +796,7 @@ export type TeamCreateWithoutLeagueInput = {
   playerStats?: Prisma.PlayerStatCreateNestedManyWithoutTeamInput
   memberFees?: Prisma.MemberFeeCreateNestedManyWithoutTeamInput
   messages?: Prisma.TeamMessageCreateNestedManyWithoutTeamInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutTeamInput
 }
 
 export type TeamUncheckedCreateWithoutLeagueInput = {
@@ -700,6 +806,9 @@ export type TeamUncheckedCreateWithoutLeagueInput = {
   joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: string | null
   scoreSheets?: Prisma.GameScoreSheetUncheckedCreateNestedManyWithoutTeamInput
   members?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutTeamInput
   games?: Prisma.TeamGameUncheckedCreateNestedManyWithoutTeamInput
@@ -707,6 +816,7 @@ export type TeamUncheckedCreateWithoutLeagueInput = {
   playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutTeamInput
   memberFees?: Prisma.MemberFeeUncheckedCreateNestedManyWithoutTeamInput
   messages?: Prisma.TeamMessageUncheckedCreateNestedManyWithoutTeamInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutTeamInput
 }
 
 export type TeamCreateOrConnectWithoutLeagueInput = {
@@ -741,6 +851,9 @@ export type TeamCreateWithoutMessagesInput = {
   joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: string | null
   scoreSheets?: Prisma.GameScoreSheetCreateNestedManyWithoutTeamInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedTeamsInput
   league?: Prisma.LeagueCreateNestedOneWithoutTeamsInput
@@ -749,6 +862,7 @@ export type TeamCreateWithoutMessagesInput = {
   opponentGames?: Prisma.TeamGameCreateNestedManyWithoutOpponentTeamInput
   playerStats?: Prisma.PlayerStatCreateNestedManyWithoutTeamInput
   memberFees?: Prisma.MemberFeeCreateNestedManyWithoutTeamInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutTeamInput
 }
 
 export type TeamUncheckedCreateWithoutMessagesInput = {
@@ -759,12 +873,16 @@ export type TeamUncheckedCreateWithoutMessagesInput = {
   joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: string | null
   scoreSheets?: Prisma.GameScoreSheetUncheckedCreateNestedManyWithoutTeamInput
   members?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutTeamInput
   games?: Prisma.TeamGameUncheckedCreateNestedManyWithoutTeamInput
   opponentGames?: Prisma.TeamGameUncheckedCreateNestedManyWithoutOpponentTeamInput
   playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutTeamInput
   memberFees?: Prisma.MemberFeeUncheckedCreateNestedManyWithoutTeamInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutTeamInput
 }
 
 export type TeamCreateOrConnectWithoutMessagesInput = {
@@ -789,6 +907,9 @@ export type TeamUpdateWithoutMessagesInput = {
   joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeOnboardingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scoreSheets?: Prisma.GameScoreSheetUpdateManyWithoutTeamNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedTeamsNestedInput
   league?: Prisma.LeagueUpdateOneWithoutTeamsNestedInput
@@ -797,6 +918,7 @@ export type TeamUpdateWithoutMessagesInput = {
   opponentGames?: Prisma.TeamGameUpdateManyWithoutOpponentTeamNestedInput
   playerStats?: Prisma.PlayerStatUpdateManyWithoutTeamNestedInput
   memberFees?: Prisma.MemberFeeUpdateManyWithoutTeamNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamUncheckedUpdateWithoutMessagesInput = {
@@ -807,12 +929,16 @@ export type TeamUncheckedUpdateWithoutMessagesInput = {
   joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeOnboardingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scoreSheets?: Prisma.GameScoreSheetUncheckedUpdateManyWithoutTeamNestedInput
   members?: Prisma.TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
   games?: Prisma.TeamGameUncheckedUpdateManyWithoutTeamNestedInput
   opponentGames?: Prisma.TeamGameUncheckedUpdateManyWithoutOpponentTeamNestedInput
   playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutTeamNestedInput
   memberFees?: Prisma.MemberFeeUncheckedUpdateManyWithoutTeamNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamCreateWithoutMembersInput = {
@@ -821,6 +947,9 @@ export type TeamCreateWithoutMembersInput = {
   joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: string | null
   scoreSheets?: Prisma.GameScoreSheetCreateNestedManyWithoutTeamInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedTeamsInput
   league?: Prisma.LeagueCreateNestedOneWithoutTeamsInput
@@ -829,6 +958,7 @@ export type TeamCreateWithoutMembersInput = {
   playerStats?: Prisma.PlayerStatCreateNestedManyWithoutTeamInput
   memberFees?: Prisma.MemberFeeCreateNestedManyWithoutTeamInput
   messages?: Prisma.TeamMessageCreateNestedManyWithoutTeamInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutTeamInput
 }
 
 export type TeamUncheckedCreateWithoutMembersInput = {
@@ -839,12 +969,16 @@ export type TeamUncheckedCreateWithoutMembersInput = {
   joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: string | null
   scoreSheets?: Prisma.GameScoreSheetUncheckedCreateNestedManyWithoutTeamInput
   games?: Prisma.TeamGameUncheckedCreateNestedManyWithoutTeamInput
   opponentGames?: Prisma.TeamGameUncheckedCreateNestedManyWithoutOpponentTeamInput
   playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutTeamInput
   memberFees?: Prisma.MemberFeeUncheckedCreateNestedManyWithoutTeamInput
   messages?: Prisma.TeamMessageUncheckedCreateNestedManyWithoutTeamInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutTeamInput
 }
 
 export type TeamCreateOrConnectWithoutMembersInput = {
@@ -869,6 +1003,9 @@ export type TeamUpdateWithoutMembersInput = {
   joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeOnboardingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scoreSheets?: Prisma.GameScoreSheetUpdateManyWithoutTeamNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedTeamsNestedInput
   league?: Prisma.LeagueUpdateOneWithoutTeamsNestedInput
@@ -877,6 +1014,7 @@ export type TeamUpdateWithoutMembersInput = {
   playerStats?: Prisma.PlayerStatUpdateManyWithoutTeamNestedInput
   memberFees?: Prisma.MemberFeeUpdateManyWithoutTeamNestedInput
   messages?: Prisma.TeamMessageUpdateManyWithoutTeamNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamUncheckedUpdateWithoutMembersInput = {
@@ -887,12 +1025,16 @@ export type TeamUncheckedUpdateWithoutMembersInput = {
   joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeOnboardingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scoreSheets?: Prisma.GameScoreSheetUncheckedUpdateManyWithoutTeamNestedInput
   games?: Prisma.TeamGameUncheckedUpdateManyWithoutTeamNestedInput
   opponentGames?: Prisma.TeamGameUncheckedUpdateManyWithoutOpponentTeamNestedInput
   playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutTeamNestedInput
   memberFees?: Prisma.MemberFeeUncheckedUpdateManyWithoutTeamNestedInput
   messages?: Prisma.TeamMessageUncheckedUpdateManyWithoutTeamNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamCreateWithoutPlayerStatsInput = {
@@ -901,6 +1043,9 @@ export type TeamCreateWithoutPlayerStatsInput = {
   joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: string | null
   scoreSheets?: Prisma.GameScoreSheetCreateNestedManyWithoutTeamInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedTeamsInput
   league?: Prisma.LeagueCreateNestedOneWithoutTeamsInput
@@ -909,6 +1054,7 @@ export type TeamCreateWithoutPlayerStatsInput = {
   opponentGames?: Prisma.TeamGameCreateNestedManyWithoutOpponentTeamInput
   memberFees?: Prisma.MemberFeeCreateNestedManyWithoutTeamInput
   messages?: Prisma.TeamMessageCreateNestedManyWithoutTeamInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutTeamInput
 }
 
 export type TeamUncheckedCreateWithoutPlayerStatsInput = {
@@ -919,12 +1065,16 @@ export type TeamUncheckedCreateWithoutPlayerStatsInput = {
   joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: string | null
   scoreSheets?: Prisma.GameScoreSheetUncheckedCreateNestedManyWithoutTeamInput
   members?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutTeamInput
   games?: Prisma.TeamGameUncheckedCreateNestedManyWithoutTeamInput
   opponentGames?: Prisma.TeamGameUncheckedCreateNestedManyWithoutOpponentTeamInput
   memberFees?: Prisma.MemberFeeUncheckedCreateNestedManyWithoutTeamInput
   messages?: Prisma.TeamMessageUncheckedCreateNestedManyWithoutTeamInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutTeamInput
 }
 
 export type TeamCreateOrConnectWithoutPlayerStatsInput = {
@@ -949,6 +1099,9 @@ export type TeamUpdateWithoutPlayerStatsInput = {
   joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeOnboardingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scoreSheets?: Prisma.GameScoreSheetUpdateManyWithoutTeamNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedTeamsNestedInput
   league?: Prisma.LeagueUpdateOneWithoutTeamsNestedInput
@@ -957,6 +1110,7 @@ export type TeamUpdateWithoutPlayerStatsInput = {
   opponentGames?: Prisma.TeamGameUpdateManyWithoutOpponentTeamNestedInput
   memberFees?: Prisma.MemberFeeUpdateManyWithoutTeamNestedInput
   messages?: Prisma.TeamMessageUpdateManyWithoutTeamNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamUncheckedUpdateWithoutPlayerStatsInput = {
@@ -967,12 +1121,16 @@ export type TeamUncheckedUpdateWithoutPlayerStatsInput = {
   joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeOnboardingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scoreSheets?: Prisma.GameScoreSheetUncheckedUpdateManyWithoutTeamNestedInput
   members?: Prisma.TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
   games?: Prisma.TeamGameUncheckedUpdateManyWithoutTeamNestedInput
   opponentGames?: Prisma.TeamGameUncheckedUpdateManyWithoutOpponentTeamNestedInput
   memberFees?: Prisma.MemberFeeUncheckedUpdateManyWithoutTeamNestedInput
   messages?: Prisma.TeamMessageUncheckedUpdateManyWithoutTeamNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamCreateWithoutMemberFeesInput = {
@@ -981,6 +1139,9 @@ export type TeamCreateWithoutMemberFeesInput = {
   joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: string | null
   scoreSheets?: Prisma.GameScoreSheetCreateNestedManyWithoutTeamInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedTeamsInput
   league?: Prisma.LeagueCreateNestedOneWithoutTeamsInput
@@ -989,6 +1150,7 @@ export type TeamCreateWithoutMemberFeesInput = {
   opponentGames?: Prisma.TeamGameCreateNestedManyWithoutOpponentTeamInput
   playerStats?: Prisma.PlayerStatCreateNestedManyWithoutTeamInput
   messages?: Prisma.TeamMessageCreateNestedManyWithoutTeamInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutTeamInput
 }
 
 export type TeamUncheckedCreateWithoutMemberFeesInput = {
@@ -999,12 +1161,16 @@ export type TeamUncheckedCreateWithoutMemberFeesInput = {
   joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: string | null
   scoreSheets?: Prisma.GameScoreSheetUncheckedCreateNestedManyWithoutTeamInput
   members?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutTeamInput
   games?: Prisma.TeamGameUncheckedCreateNestedManyWithoutTeamInput
   opponentGames?: Prisma.TeamGameUncheckedCreateNestedManyWithoutOpponentTeamInput
   playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutTeamInput
   messages?: Prisma.TeamMessageUncheckedCreateNestedManyWithoutTeamInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutTeamInput
 }
 
 export type TeamCreateOrConnectWithoutMemberFeesInput = {
@@ -1029,6 +1195,9 @@ export type TeamUpdateWithoutMemberFeesInput = {
   joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeOnboardingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scoreSheets?: Prisma.GameScoreSheetUpdateManyWithoutTeamNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedTeamsNestedInput
   league?: Prisma.LeagueUpdateOneWithoutTeamsNestedInput
@@ -1037,6 +1206,7 @@ export type TeamUpdateWithoutMemberFeesInput = {
   opponentGames?: Prisma.TeamGameUpdateManyWithoutOpponentTeamNestedInput
   playerStats?: Prisma.PlayerStatUpdateManyWithoutTeamNestedInput
   messages?: Prisma.TeamMessageUpdateManyWithoutTeamNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamUncheckedUpdateWithoutMemberFeesInput = {
@@ -1047,11 +1217,111 @@ export type TeamUncheckedUpdateWithoutMemberFeesInput = {
   joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeOnboardingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scoreSheets?: Prisma.GameScoreSheetUncheckedUpdateManyWithoutTeamNestedInput
   members?: Prisma.TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
   games?: Prisma.TeamGameUncheckedUpdateManyWithoutTeamNestedInput
   opponentGames?: Prisma.TeamGameUncheckedUpdateManyWithoutOpponentTeamNestedInput
   playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutTeamNestedInput
+  messages?: Prisma.TeamMessageUncheckedUpdateManyWithoutTeamNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutTeamNestedInput
+}
+
+export type TeamCreateWithoutPaymentsInput = {
+  id?: string
+  name: string
+  joinCode?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: string | null
+  scoreSheets?: Prisma.GameScoreSheetCreateNestedManyWithoutTeamInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedTeamsInput
+  league?: Prisma.LeagueCreateNestedOneWithoutTeamsInput
+  members?: Prisma.TeamMemberCreateNestedManyWithoutTeamInput
+  games?: Prisma.TeamGameCreateNestedManyWithoutTeamInput
+  opponentGames?: Prisma.TeamGameCreateNestedManyWithoutOpponentTeamInput
+  playerStats?: Prisma.PlayerStatCreateNestedManyWithoutTeamInput
+  memberFees?: Prisma.MemberFeeCreateNestedManyWithoutTeamInput
+  messages?: Prisma.TeamMessageCreateNestedManyWithoutTeamInput
+}
+
+export type TeamUncheckedCreateWithoutPaymentsInput = {
+  id?: string
+  name: string
+  createdById?: string | null
+  leagueId?: string | null
+  joinCode?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: string | null
+  scoreSheets?: Prisma.GameScoreSheetUncheckedCreateNestedManyWithoutTeamInput
+  members?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutTeamInput
+  games?: Prisma.TeamGameUncheckedCreateNestedManyWithoutTeamInput
+  opponentGames?: Prisma.TeamGameUncheckedCreateNestedManyWithoutOpponentTeamInput
+  playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutTeamInput
+  memberFees?: Prisma.MemberFeeUncheckedCreateNestedManyWithoutTeamInput
+  messages?: Prisma.TeamMessageUncheckedCreateNestedManyWithoutTeamInput
+}
+
+export type TeamCreateOrConnectWithoutPaymentsInput = {
+  where: Prisma.TeamWhereUniqueInput
+  create: Prisma.XOR<Prisma.TeamCreateWithoutPaymentsInput, Prisma.TeamUncheckedCreateWithoutPaymentsInput>
+}
+
+export type TeamUpsertWithoutPaymentsInput = {
+  update: Prisma.XOR<Prisma.TeamUpdateWithoutPaymentsInput, Prisma.TeamUncheckedUpdateWithoutPaymentsInput>
+  create: Prisma.XOR<Prisma.TeamCreateWithoutPaymentsInput, Prisma.TeamUncheckedCreateWithoutPaymentsInput>
+  where?: Prisma.TeamWhereInput
+}
+
+export type TeamUpdateToOneWithWhereWithoutPaymentsInput = {
+  where?: Prisma.TeamWhereInput
+  data: Prisma.XOR<Prisma.TeamUpdateWithoutPaymentsInput, Prisma.TeamUncheckedUpdateWithoutPaymentsInput>
+}
+
+export type TeamUpdateWithoutPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeOnboardingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scoreSheets?: Prisma.GameScoreSheetUpdateManyWithoutTeamNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedTeamsNestedInput
+  league?: Prisma.LeagueUpdateOneWithoutTeamsNestedInput
+  members?: Prisma.TeamMemberUpdateManyWithoutTeamNestedInput
+  games?: Prisma.TeamGameUpdateManyWithoutTeamNestedInput
+  opponentGames?: Prisma.TeamGameUpdateManyWithoutOpponentTeamNestedInput
+  playerStats?: Prisma.PlayerStatUpdateManyWithoutTeamNestedInput
+  memberFees?: Prisma.MemberFeeUpdateManyWithoutTeamNestedInput
+  messages?: Prisma.TeamMessageUpdateManyWithoutTeamNestedInput
+}
+
+export type TeamUncheckedUpdateWithoutPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  leagueId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeOnboardingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scoreSheets?: Prisma.GameScoreSheetUncheckedUpdateManyWithoutTeamNestedInput
+  members?: Prisma.TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+  games?: Prisma.TeamGameUncheckedUpdateManyWithoutTeamNestedInput
+  opponentGames?: Prisma.TeamGameUncheckedUpdateManyWithoutOpponentTeamNestedInput
+  playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutTeamNestedInput
+  memberFees?: Prisma.MemberFeeUncheckedUpdateManyWithoutTeamNestedInput
   messages?: Prisma.TeamMessageUncheckedUpdateManyWithoutTeamNestedInput
 }
 
@@ -1061,6 +1331,9 @@ export type TeamCreateWithoutGamesInput = {
   joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: string | null
   scoreSheets?: Prisma.GameScoreSheetCreateNestedManyWithoutTeamInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedTeamsInput
   league?: Prisma.LeagueCreateNestedOneWithoutTeamsInput
@@ -1069,6 +1342,7 @@ export type TeamCreateWithoutGamesInput = {
   playerStats?: Prisma.PlayerStatCreateNestedManyWithoutTeamInput
   memberFees?: Prisma.MemberFeeCreateNestedManyWithoutTeamInput
   messages?: Prisma.TeamMessageCreateNestedManyWithoutTeamInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutTeamInput
 }
 
 export type TeamUncheckedCreateWithoutGamesInput = {
@@ -1079,12 +1353,16 @@ export type TeamUncheckedCreateWithoutGamesInput = {
   joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: string | null
   scoreSheets?: Prisma.GameScoreSheetUncheckedCreateNestedManyWithoutTeamInput
   members?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutTeamInput
   opponentGames?: Prisma.TeamGameUncheckedCreateNestedManyWithoutOpponentTeamInput
   playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutTeamInput
   memberFees?: Prisma.MemberFeeUncheckedCreateNestedManyWithoutTeamInput
   messages?: Prisma.TeamMessageUncheckedCreateNestedManyWithoutTeamInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutTeamInput
 }
 
 export type TeamCreateOrConnectWithoutGamesInput = {
@@ -1098,6 +1376,9 @@ export type TeamCreateWithoutOpponentGamesInput = {
   joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: string | null
   scoreSheets?: Prisma.GameScoreSheetCreateNestedManyWithoutTeamInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedTeamsInput
   league?: Prisma.LeagueCreateNestedOneWithoutTeamsInput
@@ -1106,6 +1387,7 @@ export type TeamCreateWithoutOpponentGamesInput = {
   playerStats?: Prisma.PlayerStatCreateNestedManyWithoutTeamInput
   memberFees?: Prisma.MemberFeeCreateNestedManyWithoutTeamInput
   messages?: Prisma.TeamMessageCreateNestedManyWithoutTeamInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutTeamInput
 }
 
 export type TeamUncheckedCreateWithoutOpponentGamesInput = {
@@ -1116,12 +1398,16 @@ export type TeamUncheckedCreateWithoutOpponentGamesInput = {
   joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: string | null
   scoreSheets?: Prisma.GameScoreSheetUncheckedCreateNestedManyWithoutTeamInput
   members?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutTeamInput
   games?: Prisma.TeamGameUncheckedCreateNestedManyWithoutTeamInput
   playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutTeamInput
   memberFees?: Prisma.MemberFeeUncheckedCreateNestedManyWithoutTeamInput
   messages?: Prisma.TeamMessageUncheckedCreateNestedManyWithoutTeamInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutTeamInput
 }
 
 export type TeamCreateOrConnectWithoutOpponentGamesInput = {
@@ -1146,6 +1432,9 @@ export type TeamUpdateWithoutGamesInput = {
   joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeOnboardingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scoreSheets?: Prisma.GameScoreSheetUpdateManyWithoutTeamNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedTeamsNestedInput
   league?: Prisma.LeagueUpdateOneWithoutTeamsNestedInput
@@ -1154,6 +1443,7 @@ export type TeamUpdateWithoutGamesInput = {
   playerStats?: Prisma.PlayerStatUpdateManyWithoutTeamNestedInput
   memberFees?: Prisma.MemberFeeUpdateManyWithoutTeamNestedInput
   messages?: Prisma.TeamMessageUpdateManyWithoutTeamNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamUncheckedUpdateWithoutGamesInput = {
@@ -1164,12 +1454,16 @@ export type TeamUncheckedUpdateWithoutGamesInput = {
   joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeOnboardingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scoreSheets?: Prisma.GameScoreSheetUncheckedUpdateManyWithoutTeamNestedInput
   members?: Prisma.TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
   opponentGames?: Prisma.TeamGameUncheckedUpdateManyWithoutOpponentTeamNestedInput
   playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutTeamNestedInput
   memberFees?: Prisma.MemberFeeUncheckedUpdateManyWithoutTeamNestedInput
   messages?: Prisma.TeamMessageUncheckedUpdateManyWithoutTeamNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamUpsertWithoutOpponentGamesInput = {
@@ -1189,6 +1483,9 @@ export type TeamUpdateWithoutOpponentGamesInput = {
   joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeOnboardingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scoreSheets?: Prisma.GameScoreSheetUpdateManyWithoutTeamNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedTeamsNestedInput
   league?: Prisma.LeagueUpdateOneWithoutTeamsNestedInput
@@ -1197,6 +1494,7 @@ export type TeamUpdateWithoutOpponentGamesInput = {
   playerStats?: Prisma.PlayerStatUpdateManyWithoutTeamNestedInput
   memberFees?: Prisma.MemberFeeUpdateManyWithoutTeamNestedInput
   messages?: Prisma.TeamMessageUpdateManyWithoutTeamNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamUncheckedUpdateWithoutOpponentGamesInput = {
@@ -1207,12 +1505,16 @@ export type TeamUncheckedUpdateWithoutOpponentGamesInput = {
   joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeOnboardingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scoreSheets?: Prisma.GameScoreSheetUncheckedUpdateManyWithoutTeamNestedInput
   members?: Prisma.TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
   games?: Prisma.TeamGameUncheckedUpdateManyWithoutTeamNestedInput
   playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutTeamNestedInput
   memberFees?: Prisma.MemberFeeUncheckedUpdateManyWithoutTeamNestedInput
   messages?: Prisma.TeamMessageUncheckedUpdateManyWithoutTeamNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamCreateWithoutScoreSheetsInput = {
@@ -1221,6 +1523,9 @@ export type TeamCreateWithoutScoreSheetsInput = {
   joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: string | null
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedTeamsInput
   league?: Prisma.LeagueCreateNestedOneWithoutTeamsInput
   members?: Prisma.TeamMemberCreateNestedManyWithoutTeamInput
@@ -1229,6 +1534,7 @@ export type TeamCreateWithoutScoreSheetsInput = {
   playerStats?: Prisma.PlayerStatCreateNestedManyWithoutTeamInput
   memberFees?: Prisma.MemberFeeCreateNestedManyWithoutTeamInput
   messages?: Prisma.TeamMessageCreateNestedManyWithoutTeamInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutTeamInput
 }
 
 export type TeamUncheckedCreateWithoutScoreSheetsInput = {
@@ -1239,12 +1545,16 @@ export type TeamUncheckedCreateWithoutScoreSheetsInput = {
   joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: string | null
   members?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutTeamInput
   games?: Prisma.TeamGameUncheckedCreateNestedManyWithoutTeamInput
   opponentGames?: Prisma.TeamGameUncheckedCreateNestedManyWithoutOpponentTeamInput
   playerStats?: Prisma.PlayerStatUncheckedCreateNestedManyWithoutTeamInput
   memberFees?: Prisma.MemberFeeUncheckedCreateNestedManyWithoutTeamInput
   messages?: Prisma.TeamMessageUncheckedCreateNestedManyWithoutTeamInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutTeamInput
 }
 
 export type TeamCreateOrConnectWithoutScoreSheetsInput = {
@@ -1269,6 +1579,9 @@ export type TeamUpdateWithoutScoreSheetsInput = {
   joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeOnboardingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdBy?: Prisma.UserUpdateOneWithoutCreatedTeamsNestedInput
   league?: Prisma.LeagueUpdateOneWithoutTeamsNestedInput
   members?: Prisma.TeamMemberUpdateManyWithoutTeamNestedInput
@@ -1277,6 +1590,7 @@ export type TeamUpdateWithoutScoreSheetsInput = {
   playerStats?: Prisma.PlayerStatUpdateManyWithoutTeamNestedInput
   memberFees?: Prisma.MemberFeeUpdateManyWithoutTeamNestedInput
   messages?: Prisma.TeamMessageUpdateManyWithoutTeamNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamUncheckedUpdateWithoutScoreSheetsInput = {
@@ -1287,12 +1601,16 @@ export type TeamUncheckedUpdateWithoutScoreSheetsInput = {
   joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeOnboardingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   members?: Prisma.TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
   games?: Prisma.TeamGameUncheckedUpdateManyWithoutTeamNestedInput
   opponentGames?: Prisma.TeamGameUncheckedUpdateManyWithoutOpponentTeamNestedInput
   playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutTeamNestedInput
   memberFees?: Prisma.MemberFeeUncheckedUpdateManyWithoutTeamNestedInput
   messages?: Prisma.TeamMessageUncheckedUpdateManyWithoutTeamNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamCreateManyCreatedByInput = {
@@ -1302,6 +1620,9 @@ export type TeamCreateManyCreatedByInput = {
   joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: string | null
 }
 
 export type TeamUpdateWithoutCreatedByInput = {
@@ -1310,6 +1631,9 @@ export type TeamUpdateWithoutCreatedByInput = {
   joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeOnboardingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scoreSheets?: Prisma.GameScoreSheetUpdateManyWithoutTeamNestedInput
   league?: Prisma.LeagueUpdateOneWithoutTeamsNestedInput
   members?: Prisma.TeamMemberUpdateManyWithoutTeamNestedInput
@@ -1318,6 +1642,7 @@ export type TeamUpdateWithoutCreatedByInput = {
   playerStats?: Prisma.PlayerStatUpdateManyWithoutTeamNestedInput
   memberFees?: Prisma.MemberFeeUpdateManyWithoutTeamNestedInput
   messages?: Prisma.TeamMessageUpdateManyWithoutTeamNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamUncheckedUpdateWithoutCreatedByInput = {
@@ -1327,6 +1652,9 @@ export type TeamUncheckedUpdateWithoutCreatedByInput = {
   joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeOnboardingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scoreSheets?: Prisma.GameScoreSheetUncheckedUpdateManyWithoutTeamNestedInput
   members?: Prisma.TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
   games?: Prisma.TeamGameUncheckedUpdateManyWithoutTeamNestedInput
@@ -1334,6 +1662,7 @@ export type TeamUncheckedUpdateWithoutCreatedByInput = {
   playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutTeamNestedInput
   memberFees?: Prisma.MemberFeeUncheckedUpdateManyWithoutTeamNestedInput
   messages?: Prisma.TeamMessageUncheckedUpdateManyWithoutTeamNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamUncheckedUpdateManyWithoutCreatedByInput = {
@@ -1343,6 +1672,9 @@ export type TeamUncheckedUpdateManyWithoutCreatedByInput = {
   joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeOnboardingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TeamCreateManyLeagueInput = {
@@ -1352,6 +1684,9 @@ export type TeamCreateManyLeagueInput = {
   joinCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: string | null
 }
 
 export type TeamUpdateWithoutLeagueInput = {
@@ -1360,6 +1695,9 @@ export type TeamUpdateWithoutLeagueInput = {
   joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeOnboardingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scoreSheets?: Prisma.GameScoreSheetUpdateManyWithoutTeamNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedTeamsNestedInput
   members?: Prisma.TeamMemberUpdateManyWithoutTeamNestedInput
@@ -1368,6 +1706,7 @@ export type TeamUpdateWithoutLeagueInput = {
   playerStats?: Prisma.PlayerStatUpdateManyWithoutTeamNestedInput
   memberFees?: Prisma.MemberFeeUpdateManyWithoutTeamNestedInput
   messages?: Prisma.TeamMessageUpdateManyWithoutTeamNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamUncheckedUpdateWithoutLeagueInput = {
@@ -1377,6 +1716,9 @@ export type TeamUncheckedUpdateWithoutLeagueInput = {
   joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeOnboardingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scoreSheets?: Prisma.GameScoreSheetUncheckedUpdateManyWithoutTeamNestedInput
   members?: Prisma.TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
   games?: Prisma.TeamGameUncheckedUpdateManyWithoutTeamNestedInput
@@ -1384,6 +1726,7 @@ export type TeamUncheckedUpdateWithoutLeagueInput = {
   playerStats?: Prisma.PlayerStatUncheckedUpdateManyWithoutTeamNestedInput
   memberFees?: Prisma.MemberFeeUncheckedUpdateManyWithoutTeamNestedInput
   messages?: Prisma.TeamMessageUncheckedUpdateManyWithoutTeamNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutTeamNestedInput
 }
 
 export type TeamUncheckedUpdateManyWithoutLeagueInput = {
@@ -1393,6 +1736,9 @@ export type TeamUncheckedUpdateManyWithoutLeagueInput = {
   joinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeOnboardingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -1408,6 +1754,7 @@ export type TeamCountOutputType = {
   playerStats: number
   memberFees: number
   messages: number
+  payments: number
 }
 
 export type TeamCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1418,6 +1765,7 @@ export type TeamCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   playerStats?: boolean | TeamCountOutputTypeCountPlayerStatsArgs
   memberFees?: boolean | TeamCountOutputTypeCountMemberFeesArgs
   messages?: boolean | TeamCountOutputTypeCountMessagesArgs
+  payments?: boolean | TeamCountOutputTypeCountPaymentsArgs
 }
 
 /**
@@ -1479,6 +1827,13 @@ export type TeamCountOutputTypeCountMessagesArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.TeamMessageWhereInput
 }
 
+/**
+ * TeamCountOutputType without action
+ */
+export type TeamCountOutputTypeCountPaymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PaymentWhereInput
+}
+
 
 export type TeamSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1488,6 +1843,9 @@ export type TeamSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   joinCode?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  stripeAccountId?: boolean
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: boolean
   scoreSheets?: boolean | Prisma.Team$scoreSheetsArgs<ExtArgs>
   createdBy?: boolean | Prisma.Team$createdByArgs<ExtArgs>
   league?: boolean | Prisma.Team$leagueArgs<ExtArgs>
@@ -1497,6 +1855,7 @@ export type TeamSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   playerStats?: boolean | Prisma.Team$playerStatsArgs<ExtArgs>
   memberFees?: boolean | Prisma.Team$memberFeesArgs<ExtArgs>
   messages?: boolean | Prisma.Team$messagesArgs<ExtArgs>
+  payments?: boolean | Prisma.Team$paymentsArgs<ExtArgs>
   _count?: boolean | Prisma.TeamCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["team"]>
 
@@ -1508,6 +1867,9 @@ export type TeamSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   joinCode?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  stripeAccountId?: boolean
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: boolean
   createdBy?: boolean | Prisma.Team$createdByArgs<ExtArgs>
   league?: boolean | Prisma.Team$leagueArgs<ExtArgs>
 }, ExtArgs["result"]["team"]>
@@ -1520,6 +1882,9 @@ export type TeamSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   joinCode?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  stripeAccountId?: boolean
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: boolean
   createdBy?: boolean | Prisma.Team$createdByArgs<ExtArgs>
   league?: boolean | Prisma.Team$leagueArgs<ExtArgs>
 }, ExtArgs["result"]["team"]>
@@ -1532,9 +1897,12 @@ export type TeamSelectScalar = {
   joinCode?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  stripeAccountId?: boolean
+  stripePayoutsEnabled?: boolean
+  stripeOnboardingUrl?: boolean
 }
 
-export type TeamOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "createdById" | "leagueId" | "joinCode" | "createdAt" | "updatedAt", ExtArgs["result"]["team"]>
+export type TeamOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "createdById" | "leagueId" | "joinCode" | "createdAt" | "updatedAt" | "stripeAccountId" | "stripePayoutsEnabled" | "stripeOnboardingUrl", ExtArgs["result"]["team"]>
 export type TeamInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   scoreSheets?: boolean | Prisma.Team$scoreSheetsArgs<ExtArgs>
   createdBy?: boolean | Prisma.Team$createdByArgs<ExtArgs>
@@ -1545,6 +1913,7 @@ export type TeamInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   playerStats?: boolean | Prisma.Team$playerStatsArgs<ExtArgs>
   memberFees?: boolean | Prisma.Team$memberFeesArgs<ExtArgs>
   messages?: boolean | Prisma.Team$messagesArgs<ExtArgs>
+  payments?: boolean | Prisma.Team$paymentsArgs<ExtArgs>
   _count?: boolean | Prisma.TeamCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TeamIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1568,6 +1937,7 @@ export type $TeamPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     playerStats: Prisma.$PlayerStatPayload<ExtArgs>[]
     memberFees: Prisma.$MemberFeePayload<ExtArgs>[]
     messages: Prisma.$TeamMessagePayload<ExtArgs>[]
+    payments: Prisma.$PaymentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1577,6 +1947,9 @@ export type $TeamPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     joinCode: string | null
     createdAt: Date
     updatedAt: Date
+    stripeAccountId: string | null
+    stripePayoutsEnabled: boolean
+    stripeOnboardingUrl: string | null
   }, ExtArgs["result"]["team"]>
   composites: {}
 }
@@ -1980,6 +2353,7 @@ export interface Prisma__TeamClient<T, Null = never, ExtArgs extends runtime.Typ
   playerStats<T extends Prisma.Team$playerStatsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Team$playerStatsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlayerStatPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   memberFees<T extends Prisma.Team$memberFeesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Team$memberFeesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MemberFeePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   messages<T extends Prisma.Team$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Team$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  payments<T extends Prisma.Team$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Team$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2016,6 +2390,9 @@ export interface TeamFieldRefs {
   readonly joinCode: Prisma.FieldRef<"Team", 'String'>
   readonly createdAt: Prisma.FieldRef<"Team", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Team", 'DateTime'>
+  readonly stripeAccountId: Prisma.FieldRef<"Team", 'String'>
+  readonly stripePayoutsEnabled: Prisma.FieldRef<"Team", 'Boolean'>
+  readonly stripeOnboardingUrl: Prisma.FieldRef<"Team", 'String'>
 }
     
 
@@ -2620,6 +2997,30 @@ export type Team$messagesArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.TeamMessageScalarFieldEnum | Prisma.TeamMessageScalarFieldEnum[]
+}
+
+/**
+ * Team.payments
+ */
+export type Team$paymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Payment
+   */
+  select?: Prisma.PaymentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Payment
+   */
+  omit?: Prisma.PaymentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PaymentInclude<ExtArgs> | null
+  where?: Prisma.PaymentWhereInput
+  orderBy?: Prisma.PaymentOrderByWithRelationInput | Prisma.PaymentOrderByWithRelationInput[]
+  cursor?: Prisma.PaymentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PaymentScalarFieldEnum | Prisma.PaymentScalarFieldEnum[]
 }
 
 /**

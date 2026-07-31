@@ -675,10 +675,6 @@ export type EnumTeamRoleFieldUpdateOperationsInput = {
   set?: $Enums.TeamRole
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type TeamMemberCreateNestedOneWithoutPlayerStatsInput = {
   create?: Prisma.XOR<Prisma.TeamMemberCreateWithoutPlayerStatsInput, Prisma.TeamMemberUncheckedCreateWithoutPlayerStatsInput>
   connectOrCreate?: Prisma.TeamMemberCreateOrConnectWithoutPlayerStatsInput

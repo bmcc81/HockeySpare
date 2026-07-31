@@ -188,6 +188,7 @@ model User {
   memberFees         MemberFee[]
   createdTournaments Tournament[]   @relation("CreatedTournaments")
   teamMessages       TeamMessage[]
+  payments           Payment[]
 }
 
 model League {
@@ -249,6 +250,10 @@ model Team {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  stripeAccountId       String?  @unique
+  stripePayoutsEnabled  Boolean  @default(false)
+  stripeOnboardingUrl   String?
+
   scoreSheets GameScoreSheet[]
 
   createdBy     User?        @relation("CreatedTeams", fields: [createdById], references: [id], onDelete: SetNull)
@@ -259,6 +264,7 @@ model Team {
   playerStats   PlayerStat[]
   memberFees    MemberFee[]
   messages      TeamMessage[]
+  payments      Payment[]
 
   @@index([leagueId])
 }
@@ -343,15 +349,44 @@ model MemberFee {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  member TeamMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
-  user   User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
-  team   Team       @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  league League?    @relation(fields: [leagueId], references: [id], onDelete: SetNull)
+  member   TeamMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  user     User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  team     Team       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  league   League?    @relation(fields: [leagueId], references: [id], onDelete: SetNull)
+  payments Payment[]
 
   @@unique([memberId, season])
   @@index([teamId])
   @@index([leagueId])
   @@index([userId])
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  CANCELED
+}
+
+model Payment {
+  id                      String        @id @default(cuid())
+  memberFeeId             String
+  teamId                  String
+  payerUserId             String?
+  amountCents             Int
+  currency                String        @default("usd")
+  status                  PaymentStatus @default(PENDING)
+  stripeCheckoutSessionId String?       @unique
+  stripePaymentIntentId   String?       @unique
+  createdAt               DateTime      @default(now())
+  updatedAt               DateTime      @updatedAt
+
+  memberFee MemberFee @relation(fields: [memberFeeId], references: [id], onDelete: Cascade)
+  team      Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  payer     User?     @relation(fields: [payerUserId], references: [id], onDelete: SetNull)
+
+  @@index([memberFeeId])
+  @@index([teamId])
 }
 
 model TeamGame {

@@ -3,14 +3,20 @@ import { Injectable, inject } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import {
   CheckoutSessionResult,
+  CreateTournamentAnnouncementInput,
+  CreateTournamentBracketInput,
   CreateTournamentGameInput,
   CreateTournamentInput,
   CreateTournamentRegistrationInput,
   CreateTournamentSponsorInput,
   CreateTournamentTeamInput,
   CreateTournamentTeamPlayerInput,
+  CreateTournamentVenueInput,
+  ScheduleBracketMatchGameInput,
   SubmitTournamentRegistrationResult,
   Tournament,
+  TournamentAnnouncement,
+  TournamentBracket,
   TournamentCheckoutSessionResult,
   TournamentGame,
   TournamentGamePlayerStat,
@@ -21,11 +27,14 @@ import {
   TournamentSponsor,
   TournamentStandingRow,
   TournamentTeam,
+  TournamentVenue,
   UpdateTournamentGameInput,
   UpdateTournamentGameScoreInput,
   UpdateTournamentInput,
   UpdateTournamentRegistrationInput,
+  UpdateTournamentSponsorInput,
   UpdateTournamentTeamInput,
+  UpdateTournamentVenueInput,
   UpsertTournamentGamePlayerStatInput,
 } from '@hockeyspare/contracts';
 import { Observable } from 'rxjs';
@@ -163,6 +172,17 @@ export class TournamentsApiService {
     );
   }
 
+  updateSponsor(
+    tournamentId: string,
+    sponsorId: string,
+    input: UpdateTournamentSponsorInput,
+  ): Observable<TournamentSponsor> {
+    return this.http.patch<TournamentSponsor>(
+      `/api/tournaments/${tournamentId}/sponsors/${sponsorId}`,
+      input,
+    );
+  }
+
   deleteSponsor(
     tournamentId: string,
     sponsorId: string,
@@ -294,6 +314,86 @@ export class TournamentsApiService {
   ): Observable<{ id: string; deleted: boolean }> {
     return this.http.delete<{ id: string; deleted: boolean }>(
       `/api/tournaments/${tournamentId}/games/${gameId}/stats/${statId}`,
+    );
+  }
+
+  createBracket(
+    tournamentId: string,
+    input: CreateTournamentBracketInput,
+  ): Observable<TournamentBracket> {
+    return this.http.post<TournamentBracket>(
+      `/api/tournaments/${tournamentId}/brackets`,
+      input,
+    );
+  }
+
+  deleteBracket(
+    tournamentId: string,
+    bracketId: string,
+  ): Observable<{ id: string; deleted: boolean }> {
+    return this.http.delete<{ id: string; deleted: boolean }>(
+      `/api/tournaments/${tournamentId}/brackets/${bracketId}`,
+    );
+  }
+
+  scheduleMatchGame(
+    tournamentId: string,
+    bracketId: string,
+    matchId: string,
+    input: ScheduleBracketMatchGameInput,
+  ): Observable<TournamentGame> {
+    return this.http.post<TournamentGame>(
+      `/api/tournaments/${tournamentId}/brackets/${bracketId}/matches/${matchId}/game`,
+      input,
+    );
+  }
+
+  addAnnouncement(
+    tournamentId: string,
+    input: CreateTournamentAnnouncementInput,
+  ): Observable<TournamentAnnouncement> {
+    return this.http.post<TournamentAnnouncement>(
+      `/api/tournaments/${tournamentId}/announcements`,
+      input,
+    );
+  }
+
+  deleteAnnouncement(
+    tournamentId: string,
+    announcementId: string,
+  ): Observable<{ id: string; deleted: boolean }> {
+    return this.http.delete<{ id: string; deleted: boolean }>(
+      `/api/tournaments/${tournamentId}/announcements/${announcementId}`,
+    );
+  }
+
+  addVenue(
+    tournamentId: string,
+    input: CreateTournamentVenueInput,
+  ): Observable<TournamentVenue> {
+    return this.http.post<TournamentVenue>(
+      `/api/tournaments/${tournamentId}/venues`,
+      input,
+    );
+  }
+
+  updateVenue(
+    tournamentId: string,
+    venueId: string,
+    input: UpdateTournamentVenueInput,
+  ): Observable<TournamentVenue> {
+    return this.http.patch<TournamentVenue>(
+      `/api/tournaments/${tournamentId}/venues/${venueId}`,
+      input,
+    );
+  }
+
+  deleteVenue(
+    tournamentId: string,
+    venueId: string,
+  ): Observable<{ id: string; deleted: boolean }> {
+    return this.http.delete<{ id: string; deleted: boolean }>(
+      `/api/tournaments/${tournamentId}/venues/${venueId}`,
     );
   }
 }

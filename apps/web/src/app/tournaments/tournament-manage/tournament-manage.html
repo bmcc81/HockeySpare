@@ -124,6 +124,29 @@
                 ></textarea>
               </div>
 
+              <hr />
+
+              <div class="mb-2 text-secondary small text-uppercase fw-semibold">
+                Public contact info
+              </div>
+
+              <div class="row g-2 mb-3">
+                <div class="col-12 col-md-4">
+                  <label class="form-label">Contact name</label>
+                  <input class="form-control" formControlName="contactName" />
+                </div>
+
+                <div class="col-12 col-md-4">
+                  <label class="form-label">Contact email</label>
+                  <input class="form-control" formControlName="contactEmail" />
+                </div>
+
+                <div class="col-12 col-md-4">
+                  <label class="form-label">Contact phone</label>
+                  <input class="form-control" formControlName="contactPhone" />
+                </div>
+              </div>
+
               <button
                 type="submit"
                 class="btn btn-primary btn-sm"
@@ -841,6 +864,223 @@
 
     <div class="card mt-4" *ngIf="isOwner">
       <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <h2 class="h5 mb-0">Playoff Brackets ({{ t.brackets.length }})</h2>
+
+          <button
+            type="button"
+            class="btn btn-sm btn-primary"
+            *ngIf="!showBracketBuilder()"
+            (click)="openBracketBuilder()"
+          >
+            New bracket
+          </button>
+        </div>
+
+        <div *ngIf="bracketError()" class="alert alert-danger py-2 mt-3">
+          {{ bracketError() }}
+        </div>
+
+        <div class="border rounded p-3 mt-3" *ngIf="showBracketBuilder()">
+          <form [formGroup]="bracketForm" (ngSubmit)="createBracket()" class="row g-2 align-items-end">
+            <div class="col-12 col-md-4">
+              <label class="form-label">Bracket name</label>
+              <input class="form-control" formControlName="name" />
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label class="form-label">Division</label>
+              <input
+                class="form-control"
+                formControlName="division"
+                placeholder="Optional"
+              />
+            </div>
+          </form>
+
+          <div class="mt-3">
+            <label class="form-label">
+              Seed teams, in order (click to add, top = #1 seed)
+            </label>
+
+            <div class="d-flex flex-wrap gap-2 mb-2" *ngIf="t.teams.length > 0">
+              <button
+                type="button"
+                class="btn btn-sm"
+                [class.btn-outline-secondary]="!isSeeded(team.id)"
+                [class.btn-secondary]="isSeeded(team.id)"
+                *ngFor="let team of t.teams; trackBy: trackByTeamId"
+                (click)="toggleSeedTeam(team.id)"
+              >
+                {{ team.name }}
+              </button>
+            </div>
+
+            <div class="text-secondary py-1" *ngIf="t.teams.length === 0">
+              Add teams first before creating a bracket.
+            </div>
+
+            <ol class="mt-2" *ngIf="bracketSeedTeamIds().length > 0">
+              <li
+                *ngFor="let teamId of bracketSeedTeamIds(); let i = index"
+                class="d-flex align-items-center gap-2 mb-1"
+              >
+                <span>{{ teamNameById(teamId) }}</span>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-secondary"
+                  [disabled]="i === 0"
+                  (click)="moveSeedTeam(i, -1)"
+                >
+                  ↑
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-secondary"
+                  [disabled]="i === bracketSeedTeamIds().length - 1"
+                  (click)="moveSeedTeam(i, 1)"
+                >
+                  ↓
+                </button>
+              </li>
+            </ol>
+          </div>
+
+          <div class="d-flex gap-2 mt-2">
+            <button
+              type="button"
+              class="btn btn-primary btn-sm"
+              [disabled]="creatingBracket()"
+              (click)="createBracket()"
+            >
+              {{ creatingBracket() ? 'Creating...' : 'Create bracket' }}
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-outline-secondary btn-sm"
+              (click)="cancelBracketBuilder()"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+
+        <div class="text-secondary py-2" *ngIf="t.brackets.length === 0 && !showBracketBuilder()">
+          No brackets yet.
+        </div>
+
+        <div
+          class="border rounded p-3 mt-3"
+          *ngFor="let bracket of t.brackets; trackBy: trackByBracketId"
+        >
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+              <strong>{{ bracket.name }}</strong>
+              <span class="text-secondary small ms-2" *ngIf="bracket.division">
+                {{ bracket.division }}
+              </span>
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-danger"
+              [disabled]="deletingBracketId() === bracket.id"
+              (click)="deleteBracket(bracket.id)"
+            >
+              {{ deletingBracketId() === bracket.id ? '...' : 'Remove bracket' }}
+            </button>
+          </div>
+
+          <div class="d-flex gap-4 overflow-auto mt-3 pb-2">
+            <div
+              class="d-flex flex-column justify-content-around gap-3"
+              style="min-width: 220px;"
+              *ngFor="let round of matchesByRound(bracket); let ri = index"
+            >
+              <div class="text-secondary small text-uppercase fw-semibold">
+                {{ roundLabel(ri, matchesByRound(bracket).length) }}
+              </div>
+
+              <div
+                class="border rounded p-2 small"
+                *ngFor="let match of round; trackBy: trackByMatchId"
+              >
+                <div class="d-flex justify-content-between">
+                  <span [class.fw-bold]="match.winnerTeamId === match.team1Id">
+                    {{ match.team1?.name || (match.isBye ? '—' : 'TBD') }}
+                  </span>
+                  <span *ngIf="match.game">{{ match.game.homeScore ?? '' }}</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span [class.fw-bold]="match.winnerTeamId === match.team2Id">
+                    {{ match.team2?.name || (match.isBye ? '—' : 'TBD') }}
+                  </span>
+                  <span *ngIf="match.game">{{ match.game.awayScore ?? '' }}</span>
+                </div>
+
+                <div class="text-secondary mt-1" *ngIf="match.isBye">Bye</div>
+
+                <div class="mt-1" *ngIf="match.game">
+                  Status: {{ match.game.status }}
+                </div>
+
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-primary mt-1"
+                  *ngIf="canScheduleMatch(match) && !isSchedulingMatch(match)"
+                  (click)="openScheduleMatch(match)"
+                >
+                  Schedule game
+                </button>
+
+                <form
+                  *ngIf="isSchedulingMatch(match)"
+                  [formGroup]="matchScheduleForm"
+                  (ngSubmit)="saveMatchSchedule(match)"
+                  class="d-flex flex-column gap-1 mt-2"
+                >
+                  <div *ngIf="scheduleMatchError()" class="alert alert-danger py-1 px-2 small mb-1">
+                    {{ scheduleMatchError() }}
+                  </div>
+
+                  <input
+                    type="datetime-local"
+                    class="form-control form-control-sm"
+                    formControlName="startsAt"
+                  />
+                  <input
+                    class="form-control form-control-sm"
+                    formControlName="arenaName"
+                    placeholder="Arena (optional)"
+                  />
+
+                  <div class="d-flex gap-1">
+                    <button
+                      type="submit"
+                      class="btn btn-sm btn-primary"
+                      [disabled]="matchScheduleForm.invalid || savingMatchSchedule()"
+                    >
+                      {{ savingMatchSchedule() ? '...' : 'Save' }}
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary"
+                      (click)="cancelScheduleMatch()"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-4" *ngIf="isOwner">
+      <div class="card-body">
         <h2 class="h5">Sponsors ({{ t.sponsors.length }})</h2>
 
         <div *ngIf="sponsorError()" class="alert alert-danger py-2">
@@ -866,7 +1106,7 @@
             />
           </div>
 
-          <div class="col-12 col-md-4">
+          <div class="col-12 col-md-3">
             <label class="form-label">Website URL</label>
             <input
               class="form-control"
@@ -875,13 +1115,33 @@
             />
           </div>
 
-          <div class="col-12 col-md-1">
+          <div class="col-12 col-md-2">
+            <label class="form-label">Tier</label>
+            <select class="form-select" formControlName="tier">
+              <option value="">None</option>
+              <option value="GOLD">Gold</option>
+              <option value="SILVER">Silver</option>
+              <option value="BRONZE">Bronze</option>
+            </select>
+          </div>
+
+          <div class="col-12 col-md-2 d-flex gap-2">
             <button
               type="submit"
               class="btn btn-primary btn-sm w-100"
               [disabled]="sponsorForm.invalid || savingSponsor()"
             >
-              {{ savingSponsor() ? '...' : 'Add' }}
+              {{ savingSponsor() ? '...' : (editingSponsorId() ? 'Save' : 'Add') }}
+            </button>
+          </div>
+
+          <div class="col-12" *ngIf="editingSponsorId()">
+            <button
+              type="button"
+              class="btn btn-outline-secondary btn-sm"
+              (click)="cancelSponsorEdit()"
+            >
+              Cancel edit
             </button>
           </div>
         </form>
@@ -895,6 +1155,7 @@
             <thead>
               <tr>
                 <th>Name</th>
+                <th>Tier</th>
                 <th>Logo URL</th>
                 <th>Website</th>
                 <th></th>
@@ -906,13 +1167,21 @@
                 *ngFor="let sponsor of t.sponsors; trackBy: trackBySponsorId"
               >
                 <td class="fw-semibold">{{ sponsor.name }}</td>
-                <td class="text-truncate" style="max-width: 200px">
+                <td>{{ sponsor.tier || '—' }}</td>
+                <td class="text-truncate" style="max-width: 160px">
                   {{ sponsor.logoUrl || '—' }}
                 </td>
-                <td class="text-truncate" style="max-width: 200px">
+                <td class="text-truncate" style="max-width: 160px">
                   {{ sponsor.linkUrl || '—' }}
                 </td>
                 <td class="text-end">
+                  <button
+                    class="btn btn-sm btn-outline-secondary me-2"
+                    type="button"
+                    (click)="openEditSponsor(sponsor)"
+                  >
+                    Edit
+                  </button>
                   <button
                     class="btn btn-sm btn-outline-danger"
                     type="button"
@@ -926,6 +1195,169 @@
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-4" *ngIf="isOwner">
+      <div class="card-body">
+        <h2 class="h5">Announcements ({{ t.announcements.length }})</h2>
+
+        <div *ngIf="announcementError()" class="alert alert-danger py-2">
+          {{ announcementError() }}
+        </div>
+
+        <form
+          [formGroup]="announcementForm"
+          (ngSubmit)="addAnnouncement()"
+          class="d-flex gap-2 align-items-start mb-3"
+        >
+          <textarea
+            class="form-control"
+            formControlName="body"
+            rows="2"
+            placeholder="Post an update for everyone viewing this tournament..."
+          ></textarea>
+
+          <button
+            type="submit"
+            class="btn btn-primary btn-sm"
+            [disabled]="announcementForm.invalid || savingAnnouncement()"
+          >
+            {{ savingAnnouncement() ? '...' : 'Post' }}
+          </button>
+        </form>
+
+        <div *ngIf="t.announcements.length === 0" class="text-secondary py-2">
+          No announcements yet.
+        </div>
+
+        <div class="d-flex flex-column gap-2">
+          <div
+            class="border rounded p-2 d-flex justify-content-between align-items-start gap-2"
+            *ngFor="let announcement of t.announcements; trackBy: trackByAnnouncementId"
+          >
+            <div>
+              <div>{{ announcement.body }}</div>
+              <div class="text-secondary small">
+                {{ announcement.createdAt | date: 'medium' }}
+              </div>
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-danger flex-shrink-0"
+              [disabled]="deletingAnnouncementId() === announcement.id"
+              (click)="deleteAnnouncement(announcement.id)"
+            >
+              {{ deletingAnnouncementId() === announcement.id ? '...' : 'Remove' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-4" *ngIf="isOwner">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <h2 class="h5 mb-0">Venues ({{ t.venues.length }})</h2>
+
+          <button
+            type="button"
+            class="btn btn-sm btn-primary"
+            *ngIf="!showVenueForm()"
+            (click)="openAddVenue()"
+          >
+            Add venue
+          </button>
+        </div>
+
+        <div *ngIf="venueError()" class="alert alert-danger py-2 mt-3">
+          {{ venueError() }}
+        </div>
+
+        <form
+          [formGroup]="venueForm"
+          (ngSubmit)="saveVenue()"
+          class="row g-2 mt-1"
+          *ngIf="showVenueForm()"
+        >
+          <div class="col-12 col-md-6">
+            <label class="form-label">Venue / arena name</label>
+            <input class="form-control" formControlName="name" />
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label class="form-label">Address</label>
+            <input
+              class="form-control"
+              formControlName="address"
+              placeholder="Optional - powers the embedded map"
+            />
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label class="form-label">Parking</label>
+            <textarea class="form-control" formControlName="parkingInfo" rows="2"></textarea>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label class="form-label">Dressing rooms</label>
+            <textarea class="form-control" formControlName="dressingRoomInfo" rows="2"></textarea>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label class="form-label">Concessions</label>
+            <textarea class="form-control" formControlName="concessionsInfo" rows="2"></textarea>
+          </div>
+
+          <div class="col-12 d-flex gap-2">
+            <button
+              type="submit"
+              class="btn btn-primary btn-sm"
+              [disabled]="venueForm.invalid || savingVenue()"
+            >
+              {{ savingVenue() ? 'Saving...' : (editingVenueId() ? 'Save' : 'Add venue') }}
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-outline-secondary btn-sm"
+              (click)="cancelVenueEdit()"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+
+        <div class="d-flex flex-column gap-2 mt-3" *ngIf="t.venues.length > 0">
+          <div
+            class="border rounded p-2 d-flex justify-content-between align-items-start gap-2"
+            *ngFor="let venue of t.venues; trackBy: trackByVenueId"
+          >
+            <div>
+              <strong>{{ venue.name }}</strong>
+              <div class="text-secondary small" *ngIf="venue.address">{{ venue.address }}</div>
+            </div>
+
+            <div class="d-flex gap-2 flex-shrink-0">
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary"
+                (click)="openEditVenue(venue)"
+              >
+                Edit
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-danger"
+                [disabled]="deletingVenueId() === venue.id"
+                (click)="deleteVenue(venue.id)"
+              >
+                {{ deletingVenueId() === venue.id ? '...' : 'Remove' }}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

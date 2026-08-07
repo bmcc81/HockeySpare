@@ -576,6 +576,23 @@ export type EnumTournamentRegistrationStatusWithAggregatesFilter<$PrismaModel = 
   _max?: Prisma.NestedEnumTournamentRegistrationStatusFilter<$PrismaModel>
 }
 
+export type EnumTournamentSponsorTierNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.TournamentSponsorTier | Prisma.EnumTournamentSponsorTierFieldRefInput<$PrismaModel> | null
+  in?: $Enums.TournamentSponsorTier[] | Prisma.ListEnumTournamentSponsorTierFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.TournamentSponsorTier[] | Prisma.ListEnumTournamentSponsorTierFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumTournamentSponsorTierNullableFilter<$PrismaModel> | $Enums.TournamentSponsorTier | null
+}
+
+export type EnumTournamentSponsorTierNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TournamentSponsorTier | Prisma.EnumTournamentSponsorTierFieldRefInput<$PrismaModel> | null
+  in?: $Enums.TournamentSponsorTier[] | Prisma.ListEnumTournamentSponsorTierFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.TournamentSponsorTier[] | Prisma.ListEnumTournamentSponsorTierFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumTournamentSponsorTierNullableWithAggregatesFilter<$PrismaModel> | $Enums.TournamentSponsorTier | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTournamentSponsorTierNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTournamentSponsorTierNullableFilter<$PrismaModel>
+}
+
 export type NestedIntFilter<$PrismaModel = never> = {
   equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
   in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
@@ -1122,6 +1139,23 @@ export type NestedEnumTournamentRegistrationStatusWithAggregatesFilter<$PrismaMo
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumTournamentRegistrationStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumTournamentRegistrationStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumTournamentSponsorTierNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.TournamentSponsorTier | Prisma.EnumTournamentSponsorTierFieldRefInput<$PrismaModel> | null
+  in?: $Enums.TournamentSponsorTier[] | Prisma.ListEnumTournamentSponsorTierFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.TournamentSponsorTier[] | Prisma.ListEnumTournamentSponsorTierFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumTournamentSponsorTierNullableFilter<$PrismaModel> | $Enums.TournamentSponsorTier | null
+}
+
+export type NestedEnumTournamentSponsorTierNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TournamentSponsorTier | Prisma.EnumTournamentSponsorTierFieldRefInput<$PrismaModel> | null
+  in?: $Enums.TournamentSponsorTier[] | Prisma.ListEnumTournamentSponsorTierFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.TournamentSponsorTier[] | Prisma.ListEnumTournamentSponsorTierFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumTournamentSponsorTierNullableWithAggregatesFilter<$PrismaModel> | $Enums.TournamentSponsorTier | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTournamentSponsorTierNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTournamentSponsorTierNullableFilter<$PrismaModel>
 }
 
 

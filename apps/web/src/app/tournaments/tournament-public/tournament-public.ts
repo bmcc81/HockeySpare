@@ -5,13 +5,19 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import {
   Tournament,
+  TournamentBracket,
+  TournamentBracketMatch,
   TournamentGame,
   TournamentPlayerLeaderRow,
+  TournamentSponsor,
+  TournamentSponsorTier,
   TournamentStandingRow,
   TournamentTeam,
+  TournamentVenue,
 } from '@hockeyspare/contracts';
 import { Subscription, interval, switchMap } from 'rxjs';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
@@ -20,12 +26,16 @@ type TournamentTab =
   | 'schedule'
   | 'standings'
   | 'teams'
+  | 'bracket'
   | 'leaders'
   | 'rules'
+  | 'info'
   | 'sponsors'
   | 'register';
 
 const LIVE_SCORE_POLL_INTERVAL_MS = 20000;
+const COUNTDOWN_TICK_MS = 1000;
+const BANNER_ROTATE_MS = 5000;
 
 @Component({
   selector: 'app-tournament-public',
@@ -37,8 +47,11 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly tournamentsApi = inject(TournamentsApiService);
+  private readonly sanitizer = inject(DomSanitizer);
 
   private pollSubscription: Subscription | null = null;
+  private countdownIntervalId: ReturnType<typeof setInterval> | null = null;
+  private bannerIntervalId: ReturnType<typeof setInterval> | null = null;
 
   tournamentId = this.route.snapshot.paramMap.get('id') ?? '';
 
@@ -63,6 +76,10 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
   paymentVerifying = signal(false);
   paymentMessage = signal<string | null>(null);
   paymentMessageIsError = signal(false);
+
+  countdownText = signal<string | null>(null);
+  searchQuery = signal('');
+  bannerIndex = signal(0);
 
   registrationForm = this.fb.group({
     teamName: ['', Validators.required],
@@ -107,6 +124,47 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
           this.loadLeaders();
         },
       });
+
+    this.updateCountdown();
+    this.countdownIntervalId = setInterval(
+      () => this.updateCountdown(),
+      COUNTDOWN_TICK_MS,
+    );
+
+    this.bannerIntervalId = setInterval(() => {
+      const sponsors = this.bannerSponsors();
+
+      if (sponsors.length > 1) {
+        this.bannerIndex.set((this.bannerIndex() + 1) % sponsors.length);
+      }
+    }, BANNER_ROTATE_MS);
+  }
+
+  private updateCountdown(): void {
+    const startDate = this.tournament()?.startDate;
+
+    if (!startDate) {
+      this.countdownText.set(null);
+      return;
+    }
+
+    const diffMs = new Date(startDate).getTime() - Date.now();
+
+    if (diffMs <= 0) {
+      this.countdownText.set(null);
+      return;
+    }
+
+    const days = Math.floor(diffMs / 86400000);
+    const hours = Math.floor((diffMs % 86400000) / 3600000);
+    const minutes = Math.floor((diffMs % 3600000) / 60000);
+    const seconds = Math.floor((diffMs % 60000) / 1000);
+
+    this.countdownText.set(
+      days > 0
+        ? `${days}d ${hours}h ${minutes}m`
+        : `${hours}h ${minutes}m ${seconds}s`,
+    );
   }
 
   private verifyPayment(sessionId: string): void {
@@ -183,23 +241,69 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
     this.loadStandings();
   }
 
+  setSearchQuery(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.searchQuery.set(input.value);
+  }
+
   filteredGames(): TournamentGame[] {
     const division = this.divisionFilter();
-    const games = this.tournament()?.games ?? [];
+    let games = this.tournament()?.games ?? [];
 
-    if (!division) {
+    if (division) {
+      const teams = this.tournament()?.teams ?? [];
+      const divisionTeamIds = new Set(
+        teams.filter((t) => t.division === division).map((t) => t.id),
+      );
+
+      games = games.filter(
+        (game) =>
+          (game.homeTeamId && divisionTeamIds.has(game.homeTeamId)) ||
+          (game.awayTeamId && divisionTeamIds.has(game.awayTeamId)),
+      );
+    }
+
+    const query = this.searchQuery().trim().toLowerCase();
+
+    if (!query) {
       return games;
     }
 
-    const teams = this.tournament()?.teams ?? [];
-    const divisionTeamIds = new Set(
-      teams.filter((t) => t.division === division).map((t) => t.id),
-    );
-
     return games.filter(
       (game) =>
-        (game.homeTeamId && divisionTeamIds.has(game.homeTeamId)) ||
-        (game.awayTeamId && divisionTeamIds.has(game.awayTeamId)),
+        game.homeTeamName.toLowerCase().includes(query) ||
+        game.awayTeamName.toLowerCase().includes(query) ||
+        (game.arenaName ?? '').toLowerCase().includes(query),
+    );
+  }
+
+  filteredTeams(): TournamentTeam[] {
+    const query = this.searchQuery().trim().toLowerCase();
+    const teams = this.tournament()?.teams ?? [];
+
+    if (!query) {
+      return teams;
+    }
+
+    return teams.filter(
+      (team) =>
+        team.name.toLowerCase().includes(query) ||
+        team.players.some((p) => p.displayName.toLowerCase().includes(query)),
+    );
+  }
+
+  filteredLeaders(): TournamentPlayerLeaderRow[] {
+    const query = this.searchQuery().trim().toLowerCase();
+    const leaders = this.leaders();
+
+    if (!query) {
+      return leaders;
+    }
+
+    return leaders.filter(
+      (leader) =>
+        leader.displayName.toLowerCase().includes(query) ||
+        leader.teamName.toLowerCase().includes(query),
     );
   }
 
@@ -259,8 +363,87 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
     return leader.teamPlayerId;
   }
 
+  matchesByRound(bracket: TournamentBracket): TournamentBracketMatch[][] {
+    const rounds = new Map<number, TournamentBracketMatch[]>();
+
+    for (const match of bracket.matches) {
+      const roundMatches = rounds.get(match.round) ?? [];
+      roundMatches.push(match);
+      rounds.set(match.round, roundMatches);
+    }
+
+    return Array.from(rounds.keys())
+      .sort((a, b) => a - b)
+      .map((round) =>
+        (rounds.get(round) ?? []).sort((a, b) => a.position - b.position),
+      );
+  }
+
+  roundLabel(roundIndex: number, totalRounds: number): string {
+    const remaining = totalRounds - roundIndex;
+
+    if (remaining === 1) return 'Final';
+    if (remaining === 2) return 'Semifinals';
+    if (remaining === 3) return 'Quarterfinals';
+    return `Round ${roundIndex + 1}`;
+  }
+
+  trackByBracketId(_index: number, bracket: TournamentBracket): string {
+    return bracket.id;
+  }
+
+  trackByMatchId(_index: number, match: TournamentBracketMatch): string {
+    return match.id;
+  }
+
+  readonly sponsorTiers: TournamentSponsorTier[] = ['GOLD', 'SILVER', 'BRONZE'];
+
+  sponsorsByTier(tier: string | null): TournamentSponsor[] {
+    return (this.tournament()?.sponsors ?? []).filter(
+      (s) => (s.tier ?? null) === tier,
+    );
+  }
+
+  bannerSponsors(): TournamentSponsor[] {
+    return this.sponsorsByTier('GOLD').filter((s) => !!s.logoUrl);
+  }
+
+  currentBannerSponsor(): TournamentSponsor | null {
+    const sponsors = this.bannerSponsors();
+    return sponsors.length > 0 ? sponsors[this.bannerIndex() % sponsors.length] : null;
+  }
+
+  venueMapUrl(venue: TournamentVenue): SafeResourceUrl | null {
+    if (!venue.address) {
+      return null;
+    }
+
+    const url = `https://maps.google.com/maps?q=${encodeURIComponent(venue.address)}&output=embed`;
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  }
+
+  trackByVenueId(_index: number, venue: TournamentVenue): string {
+    return venue.id;
+  }
+
+  trackBySponsorId(_index: number, sponsor: TournamentSponsor): string {
+    return sponsor.id;
+  }
+
+  trackByAnnouncementId(_index: number, announcement: { id: string }): string {
+    return announcement.id;
+  }
+
   ngOnDestroy(): void {
     this.pollSubscription?.unsubscribe();
+
+    if (this.countdownIntervalId !== null) {
+      clearInterval(this.countdownIntervalId);
+    }
+
+    if (this.bannerIntervalId !== null) {
+      clearInterval(this.bannerIntervalId);
+    }
   }
 
   setTab(tab: TournamentTab): void {

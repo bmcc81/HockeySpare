@@ -182,3 +182,12 @@ export const TournamentRegistrationStatus = {
 } as const
 
 export type TournamentRegistrationStatus = (typeof TournamentRegistrationStatus)[keyof typeof TournamentRegistrationStatus]
+
+
+export const TournamentSponsorTier = {
+  GOLD: 'GOLD',
+  SILVER: 'SILVER',
+  BRONZE: 'BRONZE'
+} as const
+
+export type TournamentSponsorTier = (typeof TournamentSponsorTier)[keyof typeof TournamentSponsorTier]

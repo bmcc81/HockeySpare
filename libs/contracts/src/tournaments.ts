@@ -91,12 +91,15 @@ export interface TournamentGame {
   playerStats?: TournamentGamePlayerStat[];
 }
 
+export type TournamentSponsorTier = 'GOLD' | 'SILVER' | 'BRONZE';
+
 export interface TournamentSponsor {
   id: string;
   tournamentId: string;
   name: string;
   logoUrl?: string | null;
   linkUrl?: string | null;
+  tier?: TournamentSponsorTier | null;
   createdAt: string;
 }
 
@@ -104,6 +107,92 @@ export interface CreateTournamentSponsorInput {
   name: string;
   logoUrl?: string | null;
   linkUrl?: string | null;
+  tier?: TournamentSponsorTier | null;
+}
+
+export type UpdateTournamentSponsorInput = Partial<CreateTournamentSponsorInput>;
+
+export interface TournamentAnnouncement {
+  id: string;
+  tournamentId: string;
+  body: string;
+  createdAt: string;
+}
+
+export interface CreateTournamentAnnouncementInput {
+  body: string;
+}
+
+export interface TournamentVenue {
+  id: string;
+  tournamentId: string;
+  name: string;
+  address?: string | null;
+  parkingInfo?: string | null;
+  dressingRoomInfo?: string | null;
+  concessionsInfo?: string | null;
+}
+
+export interface CreateTournamentVenueInput {
+  name: string;
+  address?: string | null;
+  parkingInfo?: string | null;
+  dressingRoomInfo?: string | null;
+  concessionsInfo?: string | null;
+}
+
+export type UpdateTournamentVenueInput = Partial<CreateTournamentVenueInput>;
+
+export interface TournamentBracketMatchTeamRef {
+  id: string;
+  name: string;
+}
+
+export interface TournamentBracketMatchGameRef {
+  id: string;
+  status: TournamentGameStatus;
+  homeScore?: number | null;
+  awayScore?: number | null;
+  startsAt: string;
+}
+
+export interface TournamentBracketMatch {
+  id: string;
+  bracketId: string;
+  round: number;
+  position: number;
+  team1Id?: string | null;
+  team2Id?: string | null;
+  gameId?: string | null;
+  winnerTeamId?: string | null;
+  nextMatchId?: string | null;
+  nextMatchSlot?: number | null;
+  isBye: boolean;
+  team1?: TournamentBracketMatchTeamRef | null;
+  team2?: TournamentBracketMatchTeamRef | null;
+  winnerTeam?: TournamentBracketMatchTeamRef | null;
+  game?: TournamentBracketMatchGameRef | null;
+}
+
+export interface TournamentBracket {
+  id: string;
+  tournamentId: string;
+  name: string;
+  division?: string | null;
+  matches: TournamentBracketMatch[];
+}
+
+export interface CreateTournamentBracketInput {
+  name: string;
+  division?: string | null;
+  /** Team IDs in seed order (first = top seed). */
+  teamIds: string[];
+}
+
+export interface ScheduleBracketMatchGameInput {
+  startsAt: string;
+  arenaName?: string | null;
+  notes?: string | null;
 }
 
 export interface Tournament {
@@ -119,9 +208,15 @@ export interface Tournament {
   registrationDeadline?: string | null;
   registrationFeeCents?: number | null;
   stripePayoutsEnabled?: boolean;
+  contactName?: string | null;
+  contactEmail?: string | null;
+  contactPhone?: string | null;
   games: TournamentGame[];
   sponsors: TournamentSponsor[];
   teams: TournamentTeam[];
+  brackets: TournamentBracket[];
+  announcements: TournamentAnnouncement[];
+  venues: TournamentVenue[];
 }
 
 export interface CreateTournamentInput {
@@ -134,6 +229,9 @@ export interface CreateTournamentInput {
   registrationMode?: TournamentRegistrationMode;
   registrationDeadline?: string | null;
   registrationFeeCents?: number | null;
+  contactName?: string | null;
+  contactEmail?: string | null;
+  contactPhone?: string | null;
 }
 
 export type UpdateTournamentInput = Partial<CreateTournamentInput>;

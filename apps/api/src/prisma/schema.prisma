@@ -574,6 +574,9 @@ model Tournament {
   registrationFeeCents  Int?
   stripeAccountId       String?                     @unique
   stripePayoutsEnabled  Boolean                     @default(false)
+  contactName           String?
+  contactEmail          String?
+  contactPhone          String?
   createdAt             DateTime                    @default(now())
   updatedAt             DateTime                    @updatedAt
 
@@ -584,9 +587,39 @@ model Tournament {
   sponsors      TournamentSponsor[]
   payments      TournamentPayment[]
   teams         TournamentTeam[]
+  brackets      TournamentBracket[]
+  announcements TournamentAnnouncement[]
+  venues        TournamentVenue[]
 
   @@index([leagueId])
   @@index([createdById])
+}
+
+model TournamentAnnouncement {
+  id           String   @id @default(cuid())
+  tournamentId String
+  body         String
+  createdAt    DateTime @default(now())
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  @@index([tournamentId, createdAt])
+}
+
+model TournamentVenue {
+  id                 String   @id @default(cuid())
+  tournamentId       String
+  name               String
+  address            String?
+  parkingInfo        String?
+  dressingRoomInfo   String?
+  concessionsInfo    String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  @@index([tournamentId])
 }
 
 model TournamentGame {
@@ -609,6 +642,7 @@ model TournamentGame {
   homeTeam   TournamentTeam?        @relation("TournamentGameHomeTeam", fields: [homeTeamId], references: [id], onDelete: SetNull)
   awayTeam   TournamentTeam?        @relation("TournamentGameAwayTeam", fields: [awayTeamId], references: [id], onDelete: SetNull)
   playerStats TournamentGamePlayerStat[]
+  bracketMatch TournamentBracketMatch?
 
   @@index([tournamentId, startsAt])
   @@index([homeTeamId])
@@ -650,8 +684,54 @@ model TournamentTeam {
   players      TournamentTeamPlayer[]
   homeGames    TournamentGame[]        @relation("TournamentGameHomeTeam")
   awayGames    TournamentGame[]        @relation("TournamentGameAwayTeam")
+  bracketMatchesAsTeam1 TournamentBracketMatch[] @relation("BracketMatchTeam1")
+  bracketMatchesAsTeam2 TournamentBracketMatch[] @relation("BracketMatchTeam2")
+  bracketMatchesWon     TournamentBracketMatch[] @relation("BracketMatchWinner")
 
   @@index([tournamentId])
+}
+
+model TournamentBracket {
+  id           String   @id @default(cuid())
+  tournamentId String
+  name         String
+  division     String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  tournament Tournament               @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  matches    TournamentBracketMatch[]
+
+  @@index([tournamentId])
+}
+
+model TournamentBracketMatch {
+  id            String   @id @default(cuid())
+  bracketId     String
+  round         Int
+  position      Int
+  team1Id       String?
+  team2Id       String?
+  gameId        String?  @unique
+  winnerTeamId  String?
+  nextMatchId   String?
+  nextMatchSlot Int?
+  isBye         Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  bracket         TournamentBracket        @relation(fields: [bracketId], references: [id], onDelete: Cascade)
+  team1           TournamentTeam?          @relation("BracketMatchTeam1", fields: [team1Id], references: [id], onDelete: SetNull)
+  team2           TournamentTeam?          @relation("BracketMatchTeam2", fields: [team2Id], references: [id], onDelete: SetNull)
+  winnerTeam      TournamentTeam?          @relation("BracketMatchWinner", fields: [winnerTeamId], references: [id], onDelete: SetNull)
+  game            TournamentGame?          @relation(fields: [gameId], references: [id], onDelete: SetNull)
+  nextMatch       TournamentBracketMatch?  @relation("BracketMatchAdvancement", fields: [nextMatchId], references: [id], onDelete: SetNull)
+  previousMatches TournamentBracketMatch[] @relation("BracketMatchAdvancement")
+
+  @@index([bracketId, round])
+  @@index([nextMatchId])
+  @@index([team1Id])
+  @@index([team2Id])
 }
 
 model TournamentTeamPlayer {
@@ -718,14 +798,21 @@ enum TournamentRegistrationStatus {
 }
 
 model TournamentSponsor {
-  id           String   @id @default(cuid())
+  id           String              @id @default(cuid())
   tournamentId String
   name         String
   logoUrl      String?
   linkUrl      String?
-  createdAt    DateTime @default(now())
+  tier         TournamentSponsorTier?
+  createdAt    DateTime            @default(now())
 
   tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
 
   @@index([tournamentId, createdAt])
+}
+
+enum TournamentSponsorTier {
+  GOLD
+  SILVER
+  BRONZE
 }

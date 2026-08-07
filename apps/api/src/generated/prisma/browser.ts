@@ -128,6 +128,16 @@ export type HelpArticle = Prisma.HelpArticleModel
  */
 export type Tournament = Prisma.TournamentModel
 /**
+ * Model TournamentAnnouncement
+ * 
+ */
+export type TournamentAnnouncement = Prisma.TournamentAnnouncementModel
+/**
+ * Model TournamentVenue
+ * 
+ */
+export type TournamentVenue = Prisma.TournamentVenueModel
+/**
  * Model TournamentGame
  * 
  */
@@ -142,6 +152,16 @@ export type TournamentRegistration = Prisma.TournamentRegistrationModel
  * 
  */
 export type TournamentTeam = Prisma.TournamentTeamModel
+/**
+ * Model TournamentBracket
+ * 
+ */
+export type TournamentBracket = Prisma.TournamentBracketModel
+/**
+ * Model TournamentBracketMatch
+ * 
+ */
+export type TournamentBracketMatch = Prisma.TournamentBracketMatchModel
 /**
  * Model TournamentTeamPlayer
  * 

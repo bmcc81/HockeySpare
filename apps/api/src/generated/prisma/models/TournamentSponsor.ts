@@ -30,6 +30,7 @@ export type TournamentSponsorMinAggregateOutputType = {
   name: string | null
   logoUrl: string | null
   linkUrl: string | null
+  tier: $Enums.TournamentSponsorTier | null
   createdAt: Date | null
 }
 
@@ -39,6 +40,7 @@ export type TournamentSponsorMaxAggregateOutputType = {
   name: string | null
   logoUrl: string | null
   linkUrl: string | null
+  tier: $Enums.TournamentSponsorTier | null
   createdAt: Date | null
 }
 
@@ -48,6 +50,7 @@ export type TournamentSponsorCountAggregateOutputType = {
   name: number
   logoUrl: number
   linkUrl: number
+  tier: number
   createdAt: number
   _all: number
 }
@@ -59,6 +62,7 @@ export type TournamentSponsorMinAggregateInputType = {
   name?: true
   logoUrl?: true
   linkUrl?: true
+  tier?: true
   createdAt?: true
 }
 
@@ -68,6 +72,7 @@ export type TournamentSponsorMaxAggregateInputType = {
   name?: true
   logoUrl?: true
   linkUrl?: true
+  tier?: true
   createdAt?: true
 }
 
@@ -77,6 +82,7 @@ export type TournamentSponsorCountAggregateInputType = {
   name?: true
   logoUrl?: true
   linkUrl?: true
+  tier?: true
   createdAt?: true
   _all?: true
 }
@@ -159,6 +165,7 @@ export type TournamentSponsorGroupByOutputType = {
   name: string
   logoUrl: string | null
   linkUrl: string | null
+  tier: $Enums.TournamentSponsorTier | null
   createdAt: Date
   _count: TournamentSponsorCountAggregateOutputType | null
   _min: TournamentSponsorMinAggregateOutputType | null
@@ -189,6 +196,7 @@ export type TournamentSponsorWhereInput = {
   name?: Prisma.StringFilter<"TournamentSponsor"> | string
   logoUrl?: Prisma.StringNullableFilter<"TournamentSponsor"> | string | null
   linkUrl?: Prisma.StringNullableFilter<"TournamentSponsor"> | string | null
+  tier?: Prisma.EnumTournamentSponsorTierNullableFilter<"TournamentSponsor"> | $Enums.TournamentSponsorTier | null
   createdAt?: Prisma.DateTimeFilter<"TournamentSponsor"> | Date | string
   tournament?: Prisma.XOR<Prisma.TournamentScalarRelationFilter, Prisma.TournamentWhereInput>
 }
@@ -199,6 +207,7 @@ export type TournamentSponsorOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   linkUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  tier?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   tournament?: Prisma.TournamentOrderByWithRelationInput
 }
@@ -212,6 +221,7 @@ export type TournamentSponsorWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"TournamentSponsor"> | string
   logoUrl?: Prisma.StringNullableFilter<"TournamentSponsor"> | string | null
   linkUrl?: Prisma.StringNullableFilter<"TournamentSponsor"> | string | null
+  tier?: Prisma.EnumTournamentSponsorTierNullableFilter<"TournamentSponsor"> | $Enums.TournamentSponsorTier | null
   createdAt?: Prisma.DateTimeFilter<"TournamentSponsor"> | Date | string
   tournament?: Prisma.XOR<Prisma.TournamentScalarRelationFilter, Prisma.TournamentWhereInput>
 }, "id">
@@ -222,6 +232,7 @@ export type TournamentSponsorOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   linkUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  tier?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.TournamentSponsorCountOrderByAggregateInput
   _max?: Prisma.TournamentSponsorMaxOrderByAggregateInput
@@ -237,6 +248,7 @@ export type TournamentSponsorScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"TournamentSponsor"> | string
   logoUrl?: Prisma.StringNullableWithAggregatesFilter<"TournamentSponsor"> | string | null
   linkUrl?: Prisma.StringNullableWithAggregatesFilter<"TournamentSponsor"> | string | null
+  tier?: Prisma.EnumTournamentSponsorTierNullableWithAggregatesFilter<"TournamentSponsor"> | $Enums.TournamentSponsorTier | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TournamentSponsor"> | Date | string
 }
 
@@ -245,6 +257,7 @@ export type TournamentSponsorCreateInput = {
   name: string
   logoUrl?: string | null
   linkUrl?: string | null
+  tier?: $Enums.TournamentSponsorTier | null
   createdAt?: Date | string
   tournament: Prisma.TournamentCreateNestedOneWithoutSponsorsInput
 }
@@ -255,6 +268,7 @@ export type TournamentSponsorUncheckedCreateInput = {
   name: string
   logoUrl?: string | null
   linkUrl?: string | null
+  tier?: $Enums.TournamentSponsorTier | null
   createdAt?: Date | string
 }
 
@@ -263,6 +277,7 @@ export type TournamentSponsorUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.NullableEnumTournamentSponsorTierFieldUpdateOperationsInput | $Enums.TournamentSponsorTier | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournament?: Prisma.TournamentUpdateOneRequiredWithoutSponsorsNestedInput
 }
@@ -273,6 +288,7 @@ export type TournamentSponsorUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.NullableEnumTournamentSponsorTierFieldUpdateOperationsInput | $Enums.TournamentSponsorTier | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -282,6 +298,7 @@ export type TournamentSponsorCreateManyInput = {
   name: string
   logoUrl?: string | null
   linkUrl?: string | null
+  tier?: $Enums.TournamentSponsorTier | null
   createdAt?: Date | string
 }
 
@@ -290,6 +307,7 @@ export type TournamentSponsorUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.NullableEnumTournamentSponsorTierFieldUpdateOperationsInput | $Enums.TournamentSponsorTier | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -299,6 +317,7 @@ export type TournamentSponsorUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.NullableEnumTournamentSponsorTierFieldUpdateOperationsInput | $Enums.TournamentSponsorTier | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -318,6 +337,7 @@ export type TournamentSponsorCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
   linkUrl?: Prisma.SortOrder
+  tier?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -327,6 +347,7 @@ export type TournamentSponsorMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
   linkUrl?: Prisma.SortOrder
+  tier?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -336,6 +357,7 @@ export type TournamentSponsorMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
   linkUrl?: Prisma.SortOrder
+  tier?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -381,11 +403,16 @@ export type TournamentSponsorUncheckedUpdateManyWithoutTournamentNestedInput = {
   deleteMany?: Prisma.TournamentSponsorScalarWhereInput | Prisma.TournamentSponsorScalarWhereInput[]
 }
 
+export type NullableEnumTournamentSponsorTierFieldUpdateOperationsInput = {
+  set?: $Enums.TournamentSponsorTier | null
+}
+
 export type TournamentSponsorCreateWithoutTournamentInput = {
   id?: string
   name: string
   logoUrl?: string | null
   linkUrl?: string | null
+  tier?: $Enums.TournamentSponsorTier | null
   createdAt?: Date | string
 }
 
@@ -394,6 +421,7 @@ export type TournamentSponsorUncheckedCreateWithoutTournamentInput = {
   name: string
   logoUrl?: string | null
   linkUrl?: string | null
+  tier?: $Enums.TournamentSponsorTier | null
   createdAt?: Date | string
 }
 
@@ -432,6 +460,7 @@ export type TournamentSponsorScalarWhereInput = {
   name?: Prisma.StringFilter<"TournamentSponsor"> | string
   logoUrl?: Prisma.StringNullableFilter<"TournamentSponsor"> | string | null
   linkUrl?: Prisma.StringNullableFilter<"TournamentSponsor"> | string | null
+  tier?: Prisma.EnumTournamentSponsorTierNullableFilter<"TournamentSponsor"> | $Enums.TournamentSponsorTier | null
   createdAt?: Prisma.DateTimeFilter<"TournamentSponsor"> | Date | string
 }
 
@@ -440,6 +469,7 @@ export type TournamentSponsorCreateManyTournamentInput = {
   name: string
   logoUrl?: string | null
   linkUrl?: string | null
+  tier?: $Enums.TournamentSponsorTier | null
   createdAt?: Date | string
 }
 
@@ -448,6 +478,7 @@ export type TournamentSponsorUpdateWithoutTournamentInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.NullableEnumTournamentSponsorTierFieldUpdateOperationsInput | $Enums.TournamentSponsorTier | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -456,6 +487,7 @@ export type TournamentSponsorUncheckedUpdateWithoutTournamentInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.NullableEnumTournamentSponsorTierFieldUpdateOperationsInput | $Enums.TournamentSponsorTier | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -464,6 +496,7 @@ export type TournamentSponsorUncheckedUpdateManyWithoutTournamentInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.NullableEnumTournamentSponsorTierFieldUpdateOperationsInput | $Enums.TournamentSponsorTier | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -475,6 +508,7 @@ export type TournamentSponsorSelect<ExtArgs extends runtime.Types.Extensions.Int
   name?: boolean
   logoUrl?: boolean
   linkUrl?: boolean
+  tier?: boolean
   createdAt?: boolean
   tournament?: boolean | Prisma.TournamentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tournamentSponsor"]>
@@ -485,6 +519,7 @@ export type TournamentSponsorSelectCreateManyAndReturn<ExtArgs extends runtime.T
   name?: boolean
   logoUrl?: boolean
   linkUrl?: boolean
+  tier?: boolean
   createdAt?: boolean
   tournament?: boolean | Prisma.TournamentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tournamentSponsor"]>
@@ -495,6 +530,7 @@ export type TournamentSponsorSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   name?: boolean
   logoUrl?: boolean
   linkUrl?: boolean
+  tier?: boolean
   createdAt?: boolean
   tournament?: boolean | Prisma.TournamentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tournamentSponsor"]>
@@ -505,10 +541,11 @@ export type TournamentSponsorSelectScalar = {
   name?: boolean
   logoUrl?: boolean
   linkUrl?: boolean
+  tier?: boolean
   createdAt?: boolean
 }
 
-export type TournamentSponsorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tournamentId" | "name" | "logoUrl" | "linkUrl" | "createdAt", ExtArgs["result"]["tournamentSponsor"]>
+export type TournamentSponsorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tournamentId" | "name" | "logoUrl" | "linkUrl" | "tier" | "createdAt", ExtArgs["result"]["tournamentSponsor"]>
 export type TournamentSponsorInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tournament?: boolean | Prisma.TournamentDefaultArgs<ExtArgs>
 }
@@ -530,6 +567,7 @@ export type $TournamentSponsorPayload<ExtArgs extends runtime.Types.Extensions.I
     name: string
     logoUrl: string | null
     linkUrl: string | null
+    tier: $Enums.TournamentSponsorTier | null
     createdAt: Date
   }, ExtArgs["result"]["tournamentSponsor"]>
   composites: {}
@@ -960,6 +998,7 @@ export interface TournamentSponsorFieldRefs {
   readonly name: Prisma.FieldRef<"TournamentSponsor", 'String'>
   readonly logoUrl: Prisma.FieldRef<"TournamentSponsor", 'String'>
   readonly linkUrl: Prisma.FieldRef<"TournamentSponsor", 'String'>
+  readonly tier: Prisma.FieldRef<"TournamentSponsor", 'TournamentSponsorTier'>
   readonly createdAt: Prisma.FieldRef<"TournamentSponsor", 'DateTime'>
 }
     

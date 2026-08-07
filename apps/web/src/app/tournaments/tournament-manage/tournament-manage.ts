@@ -8,14 +8,19 @@ import {
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
   Tournament,
+  TournamentAnnouncement,
+  TournamentBracket,
+  TournamentBracketMatch,
   TournamentGame,
   TournamentGamePlayerStat,
   TournamentPaymentsStatus,
   TournamentPlayerPosition,
   TournamentRegistration,
   TournamentSponsor,
+  TournamentSponsorTier,
   TournamentTeam,
   TournamentTeamPlayer,
+  TournamentVenue,
 } from '@hockeyspare/contracts';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
 import { AuthStateService } from '../../auth/auth-state.service';
@@ -85,6 +90,28 @@ export class TournamentManageComponent implements OnInit {
   paymentSuccessMessage = signal<string | null>(null);
   paymentError = signal<string | null>(null);
 
+  showBracketBuilder = signal(false);
+  bracketSeedTeamIds = signal<string[]>([]);
+  creatingBracket = signal(false);
+  bracketError = signal<string | null>(null);
+  deletingBracketId = signal<string | null>(null);
+
+  schedulingMatchKey = signal<string | null>(null);
+  savingMatchSchedule = signal(false);
+  scheduleMatchError = signal<string | null>(null);
+
+  savingAnnouncement = signal(false);
+  announcementError = signal<string | null>(null);
+  deletingAnnouncementId = signal<string | null>(null);
+
+  showVenueForm = signal(false);
+  savingVenue = signal(false);
+  venueError = signal<string | null>(null);
+  editingVenueId = signal<string | null>(null);
+  deletingVenueId = signal<string | null>(null);
+
+  editingSponsorId = signal<string | null>(null);
+
   detailsForm = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
     description: [''],
@@ -94,6 +121,9 @@ export class TournamentManageComponent implements OnInit {
     registrationMode: ['OPEN' as 'OPEN' | 'WAITLIST' | 'CLOSED'],
     registrationDeadline: [''],
     registrationFeeDollars: [0, [Validators.min(0)]],
+    contactName: [''],
+    contactEmail: ['', [Validators.email]],
+    contactPhone: [''],
   });
 
   gameForm = this.fb.group({
@@ -110,6 +140,19 @@ export class TournamentManageComponent implements OnInit {
     name: ['', Validators.required],
     logoUrl: [''],
     linkUrl: [''],
+    tier: ['' as TournamentSponsorTier | ''],
+  });
+
+  announcementForm = this.fb.group({
+    body: ['', Validators.required],
+  });
+
+  venueForm = this.fb.group({
+    name: ['', Validators.required],
+    address: [''],
+    parkingInfo: [''],
+    dressingRoomInfo: [''],
+    concessionsInfo: [''],
   });
 
   scoreForm = this.fb.group({
@@ -129,6 +172,17 @@ export class TournamentManageComponent implements OnInit {
     displayName: ['', Validators.required],
     position: ['' as TournamentPlayerPosition | ''],
     jerseyNumber: [''],
+  });
+
+  bracketForm = this.fb.group({
+    name: ['Playoffs', Validators.required],
+    division: [''],
+  });
+
+  matchScheduleForm = this.fb.group({
+    startsAt: ['', Validators.required],
+    arenaName: [''],
+    notes: [''],
   });
 
   get isOwner(): boolean {
@@ -211,6 +265,9 @@ export class TournamentManageComponent implements OnInit {
           registrationFeeDollars: tournament.registrationFeeCents
             ? tournament.registrationFeeCents / 100
             : 0,
+          contactName: tournament.contactName ?? '',
+          contactEmail: tournament.contactEmail ?? '',
+          contactPhone: tournament.contactPhone ?? '',
         });
 
         this.loading.set(false);
@@ -364,6 +421,9 @@ export class TournamentManageComponent implements OnInit {
         registrationFeeCents: value.registrationFeeDollars
           ? Math.round(Number(value.registrationFeeDollars) * 100)
           : null,
+        contactName: value.contactName.trim() || null,
+        contactEmail: value.contactEmail.trim() || null,
+        contactPhone: value.contactPhone.trim() || null,
       })
       .subscribe({
         next: (tournament) => {
@@ -524,6 +584,23 @@ export class TournamentManageComponent implements OnInit {
       });
   }
 
+  openEditSponsor(sponsor: TournamentSponsor): void {
+    this.editingSponsorId.set(sponsor.id);
+    this.sponsorError.set(null);
+    this.sponsorForm.reset({
+      name: sponsor.name,
+      logoUrl: sponsor.logoUrl ?? '',
+      linkUrl: sponsor.linkUrl ?? '',
+      tier: sponsor.tier ?? '',
+    });
+  }
+
+  cancelSponsorEdit(): void {
+    this.editingSponsorId.set(null);
+    this.sponsorError.set(null);
+    this.sponsorForm.reset({ name: '', logoUrl: '', linkUrl: '', tier: '' });
+  }
+
   addSponsor(): void {
     if (this.sponsorForm.invalid || this.savingSponsor()) {
       this.sponsorForm.markAllAsTouched();
@@ -531,29 +608,39 @@ export class TournamentManageComponent implements OnInit {
     }
 
     const value = this.sponsorForm.getRawValue();
+    const editingId = this.editingSponsorId();
 
     this.savingSponsor.set(true);
     this.sponsorError.set(null);
 
-    this.tournamentsApi
-      .addSponsor(this.tournamentId, {
-        name: value.name.trim(),
-        logoUrl: value.logoUrl.trim() || null,
-        linkUrl: value.linkUrl.trim() || null,
-      })
-      .subscribe({
-        next: () => {
-          this.savingSponsor.set(false);
-          this.sponsorForm.reset({ name: '', logoUrl: '', linkUrl: '' });
-          this.load();
-        },
-        error: (err) => {
-          this.sponsorError.set(
-            err?.error?.message || 'Could not add this sponsor.',
-          );
-          this.savingSponsor.set(false);
-        },
-      });
+    const payload = {
+      name: value.name.trim(),
+      logoUrl: value.logoUrl.trim() || null,
+      linkUrl: value.linkUrl.trim() || null,
+      tier: value.tier || null,
+    };
+
+    const request = editingId
+      ? this.tournamentsApi.updateSponsor(this.tournamentId, editingId, payload)
+      : this.tournamentsApi.addSponsor(this.tournamentId, payload);
+
+    request.subscribe({
+      next: () => {
+        this.savingSponsor.set(false);
+        this.editingSponsorId.set(null);
+        this.sponsorForm.reset({ name: '', logoUrl: '', linkUrl: '', tier: '' });
+        this.load();
+      },
+      error: (err) => {
+        this.sponsorError.set(
+          err?.error?.message ||
+            (editingId
+              ? 'Could not save this sponsor.'
+              : 'Could not add this sponsor.'),
+        );
+        this.savingSponsor.set(false);
+      },
+    });
   }
 
   deleteSponsor(sponsorId: string): void {
@@ -838,5 +925,338 @@ export class TournamentManageComponent implements OnInit {
           this.savingStatPlayerId.set(null);
         },
       });
+  }
+
+  openBracketBuilder(): void {
+    this.showBracketBuilder.set(true);
+    this.bracketSeedTeamIds.set([]);
+    this.bracketError.set(null);
+    this.bracketForm.reset({ name: 'Playoffs', division: '' });
+  }
+
+  cancelBracketBuilder(): void {
+    this.showBracketBuilder.set(false);
+    this.bracketSeedTeamIds.set([]);
+    this.bracketError.set(null);
+  }
+
+  isSeeded(teamId: string): boolean {
+    return this.bracketSeedTeamIds().includes(teamId);
+  }
+
+  toggleSeedTeam(teamId: string): void {
+    this.bracketSeedTeamIds.update((ids) =>
+      ids.includes(teamId)
+        ? ids.filter((id) => id !== teamId)
+        : [...ids, teamId],
+    );
+  }
+
+  moveSeedTeam(index: number, direction: -1 | 1): void {
+    this.bracketSeedTeamIds.update((ids) => {
+      const target = index + direction;
+
+      if (target < 0 || target >= ids.length) {
+        return ids;
+      }
+
+      const next = [...ids];
+      [next[index], next[target]] = [next[target], next[index]];
+      return next;
+    });
+  }
+
+  teamNameById(teamId: string): string {
+    return (
+      this.tournament()?.teams.find((team) => team.id === teamId)?.name ??
+      'Unknown team'
+    );
+  }
+
+  createBracket(): void {
+    if (this.bracketForm.invalid || this.creatingBracket()) {
+      this.bracketForm.markAllAsTouched();
+      return;
+    }
+
+    const seedTeamIds = this.bracketSeedTeamIds();
+
+    if (seedTeamIds.length < 2) {
+      this.bracketError.set('Select at least 2 teams to seed a bracket.');
+      return;
+    }
+
+    const value = this.bracketForm.getRawValue();
+
+    this.creatingBracket.set(true);
+    this.bracketError.set(null);
+
+    this.tournamentsApi
+      .createBracket(this.tournamentId, {
+        name: value.name.trim(),
+        division: value.division.trim() || null,
+        teamIds: seedTeamIds,
+      })
+      .subscribe({
+        next: () => {
+          this.creatingBracket.set(false);
+          this.showBracketBuilder.set(false);
+          this.bracketSeedTeamIds.set([]);
+          this.load();
+        },
+        error: (err) => {
+          this.bracketError.set(
+            err?.error?.message || 'Could not create this bracket.',
+          );
+          this.creatingBracket.set(false);
+        },
+      });
+  }
+
+  deleteBracket(bracketId: string): void {
+    this.deletingBracketId.set(bracketId);
+    this.bracketError.set(null);
+
+    this.tournamentsApi.deleteBracket(this.tournamentId, bracketId).subscribe({
+      next: () => {
+        this.deletingBracketId.set(null);
+        this.load();
+      },
+      error: (err) => {
+        this.bracketError.set(
+          err?.error?.message || 'Could not remove this bracket.',
+        );
+        this.deletingBracketId.set(null);
+      },
+    });
+  }
+
+  matchesByRound(bracket: TournamentBracket): TournamentBracketMatch[][] {
+    const rounds = new Map<number, TournamentBracketMatch[]>();
+
+    for (const match of bracket.matches) {
+      const roundMatches = rounds.get(match.round) ?? [];
+      roundMatches.push(match);
+      rounds.set(match.round, roundMatches);
+    }
+
+    return Array.from(rounds.keys())
+      .sort((a, b) => a - b)
+      .map((round) =>
+        (rounds.get(round) ?? []).sort((a, b) => a.position - b.position),
+      );
+  }
+
+  roundLabel(roundIndex: number, totalRounds: number): string {
+    const remaining = totalRounds - roundIndex;
+
+    if (remaining === 1) return 'Final';
+    if (remaining === 2) return 'Semifinals';
+    if (remaining === 3) return 'Quarterfinals';
+    return `Round ${roundIndex + 1}`;
+  }
+
+  canScheduleMatch(match: TournamentBracketMatch): boolean {
+    return !!match.team1Id && !!match.team2Id && !match.gameId && !match.isBye;
+  }
+
+  openScheduleMatch(match: TournamentBracketMatch): void {
+    this.schedulingMatchKey.set(`${match.bracketId}:${match.id}`);
+    this.scheduleMatchError.set(null);
+    this.matchScheduleForm.reset({ startsAt: '', arenaName: '', notes: '' });
+  }
+
+  cancelScheduleMatch(): void {
+    this.schedulingMatchKey.set(null);
+    this.scheduleMatchError.set(null);
+  }
+
+  isSchedulingMatch(match: TournamentBracketMatch): boolean {
+    return this.schedulingMatchKey() === `${match.bracketId}:${match.id}`;
+  }
+
+  saveMatchSchedule(match: TournamentBracketMatch): void {
+    if (this.matchScheduleForm.invalid || this.savingMatchSchedule()) {
+      this.matchScheduleForm.markAllAsTouched();
+      return;
+    }
+
+    const value = this.matchScheduleForm.getRawValue();
+
+    this.savingMatchSchedule.set(true);
+    this.scheduleMatchError.set(null);
+
+    this.tournamentsApi
+      .scheduleMatchGame(this.tournamentId, match.bracketId, match.id, {
+        startsAt: new Date(value.startsAt).toISOString(),
+        arenaName: value.arenaName.trim() || null,
+        notes: value.notes.trim() || null,
+      })
+      .subscribe({
+        next: () => {
+          this.savingMatchSchedule.set(false);
+          this.schedulingMatchKey.set(null);
+          this.load();
+        },
+        error: (err) => {
+          this.scheduleMatchError.set(
+            err?.error?.message || 'Could not schedule this match.',
+          );
+          this.savingMatchSchedule.set(false);
+        },
+      });
+  }
+
+  trackByBracketId(_index: number, bracket: TournamentBracket): string {
+    return bracket.id;
+  }
+
+  trackByMatchId(_index: number, match: TournamentBracketMatch): string {
+    return match.id;
+  }
+
+  addAnnouncement(): void {
+    if (this.announcementForm.invalid || this.savingAnnouncement()) {
+      this.announcementForm.markAllAsTouched();
+      return;
+    }
+
+    const value = this.announcementForm.getRawValue();
+
+    this.savingAnnouncement.set(true);
+    this.announcementError.set(null);
+
+    this.tournamentsApi
+      .addAnnouncement(this.tournamentId, { body: value.body.trim() })
+      .subscribe({
+        next: () => {
+          this.savingAnnouncement.set(false);
+          this.announcementForm.reset({ body: '' });
+          this.load();
+        },
+        error: (err) => {
+          this.announcementError.set(
+            err?.error?.message || 'Could not post this announcement.',
+          );
+          this.savingAnnouncement.set(false);
+        },
+      });
+  }
+
+  deleteAnnouncement(announcementId: string): void {
+    this.deletingAnnouncementId.set(announcementId);
+    this.announcementError.set(null);
+
+    this.tournamentsApi
+      .deleteAnnouncement(this.tournamentId, announcementId)
+      .subscribe({
+        next: () => {
+          this.deletingAnnouncementId.set(null);
+          this.load();
+        },
+        error: () => {
+          this.announcementError.set('Could not remove this announcement.');
+          this.deletingAnnouncementId.set(null);
+        },
+      });
+  }
+
+  trackByAnnouncementId(
+    _index: number,
+    announcement: TournamentAnnouncement,
+  ): string {
+    return announcement.id;
+  }
+
+  openAddVenue(): void {
+    this.showVenueForm.set(true);
+    this.editingVenueId.set(null);
+    this.venueError.set(null);
+    this.venueForm.reset({
+      name: '',
+      address: '',
+      parkingInfo: '',
+      dressingRoomInfo: '',
+      concessionsInfo: '',
+    });
+  }
+
+  openEditVenue(venue: TournamentVenue): void {
+    this.showVenueForm.set(true);
+    this.editingVenueId.set(venue.id);
+    this.venueError.set(null);
+    this.venueForm.reset({
+      name: venue.name,
+      address: venue.address ?? '',
+      parkingInfo: venue.parkingInfo ?? '',
+      dressingRoomInfo: venue.dressingRoomInfo ?? '',
+      concessionsInfo: venue.concessionsInfo ?? '',
+    });
+  }
+
+  cancelVenueEdit(): void {
+    this.showVenueForm.set(false);
+    this.editingVenueId.set(null);
+    this.venueError.set(null);
+  }
+
+  saveVenue(): void {
+    if (this.venueForm.invalid || this.savingVenue()) {
+      this.venueForm.markAllAsTouched();
+      return;
+    }
+
+    const value = this.venueForm.getRawValue();
+    const editingId = this.editingVenueId();
+
+    const payload = {
+      name: value.name.trim(),
+      address: value.address.trim() || null,
+      parkingInfo: value.parkingInfo.trim() || null,
+      dressingRoomInfo: value.dressingRoomInfo.trim() || null,
+      concessionsInfo: value.concessionsInfo.trim() || null,
+    };
+
+    this.savingVenue.set(true);
+    this.venueError.set(null);
+
+    const request = editingId
+      ? this.tournamentsApi.updateVenue(this.tournamentId, editingId, payload)
+      : this.tournamentsApi.addVenue(this.tournamentId, payload);
+
+    request.subscribe({
+      next: () => {
+        this.savingVenue.set(false);
+        this.editingVenueId.set(null);
+        this.showVenueForm.set(false);
+        this.load();
+      },
+      error: (err) => {
+        this.venueError.set(
+          err?.error?.message || 'Could not save this venue.',
+        );
+        this.savingVenue.set(false);
+      },
+    });
+  }
+
+  deleteVenue(venueId: string): void {
+    this.deletingVenueId.set(venueId);
+    this.venueError.set(null);
+
+    this.tournamentsApi.deleteVenue(this.tournamentId, venueId).subscribe({
+      next: () => {
+        this.deletingVenueId.set(null);
+        this.load();
+      },
+      error: () => {
+        this.venueError.set('Could not remove this venue.');
+        this.deletingVenueId.set(null);
+      },
+    });
+  }
+
+  trackByVenueId(_index: number, venue: TournamentVenue): string {
+    return venue.id;
   }
 }

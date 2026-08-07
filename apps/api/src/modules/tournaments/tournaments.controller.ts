@@ -20,10 +20,16 @@ import { UpdateTournamentGameDto } from './dto/update-tournament-game.dto';
 import { CreateTournamentRegistrationDto } from './dto/create-tournament-registration.dto';
 import { UpdateTournamentRegistrationDto } from './dto/update-tournament-registration.dto';
 import { CreateTournamentSponsorDto } from './dto/create-tournament-sponsor.dto';
+import { UpdateTournamentSponsorDto } from './dto/update-tournament-sponsor.dto';
+import { CreateTournamentAnnouncementDto } from './dto/create-tournament-announcement.dto';
+import { CreateTournamentVenueDto } from './dto/create-tournament-venue.dto';
+import { UpdateTournamentVenueDto } from './dto/update-tournament-venue.dto';
 import { CreateTournamentTeamDto } from './dto/create-tournament-team.dto';
 import { UpdateTournamentTeamDto } from './dto/update-tournament-team.dto';
 import { CreateTournamentTeamPlayerDto } from './dto/create-tournament-team-player.dto';
 import { UpsertTournamentGamePlayerStatDto } from './dto/upsert-tournament-game-player-stat.dto';
+import { CreateTournamentBracketDto } from './dto/create-tournament-bracket.dto';
+import { ScheduleBracketMatchGameDto } from './dto/schedule-bracket-match-game.dto';
 
 type AuthRequest = {
   user?: {
@@ -175,6 +181,22 @@ export class TournamentsController {
     @Body() dto: CreateTournamentSponsorDto,
   ) {
     return this.tournamentsService.addSponsor(this.getUserId(req), id, dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/sponsors/:sponsorId')
+  updateSponsor(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('sponsorId') sponsorId: string,
+    @Body() dto: UpdateTournamentSponsorDto,
+  ) {
+    return this.tournamentsService.updateSponsor(
+      this.getUserId(req),
+      id,
+      sponsorId,
+      dto,
+    );
   }
 
   @UseGuards(JwtAuthGuard)
@@ -346,6 +368,116 @@ export class TournamentsController {
       id,
       gameId,
       statId,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/brackets')
+  createBracket(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Body() dto: CreateTournamentBracketDto,
+  ) {
+    return this.tournamentsService.createBracket(this.getUserId(req), id, dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/brackets/:bracketId')
+  deleteBracket(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('bracketId') bracketId: string,
+  ) {
+    return this.tournamentsService.deleteBracket(
+      this.getUserId(req),
+      id,
+      bracketId,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/brackets/:bracketId/matches/:matchId/game')
+  scheduleMatchGame(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('bracketId') bracketId: string,
+    @Param('matchId') matchId: string,
+    @Body() dto: ScheduleBracketMatchGameDto,
+  ) {
+    return this.tournamentsService.scheduleMatchGame(
+      this.getUserId(req),
+      id,
+      bracketId,
+      matchId,
+      dto,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/announcements')
+  addAnnouncement(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Body() dto: CreateTournamentAnnouncementDto,
+  ) {
+    return this.tournamentsService.addAnnouncement(
+      this.getUserId(req),
+      id,
+      dto,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/announcements/:announcementId')
+  deleteAnnouncement(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('announcementId') announcementId: string,
+  ) {
+    return this.tournamentsService.deleteAnnouncement(
+      this.getUserId(req),
+      id,
+      announcementId,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/venues')
+  addVenue(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Body() dto: CreateTournamentVenueDto,
+  ) {
+    return this.tournamentsService.addVenue(this.getUserId(req), id, dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/venues/:venueId')
+  updateVenue(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('venueId') venueId: string,
+    @Body() dto: UpdateTournamentVenueDto,
+  ) {
+    return this.tournamentsService.updateVenue(
+      this.getUserId(req),
+      id,
+      venueId,
+      dto,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/venues/:venueId')
+  deleteVenue(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('venueId') venueId: string,
+  ) {
+    return this.tournamentsService.deleteVenue(
+      this.getUserId(req),
+      id,
+      venueId,
     );
   }
 }

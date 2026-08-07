@@ -1,4 +1,13 @@
-import { IsDateString, IsOptional, IsString, MaxLength } from 'class-validator';
+import {
+  IsDateString,
+  IsEnum,
+  IsInt,
+  IsOptional,
+  IsString,
+  Min,
+  MaxLength,
+} from 'class-validator';
+import { TournamentRegistrationMode } from '../../../generated/prisma/client';
 
 export class UpdateTournamentDto {
   @IsOptional()
@@ -27,4 +36,17 @@ export class UpdateTournamentDto {
   @IsOptional()
   @IsString()
   leagueId?: string;
+
+  @IsOptional()
+  @IsEnum(TournamentRegistrationMode)
+  registrationMode?: TournamentRegistrationMode;
+
+  @IsOptional()
+  @IsDateString()
+  registrationDeadline?: string;
+
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  registrationFeeCents?: number;
 }

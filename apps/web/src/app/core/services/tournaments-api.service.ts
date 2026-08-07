@@ -1,17 +1,24 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import {
+  CheckoutSessionResult,
   CreateTournamentGameInput,
   CreateTournamentInput,
   CreateTournamentRegistrationInput,
   CreateTournamentSponsorInput,
+  SubmitTournamentRegistrationResult,
   Tournament,
+  TournamentCheckoutSessionResult,
   TournamentGame,
+  TournamentPaymentsStatus,
+  TournamentPaymentVerification,
   TournamentRegistration,
   TournamentSponsor,
+  TournamentStandingRow,
   UpdateTournamentGameInput,
   UpdateTournamentGameScoreInput,
   UpdateTournamentInput,
+  UpdateTournamentRegistrationInput,
 } from '@hockeyspare/contracts';
 import { Observable } from 'rxjs';
 
@@ -31,6 +38,12 @@ export class TournamentsApiService {
 
   getPublic(id: string): Observable<Tournament> {
     return this.http.get<Tournament>(`/api/tournaments/${id}`);
+  }
+
+  getStandings(id: string): Observable<TournamentStandingRow[]> {
+    return this.http.get<TournamentStandingRow[]>(
+      `/api/tournaments/${id}/standings`,
+    );
   }
 
   update(id: string, input: UpdateTournamentInput): Observable<Tournament> {
@@ -81,8 +94,8 @@ export class TournamentsApiService {
   submitRegistration(
     tournamentId: string,
     input: CreateTournamentRegistrationInput,
-  ): Observable<TournamentRegistration> {
-    return this.http.post<TournamentRegistration>(
+  ): Observable<SubmitTournamentRegistrationResult> {
+    return this.http.post<SubmitTournamentRegistrationResult>(
       `/api/tournaments/${tournamentId}/registrations`,
       input,
     );
@@ -93,6 +106,17 @@ export class TournamentsApiService {
   ): Observable<TournamentRegistration[]> {
     return this.http.get<TournamentRegistration[]>(
       `/api/tournaments/${tournamentId}/registrations`,
+    );
+  }
+
+  updateRegistration(
+    tournamentId: string,
+    registrationId: string,
+    input: UpdateTournamentRegistrationInput,
+  ): Observable<TournamentRegistration> {
+    return this.http.patch<TournamentRegistration>(
+      `/api/tournaments/${tournamentId}/registrations/${registrationId}`,
+      input,
     );
   }
 
@@ -121,6 +145,49 @@ export class TournamentsApiService {
   ): Observable<{ id: string; deleted: boolean }> {
     return this.http.delete<{ id: string; deleted: boolean }>(
       `/api/tournaments/${tournamentId}/sponsors/${sponsorId}`,
+    );
+  }
+
+  getPaymentsStatus(
+    tournamentId: string,
+  ): Observable<TournamentPaymentsStatus> {
+    return this.http.get<TournamentPaymentsStatus>(
+      `/api/tournaments/${tournamentId}/payments/status`,
+    );
+  }
+
+  connectStripe(tournamentId: string): Observable<CheckoutSessionResult> {
+    return this.http.post<CheckoutSessionResult>(
+      `/api/tournaments/${tournamentId}/payments/connect`,
+      {},
+    );
+  }
+
+  refreshStripeStatus(
+    tournamentId: string,
+  ): Observable<TournamentPaymentsStatus> {
+    return this.http.post<TournamentPaymentsStatus>(
+      `/api/tournaments/${tournamentId}/payments/refresh`,
+      {},
+    );
+  }
+
+  retryRegistrationCheckout(
+    tournamentId: string,
+    registrationId: string,
+  ): Observable<TournamentCheckoutSessionResult> {
+    return this.http.post<TournamentCheckoutSessionResult>(
+      `/api/tournaments/${tournamentId}/registrations/${registrationId}/checkout`,
+      {},
+    );
+  }
+
+  verifyRegistrationCheckout(
+    tournamentId: string,
+    sessionId: string,
+  ): Observable<TournamentPaymentVerification> {
+    return this.http.get<TournamentPaymentVerification>(
+      `/api/tournaments/${tournamentId}/payments/verify/${sessionId}`,
     );
   }
 }

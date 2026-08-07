@@ -561,22 +561,28 @@ enum TournamentGameStatus {
 }
 
 model Tournament {
-  id          String    @id @default(cuid())
-  name        String
-  description String?
-  rules       String?
-  startDate   DateTime?
-  endDate     DateTime?
-  leagueId    String?
-  createdById String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id                    String                      @id @default(cuid())
+  name                  String
+  description           String?
+  rules                 String?
+  startDate             DateTime?
+  endDate               DateTime?
+  leagueId              String?
+  createdById           String
+  registrationMode      TournamentRegistrationMode  @default(OPEN)
+  registrationDeadline  DateTime?
+  registrationFeeCents  Int?
+  stripeAccountId       String?                     @unique
+  stripePayoutsEnabled  Boolean                     @default(false)
+  createdAt             DateTime                    @default(now())
+  updatedAt             DateTime                    @updatedAt
 
   league        League?                  @relation(fields: [leagueId], references: [id], onDelete: SetNull)
   createdBy     User                     @relation("CreatedTournaments", fields: [createdById], references: [id], onDelete: Cascade)
   games         TournamentGame[]
   registrations TournamentRegistration[]
   sponsors      TournamentSponsor[]
+  payments      TournamentPayment[]
 
   @@index([leagueId])
   @@index([createdById])
@@ -602,7 +608,7 @@ model TournamentGame {
 }
 
 model TournamentRegistration {
-  id           String   @id @default(cuid())
+  id           String                        @id @default(cuid())
   tournamentId String
   teamName     String
   division     String?
@@ -610,11 +616,43 @@ model TournamentRegistration {
   contactEmail String
   contactPhone String?
   notes        String?
-  createdAt    DateTime @default(now())
+  status       TournamentRegistrationStatus @default(CONFIRMED)
+  createdAt    DateTime                      @default(now())
 
-  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  tournament Tournament          @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  payments   TournamentPayment[]
 
   @@index([tournamentId, createdAt])
+}
+
+model TournamentPayment {
+  id                      String        @id @default(cuid())
+  tournamentId            String
+  registrationId          String
+  amountCents             Int
+  currency                String        @default("usd")
+  status                  PaymentStatus @default(PENDING)
+  stripeCheckoutSessionId String?       @unique
+  stripePaymentIntentId   String?       @unique
+  createdAt               DateTime      @default(now())
+  updatedAt               DateTime      @updatedAt
+
+  tournament   Tournament             @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  registration TournamentRegistration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+
+  @@index([tournamentId])
+  @@index([registrationId])
+}
+
+enum TournamentRegistrationMode {
+  OPEN
+  WAITLIST
+  CLOSED
+}
+
+enum TournamentRegistrationStatus {
+  CONFIRMED
+  WAITLISTED
 }
 
 model TournamentSponsor {

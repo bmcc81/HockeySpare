@@ -3,14 +3,17 @@ import { Injectable, inject } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import {
   CheckoutSessionResult,
+  CreateTournamentBracketInput,
   CreateTournamentGameInput,
   CreateTournamentInput,
   CreateTournamentRegistrationInput,
   CreateTournamentSponsorInput,
   CreateTournamentTeamInput,
   CreateTournamentTeamPlayerInput,
+  ScheduleBracketMatchGameInput,
   SubmitTournamentRegistrationResult,
   Tournament,
+  TournamentBracket,
   TournamentCheckoutSessionResult,
   TournamentGame,
   TournamentGamePlayerStat,
@@ -294,6 +297,37 @@ export class TournamentsApiService {
   ): Observable<{ id: string; deleted: boolean }> {
     return this.http.delete<{ id: string; deleted: boolean }>(
       `/api/tournaments/${tournamentId}/games/${gameId}/stats/${statId}`,
+    );
+  }
+
+  createBracket(
+    tournamentId: string,
+    input: CreateTournamentBracketInput,
+  ): Observable<TournamentBracket> {
+    return this.http.post<TournamentBracket>(
+      `/api/tournaments/${tournamentId}/brackets`,
+      input,
+    );
+  }
+
+  deleteBracket(
+    tournamentId: string,
+    bracketId: string,
+  ): Observable<{ id: string; deleted: boolean }> {
+    return this.http.delete<{ id: string; deleted: boolean }>(
+      `/api/tournaments/${tournamentId}/brackets/${bracketId}`,
+    );
+  }
+
+  scheduleMatchGame(
+    tournamentId: string,
+    bracketId: string,
+    matchId: string,
+    input: ScheduleBracketMatchGameInput,
+  ): Observable<TournamentGame> {
+    return this.http.post<TournamentGame>(
+      `/api/tournaments/${tournamentId}/brackets/${bracketId}/matches/${matchId}/game`,
+      input,
     );
   }
 }

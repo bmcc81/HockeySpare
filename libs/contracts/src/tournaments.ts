@@ -106,6 +106,58 @@ export interface CreateTournamentSponsorInput {
   linkUrl?: string | null;
 }
 
+export interface TournamentBracketMatchTeamRef {
+  id: string;
+  name: string;
+}
+
+export interface TournamentBracketMatchGameRef {
+  id: string;
+  status: TournamentGameStatus;
+  homeScore?: number | null;
+  awayScore?: number | null;
+  startsAt: string;
+}
+
+export interface TournamentBracketMatch {
+  id: string;
+  bracketId: string;
+  round: number;
+  position: number;
+  team1Id?: string | null;
+  team2Id?: string | null;
+  gameId?: string | null;
+  winnerTeamId?: string | null;
+  nextMatchId?: string | null;
+  nextMatchSlot?: number | null;
+  isBye: boolean;
+  team1?: TournamentBracketMatchTeamRef | null;
+  team2?: TournamentBracketMatchTeamRef | null;
+  winnerTeam?: TournamentBracketMatchTeamRef | null;
+  game?: TournamentBracketMatchGameRef | null;
+}
+
+export interface TournamentBracket {
+  id: string;
+  tournamentId: string;
+  name: string;
+  division?: string | null;
+  matches: TournamentBracketMatch[];
+}
+
+export interface CreateTournamentBracketInput {
+  name: string;
+  division?: string | null;
+  /** Team IDs in seed order (first = top seed). */
+  teamIds: string[];
+}
+
+export interface ScheduleBracketMatchGameInput {
+  startsAt: string;
+  arenaName?: string | null;
+  notes?: string | null;
+}
+
 export interface Tournament {
   id: string;
   name: string;
@@ -122,6 +174,7 @@ export interface Tournament {
   games: TournamentGame[];
   sponsors: TournamentSponsor[];
   teams: TournamentTeam[];
+  brackets: TournamentBracket[];
 }
 
 export interface CreateTournamentInput {

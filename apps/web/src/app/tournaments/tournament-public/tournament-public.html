@@ -47,6 +47,17 @@
         </button>
       </li>
 
+      <li class="nav-item" *ngIf="t.brackets.length > 0">
+        <button
+          class="nav-link"
+          type="button"
+          [class.active]="activeTab() === 'bracket'"
+          (click)="setTab('bracket')"
+        >
+          Bracket
+        </button>
+      </li>
+
       <li class="nav-item">
         <button
           class="nav-link"
@@ -318,6 +329,56 @@
                 </table>
               </div>
             </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="activeTab() === 'bracket'">
+      <div
+        class="mb-4"
+        *ngFor="let bracket of t.brackets; trackBy: trackByBracketId"
+      >
+        <h2 class="h5">
+          {{ bracket.name }}
+          <span class="text-secondary small" *ngIf="bracket.division">
+            ({{ bracket.division }})
+          </span>
+        </h2>
+
+        <div class="d-flex gap-4 overflow-auto pb-2">
+          <div
+            class="d-flex flex-column justify-content-around gap-3"
+            style="min-width: 220px;"
+            *ngFor="let round of matchesByRound(bracket); let ri = index"
+          >
+            <div class="text-secondary small text-uppercase fw-semibold">
+              {{ roundLabel(ri, matchesByRound(bracket).length) }}
+            </div>
+
+            <div
+              class="border rounded p-2 small"
+              *ngFor="let match of round; trackBy: trackByMatchId"
+            >
+              <div class="d-flex justify-content-between">
+                <span [class.fw-bold]="match.winnerTeamId === match.team1Id">
+                  {{ match.team1?.name || (match.isBye ? '—' : 'TBD') }}
+                </span>
+                <span *ngIf="match.game">{{ match.game.homeScore ?? '' }}</span>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span [class.fw-bold]="match.winnerTeamId === match.team2Id">
+                  {{ match.team2?.name || (match.isBye ? '—' : 'TBD') }}
+                </span>
+                <span *ngIf="match.game">{{ match.game.awayScore ?? '' }}</span>
+              </div>
+
+              <div class="text-secondary mt-1" *ngIf="match.isBye">Bye</div>
+
+              <div class="text-secondary mt-1" *ngIf="match.game">
+                {{ match.game.status === 'FINAL' ? 'Final' : match.game.startsAt | date: 'short' }}
+              </div>
+            </div>
           </div>
         </div>
       </div>

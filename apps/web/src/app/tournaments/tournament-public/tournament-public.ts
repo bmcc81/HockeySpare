@@ -8,6 +8,8 @@ import {
 import { ActivatedRoute } from '@angular/router';
 import {
   Tournament,
+  TournamentBracket,
+  TournamentBracketMatch,
   TournamentGame,
   TournamentPlayerLeaderRow,
   TournamentStandingRow,
@@ -20,6 +22,7 @@ type TournamentTab =
   | 'schedule'
   | 'standings'
   | 'teams'
+  | 'bracket'
   | 'leaders'
   | 'rules'
   | 'sponsors'
@@ -257,6 +260,39 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
 
   trackByLeaderId(_index: number, leader: TournamentPlayerLeaderRow): string {
     return leader.teamPlayerId;
+  }
+
+  matchesByRound(bracket: TournamentBracket): TournamentBracketMatch[][] {
+    const rounds = new Map<number, TournamentBracketMatch[]>();
+
+    for (const match of bracket.matches) {
+      const roundMatches = rounds.get(match.round) ?? [];
+      roundMatches.push(match);
+      rounds.set(match.round, roundMatches);
+    }
+
+    return Array.from(rounds.keys())
+      .sort((a, b) => a - b)
+      .map((round) =>
+        (rounds.get(round) ?? []).sort((a, b) => a.position - b.position),
+      );
+  }
+
+  roundLabel(roundIndex: number, totalRounds: number): string {
+    const remaining = totalRounds - roundIndex;
+
+    if (remaining === 1) return 'Final';
+    if (remaining === 2) return 'Semifinals';
+    if (remaining === 3) return 'Quarterfinals';
+    return `Round ${roundIndex + 1}`;
+  }
+
+  trackByBracketId(_index: number, bracket: TournamentBracket): string {
+    return bracket.id;
+  }
+
+  trackByMatchId(_index: number, match: TournamentBracketMatch): string {
+    return match.id;
   }
 
   ngOnDestroy(): void {

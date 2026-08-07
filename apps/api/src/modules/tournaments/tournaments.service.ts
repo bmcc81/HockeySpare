@@ -16,6 +16,8 @@ import { CreateTournamentTeamDto } from './dto/create-tournament-team.dto';
 import { UpdateTournamentTeamDto } from './dto/update-tournament-team.dto';
 import { CreateTournamentTeamPlayerDto } from './dto/create-tournament-team-player.dto';
 import { UpsertTournamentGamePlayerStatDto } from './dto/upsert-tournament-game-player-stat.dto';
+import { CreateTournamentBracketDto } from './dto/create-tournament-bracket.dto';
+import { ScheduleBracketMatchGameDto } from './dto/schedule-bracket-match-game.dto';
 import { StripeService } from '../stripe/stripe.service';
 import { EmailService } from '../email/email.service';
 import type Stripe from 'stripe';
@@ -54,6 +56,30 @@ export class TournamentsService {
         players: {
           orderBy: {
             displayName: 'asc' as const,
+          },
+        },
+      },
+    },
+    brackets: {
+      orderBy: {
+        createdAt: 'asc' as const,
+      },
+      include: {
+        matches: {
+          orderBy: [{ round: 'asc' as const }, { position: 'asc' as const }],
+          include: {
+            team1: { select: { id: true, name: true } },
+            team2: { select: { id: true, name: true } },
+            winnerTeam: { select: { id: true, name: true } },
+            game: {
+              select: {
+                id: true,
+                status: true,
+                homeScore: true,
+                awayScore: true,
+                startsAt: true,
+              },
+            },
           },
         },
       },
@@ -249,7 +275,33 @@ export class TournamentsService {
         ? await this.resolveTeamName(tournamentId, dto.awayTeamId)
         : dto.awayTeamName?.trim();
 
-    return this.prisma.tournamentGame.update({
+    const resultingStatus = dto.status ?? game.status;
+    const resultingHomeScore =
+      dto.homeScore !== undefined ? dto.homeScore : game.homeScore;
+    const resultingAwayScore =
+      dto.awayScore !== undefined ? dto.awayScore : game.awayScore;
+
+    if (
+      resultingStatus === 'FINAL' &&
+      resultingHomeScore != null &&
+      resultingAwayScore != null &&
+      resultingHomeScore === resultingAwayScore
+    ) {
+      const bracketMatch = await this.prisma.tournamentBracketMatch.findUnique(
+        {
+          where: { gameId },
+          select: { id: true },
+        },
+      );
+
+      if (bracketMatch) {
+        throw new BadRequestException(
+          'Playoff games cannot end in a tie. Enter the final score including any overtime/shootout winner before marking this game final.',
+        );
+      }
+    }
+
+    const updatedGame = await this.prisma.tournamentGame.update({
       where: {
         id: gameId,
       },
@@ -274,6 +326,62 @@ export class TournamentsService {
         ...(dto.status !== undefined ? { status: dto.status } : {}),
       },
     });
+
+    if (updatedGame.status === 'FINAL') {
+      await this.advanceBracketIfNeeded(updatedGame.id);
+    }
+
+    return updatedGame;
+  }
+
+  /**
+   * When a game linked to a bracket match reaches FINAL, propagate the
+   * winner into that match's next-round slot. Ties on playoff games are
+   * already rejected before this point (see updateGame), so a decisive
+   * score is guaranteed here.
+   */
+  private async advanceBracketIfNeeded(gameId: string) {
+    const match = await this.prisma.tournamentBracketMatch.findUnique({
+      where: { gameId },
+      include: { game: true },
+    });
+
+    if (!match || !match.game) {
+      return;
+    }
+
+    const { game } = match;
+
+    if (
+      game.status !== 'FINAL' ||
+      game.homeScore == null ||
+      game.awayScore == null ||
+      game.homeScore === game.awayScore
+    ) {
+      return;
+    }
+
+    const winnerTeamId =
+      game.homeScore > game.awayScore ? game.homeTeamId : game.awayTeamId;
+
+    if (!winnerTeamId) {
+      return;
+    }
+
+    await this.prisma.tournamentBracketMatch.update({
+      where: { id: match.id },
+      data: { winnerTeamId },
+    });
+
+    if (match.nextMatchId && match.nextMatchSlot) {
+      await this.prisma.tournamentBracketMatch.update({
+        where: { id: match.nextMatchId },
+        data:
+          match.nextMatchSlot === 1
+            ? { team1Id: winnerTeamId }
+            : { team2Id: winnerTeamId },
+      });
+    }
   }
 
   async deleteGame(userId: string, tournamentId: string, gameId: string) {
@@ -1363,5 +1471,231 @@ export class TournamentsService {
       connected: true,
       payoutsEnabled,
     };
+  }
+
+  /**
+   * Standard single-elimination seeding order, e.g. seedOrder(8) returns
+   * [1,8,4,5,2,7,3,6] so the top seeds are placed to meet as late as
+   * possible in the bracket.
+   */
+  private seedOrder(size: number): number[] {
+    if (size === 1) {
+      return [1];
+    }
+
+    const prev = this.seedOrder(size / 2);
+    const result: number[] = [];
+
+    for (const seed of prev) {
+      result.push(seed, size + 1 - seed);
+    }
+
+    return result;
+  }
+
+  private nextPowerOfTwo(count: number): number {
+    let size = 1;
+
+    while (size < count) {
+      size *= 2;
+    }
+
+    return size;
+  }
+
+  async createBracket(
+    userId: string,
+    tournamentId: string,
+    dto: CreateTournamentBracketDto,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const teamIds = Array.from(new Set(dto.teamIds));
+
+    if (teamIds.length < 2) {
+      throw new BadRequestException(
+        'A bracket needs at least 2 distinct teams.',
+      );
+    }
+
+    const teams = await this.prisma.tournamentTeam.findMany({
+      where: { id: { in: teamIds }, tournamentId },
+      select: { id: true },
+    });
+
+    if (teams.length !== teamIds.length) {
+      throw new BadRequestException(
+        'One or more selected teams do not belong to this tournament.',
+      );
+    }
+
+    const bracketSize = this.nextPowerOfTwo(teamIds.length);
+    const seedOrder = this.seedOrder(bracketSize);
+    const totalRounds = Math.log2(bracketSize);
+    const teamBySeed = (seed: number): string | null =>
+      seed <= teamIds.length ? teamIds[seed - 1] : null;
+
+    const bracketId = await this.prisma.$transaction(async (tx) => {
+      const bracket = await tx.tournamentBracket.create({
+        data: {
+          tournamentId,
+          name: dto.name.trim(),
+          division: dto.division?.trim() || null,
+        },
+      });
+
+      const matchIdsByRound: string[][] = [];
+
+      for (let round = 1; round <= totalRounds; round++) {
+        const matchesInRound = bracketSize / 2 ** round;
+        const roundMatchIds: string[] = [];
+
+        for (let position = 0; position < matchesInRound; position++) {
+          const match = await tx.tournamentBracketMatch.create({
+            data: {
+              bracketId: bracket.id,
+              round,
+              position,
+              team1Id:
+                round === 1 ? teamBySeed(seedOrder[position * 2]) : null,
+              team2Id:
+                round === 1 ? teamBySeed(seedOrder[position * 2 + 1]) : null,
+            },
+          });
+
+          roundMatchIds.push(match.id);
+        }
+
+        matchIdsByRound.push(roundMatchIds);
+      }
+
+      for (let round = 1; round < totalRounds; round++) {
+        const currentRoundIds = matchIdsByRound[round - 1];
+        const nextRoundIds = matchIdsByRound[round];
+
+        for (let i = 0; i < currentRoundIds.length; i++) {
+          await tx.tournamentBracketMatch.update({
+            where: { id: currentRoundIds[i] },
+            data: {
+              nextMatchId: nextRoundIds[Math.floor(i / 2)],
+              nextMatchSlot: (i % 2) + 1,
+            },
+          });
+        }
+      }
+
+      // Round-1 byes (one team present, one absent) auto-advance immediately.
+      const round1Matches = await tx.tournamentBracketMatch.findMany({
+        where: { id: { in: matchIdsByRound[0] } },
+      });
+
+      for (const match of round1Matches) {
+        const hasTeam1 = !!match.team1Id;
+        const hasTeam2 = !!match.team2Id;
+
+        if (hasTeam1 === hasTeam2) {
+          continue;
+        }
+
+        const winnerTeamId = (hasTeam1 ? match.team1Id : match.team2Id)!;
+
+        await tx.tournamentBracketMatch.update({
+          where: { id: match.id },
+          data: { isBye: true, winnerTeamId },
+        });
+
+        if (match.nextMatchId && match.nextMatchSlot) {
+          await tx.tournamentBracketMatch.update({
+            where: { id: match.nextMatchId },
+            data:
+              match.nextMatchSlot === 1
+                ? { team1Id: winnerTeamId }
+                : { team2Id: winnerTeamId },
+          });
+        }
+      }
+
+      return bracket.id;
+    });
+
+    return this.prisma.tournamentBracket.findUniqueOrThrow({
+      where: { id: bracketId },
+      include: this.tournamentInclude.brackets.include,
+    });
+  }
+
+  async deleteBracket(userId: string, tournamentId: string, bracketId: string) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const bracket = await this.prisma.tournamentBracket.findFirst({
+      where: { id: bracketId, tournamentId },
+    });
+
+    if (!bracket) {
+      throw new NotFoundException('Bracket not found');
+    }
+
+    await this.prisma.tournamentBracket.delete({ where: { id: bracket.id } });
+
+    return { id: bracket.id, deleted: true };
+  }
+
+  async scheduleMatchGame(
+    userId: string,
+    tournamentId: string,
+    bracketId: string,
+    matchId: string,
+    dto: ScheduleBracketMatchGameDto,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const match = await this.prisma.tournamentBracketMatch.findFirst({
+      where: { id: matchId, bracketId, bracket: { tournamentId } },
+    });
+
+    if (!match) {
+      throw new NotFoundException('Bracket match not found');
+    }
+
+    if (!match.team1Id || !match.team2Id) {
+      throw new BadRequestException(
+        'Both teams for this match must be determined before scheduling it.',
+      );
+    }
+
+    if (match.gameId) {
+      throw new BadRequestException(
+        'This match already has a game scheduled.',
+      );
+    }
+
+    const homeTeamName = await this.resolveTeamName(
+      tournamentId,
+      match.team1Id,
+    );
+    const awayTeamName = await this.resolveTeamName(
+      tournamentId,
+      match.team2Id,
+    );
+
+    const game = await this.prisma.tournamentGame.create({
+      data: {
+        tournamentId,
+        homeTeamName,
+        awayTeamName,
+        homeTeamId: match.team1Id,
+        awayTeamId: match.team2Id,
+        startsAt: new Date(dto.startsAt),
+        arenaName: dto.arenaName?.trim() || null,
+        notes: dto.notes?.trim() || null,
+      },
+    });
+
+    await this.prisma.tournamentBracketMatch.update({
+      where: { id: match.id },
+      data: { gameId: game.id },
+    });
+
+    return game;
   }
 }

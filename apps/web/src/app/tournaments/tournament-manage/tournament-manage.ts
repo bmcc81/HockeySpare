@@ -8,6 +8,8 @@ import {
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
   Tournament,
+  TournamentBracket,
+  TournamentBracketMatch,
   TournamentGame,
   TournamentGamePlayerStat,
   TournamentPaymentsStatus,
@@ -85,6 +87,16 @@ export class TournamentManageComponent implements OnInit {
   paymentSuccessMessage = signal<string | null>(null);
   paymentError = signal<string | null>(null);
 
+  showBracketBuilder = signal(false);
+  bracketSeedTeamIds = signal<string[]>([]);
+  creatingBracket = signal(false);
+  bracketError = signal<string | null>(null);
+  deletingBracketId = signal<string | null>(null);
+
+  schedulingMatchKey = signal<string | null>(null);
+  savingMatchSchedule = signal(false);
+  scheduleMatchError = signal<string | null>(null);
+
   detailsForm = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
     description: [''],
@@ -129,6 +141,17 @@ export class TournamentManageComponent implements OnInit {
     displayName: ['', Validators.required],
     position: ['' as TournamentPlayerPosition | ''],
     jerseyNumber: [''],
+  });
+
+  bracketForm = this.fb.group({
+    name: ['Playoffs', Validators.required],
+    division: [''],
+  });
+
+  matchScheduleForm = this.fb.group({
+    startsAt: ['', Validators.required],
+    arenaName: [''],
+    notes: [''],
   });
 
   get isOwner(): boolean {
@@ -838,5 +861,193 @@ export class TournamentManageComponent implements OnInit {
           this.savingStatPlayerId.set(null);
         },
       });
+  }
+
+  openBracketBuilder(): void {
+    this.showBracketBuilder.set(true);
+    this.bracketSeedTeamIds.set([]);
+    this.bracketError.set(null);
+    this.bracketForm.reset({ name: 'Playoffs', division: '' });
+  }
+
+  cancelBracketBuilder(): void {
+    this.showBracketBuilder.set(false);
+    this.bracketSeedTeamIds.set([]);
+    this.bracketError.set(null);
+  }
+
+  isSeeded(teamId: string): boolean {
+    return this.bracketSeedTeamIds().includes(teamId);
+  }
+
+  toggleSeedTeam(teamId: string): void {
+    this.bracketSeedTeamIds.update((ids) =>
+      ids.includes(teamId)
+        ? ids.filter((id) => id !== teamId)
+        : [...ids, teamId],
+    );
+  }
+
+  moveSeedTeam(index: number, direction: -1 | 1): void {
+    this.bracketSeedTeamIds.update((ids) => {
+      const target = index + direction;
+
+      if (target < 0 || target >= ids.length) {
+        return ids;
+      }
+
+      const next = [...ids];
+      [next[index], next[target]] = [next[target], next[index]];
+      return next;
+    });
+  }
+
+  teamNameById(teamId: string): string {
+    return (
+      this.tournament()?.teams.find((team) => team.id === teamId)?.name ??
+      'Unknown team'
+    );
+  }
+
+  createBracket(): void {
+    if (this.bracketForm.invalid || this.creatingBracket()) {
+      this.bracketForm.markAllAsTouched();
+      return;
+    }
+
+    const seedTeamIds = this.bracketSeedTeamIds();
+
+    if (seedTeamIds.length < 2) {
+      this.bracketError.set('Select at least 2 teams to seed a bracket.');
+      return;
+    }
+
+    const value = this.bracketForm.getRawValue();
+
+    this.creatingBracket.set(true);
+    this.bracketError.set(null);
+
+    this.tournamentsApi
+      .createBracket(this.tournamentId, {
+        name: value.name.trim(),
+        division: value.division.trim() || null,
+        teamIds: seedTeamIds,
+      })
+      .subscribe({
+        next: () => {
+          this.creatingBracket.set(false);
+          this.showBracketBuilder.set(false);
+          this.bracketSeedTeamIds.set([]);
+          this.load();
+        },
+        error: (err) => {
+          this.bracketError.set(
+            err?.error?.message || 'Could not create this bracket.',
+          );
+          this.creatingBracket.set(false);
+        },
+      });
+  }
+
+  deleteBracket(bracketId: string): void {
+    this.deletingBracketId.set(bracketId);
+    this.bracketError.set(null);
+
+    this.tournamentsApi.deleteBracket(this.tournamentId, bracketId).subscribe({
+      next: () => {
+        this.deletingBracketId.set(null);
+        this.load();
+      },
+      error: (err) => {
+        this.bracketError.set(
+          err?.error?.message || 'Could not remove this bracket.',
+        );
+        this.deletingBracketId.set(null);
+      },
+    });
+  }
+
+  matchesByRound(bracket: TournamentBracket): TournamentBracketMatch[][] {
+    const rounds = new Map<number, TournamentBracketMatch[]>();
+
+    for (const match of bracket.matches) {
+      const roundMatches = rounds.get(match.round) ?? [];
+      roundMatches.push(match);
+      rounds.set(match.round, roundMatches);
+    }
+
+    return Array.from(rounds.keys())
+      .sort((a, b) => a - b)
+      .map((round) =>
+        (rounds.get(round) ?? []).sort((a, b) => a.position - b.position),
+      );
+  }
+
+  roundLabel(roundIndex: number, totalRounds: number): string {
+    const remaining = totalRounds - roundIndex;
+
+    if (remaining === 1) return 'Final';
+    if (remaining === 2) return 'Semifinals';
+    if (remaining === 3) return 'Quarterfinals';
+    return `Round ${roundIndex + 1}`;
+  }
+
+  canScheduleMatch(match: TournamentBracketMatch): boolean {
+    return !!match.team1Id && !!match.team2Id && !match.gameId && !match.isBye;
+  }
+
+  openScheduleMatch(match: TournamentBracketMatch): void {
+    this.schedulingMatchKey.set(`${match.bracketId}:${match.id}`);
+    this.scheduleMatchError.set(null);
+    this.matchScheduleForm.reset({ startsAt: '', arenaName: '', notes: '' });
+  }
+
+  cancelScheduleMatch(): void {
+    this.schedulingMatchKey.set(null);
+    this.scheduleMatchError.set(null);
+  }
+
+  isSchedulingMatch(match: TournamentBracketMatch): boolean {
+    return this.schedulingMatchKey() === `${match.bracketId}:${match.id}`;
+  }
+
+  saveMatchSchedule(match: TournamentBracketMatch): void {
+    if (this.matchScheduleForm.invalid || this.savingMatchSchedule()) {
+      this.matchScheduleForm.markAllAsTouched();
+      return;
+    }
+
+    const value = this.matchScheduleForm.getRawValue();
+
+    this.savingMatchSchedule.set(true);
+    this.scheduleMatchError.set(null);
+
+    this.tournamentsApi
+      .scheduleMatchGame(this.tournamentId, match.bracketId, match.id, {
+        startsAt: new Date(value.startsAt).toISOString(),
+        arenaName: value.arenaName.trim() || null,
+        notes: value.notes.trim() || null,
+      })
+      .subscribe({
+        next: () => {
+          this.savingMatchSchedule.set(false);
+          this.schedulingMatchKey.set(null);
+          this.load();
+        },
+        error: (err) => {
+          this.scheduleMatchError.set(
+            err?.error?.message || 'Could not schedule this match.',
+          );
+          this.savingMatchSchedule.set(false);
+        },
+      });
+  }
+
+  trackByBracketId(_index: number, bracket: TournamentBracket): string {
+    return bracket.id;
+  }
+
+  trackByMatchId(_index: number, match: TournamentBracketMatch): string {
+    return match.id;
   }
 }

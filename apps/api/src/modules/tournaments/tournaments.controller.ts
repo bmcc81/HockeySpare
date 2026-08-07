@@ -24,6 +24,8 @@ import { CreateTournamentTeamDto } from './dto/create-tournament-team.dto';
 import { UpdateTournamentTeamDto } from './dto/update-tournament-team.dto';
 import { CreateTournamentTeamPlayerDto } from './dto/create-tournament-team-player.dto';
 import { UpsertTournamentGamePlayerStatDto } from './dto/upsert-tournament-game-player-stat.dto';
+import { CreateTournamentBracketDto } from './dto/create-tournament-bracket.dto';
+import { ScheduleBracketMatchGameDto } from './dto/schedule-bracket-match-game.dto';
 
 type AuthRequest = {
   user?: {
@@ -346,6 +348,48 @@ export class TournamentsController {
       id,
       gameId,
       statId,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/brackets')
+  createBracket(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Body() dto: CreateTournamentBracketDto,
+  ) {
+    return this.tournamentsService.createBracket(this.getUserId(req), id, dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/brackets/:bracketId')
+  deleteBracket(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('bracketId') bracketId: string,
+  ) {
+    return this.tournamentsService.deleteBracket(
+      this.getUserId(req),
+      id,
+      bracketId,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/brackets/:bracketId/matches/:matchId/game')
+  scheduleMatchGame(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('bracketId') bracketId: string,
+    @Param('matchId') matchId: string,
+    @Body() dto: ScheduleBracketMatchGameDto,
+  ) {
+    return this.tournamentsService.scheduleMatchGame(
+      this.getUserId(req),
+      id,
+      bracketId,
+      matchId,
+      dto,
     );
   }
 }

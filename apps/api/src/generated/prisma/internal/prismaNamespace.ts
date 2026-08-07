@@ -409,6 +409,8 @@ export const ModelName = {
   TournamentGame: 'TournamentGame',
   TournamentRegistration: 'TournamentRegistration',
   TournamentTeam: 'TournamentTeam',
+  TournamentBracket: 'TournamentBracket',
+  TournamentBracketMatch: 'TournamentBracketMatch',
   TournamentTeamPlayer: 'TournamentTeamPlayer',
   TournamentGamePlayerStat: 'TournamentGamePlayerStat',
   TournamentPayment: 'TournamentPayment',
@@ -428,7 +430,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "request" | "requestResponse" | "playerOffer" | "user" | "league" | "leagueArena" | "leagueMember" | "team" | "teamMessage" | "teamMember" | "playerStat" | "memberFee" | "payment" | "teamGame" | "teamGameInvite" | "teamGameAvailability" | "notification" | "booking" | "gameScoreSheet" | "gameScoreSheetPlayer" | "helpArticle" | "tournament" | "tournamentGame" | "tournamentRegistration" | "tournamentTeam" | "tournamentTeamPlayer" | "tournamentGamePlayerStat" | "tournamentPayment" | "tournamentSponsor"
+    modelProps: "request" | "requestResponse" | "playerOffer" | "user" | "league" | "leagueArena" | "leagueMember" | "team" | "teamMessage" | "teamMember" | "playerStat" | "memberFee" | "payment" | "teamGame" | "teamGameInvite" | "teamGameAvailability" | "notification" | "booking" | "gameScoreSheet" | "gameScoreSheetPlayer" | "helpArticle" | "tournament" | "tournamentGame" | "tournamentRegistration" | "tournamentTeam" | "tournamentBracket" | "tournamentBracketMatch" | "tournamentTeamPlayer" | "tournamentGamePlayerStat" | "tournamentPayment" | "tournamentSponsor"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2282,6 +2284,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TournamentBracket: {
+      payload: Prisma.$TournamentBracketPayload<ExtArgs>
+      fields: Prisma.TournamentBracketFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TournamentBracketFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentBracketPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TournamentBracketFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentBracketPayload>
+        }
+        findFirst: {
+          args: Prisma.TournamentBracketFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentBracketPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TournamentBracketFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentBracketPayload>
+        }
+        findMany: {
+          args: Prisma.TournamentBracketFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentBracketPayload>[]
+        }
+        create: {
+          args: Prisma.TournamentBracketCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentBracketPayload>
+        }
+        createMany: {
+          args: Prisma.TournamentBracketCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TournamentBracketCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentBracketPayload>[]
+        }
+        delete: {
+          args: Prisma.TournamentBracketDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentBracketPayload>
+        }
+        update: {
+          args: Prisma.TournamentBracketUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentBracketPayload>
+        }
+        deleteMany: {
+          args: Prisma.TournamentBracketDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TournamentBracketUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TournamentBracketUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentBracketPayload>[]
+        }
+        upsert: {
+          args: Prisma.TournamentBracketUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentBracketPayload>
+        }
+        aggregate: {
+          args: Prisma.TournamentBracketAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTournamentBracket>
+        }
+        groupBy: {
+          args: Prisma.TournamentBracketGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TournamentBracketGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TournamentBracketCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TournamentBracketCountAggregateOutputType> | number
+        }
+      }
+    }
+    TournamentBracketMatch: {
+      payload: Prisma.$TournamentBracketMatchPayload<ExtArgs>
+      fields: Prisma.TournamentBracketMatchFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TournamentBracketMatchFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentBracketMatchPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TournamentBracketMatchFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentBracketMatchPayload>
+        }
+        findFirst: {
+          args: Prisma.TournamentBracketMatchFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentBracketMatchPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TournamentBracketMatchFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentBracketMatchPayload>
+        }
+        findMany: {
+          args: Prisma.TournamentBracketMatchFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentBracketMatchPayload>[]
+        }
+        create: {
+          args: Prisma.TournamentBracketMatchCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentBracketMatchPayload>
+        }
+        createMany: {
+          args: Prisma.TournamentBracketMatchCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TournamentBracketMatchCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentBracketMatchPayload>[]
+        }
+        delete: {
+          args: Prisma.TournamentBracketMatchDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentBracketMatchPayload>
+        }
+        update: {
+          args: Prisma.TournamentBracketMatchUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentBracketMatchPayload>
+        }
+        deleteMany: {
+          args: Prisma.TournamentBracketMatchDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TournamentBracketMatchUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TournamentBracketMatchUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentBracketMatchPayload>[]
+        }
+        upsert: {
+          args: Prisma.TournamentBracketMatchUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentBracketMatchPayload>
+        }
+        aggregate: {
+          args: Prisma.TournamentBracketMatchAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTournamentBracketMatch>
+        }
+        groupBy: {
+          args: Prisma.TournamentBracketMatchGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TournamentBracketMatchGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TournamentBracketMatchCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TournamentBracketMatchCountAggregateOutputType> | number
+        }
+      }
+    }
     TournamentTeamPlayer: {
       payload: Prisma.$TournamentTeamPlayerPayload<ExtArgs>
       fields: Prisma.TournamentTeamPlayerFieldRefs
@@ -3021,6 +3171,37 @@ export const TournamentTeamScalarFieldEnum = {
 export type TournamentTeamScalarFieldEnum = (typeof TournamentTeamScalarFieldEnum)[keyof typeof TournamentTeamScalarFieldEnum]
 
 
+export const TournamentBracketScalarFieldEnum = {
+  id: 'id',
+  tournamentId: 'tournamentId',
+  name: 'name',
+  division: 'division',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TournamentBracketScalarFieldEnum = (typeof TournamentBracketScalarFieldEnum)[keyof typeof TournamentBracketScalarFieldEnum]
+
+
+export const TournamentBracketMatchScalarFieldEnum = {
+  id: 'id',
+  bracketId: 'bracketId',
+  round: 'round',
+  position: 'position',
+  team1Id: 'team1Id',
+  team2Id: 'team2Id',
+  gameId: 'gameId',
+  winnerTeamId: 'winnerTeamId',
+  nextMatchId: 'nextMatchId',
+  nextMatchSlot: 'nextMatchSlot',
+  isBye: 'isBye',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TournamentBracketMatchScalarFieldEnum = (typeof TournamentBracketMatchScalarFieldEnum)[keyof typeof TournamentBracketMatchScalarFieldEnum]
+
+
 export const TournamentTeamPlayerScalarFieldEnum = {
   id: 'id',
   teamId: 'teamId',
@@ -3571,6 +3752,8 @@ export type GlobalOmitConfig = {
   tournamentGame?: Prisma.TournamentGameOmit
   tournamentRegistration?: Prisma.TournamentRegistrationOmit
   tournamentTeam?: Prisma.TournamentTeamOmit
+  tournamentBracket?: Prisma.TournamentBracketOmit
+  tournamentBracketMatch?: Prisma.TournamentBracketMatchOmit
   tournamentTeamPlayer?: Prisma.TournamentTeamPlayerOmit
   tournamentGamePlayerStat?: Prisma.TournamentGamePlayerStatOmit
   tournamentPayment?: Prisma.TournamentPaymentOmit

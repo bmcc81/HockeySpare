@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UnauthorizedException,
   UseGuards,
@@ -19,6 +20,10 @@ import { UpdateTournamentGameDto } from './dto/update-tournament-game.dto';
 import { CreateTournamentRegistrationDto } from './dto/create-tournament-registration.dto';
 import { UpdateTournamentRegistrationDto } from './dto/update-tournament-registration.dto';
 import { CreateTournamentSponsorDto } from './dto/create-tournament-sponsor.dto';
+import { CreateTournamentTeamDto } from './dto/create-tournament-team.dto';
+import { UpdateTournamentTeamDto } from './dto/update-tournament-team.dto';
+import { CreateTournamentTeamPlayerDto } from './dto/create-tournament-team-player.dto';
+import { UpsertTournamentGamePlayerStatDto } from './dto/upsert-tournament-game-player-stat.dto';
 
 type AuthRequest = {
   user?: {
@@ -61,8 +66,14 @@ export class TournamentsController {
 
   // Public - same visibility as the schedule.
   @Get(':id/standings')
-  getStandings(@Param('id') id: string) {
-    return this.tournamentsService.getStandings(id);
+  getStandings(@Param('id') id: string, @Query('division') division?: string) {
+    return this.tournamentsService.getStandings(id, division);
+  }
+
+  // Public - same visibility as the schedule.
+  @Get(':id/leaders')
+  getPlayerLeaders(@Param('id') id: string) {
+    return this.tournamentsService.getPlayerLeaders(id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -222,5 +233,119 @@ export class TournamentsController {
   @Get(':id/payments/verify/:sessionId')
   verifyRegistrationCheckoutSession(@Param('sessionId') sessionId: string) {
     return this.tournamentsService.verifyRegistrationCheckoutSession(sessionId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/teams')
+  addTeam(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Body() dto: CreateTournamentTeamDto,
+  ) {
+    return this.tournamentsService.addTeam(this.getUserId(req), id, dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/registrations/:registrationId/team')
+  createTeamFromRegistration(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('registrationId') registrationId: string,
+  ) {
+    return this.tournamentsService.createTeamFromRegistration(
+      this.getUserId(req),
+      id,
+      registrationId,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/teams/:teamId')
+  updateTeam(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('teamId') teamId: string,
+    @Body() dto: UpdateTournamentTeamDto,
+  ) {
+    return this.tournamentsService.updateTeam(
+      this.getUserId(req),
+      id,
+      teamId,
+      dto,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/teams/:teamId')
+  deleteTeam(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('teamId') teamId: string,
+  ) {
+    return this.tournamentsService.deleteTeam(this.getUserId(req), id, teamId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/teams/:teamId/players')
+  addTeamPlayer(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('teamId') teamId: string,
+    @Body() dto: CreateTournamentTeamPlayerDto,
+  ) {
+    return this.tournamentsService.addTeamPlayer(
+      this.getUserId(req),
+      id,
+      teamId,
+      dto,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/teams/:teamId/players/:playerId')
+  removeTeamPlayer(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('teamId') teamId: string,
+    @Param('playerId') playerId: string,
+  ) {
+    return this.tournamentsService.removeTeamPlayer(
+      this.getUserId(req),
+      id,
+      teamId,
+      playerId,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/games/:gameId/stats')
+  upsertGamePlayerStat(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('gameId') gameId: string,
+    @Body() dto: UpsertTournamentGamePlayerStatDto,
+  ) {
+    return this.tournamentsService.upsertGamePlayerStat(
+      this.getUserId(req),
+      id,
+      gameId,
+      dto,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/games/:gameId/stats/:statId')
+  deleteGamePlayerStat(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('gameId') gameId: string,
+    @Param('statId') statId: string,
+  ) {
+    return this.tournamentsService.deleteGamePlayerStat(
+      this.getUserId(req),
+      id,
+      gameId,
+      statId,
+    );
   }
 }

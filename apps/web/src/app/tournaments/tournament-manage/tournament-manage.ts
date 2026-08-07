@@ -9,9 +9,13 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
   Tournament,
   TournamentGame,
+  TournamentGamePlayerStat,
   TournamentPaymentsStatus,
+  TournamentPlayerPosition,
   TournamentRegistration,
   TournamentSponsor,
+  TournamentTeam,
+  TournamentTeamPlayer,
 } from '@hockeyspare/contracts';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
 import { AuthStateService } from '../../auth/auth-state.service';
@@ -53,6 +57,28 @@ export class TournamentManageComponent implements OnInit {
   savingScore = signal(false);
   scoreError = signal<string | null>(null);
 
+  savingTeam = signal(false);
+  teamError = signal<string | null>(null);
+  editingTeamId = signal<string | null>(null);
+  deletingTeamId = signal<string | null>(null);
+
+  rosterTeamId = signal<string | null>(null);
+  savingPlayer = signal(false);
+  playerError = signal<string | null>(null);
+  deletingPlayerId = signal<string | null>(null);
+
+  creatingTeamFromRegistrationId = signal<string | null>(null);
+
+  statEditorGameId = signal<string | null>(null);
+  statDrafts = signal<
+    Record<
+      string,
+      { goals: number; assists: number; penaltyMins: number; plusMinus: number }
+    >
+  >({});
+  savingStatPlayerId = signal<string | null>(null);
+  statError = signal<string | null>(null);
+
   paymentsStatus = signal<TournamentPaymentsStatus | null>(null);
   paymentsStatusLoading = signal(false);
   connectingStripe = signal(false);
@@ -71,6 +97,8 @@ export class TournamentManageComponent implements OnInit {
   });
 
   gameForm = this.fb.group({
+    homeTeamId: [''],
+    awayTeamId: [''],
     homeTeamName: ['', Validators.required],
     awayTeamName: ['', Validators.required],
     startsAt: ['', Validators.required],
@@ -90,6 +118,19 @@ export class TournamentManageComponent implements OnInit {
     status: ['LIVE' as 'SCHEDULED' | 'LIVE' | 'FINAL', Validators.required],
   });
 
+  teamForm = this.fb.group({
+    name: ['', Validators.required],
+    division: [''],
+    logoUrl: [''],
+    coachName: [''],
+  });
+
+  playerForm = this.fb.group({
+    displayName: ['', Validators.required],
+    position: ['' as TournamentPlayerPosition | ''],
+    jerseyNumber: [''],
+  });
+
   get isOwner(): boolean {
     const userId = this.authState.user()?.id;
     return !!userId && this.tournament()?.createdById === userId;
@@ -107,6 +148,30 @@ export class TournamentManageComponent implements OnInit {
     if (params.get('stripeReturn') === '1') {
       this.handleStripeReturn();
     }
+
+    this.gameForm.controls.homeTeamId.valueChanges.subscribe((teamId) => {
+      this.syncGameTeamName('home', teamId);
+    });
+
+    this.gameForm.controls.awayTeamId.valueChanges.subscribe((teamId) => {
+      this.syncGameTeamName('away', teamId);
+    });
+  }
+
+  private syncGameTeamName(side: 'home' | 'away', teamId: string): void {
+    if (!teamId) {
+      return;
+    }
+
+    const team = this.tournament()?.teams.find((t) => t.id === teamId);
+
+    if (!team) {
+      return;
+    }
+
+    this.gameForm.patchValue(
+      side === 'home' ? { homeTeamName: team.name } : { awayTeamName: team.name },
+    );
   }
 
   private toDateInputValue(value?: string | null): string {
@@ -320,6 +385,8 @@ export class TournamentManageComponent implements OnInit {
     this.gameError.set(null);
 
     this.gameForm.reset({
+      homeTeamId: '',
+      awayTeamId: '',
       homeTeamName: '',
       awayTeamName: '',
       startsAt: '',
@@ -333,6 +400,8 @@ export class TournamentManageComponent implements OnInit {
     this.gameError.set(null);
 
     this.gameForm.reset({
+      homeTeamId: game.homeTeamId ?? '',
+      awayTeamId: game.awayTeamId ?? '',
       homeTeamName: game.homeTeamName,
       awayTeamName: game.awayTeamName,
       startsAt: game.startsAt.slice(0, 16),
@@ -356,6 +425,8 @@ export class TournamentManageComponent implements OnInit {
     const payload = {
       homeTeamName: value.homeTeamName.trim(),
       awayTeamName: value.awayTeamName.trim(),
+      homeTeamId: value.homeTeamId || null,
+      awayTeamId: value.awayTeamId || null,
       startsAt: new Date(value.startsAt).toISOString(),
       arenaName: value.arenaName.trim() || null,
       notes: value.notes.trim() || null,
@@ -503,5 +574,269 @@ export class TournamentManageComponent implements OnInit {
 
   trackBySponsorId(_index: number, sponsor: TournamentSponsor): string {
     return sponsor.id;
+  }
+
+  openAddTeam(): void {
+    this.editingTeamId.set(null);
+    this.teamError.set(null);
+    this.teamForm.reset({ name: '', division: '', logoUrl: '', coachName: '' });
+  }
+
+  openEditTeam(team: TournamentTeam): void {
+    this.editingTeamId.set(team.id);
+    this.teamError.set(null);
+    this.teamForm.reset({
+      name: team.name,
+      division: team.division ?? '',
+      logoUrl: team.logoUrl ?? '',
+      coachName: team.coachName ?? '',
+    });
+  }
+
+  cancelTeamEdit(): void {
+    this.editingTeamId.set(null);
+    this.teamError.set(null);
+  }
+
+  saveTeam(): void {
+    if (this.teamForm.invalid || this.savingTeam()) {
+      this.teamForm.markAllAsTouched();
+      return;
+    }
+
+    const value = this.teamForm.getRawValue();
+    const editingId = this.editingTeamId();
+
+    this.savingTeam.set(true);
+    this.teamError.set(null);
+
+    const request = editingId
+      ? this.tournamentsApi.updateTeam(this.tournamentId, editingId, {
+          name: value.name.trim(),
+          division: value.division.trim() || null,
+          logoUrl: value.logoUrl.trim() || null,
+          coachName: value.coachName.trim() || null,
+        })
+      : this.tournamentsApi.addTeam(this.tournamentId, {
+          name: value.name.trim(),
+          division: value.division.trim() || null,
+          logoUrl: value.logoUrl.trim() || null,
+          coachName: value.coachName.trim() || null,
+        });
+
+    request.subscribe({
+      next: () => {
+        this.savingTeam.set(false);
+        this.editingTeamId.set(null);
+        this.load();
+      },
+      error: (err) => {
+        this.teamError.set(err?.error?.message || 'Could not save this team.');
+        this.savingTeam.set(false);
+      },
+    });
+  }
+
+  deleteTeam(teamId: string): void {
+    this.deletingTeamId.set(teamId);
+    this.teamError.set(null);
+
+    this.tournamentsApi.deleteTeam(this.tournamentId, teamId).subscribe({
+      next: () => {
+        this.deletingTeamId.set(null);
+        this.load();
+      },
+      error: (err) => {
+        this.teamError.set(
+          err?.error?.message || 'Could not remove this team.',
+        );
+        this.deletingTeamId.set(null);
+      },
+    });
+  }
+
+  createTeamFromRegistration(registrationId: string): void {
+    this.creatingTeamFromRegistrationId.set(registrationId);
+    this.error.set(null);
+
+    this.tournamentsApi
+      .createTeamFromRegistration(this.tournamentId, registrationId)
+      .subscribe({
+        next: () => {
+          this.creatingTeamFromRegistrationId.set(null);
+          this.load();
+        },
+        error: (err) => {
+          this.error.set(
+            err?.error?.message || 'Could not create a team from this registration.',
+          );
+          this.creatingTeamFromRegistrationId.set(null);
+        },
+      });
+  }
+
+  registrationHasTeam(registrationId: string): boolean {
+    return (
+      this.tournament()?.teams.some(
+        (team) => team.registrationId === registrationId,
+      ) ?? false
+    );
+  }
+
+  trackByTeamId(_index: number, team: TournamentTeam): string {
+    return team.id;
+  }
+
+  openRoster(teamId: string): void {
+    this.rosterTeamId.set(this.rosterTeamId() === teamId ? null : teamId);
+    this.playerError.set(null);
+    this.playerForm.reset({ displayName: '', position: '', jerseyNumber: '' });
+  }
+
+  addTeamPlayer(teamId: string): void {
+    if (this.playerForm.invalid || this.savingPlayer()) {
+      this.playerForm.markAllAsTouched();
+      return;
+    }
+
+    const value = this.playerForm.getRawValue();
+
+    this.savingPlayer.set(true);
+    this.playerError.set(null);
+
+    this.tournamentsApi
+      .addTeamPlayer(this.tournamentId, teamId, {
+        displayName: value.displayName.trim(),
+        position: value.position || null,
+        jerseyNumber: value.jerseyNumber ? Number(value.jerseyNumber) : null,
+      })
+      .subscribe({
+        next: () => {
+          this.savingPlayer.set(false);
+          this.playerForm.reset({
+            displayName: '',
+            position: '',
+            jerseyNumber: '',
+          });
+          this.load();
+        },
+        error: (err: any) => {
+          this.playerError.set(
+            err?.error?.message || 'Could not add this player.',
+          );
+          this.savingPlayer.set(false);
+        },
+      });
+  }
+
+  removeTeamPlayer(teamId: string, playerId: string): void {
+    this.deletingPlayerId.set(playerId);
+    this.playerError.set(null);
+
+    this.tournamentsApi
+      .removeTeamPlayer(this.tournamentId, teamId, playerId)
+      .subscribe({
+        next: () => {
+          this.deletingPlayerId.set(null);
+          this.load();
+        },
+        error: (err) => {
+          this.playerError.set(
+            err?.error?.message || 'Could not remove this player.',
+          );
+          this.deletingPlayerId.set(null);
+        },
+      });
+  }
+
+  trackByPlayerId(_index: number, player: TournamentTeamPlayer): string {
+    return player.id;
+  }
+
+  gameRosterPlayers(game: TournamentGame): TournamentTeamPlayer[] {
+    const teams = this.tournament()?.teams ?? [];
+    const homeTeam = teams.find((t) => t.id === game.homeTeamId);
+    const awayTeam = teams.find((t) => t.id === game.awayTeamId);
+
+    return [...(homeTeam?.players ?? []), ...(awayTeam?.players ?? [])];
+  }
+
+  openStatEditor(game: TournamentGame): void {
+    if (this.statEditorGameId() === game.id) {
+      this.statEditorGameId.set(null);
+      return;
+    }
+
+    this.statEditorGameId.set(game.id);
+    this.statError.set(null);
+
+    const drafts: Record<
+      string,
+      { goals: number; assists: number; penaltyMins: number; plusMinus: number }
+    > = {};
+
+    for (const player of this.gameRosterPlayers(game)) {
+      const existing = game.playerStats?.find(
+        (stat) => stat.teamPlayerId === player.id,
+      );
+
+      drafts[player.id] = {
+        goals: existing?.goals ?? 0,
+        assists: existing?.assists ?? 0,
+        penaltyMins: existing?.penaltyMins ?? 0,
+        plusMinus: existing?.plusMinus ?? 0,
+      };
+    }
+
+    this.statDrafts.set(drafts);
+  }
+
+  updateStatDraft(
+    playerId: string,
+    field: 'goals' | 'assists' | 'penaltyMins' | 'plusMinus',
+    event: Event,
+  ): void {
+    const input = event.target as HTMLInputElement;
+    const value = Number(input.value) || 0;
+
+    this.statDrafts.update((drafts) => ({
+      ...drafts,
+      [playerId]: {
+        ...drafts[playerId],
+        [field]: value,
+      },
+    }));
+  }
+
+  saveGamePlayerStat(gameId: string, playerId: string): void {
+    const draft = this.statDrafts()[playerId];
+
+    if (!draft) {
+      return;
+    }
+
+    this.savingStatPlayerId.set(playerId);
+    this.statError.set(null);
+
+    this.tournamentsApi
+      .upsertGamePlayerStat(this.tournamentId, gameId, {
+        teamPlayerId: playerId,
+        goals: draft.goals,
+        assists: draft.assists,
+        penaltyMins: draft.penaltyMins,
+        plusMinus: draft.plusMinus,
+      })
+      .subscribe({
+        next: () => {
+          this.savingStatPlayerId.set(null);
+          this.load();
+        },
+        error: (err) => {
+          this.statError.set(
+            err?.error?.message || 'Could not save this stat line.',
+          );
+          this.savingStatPlayerId.set(null);
+        },
+      });
   }
 }

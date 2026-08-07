@@ -224,6 +224,7 @@ export type TournamentRegistrationWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"TournamentRegistration"> | Date | string
   tournament?: Prisma.XOR<Prisma.TournamentScalarRelationFilter, Prisma.TournamentWhereInput>
   payments?: Prisma.TournamentPaymentListRelationFilter
+  team?: Prisma.XOR<Prisma.TournamentTeamNullableScalarRelationFilter, Prisma.TournamentTeamWhereInput> | null
 }
 
 export type TournamentRegistrationOrderByWithRelationInput = {
@@ -239,6 +240,7 @@ export type TournamentRegistrationOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   tournament?: Prisma.TournamentOrderByWithRelationInput
   payments?: Prisma.TournamentPaymentOrderByRelationAggregateInput
+  team?: Prisma.TournamentTeamOrderByWithRelationInput
 }
 
 export type TournamentRegistrationWhereUniqueInput = Prisma.AtLeast<{
@@ -257,6 +259,7 @@ export type TournamentRegistrationWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"TournamentRegistration"> | Date | string
   tournament?: Prisma.XOR<Prisma.TournamentScalarRelationFilter, Prisma.TournamentWhereInput>
   payments?: Prisma.TournamentPaymentListRelationFilter
+  team?: Prisma.XOR<Prisma.TournamentTeamNullableScalarRelationFilter, Prisma.TournamentTeamWhereInput> | null
 }, "id">
 
 export type TournamentRegistrationOrderByWithAggregationInput = {
@@ -303,6 +306,7 @@ export type TournamentRegistrationCreateInput = {
   createdAt?: Date | string
   tournament: Prisma.TournamentCreateNestedOneWithoutRegistrationsInput
   payments?: Prisma.TournamentPaymentCreateNestedManyWithoutRegistrationInput
+  team?: Prisma.TournamentTeamCreateNestedOneWithoutRegistrationInput
 }
 
 export type TournamentRegistrationUncheckedCreateInput = {
@@ -317,6 +321,7 @@ export type TournamentRegistrationUncheckedCreateInput = {
   status?: $Enums.TournamentRegistrationStatus
   createdAt?: Date | string
   payments?: Prisma.TournamentPaymentUncheckedCreateNestedManyWithoutRegistrationInput
+  team?: Prisma.TournamentTeamUncheckedCreateNestedOneWithoutRegistrationInput
 }
 
 export type TournamentRegistrationUpdateInput = {
@@ -331,6 +336,7 @@ export type TournamentRegistrationUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournament?: Prisma.TournamentUpdateOneRequiredWithoutRegistrationsNestedInput
   payments?: Prisma.TournamentPaymentUpdateManyWithoutRegistrationNestedInput
+  team?: Prisma.TournamentTeamUpdateOneWithoutRegistrationNestedInput
 }
 
 export type TournamentRegistrationUncheckedUpdateInput = {
@@ -345,6 +351,7 @@ export type TournamentRegistrationUncheckedUpdateInput = {
   status?: Prisma.EnumTournamentRegistrationStatusFieldUpdateOperationsInput | $Enums.TournamentRegistrationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payments?: Prisma.TournamentPaymentUncheckedUpdateManyWithoutRegistrationNestedInput
+  team?: Prisma.TournamentTeamUncheckedUpdateOneWithoutRegistrationNestedInput
 }
 
 export type TournamentRegistrationCreateManyInput = {
@@ -434,6 +441,11 @@ export type TournamentRegistrationMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
 }
 
+export type TournamentRegistrationNullableScalarRelationFilter = {
+  is?: Prisma.TournamentRegistrationWhereInput | null
+  isNot?: Prisma.TournamentRegistrationWhereInput | null
+}
+
 export type TournamentRegistrationScalarRelationFilter = {
   is?: Prisma.TournamentRegistrationWhereInput
   isNot?: Prisma.TournamentRegistrationWhereInput
@@ -485,6 +497,22 @@ export type EnumTournamentRegistrationStatusFieldUpdateOperationsInput = {
   set?: $Enums.TournamentRegistrationStatus
 }
 
+export type TournamentRegistrationCreateNestedOneWithoutTeamInput = {
+  create?: Prisma.XOR<Prisma.TournamentRegistrationCreateWithoutTeamInput, Prisma.TournamentRegistrationUncheckedCreateWithoutTeamInput>
+  connectOrCreate?: Prisma.TournamentRegistrationCreateOrConnectWithoutTeamInput
+  connect?: Prisma.TournamentRegistrationWhereUniqueInput
+}
+
+export type TournamentRegistrationUpdateOneWithoutTeamNestedInput = {
+  create?: Prisma.XOR<Prisma.TournamentRegistrationCreateWithoutTeamInput, Prisma.TournamentRegistrationUncheckedCreateWithoutTeamInput>
+  connectOrCreate?: Prisma.TournamentRegistrationCreateOrConnectWithoutTeamInput
+  upsert?: Prisma.TournamentRegistrationUpsertWithoutTeamInput
+  disconnect?: Prisma.TournamentRegistrationWhereInput | boolean
+  delete?: Prisma.TournamentRegistrationWhereInput | boolean
+  connect?: Prisma.TournamentRegistrationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TournamentRegistrationUpdateToOneWithWhereWithoutTeamInput, Prisma.TournamentRegistrationUpdateWithoutTeamInput>, Prisma.TournamentRegistrationUncheckedUpdateWithoutTeamInput>
+}
+
 export type TournamentRegistrationCreateNestedOneWithoutPaymentsInput = {
   create?: Prisma.XOR<Prisma.TournamentRegistrationCreateWithoutPaymentsInput, Prisma.TournamentRegistrationUncheckedCreateWithoutPaymentsInput>
   connectOrCreate?: Prisma.TournamentRegistrationCreateOrConnectWithoutPaymentsInput
@@ -510,6 +538,7 @@ export type TournamentRegistrationCreateWithoutTournamentInput = {
   status?: $Enums.TournamentRegistrationStatus
   createdAt?: Date | string
   payments?: Prisma.TournamentPaymentCreateNestedManyWithoutRegistrationInput
+  team?: Prisma.TournamentTeamCreateNestedOneWithoutRegistrationInput
 }
 
 export type TournamentRegistrationUncheckedCreateWithoutTournamentInput = {
@@ -523,6 +552,7 @@ export type TournamentRegistrationUncheckedCreateWithoutTournamentInput = {
   status?: $Enums.TournamentRegistrationStatus
   createdAt?: Date | string
   payments?: Prisma.TournamentPaymentUncheckedCreateNestedManyWithoutRegistrationInput
+  team?: Prisma.TournamentTeamUncheckedCreateNestedOneWithoutRegistrationInput
 }
 
 export type TournamentRegistrationCreateOrConnectWithoutTournamentInput = {
@@ -567,6 +597,78 @@ export type TournamentRegistrationScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"TournamentRegistration"> | Date | string
 }
 
+export type TournamentRegistrationCreateWithoutTeamInput = {
+  id?: string
+  teamName: string
+  division?: string | null
+  contactName: string
+  contactEmail: string
+  contactPhone?: string | null
+  notes?: string | null
+  status?: $Enums.TournamentRegistrationStatus
+  createdAt?: Date | string
+  tournament: Prisma.TournamentCreateNestedOneWithoutRegistrationsInput
+  payments?: Prisma.TournamentPaymentCreateNestedManyWithoutRegistrationInput
+}
+
+export type TournamentRegistrationUncheckedCreateWithoutTeamInput = {
+  id?: string
+  tournamentId: string
+  teamName: string
+  division?: string | null
+  contactName: string
+  contactEmail: string
+  contactPhone?: string | null
+  notes?: string | null
+  status?: $Enums.TournamentRegistrationStatus
+  createdAt?: Date | string
+  payments?: Prisma.TournamentPaymentUncheckedCreateNestedManyWithoutRegistrationInput
+}
+
+export type TournamentRegistrationCreateOrConnectWithoutTeamInput = {
+  where: Prisma.TournamentRegistrationWhereUniqueInput
+  create: Prisma.XOR<Prisma.TournamentRegistrationCreateWithoutTeamInput, Prisma.TournamentRegistrationUncheckedCreateWithoutTeamInput>
+}
+
+export type TournamentRegistrationUpsertWithoutTeamInput = {
+  update: Prisma.XOR<Prisma.TournamentRegistrationUpdateWithoutTeamInput, Prisma.TournamentRegistrationUncheckedUpdateWithoutTeamInput>
+  create: Prisma.XOR<Prisma.TournamentRegistrationCreateWithoutTeamInput, Prisma.TournamentRegistrationUncheckedCreateWithoutTeamInput>
+  where?: Prisma.TournamentRegistrationWhereInput
+}
+
+export type TournamentRegistrationUpdateToOneWithWhereWithoutTeamInput = {
+  where?: Prisma.TournamentRegistrationWhereInput
+  data: Prisma.XOR<Prisma.TournamentRegistrationUpdateWithoutTeamInput, Prisma.TournamentRegistrationUncheckedUpdateWithoutTeamInput>
+}
+
+export type TournamentRegistrationUpdateWithoutTeamInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  teamName?: Prisma.StringFieldUpdateOperationsInput | string
+  division?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumTournamentRegistrationStatusFieldUpdateOperationsInput | $Enums.TournamentRegistrationStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tournament?: Prisma.TournamentUpdateOneRequiredWithoutRegistrationsNestedInput
+  payments?: Prisma.TournamentPaymentUpdateManyWithoutRegistrationNestedInput
+}
+
+export type TournamentRegistrationUncheckedUpdateWithoutTeamInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tournamentId?: Prisma.StringFieldUpdateOperationsInput | string
+  teamName?: Prisma.StringFieldUpdateOperationsInput | string
+  division?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumTournamentRegistrationStatusFieldUpdateOperationsInput | $Enums.TournamentRegistrationStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  payments?: Prisma.TournamentPaymentUncheckedUpdateManyWithoutRegistrationNestedInput
+}
+
 export type TournamentRegistrationCreateWithoutPaymentsInput = {
   id?: string
   teamName: string
@@ -578,6 +680,7 @@ export type TournamentRegistrationCreateWithoutPaymentsInput = {
   status?: $Enums.TournamentRegistrationStatus
   createdAt?: Date | string
   tournament: Prisma.TournamentCreateNestedOneWithoutRegistrationsInput
+  team?: Prisma.TournamentTeamCreateNestedOneWithoutRegistrationInput
 }
 
 export type TournamentRegistrationUncheckedCreateWithoutPaymentsInput = {
@@ -591,6 +694,7 @@ export type TournamentRegistrationUncheckedCreateWithoutPaymentsInput = {
   notes?: string | null
   status?: $Enums.TournamentRegistrationStatus
   createdAt?: Date | string
+  team?: Prisma.TournamentTeamUncheckedCreateNestedOneWithoutRegistrationInput
 }
 
 export type TournamentRegistrationCreateOrConnectWithoutPaymentsInput = {
@@ -620,6 +724,7 @@ export type TournamentRegistrationUpdateWithoutPaymentsInput = {
   status?: Prisma.EnumTournamentRegistrationStatusFieldUpdateOperationsInput | $Enums.TournamentRegistrationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournament?: Prisma.TournamentUpdateOneRequiredWithoutRegistrationsNestedInput
+  team?: Prisma.TournamentTeamUpdateOneWithoutRegistrationNestedInput
 }
 
 export type TournamentRegistrationUncheckedUpdateWithoutPaymentsInput = {
@@ -633,6 +738,7 @@ export type TournamentRegistrationUncheckedUpdateWithoutPaymentsInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumTournamentRegistrationStatusFieldUpdateOperationsInput | $Enums.TournamentRegistrationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  team?: Prisma.TournamentTeamUncheckedUpdateOneWithoutRegistrationNestedInput
 }
 
 export type TournamentRegistrationCreateManyTournamentInput = {
@@ -658,6 +764,7 @@ export type TournamentRegistrationUpdateWithoutTournamentInput = {
   status?: Prisma.EnumTournamentRegistrationStatusFieldUpdateOperationsInput | $Enums.TournamentRegistrationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payments?: Prisma.TournamentPaymentUpdateManyWithoutRegistrationNestedInput
+  team?: Prisma.TournamentTeamUpdateOneWithoutRegistrationNestedInput
 }
 
 export type TournamentRegistrationUncheckedUpdateWithoutTournamentInput = {
@@ -671,6 +778,7 @@ export type TournamentRegistrationUncheckedUpdateWithoutTournamentInput = {
   status?: Prisma.EnumTournamentRegistrationStatusFieldUpdateOperationsInput | $Enums.TournamentRegistrationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payments?: Prisma.TournamentPaymentUncheckedUpdateManyWithoutRegistrationNestedInput
+  team?: Prisma.TournamentTeamUncheckedUpdateOneWithoutRegistrationNestedInput
 }
 
 export type TournamentRegistrationUncheckedUpdateManyWithoutTournamentInput = {
@@ -729,6 +837,7 @@ export type TournamentRegistrationSelect<ExtArgs extends runtime.Types.Extension
   createdAt?: boolean
   tournament?: boolean | Prisma.TournamentDefaultArgs<ExtArgs>
   payments?: boolean | Prisma.TournamentRegistration$paymentsArgs<ExtArgs>
+  team?: boolean | Prisma.TournamentRegistration$teamArgs<ExtArgs>
   _count?: boolean | Prisma.TournamentRegistrationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tournamentRegistration"]>
 
@@ -777,6 +886,7 @@ export type TournamentRegistrationOmit<ExtArgs extends runtime.Types.Extensions.
 export type TournamentRegistrationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tournament?: boolean | Prisma.TournamentDefaultArgs<ExtArgs>
   payments?: boolean | Prisma.TournamentRegistration$paymentsArgs<ExtArgs>
+  team?: boolean | Prisma.TournamentRegistration$teamArgs<ExtArgs>
   _count?: boolean | Prisma.TournamentRegistrationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TournamentRegistrationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -791,6 +901,7 @@ export type $TournamentRegistrationPayload<ExtArgs extends runtime.Types.Extensi
   objects: {
     tournament: Prisma.$TournamentPayload<ExtArgs>
     payments: Prisma.$TournamentPaymentPayload<ExtArgs>[]
+    team: Prisma.$TournamentTeamPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1199,6 +1310,7 @@ export interface Prisma__TournamentRegistrationClient<T, Null = never, ExtArgs e
   readonly [Symbol.toStringTag]: "PrismaPromise"
   tournament<T extends Prisma.TournamentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TournamentDefaultArgs<ExtArgs>>): Prisma.Prisma__TournamentClient<runtime.Types.Result.GetResult<Prisma.$TournamentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   payments<T extends Prisma.TournamentRegistration$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TournamentRegistration$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TournamentPaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  team<T extends Prisma.TournamentRegistration$teamArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TournamentRegistration$teamArgs<ExtArgs>>): Prisma.Prisma__TournamentTeamClient<runtime.Types.Result.GetResult<Prisma.$TournamentTeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1660,6 +1772,25 @@ export type TournamentRegistration$paymentsArgs<ExtArgs extends runtime.Types.Ex
   take?: number
   skip?: number
   distinct?: Prisma.TournamentPaymentScalarFieldEnum | Prisma.TournamentPaymentScalarFieldEnum[]
+}
+
+/**
+ * TournamentRegistration.team
+ */
+export type TournamentRegistration$teamArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TournamentTeam
+   */
+  select?: Prisma.TournamentTeamSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TournamentTeam
+   */
+  omit?: Prisma.TournamentTeamOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TournamentTeamInclude<ExtArgs> | null
+  where?: Prisma.TournamentTeamWhereInput
 }
 
 /**

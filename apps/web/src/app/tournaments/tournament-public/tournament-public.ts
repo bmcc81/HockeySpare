@@ -6,13 +6,21 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Tournament, TournamentStandingRow } from '@hockeyspare/contracts';
+import {
+  Tournament,
+  TournamentGame,
+  TournamentPlayerLeaderRow,
+  TournamentStandingRow,
+  TournamentTeam,
+} from '@hockeyspare/contracts';
 import { Subscription, interval, switchMap } from 'rxjs';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
 
 type TournamentTab =
   | 'schedule'
   | 'standings'
+  | 'teams'
+  | 'leaders'
   | 'rules'
   | 'sponsors'
   | 'register';
@@ -41,6 +49,12 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
 
   standings = signal<TournamentStandingRow[]>([]);
   standingsLoading = signal(false);
+  divisionFilter = signal<string>('');
+
+  leaders = signal<TournamentPlayerLeaderRow[]>([]);
+  leadersLoading = signal(false);
+
+  expandedTeamId = signal<string | null>(null);
 
   submittingRegistration = signal(false);
   registrationError = signal<string | null>(null);
@@ -72,6 +86,7 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
     });
 
     this.loadStandings();
+    this.loadLeaders();
 
     const paymentSessionId =
       this.route.snapshot.queryParamMap.get('paymentSessionId');
@@ -89,6 +104,7 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
         next: (tournament) => {
           this.tournament.set(tournament);
           this.loadStandings();
+          this.loadLeaders();
         },
       });
   }
@@ -125,15 +141,122 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
   private loadStandings(): void {
     this.standingsLoading.set(true);
 
-    this.tournamentsApi.getStandings(this.tournamentId).subscribe({
-      next: (standings) => {
-        this.standings.set(standings);
-        this.standingsLoading.set(false);
+    this.tournamentsApi
+      .getStandings(this.tournamentId, this.divisionFilter() || null)
+      .subscribe({
+        next: (standings) => {
+          this.standings.set(standings);
+          this.standingsLoading.set(false);
+        },
+        error: () => {
+          this.standingsLoading.set(false);
+        },
+      });
+  }
+
+  private loadLeaders(): void {
+    this.leadersLoading.set(true);
+
+    this.tournamentsApi.getPlayerLeaders(this.tournamentId).subscribe({
+      next: (leaders) => {
+        this.leaders.set(leaders);
+        this.leadersLoading.set(false);
       },
       error: () => {
-        this.standingsLoading.set(false);
+        this.leadersLoading.set(false);
       },
     });
+  }
+
+  availableDivisions(): string[] {
+    const teams = this.tournament()?.teams ?? [];
+    const divisions = new Set(
+      teams.map((team) => team.division).filter((d): d is string => !!d),
+    );
+
+    return Array.from(divisions).sort();
+  }
+
+  setDivisionFilter(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    this.divisionFilter.set(select.value);
+    this.loadStandings();
+  }
+
+  filteredGames(): TournamentGame[] {
+    const division = this.divisionFilter();
+    const games = this.tournament()?.games ?? [];
+
+    if (!division) {
+      return games;
+    }
+
+    const teams = this.tournament()?.teams ?? [];
+    const divisionTeamIds = new Set(
+      teams.filter((t) => t.division === division).map((t) => t.id),
+    );
+
+    return games.filter(
+      (game) =>
+        (game.homeTeamId && divisionTeamIds.has(game.homeTeamId)) ||
+        (game.awayTeamId && divisionTeamIds.has(game.awayTeamId)),
+    );
+  }
+
+  toggleTeamExpanded(teamId: string): void {
+    this.expandedTeamId.set(this.expandedTeamId() === teamId ? null : teamId);
+  }
+
+  teamGames(teamId: string): TournamentGame[] {
+    return (this.tournament()?.games ?? []).filter(
+      (game) => game.homeTeamId === teamId || game.awayTeamId === teamId,
+    );
+  }
+
+  teamRecord(teamId: string): { wins: number; losses: number; ties: number } {
+    let wins = 0;
+    let losses = 0;
+    let ties = 0;
+
+    for (const game of this.teamGames(teamId)) {
+      if (
+        game.status !== 'FINAL' ||
+        game.homeScore == null ||
+        game.awayScore == null
+      ) {
+        continue;
+      }
+
+      const isHome = game.homeTeamId === teamId;
+      const goalsFor = isHome ? game.homeScore : game.awayScore;
+      const goalsAgainst = isHome ? game.awayScore : game.homeScore;
+
+      if (goalsFor > goalsAgainst) {
+        wins += 1;
+      } else if (goalsFor < goalsAgainst) {
+        losses += 1;
+      } else {
+        ties += 1;
+      }
+    }
+
+    return { wins, losses, ties };
+  }
+
+  teamLeaders(teamName: string): TournamentPlayerLeaderRow[] {
+    return this.leaders().filter((leader) => leader.teamName === teamName);
+  }
+
+  trackByTeamId(_index: number, team: TournamentTeam): string {
+    return team.id;
+  }
+
+  trackByGameId(_index: number, game: TournamentGame): string {
+    return game.id;
+  }
+
+  trackByLeaderId(_index: number, leader: TournamentPlayerLeaderRow): string {
+    return leader.teamPlayerId;
   }
 
   ngOnDestroy(): void {

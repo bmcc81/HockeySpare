@@ -75,6 +75,9 @@ export const ModelName = {
   Tournament: 'Tournament',
   TournamentGame: 'TournamentGame',
   TournamentRegistration: 'TournamentRegistration',
+  TournamentTeam: 'TournamentTeam',
+  TournamentTeamPlayer: 'TournamentTeamPlayer',
+  TournamentGamePlayerStat: 'TournamentGamePlayerStat',
   TournamentPayment: 'TournamentPayment',
   TournamentSponsor: 'TournamentSponsor'
 } as const
@@ -453,6 +456,8 @@ export const TournamentGameScalarFieldEnum = {
   tournamentId: 'tournamentId',
   homeTeamName: 'homeTeamName',
   awayTeamName: 'awayTeamName',
+  homeTeamId: 'homeTeamId',
+  awayTeamId: 'awayTeamId',
   startsAt: 'startsAt',
   arenaName: 'arenaName',
   notes: 'notes',
@@ -480,6 +485,48 @@ export const TournamentRegistrationScalarFieldEnum = {
 } as const
 
 export type TournamentRegistrationScalarFieldEnum = (typeof TournamentRegistrationScalarFieldEnum)[keyof typeof TournamentRegistrationScalarFieldEnum]
+
+
+export const TournamentTeamScalarFieldEnum = {
+  id: 'id',
+  tournamentId: 'tournamentId',
+  name: 'name',
+  division: 'division',
+  logoUrl: 'logoUrl',
+  coachName: 'coachName',
+  registrationId: 'registrationId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TournamentTeamScalarFieldEnum = (typeof TournamentTeamScalarFieldEnum)[keyof typeof TournamentTeamScalarFieldEnum]
+
+
+export const TournamentTeamPlayerScalarFieldEnum = {
+  id: 'id',
+  teamId: 'teamId',
+  displayName: 'displayName',
+  position: 'position',
+  jerseyNumber: 'jerseyNumber',
+  createdAt: 'createdAt'
+} as const
+
+export type TournamentTeamPlayerScalarFieldEnum = (typeof TournamentTeamPlayerScalarFieldEnum)[keyof typeof TournamentTeamPlayerScalarFieldEnum]
+
+
+export const TournamentGamePlayerStatScalarFieldEnum = {
+  id: 'id',
+  gameId: 'gameId',
+  teamPlayerId: 'teamPlayerId',
+  goals: 'goals',
+  assists: 'assists',
+  penaltyMins: 'penaltyMins',
+  plusMinus: 'plusMinus',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TournamentGamePlayerStatScalarFieldEnum = (typeof TournamentGamePlayerStatScalarFieldEnum)[keyof typeof TournamentGamePlayerStatScalarFieldEnum]
 
 
 export const TournamentPaymentScalarFieldEnum = {

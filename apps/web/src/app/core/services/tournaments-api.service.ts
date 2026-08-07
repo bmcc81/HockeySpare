@@ -1,24 +1,32 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
+import { HttpParams } from '@angular/common/http';
 import {
   CheckoutSessionResult,
   CreateTournamentGameInput,
   CreateTournamentInput,
   CreateTournamentRegistrationInput,
   CreateTournamentSponsorInput,
+  CreateTournamentTeamInput,
+  CreateTournamentTeamPlayerInput,
   SubmitTournamentRegistrationResult,
   Tournament,
   TournamentCheckoutSessionResult,
   TournamentGame,
+  TournamentGamePlayerStat,
   TournamentPaymentsStatus,
   TournamentPaymentVerification,
+  TournamentPlayerLeaderRow,
   TournamentRegistration,
   TournamentSponsor,
   TournamentStandingRow,
+  TournamentTeam,
   UpdateTournamentGameInput,
   UpdateTournamentGameScoreInput,
   UpdateTournamentInput,
   UpdateTournamentRegistrationInput,
+  UpdateTournamentTeamInput,
+  UpsertTournamentGamePlayerStatInput,
 } from '@hockeyspare/contracts';
 import { Observable } from 'rxjs';
 
@@ -40,9 +48,25 @@ export class TournamentsApiService {
     return this.http.get<Tournament>(`/api/tournaments/${id}`);
   }
 
-  getStandings(id: string): Observable<TournamentStandingRow[]> {
+  getStandings(
+    id: string,
+    division?: string | null,
+  ): Observable<TournamentStandingRow[]> {
+    let params = new HttpParams();
+
+    if (division) {
+      params = params.set('division', division);
+    }
+
     return this.http.get<TournamentStandingRow[]>(
       `/api/tournaments/${id}/standings`,
+      { params },
+    );
+  }
+
+  getPlayerLeaders(id: string): Observable<TournamentPlayerLeaderRow[]> {
+    return this.http.get<TournamentPlayerLeaderRow[]>(
+      `/api/tournaments/${id}/leaders`,
     );
   }
 
@@ -188,6 +212,88 @@ export class TournamentsApiService {
   ): Observable<TournamentPaymentVerification> {
     return this.http.get<TournamentPaymentVerification>(
       `/api/tournaments/${tournamentId}/payments/verify/${sessionId}`,
+    );
+  }
+
+  addTeam(
+    tournamentId: string,
+    input: CreateTournamentTeamInput,
+  ): Observable<TournamentTeam> {
+    return this.http.post<TournamentTeam>(
+      `/api/tournaments/${tournamentId}/teams`,
+      input,
+    );
+  }
+
+  createTeamFromRegistration(
+    tournamentId: string,
+    registrationId: string,
+  ): Observable<TournamentTeam> {
+    return this.http.post<TournamentTeam>(
+      `/api/tournaments/${tournamentId}/registrations/${registrationId}/team`,
+      {},
+    );
+  }
+
+  updateTeam(
+    tournamentId: string,
+    teamId: string,
+    input: UpdateTournamentTeamInput,
+  ): Observable<TournamentTeam> {
+    return this.http.patch<TournamentTeam>(
+      `/api/tournaments/${tournamentId}/teams/${teamId}`,
+      input,
+    );
+  }
+
+  deleteTeam(
+    tournamentId: string,
+    teamId: string,
+  ): Observable<{ id: string; deleted: boolean }> {
+    return this.http.delete<{ id: string; deleted: boolean }>(
+      `/api/tournaments/${tournamentId}/teams/${teamId}`,
+    );
+  }
+
+  addTeamPlayer(
+    tournamentId: string,
+    teamId: string,
+    input: CreateTournamentTeamPlayerInput,
+  ) {
+    return this.http.post(
+      `/api/tournaments/${tournamentId}/teams/${teamId}/players`,
+      input,
+    );
+  }
+
+  removeTeamPlayer(
+    tournamentId: string,
+    teamId: string,
+    playerId: string,
+  ): Observable<{ id: string; deleted: boolean }> {
+    return this.http.delete<{ id: string; deleted: boolean }>(
+      `/api/tournaments/${tournamentId}/teams/${teamId}/players/${playerId}`,
+    );
+  }
+
+  upsertGamePlayerStat(
+    tournamentId: string,
+    gameId: string,
+    input: UpsertTournamentGamePlayerStatInput,
+  ): Observable<TournamentGamePlayerStat> {
+    return this.http.post<TournamentGamePlayerStat>(
+      `/api/tournaments/${tournamentId}/games/${gameId}/stats`,
+      input,
+    );
+  }
+
+  deleteGamePlayerStat(
+    tournamentId: string,
+    gameId: string,
+    statId: string,
+  ): Observable<{ id: string; deleted: boolean }> {
+    return this.http.delete<{ id: string; deleted: boolean }>(
+      `/api/tournaments/${tournamentId}/games/${gameId}/stats/${statId}`,
     );
   }
 }

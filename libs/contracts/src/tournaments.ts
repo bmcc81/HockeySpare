@@ -4,17 +4,91 @@ export type TournamentRegistrationMode = 'OPEN' | 'WAITLIST' | 'CLOSED';
 
 export type TournamentRegistrationEntryStatus = 'CONFIRMED' | 'WAITLISTED';
 
+export type TournamentPlayerPosition = 'GOALIE' | 'DEFENSE' | 'FORWARD';
+
+export interface TournamentTeamPlayer {
+  id: string;
+  teamId: string;
+  displayName: string;
+  position?: TournamentPlayerPosition | null;
+  jerseyNumber?: number | null;
+  createdAt: string;
+}
+
+export interface CreateTournamentTeamPlayerInput {
+  displayName: string;
+  position?: TournamentPlayerPosition | null;
+  jerseyNumber?: number | null;
+}
+
+export interface TournamentTeam {
+  id: string;
+  tournamentId: string;
+  name: string;
+  division?: string | null;
+  logoUrl?: string | null;
+  coachName?: string | null;
+  registrationId?: string | null;
+  players: TournamentTeamPlayer[];
+  createdAt: string;
+}
+
+export interface CreateTournamentTeamInput {
+  name: string;
+  division?: string | null;
+  logoUrl?: string | null;
+  coachName?: string | null;
+  registrationId?: string | null;
+}
+
+export type UpdateTournamentTeamInput = Partial<
+  Omit<CreateTournamentTeamInput, 'registrationId'>
+>;
+
+export interface TournamentGamePlayerStat {
+  id: string;
+  gameId: string;
+  teamPlayerId: string;
+  goals: number;
+  assists: number;
+  penaltyMins: number;
+  plusMinus: number;
+  teamPlayer: TournamentTeamPlayer;
+}
+
+export interface UpsertTournamentGamePlayerStatInput {
+  teamPlayerId: string;
+  goals?: number;
+  assists?: number;
+  penaltyMins?: number;
+  plusMinus?: number;
+}
+
+export interface TournamentPlayerLeaderRow {
+  teamPlayerId: string;
+  displayName: string;
+  teamName: string;
+  gamesPlayed: number;
+  goals: number;
+  assists: number;
+  points: number;
+  penaltyMins: number;
+}
+
 export interface TournamentGame {
   id: string;
   tournamentId: string;
   homeTeamName: string;
   awayTeamName: string;
+  homeTeamId?: string | null;
+  awayTeamId?: string | null;
   startsAt: string;
   arenaName?: string | null;
   notes?: string | null;
   homeScore?: number | null;
   awayScore?: number | null;
   status: TournamentGameStatus;
+  playerStats?: TournamentGamePlayerStat[];
 }
 
 export interface TournamentSponsor {
@@ -47,6 +121,7 @@ export interface Tournament {
   stripePayoutsEnabled?: boolean;
   games: TournamentGame[];
   sponsors: TournamentSponsor[];
+  teams: TournamentTeam[];
 }
 
 export interface CreateTournamentInput {
@@ -66,6 +141,8 @@ export type UpdateTournamentInput = Partial<CreateTournamentInput>;
 export interface CreateTournamentGameInput {
   homeTeamName: string;
   awayTeamName: string;
+  homeTeamId?: string | null;
+  awayTeamId?: string | null;
   startsAt: string;
   arenaName?: string | null;
   notes?: string | null;

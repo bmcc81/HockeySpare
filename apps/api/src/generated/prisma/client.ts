@@ -160,6 +160,21 @@ export type TournamentGame = Prisma.TournamentGameModel
  */
 export type TournamentRegistration = Prisma.TournamentRegistrationModel
 /**
+ * Model TournamentTeam
+ * 
+ */
+export type TournamentTeam = Prisma.TournamentTeamModel
+/**
+ * Model TournamentTeamPlayer
+ * 
+ */
+export type TournamentTeamPlayer = Prisma.TournamentTeamPlayerModel
+/**
+ * Model TournamentGamePlayerStat
+ * 
+ */
+export type TournamentGamePlayerStat = Prisma.TournamentGamePlayerStatModel
+/**
  * Model TournamentPayment
  * 
  */

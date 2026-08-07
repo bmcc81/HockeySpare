@@ -21,4 +21,12 @@ export class CreateTournamentGameDto {
   @IsString()
   @MaxLength(500)
   notes?: string;
+
+  @IsOptional()
+  @IsString()
+  homeTeamId?: string;
+
+  @IsOptional()
+  @IsString()
+  awayTeamId?: string;
 }

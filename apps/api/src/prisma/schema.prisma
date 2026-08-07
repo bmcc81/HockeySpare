@@ -583,6 +583,7 @@ model Tournament {
   registrations TournamentRegistration[]
   sponsors      TournamentSponsor[]
   payments      TournamentPayment[]
+  teams         TournamentTeam[]
 
   @@index([leagueId])
   @@index([createdById])
@@ -593,6 +594,8 @@ model TournamentGame {
   tournamentId String
   homeTeamName String
   awayTeamName String
+  homeTeamId   String?
+  awayTeamId   String?
   startsAt     DateTime
   arenaName    String?
   notes        String?
@@ -602,9 +605,14 @@ model TournamentGame {
   createdAt    DateTime             @default(now())
   updatedAt    DateTime             @updatedAt
 
-  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  tournament Tournament             @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  homeTeam   TournamentTeam?        @relation("TournamentGameHomeTeam", fields: [homeTeamId], references: [id], onDelete: SetNull)
+  awayTeam   TournamentTeam?        @relation("TournamentGameAwayTeam", fields: [awayTeamId], references: [id], onDelete: SetNull)
+  playerStats TournamentGamePlayerStat[]
 
   @@index([tournamentId, startsAt])
+  @@index([homeTeamId])
+  @@index([awayTeamId])
 }
 
 model TournamentRegistration {
@@ -621,8 +629,62 @@ model TournamentRegistration {
 
   tournament Tournament          @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   payments   TournamentPayment[]
+  team       TournamentTeam?
 
   @@index([tournamentId, createdAt])
+}
+
+model TournamentTeam {
+  id             String   @id @default(cuid())
+  tournamentId   String
+  name           String
+  division       String?
+  logoUrl        String?
+  coachName      String?
+  registrationId String?  @unique
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  tournament   Tournament              @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  registration TournamentRegistration? @relation(fields: [registrationId], references: [id], onDelete: SetNull)
+  players      TournamentTeamPlayer[]
+  homeGames    TournamentGame[]        @relation("TournamentGameHomeTeam")
+  awayGames    TournamentGame[]        @relation("TournamentGameAwayTeam")
+
+  @@index([tournamentId])
+}
+
+model TournamentTeamPlayer {
+  id           String   @id @default(cuid())
+  teamId       String
+  displayName  String
+  position     Position?
+  jerseyNumber Int?
+  createdAt    DateTime @default(now())
+
+  team  TournamentTeam             @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  stats TournamentGamePlayerStat[]
+
+  @@index([teamId])
+}
+
+model TournamentGamePlayerStat {
+  id           String   @id @default(cuid())
+  gameId       String
+  teamPlayerId String
+  goals        Int      @default(0)
+  assists      Int      @default(0)
+  penaltyMins  Int      @default(0)
+  plusMinus    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  game       TournamentGame       @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  teamPlayer TournamentTeamPlayer @relation(fields: [teamPlayerId], references: [id], onDelete: Cascade)
+
+  @@unique([gameId, teamPlayerId])
+  @@index([gameId])
+  @@index([teamPlayerId])
 }
 
 model TournamentPayment {

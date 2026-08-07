@@ -12,6 +12,10 @@ import { UpdateTournamentGameDto } from './dto/update-tournament-game.dto';
 import { CreateTournamentRegistrationDto } from './dto/create-tournament-registration.dto';
 import { UpdateTournamentRegistrationDto } from './dto/update-tournament-registration.dto';
 import { CreateTournamentSponsorDto } from './dto/create-tournament-sponsor.dto';
+import { CreateTournamentTeamDto } from './dto/create-tournament-team.dto';
+import { UpdateTournamentTeamDto } from './dto/update-tournament-team.dto';
+import { CreateTournamentTeamPlayerDto } from './dto/create-tournament-team-player.dto';
+import { UpsertTournamentGamePlayerStatDto } from './dto/upsert-tournament-game-player-stat.dto';
 import { StripeService } from '../stripe/stripe.service';
 import { EmailService } from '../email/email.service';
 import type Stripe from 'stripe';
@@ -29,10 +33,29 @@ export class TournamentsService {
       orderBy: {
         startsAt: 'asc' as const,
       },
+      include: {
+        playerStats: {
+          include: {
+            teamPlayer: true,
+          },
+        },
+      },
     },
     sponsors: {
       orderBy: {
         createdAt: 'asc' as const,
+      },
+    },
+    teams: {
+      orderBy: {
+        name: 'asc' as const,
+      },
+      include: {
+        players: {
+          orderBy: {
+            displayName: 'asc' as const,
+          },
+        },
       },
     },
   };
@@ -144,6 +167,30 @@ export class TournamentsService {
     });
   }
 
+  /**
+   * When a game is linked to a real TournamentTeam, that team's current
+   * name is always the source of truth for homeTeamName/awayTeamName -
+   * standings and the schedule keep grouping by name, so this keeps them
+   * from silently drifting out of sync with a renamed team.
+   */
+  private async resolveTeamName(
+    tournamentId: string,
+    teamId: string,
+  ): Promise<string> {
+    const team = await this.prisma.tournamentTeam.findFirst({
+      where: { id: teamId, tournamentId },
+      select: { name: true },
+    });
+
+    if (!team) {
+      throw new BadRequestException(
+        'Selected team does not belong to this tournament.',
+      );
+    }
+
+    return team.name;
+  }
+
   async addGame(
     userId: string,
     tournamentId: string,
@@ -151,11 +198,21 @@ export class TournamentsService {
   ) {
     await this.getOwnedTournament(userId, tournamentId);
 
+    const homeTeamName = dto.homeTeamId
+      ? await this.resolveTeamName(tournamentId, dto.homeTeamId)
+      : dto.homeTeamName.trim();
+
+    const awayTeamName = dto.awayTeamId
+      ? await this.resolveTeamName(tournamentId, dto.awayTeamId)
+      : dto.awayTeamName.trim();
+
     return this.prisma.tournamentGame.create({
       data: {
         tournamentId,
-        homeTeamName: dto.homeTeamName.trim(),
-        awayTeamName: dto.awayTeamName.trim(),
+        homeTeamName,
+        awayTeamName,
+        homeTeamId: dto.homeTeamId || null,
+        awayTeamId: dto.awayTeamId || null,
         startsAt: new Date(dto.startsAt),
         arenaName: dto.arenaName?.trim() || null,
         notes: dto.notes?.trim() || null,
@@ -182,16 +239,28 @@ export class TournamentsService {
       throw new NotFoundException('Tournament game not found');
     }
 
+    const homeTeamName =
+      dto.homeTeamId !== undefined && dto.homeTeamId
+        ? await this.resolveTeamName(tournamentId, dto.homeTeamId)
+        : dto.homeTeamName?.trim();
+
+    const awayTeamName =
+      dto.awayTeamId !== undefined && dto.awayTeamId
+        ? await this.resolveTeamName(tournamentId, dto.awayTeamId)
+        : dto.awayTeamName?.trim();
+
     return this.prisma.tournamentGame.update({
       where: {
         id: gameId,
       },
       data: {
-        ...(dto.homeTeamName !== undefined
-          ? { homeTeamName: dto.homeTeamName.trim() }
+        ...(homeTeamName !== undefined ? { homeTeamName } : {}),
+        ...(awayTeamName !== undefined ? { awayTeamName } : {}),
+        ...(dto.homeTeamId !== undefined
+          ? { homeTeamId: dto.homeTeamId || null }
           : {}),
-        ...(dto.awayTeamName !== undefined
-          ? { awayTeamName: dto.awayTeamName.trim() }
+        ...(dto.awayTeamId !== undefined
+          ? { awayTeamId: dto.awayTeamId || null }
           : {}),
         ...(dto.startsAt !== undefined
           ? { startsAt: new Date(dto.startsAt) }
@@ -677,10 +746,344 @@ export class TournamentsService {
     };
   }
 
+  async addTeam(
+    userId: string,
+    tournamentId: string,
+    dto: CreateTournamentTeamDto,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    if (dto.registrationId) {
+      const registration = await this.prisma.tournamentRegistration.findFirst({
+        where: { id: dto.registrationId, tournamentId },
+        select: { id: true },
+      });
+
+      if (!registration) {
+        throw new BadRequestException(
+          'Registration does not belong to this tournament.',
+        );
+      }
+    }
+
+    return this.prisma.tournamentTeam.create({
+      data: {
+        tournamentId,
+        name: dto.name.trim(),
+        division: dto.division?.trim() || null,
+        logoUrl: dto.logoUrl?.trim() || null,
+        coachName: dto.coachName?.trim() || null,
+        registrationId: dto.registrationId || null,
+      },
+      include: { players: true },
+    });
+  }
+
+  /**
+   * Convenience action for the common case: an organizer confirms a
+   * registration and wants it to become a schedulable team without
+   * retyping the team name and division.
+   */
+  async createTeamFromRegistration(
+    userId: string,
+    tournamentId: string,
+    registrationId: string,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const registration = await this.prisma.tournamentRegistration.findFirst({
+      where: { id: registrationId, tournamentId },
+      include: { team: true },
+    });
+
+    if (!registration) {
+      throw new NotFoundException('Registration not found');
+    }
+
+    if (registration.team) {
+      return this.prisma.tournamentTeam.findUniqueOrThrow({
+        where: { id: registration.team.id },
+        include: { players: true },
+      });
+    }
+
+    return this.prisma.tournamentTeam.create({
+      data: {
+        tournamentId,
+        name: registration.teamName,
+        division: registration.division,
+        registrationId: registration.id,
+      },
+      include: { players: true },
+    });
+  }
+
+  async updateTeam(
+    userId: string,
+    tournamentId: string,
+    teamId: string,
+    dto: UpdateTournamentTeamDto,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const team = await this.prisma.tournamentTeam.findFirst({
+      where: { id: teamId, tournamentId },
+    });
+
+    if (!team) {
+      throw new NotFoundException('Team not found');
+    }
+
+    const updated = await this.prisma.tournamentTeam.update({
+      where: { id: teamId },
+      data: {
+        ...(dto.name !== undefined ? { name: dto.name.trim() } : {}),
+        ...(dto.division !== undefined
+          ? { division: dto.division.trim() || null }
+          : {}),
+        ...(dto.logoUrl !== undefined
+          ? { logoUrl: dto.logoUrl.trim() || null }
+          : {}),
+        ...(dto.coachName !== undefined
+          ? { coachName: dto.coachName.trim() || null }
+          : {}),
+      },
+      include: { players: true },
+    });
+
+    // Keep any scheduled games' display name in sync with a rename.
+    if (dto.name !== undefined) {
+      await this.prisma.tournamentGame.updateMany({
+        where: { tournamentId, homeTeamId: teamId },
+        data: { homeTeamName: updated.name },
+      });
+
+      await this.prisma.tournamentGame.updateMany({
+        where: { tournamentId, awayTeamId: teamId },
+        data: { awayTeamName: updated.name },
+      });
+    }
+
+    return updated;
+  }
+
+  async deleteTeam(userId: string, tournamentId: string, teamId: string) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const team = await this.prisma.tournamentTeam.findFirst({
+      where: { id: teamId, tournamentId },
+    });
+
+    if (!team) {
+      throw new NotFoundException('Team not found');
+    }
+
+    await this.prisma.tournamentTeam.delete({ where: { id: teamId } });
+
+    return { id: team.id, deleted: true };
+  }
+
+  async addTeamPlayer(
+    userId: string,
+    tournamentId: string,
+    teamId: string,
+    dto: CreateTournamentTeamPlayerDto,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const team = await this.prisma.tournamentTeam.findFirst({
+      where: { id: teamId, tournamentId },
+      select: { id: true },
+    });
+
+    if (!team) {
+      throw new NotFoundException('Team not found');
+    }
+
+    return this.prisma.tournamentTeamPlayer.create({
+      data: {
+        teamId,
+        displayName: dto.displayName.trim(),
+        position: dto.position ?? null,
+        jerseyNumber: dto.jerseyNumber ?? null,
+      },
+    });
+  }
+
+  async removeTeamPlayer(
+    userId: string,
+    tournamentId: string,
+    teamId: string,
+    playerId: string,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const player = await this.prisma.tournamentTeamPlayer.findFirst({
+      where: { id: playerId, teamId, team: { tournamentId } },
+    });
+
+    if (!player) {
+      throw new NotFoundException('Player not found');
+    }
+
+    await this.prisma.tournamentTeamPlayer.delete({
+      where: { id: playerId },
+    });
+
+    return { id: player.id, deleted: true };
+  }
+
+  async upsertGamePlayerStat(
+    userId: string,
+    tournamentId: string,
+    gameId: string,
+    dto: UpsertTournamentGamePlayerStatDto,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const game = await this.prisma.tournamentGame.findFirst({
+      where: { id: gameId, tournamentId },
+      select: { id: true, homeTeamId: true, awayTeamId: true },
+    });
+
+    if (!game) {
+      throw new NotFoundException('Tournament game not found');
+    }
+
+    const player = await this.prisma.tournamentTeamPlayer.findFirst({
+      where: { id: dto.teamPlayerId, team: { tournamentId } },
+      select: { id: true, teamId: true },
+    });
+
+    if (!player) {
+      throw new BadRequestException(
+        'Selected player does not belong to this tournament.',
+      );
+    }
+
+    if (
+      player.teamId !== game.homeTeamId &&
+      player.teamId !== game.awayTeamId
+    ) {
+      throw new BadRequestException(
+        "Selected player's team is not playing in this game.",
+      );
+    }
+
+    return this.prisma.tournamentGamePlayerStat.upsert({
+      where: {
+        gameId_teamPlayerId: {
+          gameId,
+          teamPlayerId: dto.teamPlayerId,
+        },
+      },
+      update: {
+        goals: dto.goals ?? 0,
+        assists: dto.assists ?? 0,
+        penaltyMins: dto.penaltyMins ?? 0,
+        plusMinus: dto.plusMinus ?? 0,
+      },
+      create: {
+        gameId,
+        teamPlayerId: dto.teamPlayerId,
+        goals: dto.goals ?? 0,
+        assists: dto.assists ?? 0,
+        penaltyMins: dto.penaltyMins ?? 0,
+        plusMinus: dto.plusMinus ?? 0,
+      },
+      include: { teamPlayer: true },
+    });
+  }
+
+  async deleteGamePlayerStat(
+    userId: string,
+    tournamentId: string,
+    gameId: string,
+    statId: string,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const stat = await this.prisma.tournamentGamePlayerStat.findFirst({
+      where: { id: statId, gameId, game: { tournamentId } },
+    });
+
+    if (!stat) {
+      throw new NotFoundException('Stat line not found');
+    }
+
+    await this.prisma.tournamentGamePlayerStat.delete({
+      where: { id: statId },
+    });
+
+    return { id: stat.id, deleted: true };
+  }
+
+  // Public - same visibility as the schedule.
+  async getPlayerLeaders(tournamentId: string) {
+    const stats = await this.prisma.tournamentGamePlayerStat.findMany({
+      where: { game: { tournamentId } },
+      include: {
+        teamPlayer: {
+          include: { team: { select: { id: true, name: true } } },
+        },
+      },
+    });
+
+    type LeaderRow = {
+      teamPlayerId: string;
+      displayName: string;
+      teamName: string;
+      gamesPlayed: number;
+      goals: number;
+      assists: number;
+      points: number;
+      penaltyMins: number;
+    };
+
+    const byPlayer = new Map<string, LeaderRow>();
+
+    for (const stat of stats) {
+      const existing = byPlayer.get(stat.teamPlayerId);
+
+      const row: LeaderRow = existing ?? {
+        teamPlayerId: stat.teamPlayerId,
+        displayName: stat.teamPlayer.displayName,
+        teamName: stat.teamPlayer.team.name,
+        gamesPlayed: 0,
+        goals: 0,
+        assists: 0,
+        points: 0,
+        penaltyMins: 0,
+      };
+
+      row.gamesPlayed += 1;
+      row.goals += stat.goals;
+      row.assists += stat.assists;
+      row.points += stat.goals + stat.assists;
+      row.penaltyMins += stat.penaltyMins;
+
+      byPlayer.set(stat.teamPlayerId, row);
+    }
+
+    return Array.from(byPlayer.values())
+      .sort((a, b) => {
+        if (b.points !== a.points) {
+          return b.points - a.points;
+        }
+
+        if (b.goals !== a.goals) {
+          return b.goals - a.goals;
+        }
+
+        return a.displayName.localeCompare(b.displayName);
+      })
+      .slice(0, 50);
+  }
+
   // Public - standings are computed from final scores, same visibility as
   // the schedule. Tournament games store opponents as plain team-name
   // strings rather than real Team records, so teams are grouped by name.
-  async getStandings(tournamentId: string) {
+  async getStandings(tournamentId: string, division?: string) {
     const tournament = await this.prisma.tournament.findUnique({
       where: {
         id: tournamentId,
@@ -694,12 +1097,29 @@ export class TournamentsService {
       throw new NotFoundException('Tournament not found');
     }
 
+    let divisionTeamIds: Set<string> | null = null;
+
+    if (division) {
+      const divisionTeams = await this.prisma.tournamentTeam.findMany({
+        where: { tournamentId, division },
+        select: { id: true },
+      });
+
+      divisionTeamIds = new Set(divisionTeams.map((team) => team.id));
+    }
+
     const games = await this.prisma.tournamentGame.findMany({
       where: {
         tournamentId,
         status: 'FINAL',
         homeScore: { not: null },
         awayScore: { not: null },
+        ...(divisionTeamIds
+          ? {
+              homeTeamId: { in: Array.from(divisionTeamIds) },
+              awayTeamId: { in: Array.from(divisionTeamIds) },
+            }
+          : {}),
       },
       select: {
         homeTeamName: true,

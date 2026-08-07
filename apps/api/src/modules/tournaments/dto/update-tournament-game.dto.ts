@@ -47,4 +47,12 @@ export class UpdateTournamentGameDto {
   @IsOptional()
   @IsIn(['SCHEDULED', 'LIVE', 'FINAL'])
   status?: TournamentGameStatus;
+
+  @IsOptional()
+  @IsString()
+  homeTeamId?: string;
+
+  @IsOptional()
+  @IsString()
+  awayTeamId?: string;
 }

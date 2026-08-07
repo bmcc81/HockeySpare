@@ -408,6 +408,9 @@ export const ModelName = {
   Tournament: 'Tournament',
   TournamentGame: 'TournamentGame',
   TournamentRegistration: 'TournamentRegistration',
+  TournamentTeam: 'TournamentTeam',
+  TournamentTeamPlayer: 'TournamentTeamPlayer',
+  TournamentGamePlayerStat: 'TournamentGamePlayerStat',
   TournamentPayment: 'TournamentPayment',
   TournamentSponsor: 'TournamentSponsor'
 } as const
@@ -425,7 +428,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "request" | "requestResponse" | "playerOffer" | "user" | "league" | "leagueArena" | "leagueMember" | "team" | "teamMessage" | "teamMember" | "playerStat" | "memberFee" | "payment" | "teamGame" | "teamGameInvite" | "teamGameAvailability" | "notification" | "booking" | "gameScoreSheet" | "gameScoreSheetPlayer" | "helpArticle" | "tournament" | "tournamentGame" | "tournamentRegistration" | "tournamentPayment" | "tournamentSponsor"
+    modelProps: "request" | "requestResponse" | "playerOffer" | "user" | "league" | "leagueArena" | "leagueMember" | "team" | "teamMessage" | "teamMember" | "playerStat" | "memberFee" | "payment" | "teamGame" | "teamGameInvite" | "teamGameAvailability" | "notification" | "booking" | "gameScoreSheet" | "gameScoreSheetPlayer" | "helpArticle" | "tournament" | "tournamentGame" | "tournamentRegistration" | "tournamentTeam" | "tournamentTeamPlayer" | "tournamentGamePlayerStat" | "tournamentPayment" | "tournamentSponsor"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2205,6 +2208,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TournamentTeam: {
+      payload: Prisma.$TournamentTeamPayload<ExtArgs>
+      fields: Prisma.TournamentTeamFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TournamentTeamFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TournamentTeamFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamPayload>
+        }
+        findFirst: {
+          args: Prisma.TournamentTeamFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TournamentTeamFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamPayload>
+        }
+        findMany: {
+          args: Prisma.TournamentTeamFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamPayload>[]
+        }
+        create: {
+          args: Prisma.TournamentTeamCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamPayload>
+        }
+        createMany: {
+          args: Prisma.TournamentTeamCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TournamentTeamCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamPayload>[]
+        }
+        delete: {
+          args: Prisma.TournamentTeamDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamPayload>
+        }
+        update: {
+          args: Prisma.TournamentTeamUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamPayload>
+        }
+        deleteMany: {
+          args: Prisma.TournamentTeamDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TournamentTeamUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TournamentTeamUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamPayload>[]
+        }
+        upsert: {
+          args: Prisma.TournamentTeamUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamPayload>
+        }
+        aggregate: {
+          args: Prisma.TournamentTeamAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTournamentTeam>
+        }
+        groupBy: {
+          args: Prisma.TournamentTeamGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TournamentTeamGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TournamentTeamCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TournamentTeamCountAggregateOutputType> | number
+        }
+      }
+    }
+    TournamentTeamPlayer: {
+      payload: Prisma.$TournamentTeamPlayerPayload<ExtArgs>
+      fields: Prisma.TournamentTeamPlayerFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TournamentTeamPlayerFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamPlayerPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TournamentTeamPlayerFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamPlayerPayload>
+        }
+        findFirst: {
+          args: Prisma.TournamentTeamPlayerFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamPlayerPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TournamentTeamPlayerFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamPlayerPayload>
+        }
+        findMany: {
+          args: Prisma.TournamentTeamPlayerFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamPlayerPayload>[]
+        }
+        create: {
+          args: Prisma.TournamentTeamPlayerCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamPlayerPayload>
+        }
+        createMany: {
+          args: Prisma.TournamentTeamPlayerCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TournamentTeamPlayerCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamPlayerPayload>[]
+        }
+        delete: {
+          args: Prisma.TournamentTeamPlayerDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamPlayerPayload>
+        }
+        update: {
+          args: Prisma.TournamentTeamPlayerUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamPlayerPayload>
+        }
+        deleteMany: {
+          args: Prisma.TournamentTeamPlayerDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TournamentTeamPlayerUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TournamentTeamPlayerUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamPlayerPayload>[]
+        }
+        upsert: {
+          args: Prisma.TournamentTeamPlayerUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamPlayerPayload>
+        }
+        aggregate: {
+          args: Prisma.TournamentTeamPlayerAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTournamentTeamPlayer>
+        }
+        groupBy: {
+          args: Prisma.TournamentTeamPlayerGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TournamentTeamPlayerGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TournamentTeamPlayerCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TournamentTeamPlayerCountAggregateOutputType> | number
+        }
+      }
+    }
+    TournamentGamePlayerStat: {
+      payload: Prisma.$TournamentGamePlayerStatPayload<ExtArgs>
+      fields: Prisma.TournamentGamePlayerStatFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TournamentGamePlayerStatFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentGamePlayerStatPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TournamentGamePlayerStatFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentGamePlayerStatPayload>
+        }
+        findFirst: {
+          args: Prisma.TournamentGamePlayerStatFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentGamePlayerStatPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TournamentGamePlayerStatFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentGamePlayerStatPayload>
+        }
+        findMany: {
+          args: Prisma.TournamentGamePlayerStatFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentGamePlayerStatPayload>[]
+        }
+        create: {
+          args: Prisma.TournamentGamePlayerStatCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentGamePlayerStatPayload>
+        }
+        createMany: {
+          args: Prisma.TournamentGamePlayerStatCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TournamentGamePlayerStatCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentGamePlayerStatPayload>[]
+        }
+        delete: {
+          args: Prisma.TournamentGamePlayerStatDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentGamePlayerStatPayload>
+        }
+        update: {
+          args: Prisma.TournamentGamePlayerStatUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentGamePlayerStatPayload>
+        }
+        deleteMany: {
+          args: Prisma.TournamentGamePlayerStatDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TournamentGamePlayerStatUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TournamentGamePlayerStatUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentGamePlayerStatPayload>[]
+        }
+        upsert: {
+          args: Prisma.TournamentGamePlayerStatUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentGamePlayerStatPayload>
+        }
+        aggregate: {
+          args: Prisma.TournamentGamePlayerStatAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTournamentGamePlayerStat>
+        }
+        groupBy: {
+          args: Prisma.TournamentGamePlayerStatGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TournamentGamePlayerStatGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TournamentGamePlayerStatCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TournamentGamePlayerStatCountAggregateOutputType> | number
+        }
+      }
+    }
     TournamentPayment: {
       payload: Prisma.$TournamentPaymentPayload<ExtArgs>
       fields: Prisma.TournamentPaymentFieldRefs
@@ -2750,6 +2975,8 @@ export const TournamentGameScalarFieldEnum = {
   tournamentId: 'tournamentId',
   homeTeamName: 'homeTeamName',
   awayTeamName: 'awayTeamName',
+  homeTeamId: 'homeTeamId',
+  awayTeamId: 'awayTeamId',
   startsAt: 'startsAt',
   arenaName: 'arenaName',
   notes: 'notes',
@@ -2777,6 +3004,48 @@ export const TournamentRegistrationScalarFieldEnum = {
 } as const
 
 export type TournamentRegistrationScalarFieldEnum = (typeof TournamentRegistrationScalarFieldEnum)[keyof typeof TournamentRegistrationScalarFieldEnum]
+
+
+export const TournamentTeamScalarFieldEnum = {
+  id: 'id',
+  tournamentId: 'tournamentId',
+  name: 'name',
+  division: 'division',
+  logoUrl: 'logoUrl',
+  coachName: 'coachName',
+  registrationId: 'registrationId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TournamentTeamScalarFieldEnum = (typeof TournamentTeamScalarFieldEnum)[keyof typeof TournamentTeamScalarFieldEnum]
+
+
+export const TournamentTeamPlayerScalarFieldEnum = {
+  id: 'id',
+  teamId: 'teamId',
+  displayName: 'displayName',
+  position: 'position',
+  jerseyNumber: 'jerseyNumber',
+  createdAt: 'createdAt'
+} as const
+
+export type TournamentTeamPlayerScalarFieldEnum = (typeof TournamentTeamPlayerScalarFieldEnum)[keyof typeof TournamentTeamPlayerScalarFieldEnum]
+
+
+export const TournamentGamePlayerStatScalarFieldEnum = {
+  id: 'id',
+  gameId: 'gameId',
+  teamPlayerId: 'teamPlayerId',
+  goals: 'goals',
+  assists: 'assists',
+  penaltyMins: 'penaltyMins',
+  plusMinus: 'plusMinus',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TournamentGamePlayerStatScalarFieldEnum = (typeof TournamentGamePlayerStatScalarFieldEnum)[keyof typeof TournamentGamePlayerStatScalarFieldEnum]
 
 
 export const TournamentPaymentScalarFieldEnum = {
@@ -3301,6 +3570,9 @@ export type GlobalOmitConfig = {
   tournament?: Prisma.TournamentOmit
   tournamentGame?: Prisma.TournamentGameOmit
   tournamentRegistration?: Prisma.TournamentRegistrationOmit
+  tournamentTeam?: Prisma.TournamentTeamOmit
+  tournamentTeamPlayer?: Prisma.TournamentTeamPlayerOmit
+  tournamentGamePlayerStat?: Prisma.TournamentGamePlayerStatOmit
   tournamentPayment?: Prisma.TournamentPaymentOmit
   tournamentSponsor?: Prisma.TournamentSponsorOmit
 }

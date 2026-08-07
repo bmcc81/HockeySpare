@@ -165,3 +165,20 @@ export const TournamentGameStatus = {
 } as const
 
 export type TournamentGameStatus = (typeof TournamentGameStatus)[keyof typeof TournamentGameStatus]
+
+
+export const TournamentRegistrationMode = {
+  OPEN: 'OPEN',
+  WAITLIST: 'WAITLIST',
+  CLOSED: 'CLOSED'
+} as const
+
+export type TournamentRegistrationMode = (typeof TournamentRegistrationMode)[keyof typeof TournamentRegistrationMode]
+
+
+export const TournamentRegistrationStatus = {
+  CONFIRMED: 'CONFIRMED',
+  WAITLISTED: 'WAITLISTED'
+} as const
+
+export type TournamentRegistrationStatus = (typeof TournamentRegistrationStatus)[keyof typeof TournamentRegistrationStatus]

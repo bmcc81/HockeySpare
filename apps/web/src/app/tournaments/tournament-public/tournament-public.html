@@ -29,6 +29,17 @@
         <button
           class="nav-link"
           type="button"
+          [class.active]="activeTab() === 'standings'"
+          (click)="setTab('standings')"
+        >
+          Standings
+        </button>
+      </li>
+
+      <li class="nav-item">
+        <button
+          class="nav-link"
+          type="button"
           [class.active]="activeTab() === 'rules'"
           (click)="setTab('rules')"
         >
@@ -103,6 +114,58 @@
       </div>
     </div>
 
+    <div *ngIf="activeTab() === 'standings'">
+      <div *ngIf="standingsLoading()" class="text-secondary">
+        Loading standings...
+      </div>
+
+      <div
+        *ngIf="!standingsLoading() && standings().length === 0"
+        class="text-secondary"
+      >
+        No standings yet. Standings are calculated once game results are
+        marked final.
+      </div>
+
+      <div
+        class="table-responsive"
+        *ngIf="!standingsLoading() && standings().length > 0"
+      >
+        <table class="table align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Team</th>
+              <th>GP</th>
+              <th>W</th>
+              <th>L</th>
+              <th>T</th>
+              <th>GF</th>
+              <th>GA</th>
+              <th>DIFF</th>
+              <th>PTS</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let row of standings()">
+              <td class="fw-semibold">{{ row.teamName }}</td>
+              <td>{{ row.gamesPlayed }}</td>
+              <td>{{ row.wins }}</td>
+              <td>{{ row.losses }}</td>
+              <td>{{ row.ties }}</td>
+              <td>{{ row.goalsFor }}</td>
+              <td>{{ row.goalsAgainst }}</td>
+              <td>
+                {{ row.goalDifferential > 0 ? '+' + row.goalDifferential :
+                row.goalDifferential }}
+              </td>
+              <td class="fw-bold">{{ row.points }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <div *ngIf="activeTab() === 'rules'">
       <div *ngIf="!t.rules" class="text-secondary">
         Rules haven't been posted yet.
@@ -142,11 +205,47 @@
     </div>
 
     <div *ngIf="activeTab() === 'register'" style="max-width: 560px">
-      <div *ngIf="registrationSuccess()" class="alert alert-success">
-        Thanks! Your registration has been received.
+      <div *ngIf="paymentVerifying()" class="alert alert-info">
+        Confirming your payment...
       </div>
 
-      <ng-container *ngIf="!registrationSuccess()">
+      <div
+        *ngIf="!paymentVerifying() && paymentMessage() as msg"
+        class="alert"
+        [class.alert-success]="!paymentMessageIsError()"
+        [class.alert-warning]="paymentMessageIsError()"
+      >
+        {{ msg }}
+      </div>
+
+      <div *ngIf="registrationSuccess()" class="alert alert-success">
+        <ng-container *ngIf="registrationWaitlisted(); else confirmedMsg">
+          Thanks! Registration for this tournament is currently on a
+          waitlist — you'll be notified if a spot opens up.
+        </ng-container>
+        <ng-template #confirmedMsg>
+          Thanks! Your registration has been received.
+        </ng-template>
+      </div>
+
+      <div
+        *ngIf="!registrationSuccess() && registrationClosed()"
+        class="alert alert-secondary"
+      >
+        Registration for this tournament is closed.
+      </div>
+
+      <ng-container *ngIf="!registrationSuccess() && !registrationClosed()">
+        <div *ngIf="registrationWaitlisted()" class="alert alert-warning">
+          Registration is currently on a waitlist. You can still submit —
+          we'll notify you if a spot opens up.
+        </div>
+
+        <div *ngIf="registrationFeeDollars() as fee" class="alert alert-info">
+          Registration fee: <strong>${{ fee }}</strong>. You'll be taken to a
+          secure payment page after submitting.
+        </div>
+
         <div *ngIf="registrationError()" class="alert alert-danger">
           {{ registrationError() }}
         </div>
@@ -204,8 +303,7 @@
             class="btn btn-primary"
             [disabled]="registrationForm.invalid || submittingRegistration()"
           >
-            {{ submittingRegistration() ? 'Submitting...' : 'Submit
-            registration' }}
+            {{ submittingRegistration() ? 'Submitting...' : (registrationFeeDollars() ? 'Submit & Pay $' + registrationFeeDollars() : 'Submit registration') }}
           </button>
         </form>
       </ng-container>

@@ -408,6 +408,7 @@ export const ModelName = {
   Tournament: 'Tournament',
   TournamentGame: 'TournamentGame',
   TournamentRegistration: 'TournamentRegistration',
+  TournamentPayment: 'TournamentPayment',
   TournamentSponsor: 'TournamentSponsor'
 } as const
 
@@ -424,7 +425,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "request" | "requestResponse" | "playerOffer" | "user" | "league" | "leagueArena" | "leagueMember" | "team" | "teamMessage" | "teamMember" | "playerStat" | "memberFee" | "payment" | "teamGame" | "teamGameInvite" | "teamGameAvailability" | "notification" | "booking" | "gameScoreSheet" | "gameScoreSheetPlayer" | "helpArticle" | "tournament" | "tournamentGame" | "tournamentRegistration" | "tournamentSponsor"
+    modelProps: "request" | "requestResponse" | "playerOffer" | "user" | "league" | "leagueArena" | "leagueMember" | "team" | "teamMessage" | "teamMember" | "playerStat" | "memberFee" | "payment" | "teamGame" | "teamGameInvite" | "teamGameAvailability" | "notification" | "booking" | "gameScoreSheet" | "gameScoreSheetPlayer" | "helpArticle" | "tournament" | "tournamentGame" | "tournamentRegistration" | "tournamentPayment" | "tournamentSponsor"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2204,6 +2205,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TournamentPayment: {
+      payload: Prisma.$TournamentPaymentPayload<ExtArgs>
+      fields: Prisma.TournamentPaymentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TournamentPaymentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentPaymentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TournamentPaymentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentPaymentPayload>
+        }
+        findFirst: {
+          args: Prisma.TournamentPaymentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentPaymentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TournamentPaymentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentPaymentPayload>
+        }
+        findMany: {
+          args: Prisma.TournamentPaymentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentPaymentPayload>[]
+        }
+        create: {
+          args: Prisma.TournamentPaymentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentPaymentPayload>
+        }
+        createMany: {
+          args: Prisma.TournamentPaymentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TournamentPaymentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentPaymentPayload>[]
+        }
+        delete: {
+          args: Prisma.TournamentPaymentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentPaymentPayload>
+        }
+        update: {
+          args: Prisma.TournamentPaymentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentPaymentPayload>
+        }
+        deleteMany: {
+          args: Prisma.TournamentPaymentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TournamentPaymentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TournamentPaymentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentPaymentPayload>[]
+        }
+        upsert: {
+          args: Prisma.TournamentPaymentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentPaymentPayload>
+        }
+        aggregate: {
+          args: Prisma.TournamentPaymentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTournamentPayment>
+        }
+        groupBy: {
+          args: Prisma.TournamentPaymentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TournamentPaymentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TournamentPaymentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TournamentPaymentCountAggregateOutputType> | number
+        }
+      }
+    }
     TournamentSponsor: {
       payload: Prisma.$TournamentSponsorPayload<ExtArgs>
       fields: Prisma.TournamentSponsorFieldRefs
@@ -2658,6 +2733,11 @@ export const TournamentScalarFieldEnum = {
   endDate: 'endDate',
   leagueId: 'leagueId',
   createdById: 'createdById',
+  registrationMode: 'registrationMode',
+  registrationDeadline: 'registrationDeadline',
+  registrationFeeCents: 'registrationFeeCents',
+  stripeAccountId: 'stripeAccountId',
+  stripePayoutsEnabled: 'stripePayoutsEnabled',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -2692,10 +2772,27 @@ export const TournamentRegistrationScalarFieldEnum = {
   contactEmail: 'contactEmail',
   contactPhone: 'contactPhone',
   notes: 'notes',
+  status: 'status',
   createdAt: 'createdAt'
 } as const
 
 export type TournamentRegistrationScalarFieldEnum = (typeof TournamentRegistrationScalarFieldEnum)[keyof typeof TournamentRegistrationScalarFieldEnum]
+
+
+export const TournamentPaymentScalarFieldEnum = {
+  id: 'id',
+  tournamentId: 'tournamentId',
+  registrationId: 'registrationId',
+  amountCents: 'amountCents',
+  currency: 'currency',
+  status: 'status',
+  stripeCheckoutSessionId: 'stripeCheckoutSessionId',
+  stripePaymentIntentId: 'stripePaymentIntentId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TournamentPaymentScalarFieldEnum = (typeof TournamentPaymentScalarFieldEnum)[keyof typeof TournamentPaymentScalarFieldEnum]
 
 
 export const TournamentSponsorScalarFieldEnum = {
@@ -3031,6 +3128,20 @@ export type ListEnumScoreSheetStatusFieldRefInput<$PrismaModel> = FieldRefInputT
 
 
 /**
+ * Reference to a field of type 'TournamentRegistrationMode'
+ */
+export type EnumTournamentRegistrationModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TournamentRegistrationMode'>
+    
+
+
+/**
+ * Reference to a field of type 'TournamentRegistrationMode[]'
+ */
+export type ListEnumTournamentRegistrationModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TournamentRegistrationMode[]'>
+    
+
+
+/**
  * Reference to a field of type 'TournamentGameStatus'
  */
 export type EnumTournamentGameStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TournamentGameStatus'>
@@ -3041,6 +3152,20 @@ export type EnumTournamentGameStatusFieldRefInput<$PrismaModel> = FieldRefInputT
  * Reference to a field of type 'TournamentGameStatus[]'
  */
 export type ListEnumTournamentGameStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TournamentGameStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'TournamentRegistrationStatus'
+ */
+export type EnumTournamentRegistrationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TournamentRegistrationStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'TournamentRegistrationStatus[]'
+ */
+export type ListEnumTournamentRegistrationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TournamentRegistrationStatus[]'>
     
 
 
@@ -3176,6 +3301,7 @@ export type GlobalOmitConfig = {
   tournament?: Prisma.TournamentOmit
   tournamentGame?: Prisma.TournamentGameOmit
   tournamentRegistration?: Prisma.TournamentRegistrationOmit
+  tournamentPayment?: Prisma.TournamentPaymentOmit
   tournamentSponsor?: Prisma.TournamentSponsorOmit
 }
 

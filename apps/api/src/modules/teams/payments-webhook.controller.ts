@@ -9,11 +9,13 @@ import {
 import type { Request } from 'express';
 import { TeamsService } from './teams.service';
 import { StripeService } from '../stripe/stripe.service';
+import { TournamentsService } from '../tournaments/tournaments.service';
 
 @Controller('payments')
 export class PaymentsWebhookController {
   constructor(
     private readonly teamsService: TeamsService,
+    private readonly tournamentsService: TournamentsService,
     private readonly stripeService: StripeService,
   ) {}
 
@@ -37,9 +39,15 @@ export class PaymentsWebhookController {
       .webhooks.constructEvent(req.rawBody, signature, webhookSecret);
 
     if (event.type === 'checkout.session.completed') {
-      await this.teamsService.handleStripeCheckoutSessionCompleted(
-        event.data.object,
-      );
+      const session = event.data.object;
+
+      if (session.metadata?.type === 'tournament_registration') {
+        await this.tournamentsService.handleTournamentCheckoutSessionCompleted(
+          session,
+        );
+      } else {
+        await this.teamsService.handleStripeCheckoutSessionCompleted(session);
+      }
     }
 
     return { received: true };

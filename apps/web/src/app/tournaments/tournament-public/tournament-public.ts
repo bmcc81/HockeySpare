@@ -6,11 +6,16 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Tournament } from '@hockeyspare/contracts';
+import { Tournament, TournamentStandingRow } from '@hockeyspare/contracts';
 import { Subscription, interval, switchMap } from 'rxjs';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
 
-type TournamentTab = 'schedule' | 'rules' | 'sponsors' | 'register';
+type TournamentTab =
+  | 'schedule'
+  | 'standings'
+  | 'rules'
+  | 'sponsors'
+  | 'register';
 
 const LIVE_SCORE_POLL_INTERVAL_MS = 20000;
 
@@ -34,9 +39,16 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
   error = signal<string | null>(null);
   activeTab = signal<TournamentTab>('schedule');
 
+  standings = signal<TournamentStandingRow[]>([]);
+  standingsLoading = signal(false);
+
   submittingRegistration = signal(false);
   registrationError = signal<string | null>(null);
   registrationSuccess = signal(false);
+
+  paymentVerifying = signal(false);
+  paymentMessage = signal<string | null>(null);
+  paymentMessageIsError = signal(false);
 
   registrationForm = this.fb.group({
     teamName: ['', Validators.required],
@@ -59,13 +71,69 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
       },
     });
 
+    this.loadStandings();
+
+    const paymentSessionId =
+      this.route.snapshot.queryParamMap.get('paymentSessionId');
+
+    if (paymentSessionId) {
+      this.setTab('register');
+      this.verifyPayment(paymentSessionId);
+    }
+
     // Lightweight polling so anyone viewing the schedule sees live scores
     // update without a manual refresh, without needing a websocket setup.
     this.pollSubscription = interval(LIVE_SCORE_POLL_INTERVAL_MS)
       .pipe(switchMap(() => this.tournamentsApi.getPublic(this.tournamentId)))
       .subscribe({
-        next: (tournament) => this.tournament.set(tournament),
+        next: (tournament) => {
+          this.tournament.set(tournament);
+          this.loadStandings();
+        },
       });
+  }
+
+  private verifyPayment(sessionId: string): void {
+    this.paymentVerifying.set(true);
+
+    this.tournamentsApi
+      .verifyRegistrationCheckout(this.tournamentId, sessionId)
+      .subscribe({
+        next: (result) => {
+          this.paymentVerifying.set(false);
+
+          if (result.status === 'SUCCEEDED') {
+            this.paymentMessageIsError.set(false);
+            this.paymentMessage.set(
+              `Payment received for ${result.registration.teamName}. You're all set.`,
+            );
+          } else {
+            this.paymentMessageIsError.set(true);
+            this.paymentMessage.set(
+              'Your payment has not completed yet. It may still be processing.',
+            );
+          }
+        },
+        error: () => {
+          this.paymentVerifying.set(false);
+          this.paymentMessageIsError.set(true);
+          this.paymentMessage.set('Could not confirm this payment.');
+        },
+      });
+  }
+
+  private loadStandings(): void {
+    this.standingsLoading.set(true);
+
+    this.tournamentsApi.getStandings(this.tournamentId).subscribe({
+      next: (standings) => {
+        this.standings.set(standings);
+        this.standingsLoading.set(false);
+      },
+      error: () => {
+        this.standingsLoading.set(false);
+      },
+    });
   }
 
   ngOnDestroy(): void {
@@ -74,6 +142,34 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
 
   setTab(tab: TournamentTab): void {
     this.activeTab.set(tab);
+  }
+
+  private deadlinePassed(): boolean {
+    const deadline = this.tournament()?.registrationDeadline;
+    return !!deadline && new Date() > new Date(deadline);
+  }
+
+  registrationClosed(): boolean {
+    return (
+      this.tournament()?.registrationMode === 'CLOSED' || this.deadlinePassed()
+    );
+  }
+
+  registrationWaitlisted(): boolean {
+    return (
+      !this.registrationClosed() &&
+      this.tournament()?.registrationMode === 'WAITLIST'
+    );
+  }
+
+  registrationFeeDollars(): number | null {
+    const cents = this.tournament()?.registrationFeeCents;
+
+    if (!cents || !this.tournament()?.stripePayoutsEnabled) {
+      return null;
+    }
+
+    return cents / 100;
   }
 
   submitRegistration(): void {
@@ -97,7 +193,14 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
         notes: value.notes.trim() || null,
       })
       .subscribe({
-        next: () => {
+        next: (result) => {
+          if (result.checkoutUrl) {
+            // Leaving the page for Stripe Checkout - no need to reset
+            // submittingRegistration, the navigation takes over.
+            window.location.href = result.checkoutUrl;
+            return;
+          }
+
           this.submittingRegistration.set(false);
           this.registrationSuccess.set(true);
           this.registrationForm.reset({

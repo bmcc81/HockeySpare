@@ -77,6 +77,44 @@
                 </div>
               </div>
 
+              <div class="row g-2 mb-3">
+                <div class="col-6">
+                  <label class="form-label">Registration</label>
+                  <select
+                    class="form-select"
+                    formControlName="registrationMode"
+                  >
+                    <option value="OPEN">Open</option>
+                    <option value="WAITLIST">Waitlist</option>
+                    <option value="CLOSED">Closed</option>
+                  </select>
+                </div>
+
+                <div class="col-6">
+                  <label class="form-label">Registration deadline</label>
+                  <input
+                    type="datetime-local"
+                    class="form-control"
+                    formControlName="registrationDeadline"
+                  />
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Registration fee ($)</label>
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  class="form-control"
+                  formControlName="registrationFeeDollars"
+                />
+                <div class="form-text">
+                  Leave at 0 for free registration. Requires Stripe to be
+                  connected below before teams will be asked to pay.
+                </div>
+              </div>
+
               <div class="mb-3">
                 <label class="form-label">Rules</label>
                 <textarea
@@ -94,6 +132,62 @@
                 {{ savingDetails() ? 'Saving...' : 'Save' }}
               </button>
             </form>
+          </div>
+        </div>
+
+        <div class="card mb-4" *ngIf="isOwner">
+          <div class="card-body">
+            <h2 class="h5">Payments</h2>
+
+            <div *ngIf="paymentError()" class="alert alert-danger py-2">
+              {{ paymentError() }}
+            </div>
+
+            <div *ngIf="paymentSuccessMessage()" class="alert alert-success py-2">
+              {{ paymentSuccessMessage() }}
+            </div>
+
+            <div *ngIf="paymentsStatusLoading()" class="text-secondary">
+              Loading payment settings...
+            </div>
+
+            <ng-container *ngIf="!paymentsStatusLoading()">
+              <div
+                *ngIf="paymentsStatus()?.connected && paymentsStatus()?.payoutsEnabled"
+                class="d-flex align-items-center gap-2"
+              >
+                <span class="badge rounded-pill text-bg-success">Connected</span>
+                <span class="text-secondary small">
+                  Registration fees go directly to your connected bank
+                  account.
+                </span>
+              </div>
+
+              <div
+                *ngIf="!(paymentsStatus()?.connected && paymentsStatus()?.payoutsEnabled)"
+              >
+                <p class="text-secondary small mb-2">
+                  Connect a Stripe account so teams can pay their
+                  registration fee online, straight into your own bank
+                  account.
+                </p>
+
+                <button
+                  type="button"
+                  class="btn btn-primary btn-sm"
+                  [disabled]="connectingStripe()"
+                  (click)="connectStripe()"
+                >
+                  {{
+                    connectingStripe()
+                      ? 'Redirecting...'
+                      : paymentsStatus()?.connected
+                        ? 'Finish connecting Stripe'
+                        : 'Connect Stripe'
+                  }}
+                </button>
+              </div>
+            </ng-container>
           </div>
         </div>
       </div>
@@ -322,6 +416,8 @@
                 <th>Division</th>
                 <th>Contact</th>
                 <th>Notes</th>
+                <th>Status</th>
+                <th>Fee</th>
                 <th></th>
               </tr>
             </thead>
@@ -344,16 +440,63 @@
                   </span>
                 </td>
                 <td>{{ registration.notes || '—' }}</td>
-                <td class="text-end">
-                  <button
-                    class="btn btn-sm btn-outline-danger"
-                    type="button"
-                    [disabled]="deletingRegistrationId() === registration.id"
-                    (click)="deleteRegistration(registration.id)"
+                <td>
+                  <span
+                    class="badge rounded-pill"
+                    [class.text-bg-success]="registration.status === 'CONFIRMED'"
+                    [class.text-bg-warning]="registration.status === 'WAITLISTED'"
                   >
-                    {{ deletingRegistrationId() === registration.id ?
-                    'Removing...' : 'Remove' }}
-                  </button>
+                    {{ registration.status === 'CONFIRMED' ? 'Confirmed' : 'Waitlisted' }}
+                  </span>
+                </td>
+                <td>
+                  <span
+                    *ngIf="tournament()?.registrationFeeCents"
+                    class="badge rounded-pill"
+                    [class.text-bg-success]="registration.paid"
+                    [class.text-bg-danger]="!registration.paid"
+                  >
+                    {{ registration.paid ? 'Paid' : 'Unpaid' }}
+                  </span>
+                  <span
+                    *ngIf="!tournament()?.registrationFeeCents"
+                    class="text-secondary"
+                  >
+                    —
+                  </span>
+                </td>
+                <td class="text-end">
+                  <div class="d-flex gap-2 justify-content-end flex-wrap">
+                    <button
+                      *ngIf="registration.status === 'WAITLISTED'"
+                      class="btn btn-sm btn-outline-success"
+                      type="button"
+                      [disabled]="savingRegistrationId() === registration.id"
+                      (click)="setRegistrationStatus(registration.id, 'CONFIRMED')"
+                    >
+                      {{ savingRegistrationId() === registration.id ? '...' : 'Confirm' }}
+                    </button>
+
+                    <button
+                      *ngIf="registration.status === 'CONFIRMED'"
+                      class="btn btn-sm btn-outline-secondary"
+                      type="button"
+                      [disabled]="savingRegistrationId() === registration.id"
+                      (click)="setRegistrationStatus(registration.id, 'WAITLISTED')"
+                    >
+                      {{ savingRegistrationId() === registration.id ? '...' : 'Waitlist' }}
+                    </button>
+
+                    <button
+                      class="btn btn-sm btn-outline-danger"
+                      type="button"
+                      [disabled]="deletingRegistrationId() === registration.id"
+                      (click)="deleteRegistration(registration.id)"
+                    >
+                      {{ deletingRegistrationId() === registration.id ?
+                      'Removing...' : 'Remove' }}
+                    </button>
+                  </div>
                 </td>
               </tr>
             </tbody>

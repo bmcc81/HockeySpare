@@ -9,6 +9,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
   Tournament,
   TournamentGame,
+  TournamentPaymentsStatus,
   TournamentRegistration,
   TournamentSponsor,
 } from '@hockeyspare/contracts';
@@ -52,12 +53,21 @@ export class TournamentManageComponent implements OnInit {
   savingScore = signal(false);
   scoreError = signal<string | null>(null);
 
+  paymentsStatus = signal<TournamentPaymentsStatus | null>(null);
+  paymentsStatusLoading = signal(false);
+  connectingStripe = signal(false);
+  paymentSuccessMessage = signal<string | null>(null);
+  paymentError = signal<string | null>(null);
+
   detailsForm = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
     description: [''],
     rules: [''],
     startDate: [''],
     endDate: [''],
+    registrationMode: ['OPEN' as 'OPEN' | 'WAITLIST' | 'CLOSED'],
+    registrationDeadline: [''],
+    registrationFeeDollars: [0, [Validators.min(0)]],
   });
 
   gameForm = this.fb.group({
@@ -91,6 +101,12 @@ export class TournamentManageComponent implements OnInit {
 
   ngOnInit(): void {
     this.load();
+
+    const params = this.route.snapshot.queryParamMap;
+
+    if (params.get('stripeReturn') === '1') {
+      this.handleStripeReturn();
+    }
   }
 
   private toDateInputValue(value?: string | null): string {
@@ -99,6 +115,14 @@ export class TournamentManageComponent implements OnInit {
     }
 
     return value.slice(0, 10);
+  }
+
+  private toDateTimeInputValue(value?: string | null): string {
+    if (!value) {
+      return '';
+    }
+
+    return value.slice(0, 16);
   }
 
   load(): void {
@@ -115,12 +139,20 @@ export class TournamentManageComponent implements OnInit {
           rules: tournament.rules ?? '',
           startDate: this.toDateInputValue(tournament.startDate),
           endDate: this.toDateInputValue(tournament.endDate),
+          registrationMode: tournament.registrationMode,
+          registrationDeadline: this.toDateTimeInputValue(
+            tournament.registrationDeadline,
+          ),
+          registrationFeeDollars: tournament.registrationFeeCents
+            ? tournament.registrationFeeCents / 100
+            : 0,
         });
 
         this.loading.set(false);
 
         if (this.isOwner) {
           this.loadRegistrations();
+          this.loadPaymentsStatus();
         }
       },
       error: () => {
@@ -139,6 +171,84 @@ export class TournamentManageComponent implements OnInit {
         this.registrations.set([]);
       },
     });
+  }
+
+  private loadPaymentsStatus(): void {
+    this.paymentsStatusLoading.set(true);
+
+    this.tournamentsApi.getPaymentsStatus(this.tournamentId).subscribe({
+      next: (status) => {
+        this.paymentsStatus.set(status);
+        this.paymentsStatusLoading.set(false);
+      },
+      error: () => {
+        this.paymentsStatus.set(null);
+        this.paymentsStatusLoading.set(false);
+      },
+    });
+  }
+
+  private handleStripeReturn(): void {
+    this.tournamentsApi.refreshStripeStatus(this.tournamentId).subscribe({
+      next: (status) => {
+        this.paymentsStatus.set(status);
+
+        this.paymentSuccessMessage.set(
+          status.payoutsEnabled
+            ? 'Stripe account connected. You can now collect registration payments.'
+            : 'Stripe onboarding is not finished yet. Connect again to continue.',
+        );
+      },
+      error: () => {
+        this.paymentError.set('Could not confirm Stripe connection status.');
+      },
+    });
+  }
+
+  connectStripe(): void {
+    if (this.connectingStripe()) {
+      return;
+    }
+
+    this.connectingStripe.set(true);
+    this.paymentError.set(null);
+
+    this.tournamentsApi.connectStripe(this.tournamentId).subscribe({
+      next: (result) => {
+        window.location.href = result.url;
+      },
+      error: (err) => {
+        this.connectingStripe.set(false);
+        this.paymentError.set(
+          err?.error?.message || 'Could not start Stripe onboarding.',
+        );
+      },
+    });
+  }
+
+  savingRegistrationId = signal<string | null>(null);
+
+  setRegistrationStatus(
+    registrationId: string,
+    status: 'CONFIRMED' | 'WAITLISTED',
+  ): void {
+    this.savingRegistrationId.set(registrationId);
+    this.error.set(null);
+
+    this.tournamentsApi
+      .updateRegistration(this.tournamentId, registrationId, { status })
+      .subscribe({
+        next: () => {
+          this.savingRegistrationId.set(null);
+          this.loadRegistrations();
+        },
+        error: (err) => {
+          this.error.set(
+            err?.error?.message || 'Could not update this registration.',
+          );
+          this.savingRegistrationId.set(null);
+        },
+      });
   }
 
   deleteRegistration(registrationId: string): void {
@@ -182,6 +292,13 @@ export class TournamentManageComponent implements OnInit {
         rules: value.rules.trim() || null,
         startDate: value.startDate || null,
         endDate: value.endDate || null,
+        registrationMode: value.registrationMode,
+        registrationDeadline: value.registrationDeadline
+          ? new Date(value.registrationDeadline).toISOString()
+          : null,
+        registrationFeeCents: value.registrationFeeDollars
+          ? Math.round(Number(value.registrationFeeDollars) * 100)
+          : null,
       })
       .subscribe({
         next: (tournament) => {

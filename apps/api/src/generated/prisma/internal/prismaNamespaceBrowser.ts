@@ -75,6 +75,7 @@ export const ModelName = {
   Tournament: 'Tournament',
   TournamentGame: 'TournamentGame',
   TournamentRegistration: 'TournamentRegistration',
+  TournamentPayment: 'TournamentPayment',
   TournamentSponsor: 'TournamentSponsor'
 } as const
 
@@ -435,6 +436,11 @@ export const TournamentScalarFieldEnum = {
   endDate: 'endDate',
   leagueId: 'leagueId',
   createdById: 'createdById',
+  registrationMode: 'registrationMode',
+  registrationDeadline: 'registrationDeadline',
+  registrationFeeCents: 'registrationFeeCents',
+  stripeAccountId: 'stripeAccountId',
+  stripePayoutsEnabled: 'stripePayoutsEnabled',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -469,10 +475,27 @@ export const TournamentRegistrationScalarFieldEnum = {
   contactEmail: 'contactEmail',
   contactPhone: 'contactPhone',
   notes: 'notes',
+  status: 'status',
   createdAt: 'createdAt'
 } as const
 
 export type TournamentRegistrationScalarFieldEnum = (typeof TournamentRegistrationScalarFieldEnum)[keyof typeof TournamentRegistrationScalarFieldEnum]
+
+
+export const TournamentPaymentScalarFieldEnum = {
+  id: 'id',
+  tournamentId: 'tournamentId',
+  registrationId: 'registrationId',
+  amountCents: 'amountCents',
+  currency: 'currency',
+  status: 'status',
+  stripeCheckoutSessionId: 'stripeCheckoutSessionId',
+  stripePaymentIntentId: 'stripePaymentIntentId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TournamentPaymentScalarFieldEnum = (typeof TournamentPaymentScalarFieldEnum)[keyof typeof TournamentPaymentScalarFieldEnum]
 
 
 export const TournamentSponsorScalarFieldEnum = {

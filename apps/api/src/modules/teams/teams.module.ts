@@ -8,6 +8,7 @@ import { EmailModule } from '../email/email.module';
 import { SmsModule } from '../sms/sms.module';
 import { RequestsModule } from '../requests/requests.module';
 import { StripeModule } from '../stripe/stripe.module';
+import { TournamentsModule } from '../tournaments/tournaments.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { StripeModule } from '../stripe/stripe.module';
     SmsModule,
     RequestsModule,
     StripeModule,
+    TournamentsModule,
   ],
   controllers: [TeamsController, PaymentsWebhookController],
   providers: [TeamsService],

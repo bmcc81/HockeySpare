@@ -17,6 +17,7 @@ import { UpdateTournamentDto } from './dto/update-tournament.dto';
 import { CreateTournamentGameDto } from './dto/create-tournament-game.dto';
 import { UpdateTournamentGameDto } from './dto/update-tournament-game.dto';
 import { CreateTournamentRegistrationDto } from './dto/create-tournament-registration.dto';
+import { UpdateTournamentRegistrationDto } from './dto/update-tournament-registration.dto';
 import { CreateTournamentSponsorDto } from './dto/create-tournament-sponsor.dto';
 
 type AuthRequest = {
@@ -56,6 +57,12 @@ export class TournamentsController {
   @Get(':id')
   getPublic(@Param('id') id: string) {
     return this.tournamentsService.getPublic(id);
+  }
+
+  // Public - same visibility as the schedule.
+  @Get(':id/standings')
+  getStandings(@Param('id') id: string) {
+    return this.tournamentsService.getStandings(id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -120,6 +127,22 @@ export class TournamentsController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Patch(':id/registrations/:registrationId')
+  updateRegistration(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('registrationId') registrationId: string,
+    @Body() dto: UpdateTournamentRegistrationDto,
+  ) {
+    return this.tournamentsService.updateRegistration(
+      this.getUserId(req),
+      id,
+      registrationId,
+      dto,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Delete(':id/registrations/:registrationId')
   deleteRegistration(
     @Req() req: AuthRequest,
@@ -155,5 +178,49 @@ export class TournamentsController {
       id,
       sponsorId,
     );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/payments/status')
+  getPaymentsStatus(@Req() req: AuthRequest, @Param('id') id: string) {
+    return this.tournamentsService.getPaymentsStatus(this.getUserId(req), id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/payments/connect')
+  connectStripeAccount(@Req() req: AuthRequest, @Param('id') id: string) {
+    return this.tournamentsService.connectStripeAccount(
+      this.getUserId(req),
+      id,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/payments/refresh')
+  refreshStripeAccountStatus(@Req() req: AuthRequest, @Param('id') id: string) {
+    return this.tournamentsService.refreshStripeAccountStatus(
+      this.getUserId(req),
+      id,
+    );
+  }
+
+  // Public - lets a registrant retry payment if their first checkout was
+  // abandoned. Knowing the registrationId is the same trust level as the
+  // rest of the public registration flow.
+  @Post(':id/registrations/:registrationId/checkout')
+  retryRegistrationCheckout(
+    @Param('id') id: string,
+    @Param('registrationId') registrationId: string,
+  ) {
+    return this.tournamentsService.retryRegistrationCheckout(
+      id,
+      registrationId,
+    );
+  }
+
+  // Public - the registrant lands here after Stripe Checkout redirects back.
+  @Get(':id/payments/verify/:sessionId')
+  verifyRegistrationCheckoutSession(@Param('sessionId') sessionId: string) {
+    return this.tournamentsService.verifyRegistrationCheckoutSession(sessionId);
   }
 }

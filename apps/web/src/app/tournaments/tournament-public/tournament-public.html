@@ -11,6 +11,33 @@
         {{ t.startDate | date: 'mediumDate' }}
         <ng-container *ngIf="t.endDate"> – {{ t.endDate | date: 'mediumDate' }}</ng-container>
       </p>
+      <p class="mb-0 mt-1" *ngIf="countdownText() as countdown">
+        <span class="badge text-bg-primary">Starts in {{ countdown }}</span>
+      </p>
+    </div>
+
+    <a
+      *ngIf="currentBannerSponsor() as banner"
+      [href]="banner.linkUrl || null"
+      [class.disabled]="!banner.linkUrl"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="d-block text-center border rounded p-3 mb-4 text-decoration-none"
+    >
+      <img
+        [src]="banner.logoUrl"
+        [alt]="banner.name"
+        style="max-height: 80px; max-width: 100%"
+      />
+    </a>
+
+    <div class="alert alert-info d-flex flex-column gap-1 mb-4" *ngIf="t.announcements.length > 0">
+      <div
+        *ngFor="let announcement of t.announcements.slice(0, 3); trackBy: trackByAnnouncementId"
+      >
+        <strong>{{ announcement.createdAt | date: 'MMM d' }}:</strong>
+        {{ announcement.body }}
+      </div>
     </div>
 
     <ul class="nav nav-tabs mb-4">
@@ -80,6 +107,17 @@
         </button>
       </li>
 
+      <li class="nav-item" *ngIf="t.contactName || t.contactEmail || t.contactPhone || t.venues.length > 0">
+        <button
+          class="nav-link"
+          type="button"
+          [class.active]="activeTab() === 'info'"
+          (click)="setTab('info')"
+        >
+          Info
+        </button>
+      </li>
+
       <li class="nav-item">
         <button
           class="nav-link"
@@ -103,23 +141,41 @@
       </li>
     </ul>
 
-    <div
-      class="mb-3"
-      style="max-width: 260px"
-      *ngIf="(activeTab() === 'schedule' || activeTab() === 'standings') && availableDivisions().length > 0"
-    >
-      <label class="form-label small text-secondary">Division</label>
-      <select class="form-select form-select-sm" (change)="setDivisionFilter($event)">
-        <option value="">All divisions</option>
-        <option *ngFor="let division of availableDivisions()" [value]="division">
-          {{ division }}
-        </option>
-      </select>
+    <div class="d-flex flex-wrap gap-3 mb-3">
+      <div
+        style="max-width: 260px"
+        *ngIf="(activeTab() === 'schedule' || activeTab() === 'standings') && availableDivisions().length > 0"
+      >
+        <label class="form-label small text-secondary">Division</label>
+        <select class="form-select form-select-sm" (change)="setDivisionFilter($event)">
+          <option value="">All divisions</option>
+          <option *ngFor="let division of availableDivisions()" [value]="division">
+            {{ division }}
+          </option>
+        </select>
+      </div>
+
+      <div
+        style="max-width: 260px"
+        *ngIf="activeTab() === 'schedule' || activeTab() === 'teams' || activeTab() === 'leaders'"
+      >
+        <label class="form-label small text-secondary">Search</label>
+        <input
+          class="form-control form-control-sm"
+          [placeholder]="activeTab() === 'schedule' ? 'Team or arena...' : 'Team or player...'"
+          [value]="searchQuery()"
+          (input)="setSearchQuery($event)"
+        />
+      </div>
     </div>
 
     <div *ngIf="activeTab() === 'schedule'">
-      <div *ngIf="filteredGames().length === 0" class="text-secondary">
+      <div *ngIf="filteredGames().length === 0 && t.games.length === 0" class="text-secondary">
         No games have been scheduled yet. Check back soon.
+      </div>
+
+      <div *ngIf="filteredGames().length === 0 && t.games.length > 0" class="text-secondary">
+        No games match your search.
       </div>
 
       <div class="table-responsive" *ngIf="filteredGames().length > 0">
@@ -218,10 +274,14 @@
         No teams have been added yet.
       </div>
 
-      <div class="d-flex flex-column gap-2" *ngIf="t.teams.length > 0">
+      <div *ngIf="t.teams.length > 0 && filteredTeams().length === 0" class="text-secondary">
+        No teams match your search.
+      </div>
+
+      <div class="d-flex flex-column gap-2" *ngIf="filteredTeams().length > 0">
         <div
           class="border rounded p-3"
-          *ngFor="let team of t.teams; trackBy: trackByTeamId"
+          *ngFor="let team of filteredTeams(); trackBy: trackByTeamId"
         >
           <div
             class="d-flex justify-content-between align-items-center flex-wrap gap-2"
@@ -396,7 +456,14 @@
         No player stats yet. Leaders appear once games have stats entered.
       </div>
 
-      <div class="table-responsive" *ngIf="!leadersLoading() && leaders().length > 0">
+      <div
+        *ngIf="!leadersLoading() && leaders().length > 0 && filteredLeaders().length === 0"
+        class="text-secondary"
+      >
+        No players match your search.
+      </div>
+
+      <div class="table-responsive" *ngIf="!leadersLoading() && filteredLeaders().length > 0">
         <table class="table align-middle mb-0">
           <thead>
             <tr>
@@ -411,7 +478,7 @@
           </thead>
 
           <tbody>
-            <tr *ngFor="let leader of leaders(); trackBy: trackByLeaderId">
+            <tr *ngFor="let leader of filteredLeaders(); trackBy: trackByLeaderId">
               <td class="fw-semibold">{{ leader.displayName }}</td>
               <td>{{ leader.teamName }}</td>
               <td>{{ leader.gamesPlayed }}</td>
@@ -433,33 +500,110 @@
       <p style="white-space: pre-wrap" *ngIf="t.rules">{{ t.rules }}</p>
     </div>
 
+    <div *ngIf="activeTab() === 'info'" class="d-flex flex-column gap-4">
+      <div *ngIf="t.contactName || t.contactEmail || t.contactPhone">
+        <h2 class="h5">Contact</h2>
+        <p class="mb-1" *ngIf="t.contactName">{{ t.contactName }}</p>
+        <p class="mb-1" *ngIf="t.contactEmail">
+          <a [href]="'mailto:' + t.contactEmail">{{ t.contactEmail }}</a>
+        </p>
+        <p class="mb-1" *ngIf="t.contactPhone">{{ t.contactPhone }}</p>
+      </div>
+
+      <div *ngIf="t.venues.length > 0">
+        <h2 class="h5">Venues</h2>
+
+        <div class="d-flex flex-column gap-3">
+          <div
+            class="border rounded p-3"
+            *ngFor="let venue of t.venues; trackBy: trackByVenueId"
+          >
+            <strong>{{ venue.name }}</strong>
+            <p class="text-secondary small mb-2" *ngIf="venue.address">
+              {{ venue.address }}
+            </p>
+
+            <div class="row g-2 small mb-2">
+              <div class="col-12 col-md-4" *ngIf="venue.parkingInfo">
+                <div class="text-uppercase text-secondary fw-semibold">Parking</div>
+                <div style="white-space: pre-wrap">{{ venue.parkingInfo }}</div>
+              </div>
+              <div class="col-12 col-md-4" *ngIf="venue.dressingRoomInfo">
+                <div class="text-uppercase text-secondary fw-semibold">Dressing rooms</div>
+                <div style="white-space: pre-wrap">{{ venue.dressingRoomInfo }}</div>
+              </div>
+              <div class="col-12 col-md-4" *ngIf="venue.concessionsInfo">
+                <div class="text-uppercase text-secondary fw-semibold">Concessions</div>
+                <div style="white-space: pre-wrap">{{ venue.concessionsInfo }}</div>
+              </div>
+            </div>
+
+            <iframe
+              *ngIf="venueMapUrl(venue) as mapUrl"
+              [src]="mapUrl"
+              style="width: 100%; height: 260px; border: 0"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div *ngIf="activeTab() === 'sponsors'">
       <div *ngIf="t.sponsors.length === 0" class="text-secondary">
         No sponsors have been added yet.
       </div>
 
-      <div
-        class="d-flex flex-wrap gap-4 align-items-center"
-        *ngIf="t.sponsors.length > 0"
-      >
-        <a
-          *ngFor="let sponsor of t.sponsors"
-          [href]="sponsor.linkUrl || null"
-          [class.disabled]="!sponsor.linkUrl"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-decoration-none text-center"
-          style="width: 160px"
-        >
-          <img
-            *ngIf="sponsor.logoUrl"
-            [src]="sponsor.logoUrl"
-            [alt]="sponsor.name"
-            class="img-fluid mb-1"
-            style="max-height: 90px"
-          />
-          <div class="small text-secondary">{{ sponsor.name }}</div>
-        </a>
+      <div class="d-flex flex-column gap-4" *ngIf="t.sponsors.length > 0">
+        <div *ngFor="let tier of sponsorTiers">
+          <ng-container *ngIf="sponsorsByTier(tier).length > 0">
+            <h2 class="h6 text-uppercase text-secondary">{{ tier }}</h2>
+            <div class="d-flex flex-wrap gap-4 align-items-center mb-2">
+              <a
+                *ngFor="let sponsor of sponsorsByTier(tier); trackBy: trackBySponsorId"
+                [href]="sponsor.linkUrl || null"
+                [class.disabled]="!sponsor.linkUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-decoration-none text-center"
+                style="width: 160px"
+              >
+                <img
+                  *ngIf="sponsor.logoUrl"
+                  [src]="sponsor.logoUrl"
+                  [alt]="sponsor.name"
+                  class="img-fluid mb-1"
+                  style="max-height: 90px"
+                />
+                <div class="small text-secondary">{{ sponsor.name }}</div>
+              </a>
+            </div>
+          </ng-container>
+        </div>
+
+        <div *ngIf="sponsorsByTier(null).length > 0">
+          <div class="d-flex flex-wrap gap-4 align-items-center">
+            <a
+              *ngFor="let sponsor of sponsorsByTier(null); trackBy: trackBySponsorId"
+              [href]="sponsor.linkUrl || null"
+              [class.disabled]="!sponsor.linkUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-decoration-none text-center"
+              style="width: 160px"
+            >
+              <img
+                *ngIf="sponsor.logoUrl"
+                [src]="sponsor.logoUrl"
+                [alt]="sponsor.name"
+                class="img-fluid mb-1"
+                style="max-height: 90px"
+              />
+              <div class="small text-secondary">{{ sponsor.name }}</div>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
 

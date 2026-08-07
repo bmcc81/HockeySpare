@@ -128,6 +128,16 @@ export type HelpArticle = Prisma.HelpArticleModel
  */
 export type Tournament = Prisma.TournamentModel
 /**
+ * Model TournamentAnnouncement
+ * 
+ */
+export type TournamentAnnouncement = Prisma.TournamentAnnouncementModel
+/**
+ * Model TournamentVenue
+ * 
+ */
+export type TournamentVenue = Prisma.TournamentVenueModel
+/**
  * Model TournamentGame
  * 
  */

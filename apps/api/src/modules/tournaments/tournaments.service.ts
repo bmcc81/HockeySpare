@@ -12,6 +12,10 @@ import { UpdateTournamentGameDto } from './dto/update-tournament-game.dto';
 import { CreateTournamentRegistrationDto } from './dto/create-tournament-registration.dto';
 import { UpdateTournamentRegistrationDto } from './dto/update-tournament-registration.dto';
 import { CreateTournamentSponsorDto } from './dto/create-tournament-sponsor.dto';
+import { UpdateTournamentSponsorDto } from './dto/update-tournament-sponsor.dto';
+import { CreateTournamentAnnouncementDto } from './dto/create-tournament-announcement.dto';
+import { CreateTournamentVenueDto } from './dto/create-tournament-venue.dto';
+import { UpdateTournamentVenueDto } from './dto/update-tournament-venue.dto';
 import { CreateTournamentTeamDto } from './dto/create-tournament-team.dto';
 import { UpdateTournamentTeamDto } from './dto/update-tournament-team.dto';
 import { CreateTournamentTeamPlayerDto } from './dto/create-tournament-team-player.dto';
@@ -44,6 +48,16 @@ export class TournamentsService {
       },
     },
     sponsors: {
+      orderBy: {
+        createdAt: 'asc' as const,
+      },
+    },
+    announcements: {
+      orderBy: {
+        createdAt: 'desc' as const,
+      },
+    },
+    venues: {
       orderBy: {
         createdAt: 'asc' as const,
       },
@@ -121,6 +135,9 @@ export class TournamentsService {
           ? new Date(dto.registrationDeadline)
           : null,
         registrationFeeCents: dto.registrationFeeCents ?? null,
+        contactName: dto.contactName?.trim() || null,
+        contactEmail: dto.contactEmail?.trim() || null,
+        contactPhone: dto.contactPhone?.trim() || null,
       },
       include: this.tournamentInclude,
     });
@@ -187,6 +204,15 @@ export class TournamentsService {
           : {}),
         ...(dto.registrationFeeCents !== undefined
           ? { registrationFeeCents: dto.registrationFeeCents ?? null }
+          : {}),
+        ...(dto.contactName !== undefined
+          ? { contactName: dto.contactName.trim() || null }
+          : {}),
+        ...(dto.contactEmail !== undefined
+          ? { contactEmail: dto.contactEmail.trim() || null }
+          : {}),
+        ...(dto.contactPhone !== undefined
+          ? { contactPhone: dto.contactPhone.trim() || null }
           : {}),
       },
       include: this.tournamentInclude,
@@ -824,6 +850,38 @@ export class TournamentsService {
         name: dto.name.trim(),
         logoUrl: dto.logoUrl?.trim() || null,
         linkUrl: dto.linkUrl?.trim() || null,
+        tier: dto.tier ?? null,
+      },
+    });
+  }
+
+  async updateSponsor(
+    userId: string,
+    tournamentId: string,
+    sponsorId: string,
+    dto: UpdateTournamentSponsorDto,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const sponsor = await this.prisma.tournamentSponsor.findFirst({
+      where: { id: sponsorId, tournamentId },
+    });
+
+    if (!sponsor) {
+      throw new NotFoundException('Sponsor not found');
+    }
+
+    return this.prisma.tournamentSponsor.update({
+      where: { id: sponsorId },
+      data: {
+        ...(dto.name !== undefined ? { name: dto.name.trim() } : {}),
+        ...(dto.logoUrl !== undefined
+          ? { logoUrl: dto.logoUrl.trim() || null }
+          : {}),
+        ...(dto.linkUrl !== undefined
+          ? { linkUrl: dto.linkUrl.trim() || null }
+          : {}),
+        ...(dto.tier !== undefined ? { tier: dto.tier ?? null } : {}),
       },
     });
   }
@@ -852,6 +910,114 @@ export class TournamentsService {
       id: sponsor.id,
       deleted: true,
     };
+  }
+
+  async addAnnouncement(
+    userId: string,
+    tournamentId: string,
+    dto: CreateTournamentAnnouncementDto,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    return this.prisma.tournamentAnnouncement.create({
+      data: {
+        tournamentId,
+        body: dto.body.trim(),
+      },
+    });
+  }
+
+  async deleteAnnouncement(
+    userId: string,
+    tournamentId: string,
+    announcementId: string,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const announcement = await this.prisma.tournamentAnnouncement.findFirst({
+      where: { id: announcementId, tournamentId },
+    });
+
+    if (!announcement) {
+      throw new NotFoundException('Announcement not found');
+    }
+
+    await this.prisma.tournamentAnnouncement.delete({
+      where: { id: announcementId },
+    });
+
+    return { id: announcement.id, deleted: true };
+  }
+
+  async addVenue(
+    userId: string,
+    tournamentId: string,
+    dto: CreateTournamentVenueDto,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    return this.prisma.tournamentVenue.create({
+      data: {
+        tournamentId,
+        name: dto.name.trim(),
+        address: dto.address?.trim() || null,
+        parkingInfo: dto.parkingInfo?.trim() || null,
+        dressingRoomInfo: dto.dressingRoomInfo?.trim() || null,
+        concessionsInfo: dto.concessionsInfo?.trim() || null,
+      },
+    });
+  }
+
+  async updateVenue(
+    userId: string,
+    tournamentId: string,
+    venueId: string,
+    dto: UpdateTournamentVenueDto,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const venue = await this.prisma.tournamentVenue.findFirst({
+      where: { id: venueId, tournamentId },
+    });
+
+    if (!venue) {
+      throw new NotFoundException('Venue not found');
+    }
+
+    return this.prisma.tournamentVenue.update({
+      where: { id: venueId },
+      data: {
+        ...(dto.name !== undefined ? { name: dto.name.trim() } : {}),
+        ...(dto.address !== undefined
+          ? { address: dto.address.trim() || null }
+          : {}),
+        ...(dto.parkingInfo !== undefined
+          ? { parkingInfo: dto.parkingInfo.trim() || null }
+          : {}),
+        ...(dto.dressingRoomInfo !== undefined
+          ? { dressingRoomInfo: dto.dressingRoomInfo.trim() || null }
+          : {}),
+        ...(dto.concessionsInfo !== undefined
+          ? { concessionsInfo: dto.concessionsInfo.trim() || null }
+          : {}),
+      },
+    });
+  }
+
+  async deleteVenue(userId: string, tournamentId: string, venueId: string) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const venue = await this.prisma.tournamentVenue.findFirst({
+      where: { id: venueId, tournamentId },
+    });
+
+    if (!venue) {
+      throw new NotFoundException('Venue not found');
+    }
+
+    await this.prisma.tournamentVenue.delete({ where: { id: venueId } });
+
+    return { id: venue.id, deleted: true };
   }
 
   async addTeam(

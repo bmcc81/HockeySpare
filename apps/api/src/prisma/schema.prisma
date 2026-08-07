@@ -574,6 +574,9 @@ model Tournament {
   registrationFeeCents  Int?
   stripeAccountId       String?                     @unique
   stripePayoutsEnabled  Boolean                     @default(false)
+  contactName           String?
+  contactEmail          String?
+  contactPhone          String?
   createdAt             DateTime                    @default(now())
   updatedAt             DateTime                    @updatedAt
 
@@ -585,9 +588,38 @@ model Tournament {
   payments      TournamentPayment[]
   teams         TournamentTeam[]
   brackets      TournamentBracket[]
+  announcements TournamentAnnouncement[]
+  venues        TournamentVenue[]
 
   @@index([leagueId])
   @@index([createdById])
+}
+
+model TournamentAnnouncement {
+  id           String   @id @default(cuid())
+  tournamentId String
+  body         String
+  createdAt    DateTime @default(now())
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  @@index([tournamentId, createdAt])
+}
+
+model TournamentVenue {
+  id                 String   @id @default(cuid())
+  tournamentId       String
+  name               String
+  address            String?
+  parkingInfo        String?
+  dressingRoomInfo   String?
+  concessionsInfo    String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  @@index([tournamentId])
 }
 
 model TournamentGame {
@@ -766,14 +798,21 @@ enum TournamentRegistrationStatus {
 }
 
 model TournamentSponsor {
-  id           String   @id @default(cuid())
+  id           String              @id @default(cuid())
   tournamentId String
   name         String
   logoUrl      String?
   linkUrl      String?
-  createdAt    DateTime @default(now())
+  tier         TournamentSponsorTier?
+  createdAt    DateTime            @default(now())
 
   tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
 
   @@index([tournamentId, createdAt])
+}
+
+enum TournamentSponsorTier {
+  GOLD
+  SILVER
+  BRONZE
 }

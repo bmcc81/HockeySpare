@@ -124,6 +124,29 @@
                 ></textarea>
               </div>
 
+              <hr />
+
+              <div class="mb-2 text-secondary small text-uppercase fw-semibold">
+                Public contact info
+              </div>
+
+              <div class="row g-2 mb-3">
+                <div class="col-12 col-md-4">
+                  <label class="form-label">Contact name</label>
+                  <input class="form-control" formControlName="contactName" />
+                </div>
+
+                <div class="col-12 col-md-4">
+                  <label class="form-label">Contact email</label>
+                  <input class="form-control" formControlName="contactEmail" />
+                </div>
+
+                <div class="col-12 col-md-4">
+                  <label class="form-label">Contact phone</label>
+                  <input class="form-control" formControlName="contactPhone" />
+                </div>
+              </div>
+
               <button
                 type="submit"
                 class="btn btn-primary btn-sm"
@@ -1083,7 +1106,7 @@
             />
           </div>
 
-          <div class="col-12 col-md-4">
+          <div class="col-12 col-md-3">
             <label class="form-label">Website URL</label>
             <input
               class="form-control"
@@ -1092,13 +1115,33 @@
             />
           </div>
 
-          <div class="col-12 col-md-1">
+          <div class="col-12 col-md-2">
+            <label class="form-label">Tier</label>
+            <select class="form-select" formControlName="tier">
+              <option value="">None</option>
+              <option value="GOLD">Gold</option>
+              <option value="SILVER">Silver</option>
+              <option value="BRONZE">Bronze</option>
+            </select>
+          </div>
+
+          <div class="col-12 col-md-2 d-flex gap-2">
             <button
               type="submit"
               class="btn btn-primary btn-sm w-100"
               [disabled]="sponsorForm.invalid || savingSponsor()"
             >
-              {{ savingSponsor() ? '...' : 'Add' }}
+              {{ savingSponsor() ? '...' : (editingSponsorId() ? 'Save' : 'Add') }}
+            </button>
+          </div>
+
+          <div class="col-12" *ngIf="editingSponsorId()">
+            <button
+              type="button"
+              class="btn btn-outline-secondary btn-sm"
+              (click)="cancelSponsorEdit()"
+            >
+              Cancel edit
             </button>
           </div>
         </form>
@@ -1112,6 +1155,7 @@
             <thead>
               <tr>
                 <th>Name</th>
+                <th>Tier</th>
                 <th>Logo URL</th>
                 <th>Website</th>
                 <th></th>
@@ -1123,13 +1167,21 @@
                 *ngFor="let sponsor of t.sponsors; trackBy: trackBySponsorId"
               >
                 <td class="fw-semibold">{{ sponsor.name }}</td>
-                <td class="text-truncate" style="max-width: 200px">
+                <td>{{ sponsor.tier || '—' }}</td>
+                <td class="text-truncate" style="max-width: 160px">
                   {{ sponsor.logoUrl || '—' }}
                 </td>
-                <td class="text-truncate" style="max-width: 200px">
+                <td class="text-truncate" style="max-width: 160px">
                   {{ sponsor.linkUrl || '—' }}
                 </td>
                 <td class="text-end">
+                  <button
+                    class="btn btn-sm btn-outline-secondary me-2"
+                    type="button"
+                    (click)="openEditSponsor(sponsor)"
+                  >
+                    Edit
+                  </button>
                   <button
                     class="btn btn-sm btn-outline-danger"
                     type="button"
@@ -1143,6 +1195,169 @@
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-4" *ngIf="isOwner">
+      <div class="card-body">
+        <h2 class="h5">Announcements ({{ t.announcements.length }})</h2>
+
+        <div *ngIf="announcementError()" class="alert alert-danger py-2">
+          {{ announcementError() }}
+        </div>
+
+        <form
+          [formGroup]="announcementForm"
+          (ngSubmit)="addAnnouncement()"
+          class="d-flex gap-2 align-items-start mb-3"
+        >
+          <textarea
+            class="form-control"
+            formControlName="body"
+            rows="2"
+            placeholder="Post an update for everyone viewing this tournament..."
+          ></textarea>
+
+          <button
+            type="submit"
+            class="btn btn-primary btn-sm"
+            [disabled]="announcementForm.invalid || savingAnnouncement()"
+          >
+            {{ savingAnnouncement() ? '...' : 'Post' }}
+          </button>
+        </form>
+
+        <div *ngIf="t.announcements.length === 0" class="text-secondary py-2">
+          No announcements yet.
+        </div>
+
+        <div class="d-flex flex-column gap-2">
+          <div
+            class="border rounded p-2 d-flex justify-content-between align-items-start gap-2"
+            *ngFor="let announcement of t.announcements; trackBy: trackByAnnouncementId"
+          >
+            <div>
+              <div>{{ announcement.body }}</div>
+              <div class="text-secondary small">
+                {{ announcement.createdAt | date: 'medium' }}
+              </div>
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-danger flex-shrink-0"
+              [disabled]="deletingAnnouncementId() === announcement.id"
+              (click)="deleteAnnouncement(announcement.id)"
+            >
+              {{ deletingAnnouncementId() === announcement.id ? '...' : 'Remove' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-4" *ngIf="isOwner">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <h2 class="h5 mb-0">Venues ({{ t.venues.length }})</h2>
+
+          <button
+            type="button"
+            class="btn btn-sm btn-primary"
+            *ngIf="!showVenueForm()"
+            (click)="openAddVenue()"
+          >
+            Add venue
+          </button>
+        </div>
+
+        <div *ngIf="venueError()" class="alert alert-danger py-2 mt-3">
+          {{ venueError() }}
+        </div>
+
+        <form
+          [formGroup]="venueForm"
+          (ngSubmit)="saveVenue()"
+          class="row g-2 mt-1"
+          *ngIf="showVenueForm()"
+        >
+          <div class="col-12 col-md-6">
+            <label class="form-label">Venue / arena name</label>
+            <input class="form-control" formControlName="name" />
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label class="form-label">Address</label>
+            <input
+              class="form-control"
+              formControlName="address"
+              placeholder="Optional - powers the embedded map"
+            />
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label class="form-label">Parking</label>
+            <textarea class="form-control" formControlName="parkingInfo" rows="2"></textarea>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label class="form-label">Dressing rooms</label>
+            <textarea class="form-control" formControlName="dressingRoomInfo" rows="2"></textarea>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label class="form-label">Concessions</label>
+            <textarea class="form-control" formControlName="concessionsInfo" rows="2"></textarea>
+          </div>
+
+          <div class="col-12 d-flex gap-2">
+            <button
+              type="submit"
+              class="btn btn-primary btn-sm"
+              [disabled]="venueForm.invalid || savingVenue()"
+            >
+              {{ savingVenue() ? 'Saving...' : (editingVenueId() ? 'Save' : 'Add venue') }}
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-outline-secondary btn-sm"
+              (click)="cancelVenueEdit()"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+
+        <div class="d-flex flex-column gap-2 mt-3" *ngIf="t.venues.length > 0">
+          <div
+            class="border rounded p-2 d-flex justify-content-between align-items-start gap-2"
+            *ngFor="let venue of t.venues; trackBy: trackByVenueId"
+          >
+            <div>
+              <strong>{{ venue.name }}</strong>
+              <div class="text-secondary small" *ngIf="venue.address">{{ venue.address }}</div>
+            </div>
+
+            <div class="d-flex gap-2 flex-shrink-0">
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary"
+                (click)="openEditVenue(venue)"
+              >
+                Edit
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-danger"
+                [disabled]="deletingVenueId() === venue.id"
+                (click)="deleteVenue(venue.id)"
+              >
+                {{ deletingVenueId() === venue.id ? '...' : 'Remove' }}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

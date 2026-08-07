@@ -1,10 +1,11 @@
 import { IsEnum, IsOptional, IsString, IsUrl, MaxLength } from 'class-validator';
 import { TournamentSponsorTier } from '../../../generated/prisma/client';
 
-export class CreateTournamentSponsorDto {
+export class UpdateTournamentSponsorDto {
+  @IsOptional()
   @IsString()
   @MaxLength(120)
-  name!: string;
+  name?: string;
 
   @IsOptional()
   @IsUrl()

@@ -91,12 +91,15 @@ export interface TournamentGame {
   playerStats?: TournamentGamePlayerStat[];
 }
 
+export type TournamentSponsorTier = 'GOLD' | 'SILVER' | 'BRONZE';
+
 export interface TournamentSponsor {
   id: string;
   tournamentId: string;
   name: string;
   logoUrl?: string | null;
   linkUrl?: string | null;
+  tier?: TournamentSponsorTier | null;
   createdAt: string;
 }
 
@@ -104,7 +107,41 @@ export interface CreateTournamentSponsorInput {
   name: string;
   logoUrl?: string | null;
   linkUrl?: string | null;
+  tier?: TournamentSponsorTier | null;
 }
+
+export type UpdateTournamentSponsorInput = Partial<CreateTournamentSponsorInput>;
+
+export interface TournamentAnnouncement {
+  id: string;
+  tournamentId: string;
+  body: string;
+  createdAt: string;
+}
+
+export interface CreateTournamentAnnouncementInput {
+  body: string;
+}
+
+export interface TournamentVenue {
+  id: string;
+  tournamentId: string;
+  name: string;
+  address?: string | null;
+  parkingInfo?: string | null;
+  dressingRoomInfo?: string | null;
+  concessionsInfo?: string | null;
+}
+
+export interface CreateTournamentVenueInput {
+  name: string;
+  address?: string | null;
+  parkingInfo?: string | null;
+  dressingRoomInfo?: string | null;
+  concessionsInfo?: string | null;
+}
+
+export type UpdateTournamentVenueInput = Partial<CreateTournamentVenueInput>;
 
 export interface TournamentBracketMatchTeamRef {
   id: string;
@@ -171,10 +208,15 @@ export interface Tournament {
   registrationDeadline?: string | null;
   registrationFeeCents?: number | null;
   stripePayoutsEnabled?: boolean;
+  contactName?: string | null;
+  contactEmail?: string | null;
+  contactPhone?: string | null;
   games: TournamentGame[];
   sponsors: TournamentSponsor[];
   teams: TournamentTeam[];
   brackets: TournamentBracket[];
+  announcements: TournamentAnnouncement[];
+  venues: TournamentVenue[];
 }
 
 export interface CreateTournamentInput {
@@ -187,6 +229,9 @@ export interface CreateTournamentInput {
   registrationMode?: TournamentRegistrationMode;
   registrationDeadline?: string | null;
   registrationFeeCents?: number | null;
+  contactName?: string | null;
+  contactEmail?: string | null;
+  contactPhone?: string | null;
 }
 
 export type UpdateTournamentInput = Partial<CreateTournamentInput>;

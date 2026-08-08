@@ -13,6 +13,7 @@ import {
   CreateTournamentTeamInput,
   CreateTournamentTeamPlayerInput,
   CreateTournamentVenueInput,
+  FileStorageStatus,
   ScheduleBracketMatchGameInput,
   SubmitTournamentRegistrationResult,
   Tournament,
@@ -23,6 +24,7 @@ import {
   TournamentCoOrganizer,
   TournamentGame,
   TournamentGamePlayerStat,
+  TournamentMediaAsset,
   TournamentPaymentRow,
   TournamentPaymentsStatus,
   TournamentPaymentVerification,
@@ -435,6 +437,59 @@ export class TournamentsApiService {
   listPayments(tournamentId: string): Observable<TournamentPaymentRow[]> {
     return this.http.get<TournamentPaymentRow[]>(
       `/api/tournaments/${tournamentId}/payments`,
+    );
+  }
+
+  getFileStorageStatus(tournamentId: string): Observable<FileStorageStatus> {
+    return this.http.get<FileStorageStatus>(
+      `/api/tournaments/${tournamentId}/file-storage/status`,
+    );
+  }
+
+  uploadLogo(tournamentId: string, file: File): Observable<Tournament> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post<Tournament>(
+      `/api/tournaments/${tournamentId}/logo`,
+      formData,
+    );
+  }
+
+  uploadRulebook(tournamentId: string, file: File): Observable<Tournament> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post<Tournament>(
+      `/api/tournaments/${tournamentId}/rulebook`,
+      formData,
+    );
+  }
+
+  addMediaAsset(
+    tournamentId: string,
+    file: File,
+    caption?: string,
+  ): Observable<TournamentMediaAsset> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    if (caption) {
+      formData.append('caption', caption);
+    }
+
+    return this.http.post<TournamentMediaAsset>(
+      `/api/tournaments/${tournamentId}/media`,
+      formData,
+    );
+  }
+
+  deleteMediaAsset(
+    tournamentId: string,
+    assetId: string,
+  ): Observable<{ id: string; deleted: boolean }> {
+    return this.http.delete<{ id: string; deleted: boolean }>(
+      `/api/tournaments/${tournamentId}/media/${assetId}`,
     );
   }
 }

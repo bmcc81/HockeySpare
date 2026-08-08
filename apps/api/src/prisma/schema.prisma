@@ -579,6 +579,8 @@ model Tournament {
   contactName           String?
   contactEmail          String?
   contactPhone          String?
+  logoUrl               String?
+  rulebookUrl           String?
   createdAt             DateTime                    @default(now())
   updatedAt             DateTime                    @updatedAt
 
@@ -594,9 +596,22 @@ model Tournament {
   venues        TournamentVenue[]
   coOrganizers  TournamentCoOrganizer[]
   auditLogEntries TournamentAuditLogEntry[]
+  mediaAssets   TournamentMediaAsset[]
 
   @@index([leagueId])
   @@index([createdById])
+}
+
+model TournamentMediaAsset {
+  id           String   @id @default(cuid())
+  tournamentId String
+  url          String
+  caption      String?
+  createdAt    DateTime @default(now())
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  @@index([tournamentId, createdAt])
 }
 
 model TournamentCoOrganizer {

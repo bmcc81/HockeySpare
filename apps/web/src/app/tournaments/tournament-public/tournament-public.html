@@ -2,18 +2,26 @@
   <div *ngIf="error()" class="alert alert-danger">{{ error() }}</div>
 
   <ng-container *ngIf="tournament() as t">
-    <div class="mb-4">
-      <h1 class="mb-1">{{ t.name }}</h1>
-      <p class="text-secondary mb-0" *ngIf="t.description">
-        {{ t.description }}
-      </p>
-      <p class="text-secondary mb-0" *ngIf="t.startDate || t.endDate">
-        {{ t.startDate | date: 'mediumDate' }}
-        <ng-container *ngIf="t.endDate"> – {{ t.endDate | date: 'mediumDate' }}</ng-container>
-      </p>
-      <p class="mb-0 mt-1" *ngIf="countdownText() as countdown">
-        <span class="badge text-bg-primary">Starts in {{ countdown }}</span>
-      </p>
+    <div class="mb-4 d-flex align-items-start gap-3">
+      <img
+        *ngIf="t.logoUrl"
+        [src]="t.logoUrl"
+        [alt]="t.name + ' logo'"
+        style="height: 64px; width: 64px; object-fit: contain; flex-shrink: 0"
+      />
+      <div>
+        <h1 class="mb-1">{{ t.name }}</h1>
+        <p class="text-secondary mb-0" *ngIf="t.description">
+          {{ t.description }}
+        </p>
+        <p class="text-secondary mb-0" *ngIf="t.startDate || t.endDate">
+          {{ t.startDate | date: 'mediumDate' }}
+          <ng-container *ngIf="t.endDate"> – {{ t.endDate | date: 'mediumDate' }}</ng-container>
+        </p>
+        <p class="mb-0 mt-1" *ngIf="countdownText() as countdown">
+          <span class="badge text-bg-primary">Starts in {{ countdown }}</span>
+        </p>
+      </div>
     </div>
 
     <a
@@ -107,7 +115,7 @@
         </button>
       </li>
 
-      <li class="nav-item" *ngIf="t.contactName || t.contactEmail || t.contactPhone || t.venues.length > 0">
+      <li class="nav-item" *ngIf="t.contactName || t.contactEmail || t.contactPhone || t.venues.length > 0 || t.mediaAssets.length > 0">
         <button
           class="nav-link"
           type="button"
@@ -493,6 +501,12 @@
     </div>
 
     <div *ngIf="activeTab() === 'rules'">
+      <p class="mb-3" *ngIf="t.rulebookUrl">
+        <a [href]="t.rulebookUrl" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">
+          Download rulebook PDF
+        </a>
+      </p>
+
       <div *ngIf="!t.rules" class="text-secondary">
         Rules haven't been posted yet.
       </div>
@@ -545,6 +559,27 @@
               loading="lazy"
               referrerpolicy="no-referrer-when-downgrade"
             ></iframe>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="t.mediaAssets.length > 0">
+        <h2 class="h5">Photos</h2>
+
+        <div class="row g-2">
+          <div
+            class="col-6 col-md-3"
+            *ngFor="let asset of t.mediaAssets; trackBy: trackByMediaAssetId"
+          >
+            <img
+              [src]="asset.url"
+              [alt]="asset.caption || 'Tournament photo'"
+              class="img-fluid rounded"
+              style="width: 100%; height: 120px; object-fit: cover"
+            />
+            <div class="small text-secondary text-truncate" *ngIf="asset.caption">
+              {{ asset.caption }}
+            </div>
           </div>
         </div>
       </div>

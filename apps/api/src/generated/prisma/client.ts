@@ -150,6 +150,11 @@ export type HelpArticle = Prisma.HelpArticleModel
  */
 export type Tournament = Prisma.TournamentModel
 /**
+ * Model TournamentMediaAsset
+ * 
+ */
+export type TournamentMediaAsset = Prisma.TournamentMediaAssetModel
+/**
  * Model TournamentCoOrganizer
  * 
  */

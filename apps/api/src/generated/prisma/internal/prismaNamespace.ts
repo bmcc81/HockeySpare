@@ -406,6 +406,8 @@ export const ModelName = {
   GameScoreSheetPlayer: 'GameScoreSheetPlayer',
   HelpArticle: 'HelpArticle',
   Tournament: 'Tournament',
+  TournamentCoOrganizer: 'TournamentCoOrganizer',
+  TournamentAuditLogEntry: 'TournamentAuditLogEntry',
   TournamentAnnouncement: 'TournamentAnnouncement',
   TournamentVenue: 'TournamentVenue',
   TournamentGame: 'TournamentGame',
@@ -432,7 +434,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "request" | "requestResponse" | "playerOffer" | "user" | "league" | "leagueArena" | "leagueMember" | "team" | "teamMessage" | "teamMember" | "playerStat" | "memberFee" | "payment" | "teamGame" | "teamGameInvite" | "teamGameAvailability" | "notification" | "booking" | "gameScoreSheet" | "gameScoreSheetPlayer" | "helpArticle" | "tournament" | "tournamentAnnouncement" | "tournamentVenue" | "tournamentGame" | "tournamentRegistration" | "tournamentTeam" | "tournamentBracket" | "tournamentBracketMatch" | "tournamentTeamPlayer" | "tournamentGamePlayerStat" | "tournamentPayment" | "tournamentSponsor"
+    modelProps: "request" | "requestResponse" | "playerOffer" | "user" | "league" | "leagueArena" | "leagueMember" | "team" | "teamMessage" | "teamMember" | "playerStat" | "memberFee" | "payment" | "teamGame" | "teamGameInvite" | "teamGameAvailability" | "notification" | "booking" | "gameScoreSheet" | "gameScoreSheetPlayer" | "helpArticle" | "tournament" | "tournamentCoOrganizer" | "tournamentAuditLogEntry" | "tournamentAnnouncement" | "tournamentVenue" | "tournamentGame" | "tournamentRegistration" | "tournamentTeam" | "tournamentBracket" | "tournamentBracketMatch" | "tournamentTeamPlayer" | "tournamentGamePlayerStat" | "tournamentPayment" | "tournamentSponsor"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2064,6 +2066,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TournamentCoOrganizer: {
+      payload: Prisma.$TournamentCoOrganizerPayload<ExtArgs>
+      fields: Prisma.TournamentCoOrganizerFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TournamentCoOrganizerFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentCoOrganizerPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TournamentCoOrganizerFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentCoOrganizerPayload>
+        }
+        findFirst: {
+          args: Prisma.TournamentCoOrganizerFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentCoOrganizerPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TournamentCoOrganizerFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentCoOrganizerPayload>
+        }
+        findMany: {
+          args: Prisma.TournamentCoOrganizerFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentCoOrganizerPayload>[]
+        }
+        create: {
+          args: Prisma.TournamentCoOrganizerCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentCoOrganizerPayload>
+        }
+        createMany: {
+          args: Prisma.TournamentCoOrganizerCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TournamentCoOrganizerCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentCoOrganizerPayload>[]
+        }
+        delete: {
+          args: Prisma.TournamentCoOrganizerDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentCoOrganizerPayload>
+        }
+        update: {
+          args: Prisma.TournamentCoOrganizerUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentCoOrganizerPayload>
+        }
+        deleteMany: {
+          args: Prisma.TournamentCoOrganizerDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TournamentCoOrganizerUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TournamentCoOrganizerUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentCoOrganizerPayload>[]
+        }
+        upsert: {
+          args: Prisma.TournamentCoOrganizerUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentCoOrganizerPayload>
+        }
+        aggregate: {
+          args: Prisma.TournamentCoOrganizerAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTournamentCoOrganizer>
+        }
+        groupBy: {
+          args: Prisma.TournamentCoOrganizerGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TournamentCoOrganizerGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TournamentCoOrganizerCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TournamentCoOrganizerCountAggregateOutputType> | number
+        }
+      }
+    }
+    TournamentAuditLogEntry: {
+      payload: Prisma.$TournamentAuditLogEntryPayload<ExtArgs>
+      fields: Prisma.TournamentAuditLogEntryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TournamentAuditLogEntryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentAuditLogEntryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TournamentAuditLogEntryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentAuditLogEntryPayload>
+        }
+        findFirst: {
+          args: Prisma.TournamentAuditLogEntryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentAuditLogEntryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TournamentAuditLogEntryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentAuditLogEntryPayload>
+        }
+        findMany: {
+          args: Prisma.TournamentAuditLogEntryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentAuditLogEntryPayload>[]
+        }
+        create: {
+          args: Prisma.TournamentAuditLogEntryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentAuditLogEntryPayload>
+        }
+        createMany: {
+          args: Prisma.TournamentAuditLogEntryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TournamentAuditLogEntryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentAuditLogEntryPayload>[]
+        }
+        delete: {
+          args: Prisma.TournamentAuditLogEntryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentAuditLogEntryPayload>
+        }
+        update: {
+          args: Prisma.TournamentAuditLogEntryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentAuditLogEntryPayload>
+        }
+        deleteMany: {
+          args: Prisma.TournamentAuditLogEntryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TournamentAuditLogEntryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TournamentAuditLogEntryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentAuditLogEntryPayload>[]
+        }
+        upsert: {
+          args: Prisma.TournamentAuditLogEntryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentAuditLogEntryPayload>
+        }
+        aggregate: {
+          args: Prisma.TournamentAuditLogEntryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTournamentAuditLogEntry>
+        }
+        groupBy: {
+          args: Prisma.TournamentAuditLogEntryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TournamentAuditLogEntryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TournamentAuditLogEntryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TournamentAuditLogEntryCountAggregateOutputType> | number
+        }
+      }
+    }
     TournamentAnnouncement: {
       payload: Prisma.$TournamentAnnouncementPayload<ExtArgs>
       fields: Prisma.TournamentAnnouncementFieldRefs
@@ -3273,6 +3423,28 @@ export const TournamentScalarFieldEnum = {
 export type TournamentScalarFieldEnum = (typeof TournamentScalarFieldEnum)[keyof typeof TournamentScalarFieldEnum]
 
 
+export const TournamentCoOrganizerScalarFieldEnum = {
+  id: 'id',
+  tournamentId: 'tournamentId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type TournamentCoOrganizerScalarFieldEnum = (typeof TournamentCoOrganizerScalarFieldEnum)[keyof typeof TournamentCoOrganizerScalarFieldEnum]
+
+
+export const TournamentAuditLogEntryScalarFieldEnum = {
+  id: 'id',
+  tournamentId: 'tournamentId',
+  userId: 'userId',
+  action: 'action',
+  detail: 'detail',
+  createdAt: 'createdAt'
+} as const
+
+export type TournamentAuditLogEntryScalarFieldEnum = (typeof TournamentAuditLogEntryScalarFieldEnum)[keyof typeof TournamentAuditLogEntryScalarFieldEnum]
+
+
 export const TournamentAnnouncementScalarFieldEnum = {
   id: 'id',
   tournamentId: 'tournamentId',
@@ -3942,6 +4114,8 @@ export type GlobalOmitConfig = {
   gameScoreSheetPlayer?: Prisma.GameScoreSheetPlayerOmit
   helpArticle?: Prisma.HelpArticleOmit
   tournament?: Prisma.TournamentOmit
+  tournamentCoOrganizer?: Prisma.TournamentCoOrganizerOmit
+  tournamentAuditLogEntry?: Prisma.TournamentAuditLogEntryOmit
   tournamentAnnouncement?: Prisma.TournamentAnnouncementOmit
   tournamentVenue?: Prisma.TournamentVenueOmit
   tournamentGame?: Prisma.TournamentGameOmit

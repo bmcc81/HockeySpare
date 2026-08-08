@@ -6,7 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
   Tournament,
   TournamentBracket,
@@ -46,7 +46,7 @@ const BANNER_ROTATE_MS = 5000;
 @Component({
   selector: 'app-tournament-public',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './tournament-public.html',
 })
 export class TournamentPublicComponent implements OnInit, OnDestroy {
@@ -86,6 +86,7 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
   countdownText = signal<string | null>(null);
   searchQuery = signal('');
   bannerIndex = signal(0);
+  highlightedGameId = signal<string | null>(null);
 
   registrationForm = this.fb.group({
     teamName: ['', Validators.required],
@@ -112,6 +113,7 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
       next: (tournament) => {
         this.tournament.set(tournament);
         this.loading.set(false);
+        this.jumpToFragmentGame();
       },
       error: () => {
         this.error.set('This tournament could not be found.');
@@ -155,6 +157,26 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
         this.bannerIndex.set((this.bannerIndex() + 1) % sponsors.length);
       }
     }, BANNER_ROTATE_MS);
+  }
+
+  private jumpToFragmentGame(): void {
+    const fragment = this.route.snapshot.fragment;
+
+    if (!fragment?.startsWith('game-')) {
+      return;
+    }
+
+    const gameId = fragment.slice('game-'.length);
+    this.setTab('schedule');
+    this.highlightedGameId.set(gameId);
+
+    setTimeout(() => {
+      document
+        .getElementById(fragment)
+        ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 0);
+
+    setTimeout(() => this.highlightedGameId.set(null), 5000);
   }
 
   private updateCountdown(): void {

@@ -15,6 +15,7 @@
   ],
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.28.1",
+    "@types/qrcode": "^1.5.6",
     "concurrently": "^9.2.1",
     "prisma": "^7.5.0",
     "typescript": "^5.9.3"
@@ -22,6 +23,7 @@
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "ollama": "^0.6.3",
+    "qrcode": "^1.5.4",
     "zone.js": "^0.16.1"
   },
   "overrides": {

@@ -12,12 +12,28 @@
         <p class="text-secondary mb-0">Manage schedule and rules.</p>
       </div>
 
-      <a
-        [routerLink]="['/tournaments', tournamentId]"
-        class="btn btn-outline-primary"
-      >
-        View public page
-      </a>
+      <div class="d-flex flex-wrap gap-2">
+        <a
+          [routerLink]="['/tournaments', tournamentId]"
+          class="btn btn-outline-primary"
+        >
+          View public page
+        </a>
+        <a
+          [routerLink]="['/tournaments', tournamentId, 'scoreboard']"
+          target="_blank"
+          class="btn btn-outline-secondary"
+        >
+          TV scoreboard
+        </a>
+        <a
+          [routerLink]="['/tournaments', tournamentId, 'program']"
+          target="_blank"
+          class="btn btn-outline-secondary"
+        >
+          Printable program
+        </a>
+      </div>
     </div>
 
     <div *ngIf="!isOwner" class="alert alert-warning">
@@ -539,6 +555,14 @@
                         <button
                           class="btn btn-sm btn-outline-secondary me-2"
                           type="button"
+                          (click)="toggleGameQr(game.id)"
+                        >
+                          QR
+                        </button>
+
+                        <button
+                          class="btn btn-sm btn-outline-secondary me-2"
+                          type="button"
                           (click)="openEditGame(game)"
                         >
                           Edit
@@ -613,6 +637,22 @@
                           >
                             Close
                           </button>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <tr *ngIf="showingQrGameId() === game.id">
+                      <td colspan="5" class="bg-transparent">
+                        <div class="d-flex align-items-center gap-3">
+                          <app-qr-code [value]="gameQrValue(game.id)" [size]="120" />
+                          <div class="small">
+                            <div class="text-secondary">
+                              Scan to jump straight to this game on the public schedule.
+                            </div>
+                            <a [href]="gameQrValue(game.id)" target="_blank" rel="noopener">
+                              {{ gameQrValue(game.id) }}
+                            </a>
+                          </div>
                         </div>
                       </td>
                     </tr>

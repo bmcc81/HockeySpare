@@ -172,6 +172,22 @@ export const routes: Routes = [
       ),
   },
   {
+    // Public - no auth guard. Meant for an arena TV/projector.
+    path: 'tournaments/:id/scoreboard',
+    loadComponent: () =>
+      import('./tournaments/tournament-scoreboard/tournament-scoreboard').then(
+        (m) => m.TournamentScoreboardComponent,
+      ),
+  },
+  {
+    // Public - no auth guard. Print-optimized schedule/teams/sponsors handout.
+    path: 'tournaments/:id/program',
+    loadComponent: () =>
+      import('./tournaments/tournament-program/tournament-program').then(
+        (m) => m.TournamentProgramComponent,
+      ),
+  },
+  {
     // Public - no auth guard. Anyone with the link can view the schedule/rules.
     path: 'tournaments/:id',
     loadComponent: () =>

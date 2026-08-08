@@ -29,6 +29,7 @@ import { generateApiKey } from './api-key.util';
 import { StripeService } from '../stripe/stripe.service';
 import { EmailService } from '../email/email.service';
 import { FileStorageService } from '../file-storage/file-storage.service';
+import { AiService } from '../../ai/ai.service';
 import { createHmac, randomBytes } from 'crypto';
 import type Stripe from 'stripe';
 
@@ -39,6 +40,7 @@ export class TournamentsService {
     private readonly stripeService: StripeService,
     private readonly emailService: EmailService,
     private readonly fileStorageService: FileStorageService,
+    private readonly aiService: AiService,
   ) {}
 
   private readonly tournamentInclude = {
@@ -2466,5 +2468,66 @@ export class TournamentsService {
     await this.logAudit(tournamentId, userId, 'WEBHOOK_REMOVED', webhook.url);
 
     return { id: webhook.id, deleted: true };
+  }
+
+  getScoresheetOcrStatus() {
+    return { configured: this.aiService.isScoresheetOcrConfigured() };
+  }
+
+  /**
+   * Photographs a paper scoresheet and returns an AI-extracted draft for
+   * the organizer to review - this never writes the score or stats itself.
+   * The photo is kept on the game as a reference regardless of whether the
+   * organizer ends up using the extracted values.
+   */
+  async scanScoresheet(
+    userId: string,
+    tournamentId: string,
+    gameId: string,
+    file: Express.Multer.File,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const game = await this.prisma.tournamentGame.findFirst({
+      where: { id: gameId, tournamentId },
+    });
+
+    if (!game) {
+      throw new NotFoundException('Tournament game not found');
+    }
+
+    this.assertImageFile(file);
+
+    const photoUrl = await this.fileStorageService.uploadFile(
+      `tournaments/${tournamentId}/scoresheets`,
+      file.originalname,
+      file.buffer,
+      file.mimetype,
+    );
+
+    if (game.scoresheetPhotoUrl) {
+      await this.fileStorageService
+        .deleteFileByUrl(game.scoresheetPhotoUrl)
+        .catch(() => {});
+    }
+
+    const updatedGame = await this.prisma.tournamentGame.update({
+      where: { id: gameId },
+      data: { scoresheetPhotoUrl: photoUrl },
+    });
+
+    const extraction = await this.aiService.extractScoresheetData(
+      file.buffer,
+      file.mimetype,
+    );
+
+    await this.logAudit(
+      tournamentId,
+      userId,
+      'SCORESHEET_SCANNED',
+      `${game.homeTeamName} vs ${game.awayTeamName}`,
+    );
+
+    return { game: updatedGame, extraction };
   }
 }

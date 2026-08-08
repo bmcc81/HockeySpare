@@ -8,6 +8,9 @@ import {
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
   FileStorageStatus,
+  ScoresheetExtraction,
+  ScoresheetOcrStatus,
+  ScoresheetPlayerExtraction,
   Tournament,
   TournamentAnnouncement,
   TournamentApiKey,
@@ -141,6 +144,15 @@ export class TournamentManageComponent implements OnInit {
   uploadingMedia = signal(false);
   mediaError = signal<string | null>(null);
   deletingMediaAssetId = signal<string | null>(null);
+
+  scoresheetOcrStatus = signal<ScoresheetOcrStatus | null>(null);
+  scanningScoresheetGameId = signal<string | null>(null);
+  scoresheetError = signal<{ gameId: string; message: string } | null>(null);
+  lastExtraction = signal<{
+    gameId: string;
+    extraction: ScoresheetExtraction;
+    unmatchedPlayers: ScoresheetPlayerExtraction[];
+  } | null>(null);
 
   apiKeys = signal<TournamentApiKey[]>([]);
   creatingApiKey = signal(false);
@@ -348,6 +360,7 @@ export class TournamentManageComponent implements OnInit {
           this.loadFileStorageStatus();
           this.loadApiKeys();
           this.loadWebhooks();
+          this.loadScoresheetOcrStatus();
         } else if (this.authState.user()?.id) {
           // Not the creator, but might be a co-organizer - probing the
           // co-organizer list is itself owner-or-co-organizer gated, so a
@@ -375,6 +388,7 @@ export class TournamentManageComponent implements OnInit {
           this.loadFileStorageStatus();
           this.loadApiKeys();
           this.loadWebhooks();
+          this.loadScoresheetOcrStatus();
         }
       },
       error: () => {
@@ -390,6 +404,17 @@ export class TournamentManageComponent implements OnInit {
       },
       error: () => {
         this.fileStorageStatus.set(null);
+      },
+    });
+  }
+
+  private loadScoresheetOcrStatus(): void {
+    this.tournamentsApi.getScoresheetOcrStatus(this.tournamentId).subscribe({
+      next: (status) => {
+        this.scoresheetOcrStatus.set(status);
+      },
+      error: () => {
+        this.scoresheetOcrStatus.set(null);
       },
     });
   }
@@ -1782,5 +1807,105 @@ export class TournamentManageComponent implements OnInit {
 
   trackByWebhookId(_index: number, webhook: TournamentWebhook): string {
     return webhook.id;
+  }
+
+  scanScoresheetFileSelected(game: TournamentGame, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    this.scanningScoresheetGameId.set(game.id);
+    this.scoresheetError.set(null);
+    this.lastExtraction.set(null);
+
+    this.tournamentsApi
+      .scanScoresheet(this.tournamentId, game.id, file)
+      .subscribe({
+        next: ({ game: updatedGame, extraction }) => {
+          this.scanningScoresheetGameId.set(null);
+          input.value = '';
+          this.applyScoresheetExtraction(updatedGame, extraction);
+          this.load();
+        },
+        error: (err) => {
+          this.scoresheetError.set({
+            gameId: game.id,
+            message: err?.error?.message || 'Could not scan this scoresheet.',
+          });
+          this.scanningScoresheetGameId.set(null);
+          input.value = '';
+        },
+      });
+  }
+
+  /**
+   * Pre-fills the existing score/stat editors from an OCR draft - it never
+   * writes anything itself. The organizer still has to review and press
+   * Save on each form, same as if they'd typed the values in by hand.
+   */
+  private applyScoresheetExtraction(
+    game: TournamentGame,
+    extraction: ScoresheetExtraction,
+  ): void {
+    this.scoreEditorGameId.set(game.id);
+    this.scoreError.set(null);
+    this.scoreForm.reset({
+      homeScore: extraction.homeScore ?? game.homeScore ?? 0,
+      awayScore: extraction.awayScore ?? game.awayScore ?? 0,
+      status: game.status === 'SCHEDULED' ? 'LIVE' : game.status,
+    });
+
+    this.statEditorGameId.set(game.id);
+    this.statError.set(null);
+
+    const roster = this.gameRosterPlayers(game);
+    const drafts: Record<
+      string,
+      { goals: number; assists: number; penaltyMins: number; plusMinus: number }
+    > = {};
+
+    for (const player of roster) {
+      const existing = game.playerStats?.find(
+        (stat) => stat.teamPlayerId === player.id,
+      );
+
+      drafts[player.id] = {
+        goals: existing?.goals ?? 0,
+        assists: existing?.assists ?? 0,
+        penaltyMins: existing?.penaltyMins ?? 0,
+        plusMinus: existing?.plusMinus ?? 0,
+      };
+    }
+
+    const unmatchedPlayers: ScoresheetPlayerExtraction[] = [];
+
+    for (const extracted of extraction.players) {
+      const match = roster.find(
+        (player) =>
+          player.displayName.trim().toLowerCase() ===
+          extracted.name.trim().toLowerCase(),
+      );
+
+      if (match) {
+        drafts[match.id] = {
+          goals: extracted.goals,
+          assists: extracted.assists,
+          penaltyMins: extracted.penaltyMinutes,
+          plusMinus: drafts[match.id]?.plusMinus ?? 0,
+        };
+      } else {
+        unmatchedPlayers.push(extracted);
+      }
+    }
+
+    this.statDrafts.set(drafts);
+    this.lastExtraction.set({ gameId: game.id, extraction, unmatchedPlayers });
+  }
+
+  dismissExtraction(): void {
+    this.lastExtraction.set(null);
   }
 }

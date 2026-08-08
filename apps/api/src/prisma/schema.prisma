@@ -711,6 +711,7 @@ model TournamentGame {
   homeScore    Int?
   awayScore    Int?
   status       TournamentGameStatus @default(SCHEDULED)
+  scoresheetPhotoUrl String?
   createdAt    DateTime             @default(now())
   updatedAt    DateTime             @updatedAt
 

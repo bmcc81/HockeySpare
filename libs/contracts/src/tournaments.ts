@@ -88,6 +88,7 @@ export interface TournamentGame {
   homeScore?: number | null;
   awayScore?: number | null;
   status: TournamentGameStatus;
+  scoresheetPhotoUrl?: string | null;
   playerStats?: TournamentGamePlayerStat[];
 }
 
@@ -409,4 +410,31 @@ export interface TournamentWebhook {
 export interface CreateTournamentWebhookInput {
   url: string;
   secret?: string;
+}
+
+export interface ScoresheetOcrStatus {
+  configured: boolean;
+}
+
+export type ScoresheetPlayerExtraction = {
+  teamSide: 'home' | 'away' | null;
+  name: string;
+  goals: number;
+  assists: number;
+  penaltyMinutes: number;
+};
+
+export interface ScoresheetExtraction {
+  homeTeamName: string | null;
+  awayTeamName: string | null;
+  homeScore: number | null;
+  awayScore: number | null;
+  players: ScoresheetPlayerExtraction[];
+  confidence: 'high' | 'medium' | 'low';
+  notes: string | null;
+}
+
+export interface ScoresheetScanResult {
+  game: TournamentGame;
+  extraction: ScoresheetExtraction;
 }

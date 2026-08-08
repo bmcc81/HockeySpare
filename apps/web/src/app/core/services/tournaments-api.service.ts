@@ -34,6 +34,8 @@ import {
   TournamentPaymentVerification,
   TournamentPlayerLeaderRow,
   TournamentRegistration,
+  ScoresheetOcrStatus,
+  ScoresheetScanResult,
   TournamentSponsor,
   TournamentStandingRow,
   TournamentTeam,
@@ -545,6 +547,28 @@ export class TournamentsApiService {
   ): Observable<{ id: string; deleted: boolean }> {
     return this.http.delete<{ id: string; deleted: boolean }>(
       `/api/tournaments/${tournamentId}/webhooks/${webhookId}`,
+    );
+  }
+
+  getScoresheetOcrStatus(
+    tournamentId: string,
+  ): Observable<ScoresheetOcrStatus> {
+    return this.http.get<ScoresheetOcrStatus>(
+      `/api/tournaments/${tournamentId}/scoresheet-ocr/status`,
+    );
+  }
+
+  scanScoresheet(
+    tournamentId: string,
+    gameId: string,
+    file: File,
+  ): Observable<ScoresheetScanResult> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post<ScoresheetScanResult>(
+      `/api/tournaments/${tournamentId}/games/${gameId}/scoresheet-ocr`,
+      formData,
     );
   }
 }

@@ -1,0 +1,234 @@
+<style>
+  :host {
+    display: block;
+    min-height: 100vh;
+    background: #0a0e14;
+    color: #f5f7fa;
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    padding: 2rem 3rem;
+  }
+
+  .board-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid #1f2937;
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .board-title {
+    font-size: 2.75rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+  }
+
+  .board-clock {
+    font-size: 2rem;
+    font-variant-numeric: tabular-nums;
+    color: #9ca3af;
+  }
+
+  .weather-banner {
+    background: #7f1d1d;
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-label {
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-size: 1.1rem;
+    color: #9ca3af;
+    margin-bottom: 0.75rem;
+  }
+
+  .live-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .live-card {
+    background: linear-gradient(135deg, #1b1030, #2a0f1f);
+    border: 2px solid #ef4444;
+    border-radius: 1rem;
+    padding: 1.5rem 2rem;
+  }
+
+  .live-pill {
+    display: inline-block;
+    background: #ef4444;
+    color: #fff;
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    padding: 0.2rem 0.75rem;
+    border-radius: 999px;
+    margin-bottom: 0.75rem;
+    animation: pulse 1.6s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+  }
+
+  .live-matchup {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 2.25rem;
+    font-weight: 700;
+  }
+
+  .live-team {
+    flex: 1;
+  }
+
+  .live-score {
+    font-size: 3.5rem;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    padding: 0 1rem;
+  }
+
+  .live-meta {
+    margin-top: 0.75rem;
+    color: #d1d5db;
+    font-size: 1.1rem;
+  }
+
+  .empty-state {
+    color: #6b7280;
+    font-size: 1.4rem;
+    padding: 2rem 0;
+  }
+
+  .list-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.3rem;
+  }
+
+  .list-table th {
+    text-align: left;
+    color: #9ca3af;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #1f2937;
+  }
+
+  .list-table td {
+    padding: 0.6rem 0;
+    border-bottom: 1px solid #1f2937;
+  }
+
+  .list-table .score-final {
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+
+  @media (max-width: 900px) {
+    .two-col {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<ng-container *ngIf="!loading(); else loadingTpl">
+  <div *ngIf="error()" class="empty-state">{{ error() }}</div>
+
+  <ng-container *ngIf="tournament() as t">
+    <div class="board-header">
+      <div class="board-title">{{ t.name }}</div>
+      <div class="board-clock">{{ now() | date: 'EEE, MMM d' }} &middot; {{ now() | date: 'h:mm:ss a' }}</div>
+    </div>
+
+    <div class="weather-banner" *ngIf="weatherAlert() as alert">
+      &#9888; WEATHER ALERT: {{ alert }}
+    </div>
+
+    <div class="section-label">Live now</div>
+
+    <div class="live-grid" *ngIf="liveGames().length > 0; else noLive">
+      <div class="live-card" *ngFor="let game of liveGames(); trackBy: trackByGameId">
+        <span class="live-pill">&#9679; LIVE</span>
+        <div class="live-matchup">
+          <div class="live-team">{{ game.homeTeamName }}</div>
+          <div class="live-score">{{ game.homeScore ?? 0 }} - {{ game.awayScore ?? 0 }}</div>
+          <div class="live-team text-end">{{ game.awayTeamName }}</div>
+        </div>
+        <div class="live-meta">{{ game.arenaName || 'Arena TBD' }}</div>
+      </div>
+    </div>
+
+    <ng-template #noLive>
+      <div class="empty-state">No games are live right now.</div>
+    </ng-template>
+
+    <div class="two-col mt-3">
+      <div>
+        <div class="section-label">Up next</div>
+        <table class="list-table" *ngIf="upcomingGames().length > 0; else noUpcoming">
+          <thead>
+            <tr>
+              <th>Matchup</th>
+              <th>Time</th>
+              <th>Arena</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let game of upcomingGames(); trackBy: trackByGameId">
+              <td>{{ game.homeTeamName }} vs {{ game.awayTeamName }}</td>
+              <td>{{ game.startsAt | date: 'shortTime' }}</td>
+              <td>{{ game.arenaName || 'TBD' }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <ng-template #noUpcoming>
+          <div class="empty-state">No upcoming games scheduled.</div>
+        </ng-template>
+      </div>
+
+      <div>
+        <div class="section-label">Recent finals</div>
+        <table class="list-table" *ngIf="recentFinals().length > 0; else noFinals">
+          <thead>
+            <tr>
+              <th>Matchup</th>
+              <th>Final</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let game of recentFinals(); trackBy: trackByGameId">
+              <td>{{ game.homeTeamName }} vs {{ game.awayTeamName }}</td>
+              <td class="score-final">{{ game.homeScore ?? 0 }} - {{ game.awayScore ?? 0 }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <ng-template #noFinals>
+          <div class="empty-state">No games have finished yet.</div>
+        </ng-template>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>
+
+<ng-template #loadingTpl>
+  <div class="empty-state">Loading...</div>
+</ng-template>

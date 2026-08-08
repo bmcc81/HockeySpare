@@ -220,7 +220,11 @@
           </thead>
 
           <tbody>
-            <tr *ngFor="let game of filteredGames(); trackBy: trackByGameId">
+            <tr
+              *ngFor="let game of filteredGames(); trackBy: trackByGameId"
+              [id]="'game-' + game.id"
+              [class.table-warning]="highlightedGameId() === game.id"
+            >
               <td class="fw-semibold">
                 {{ game.homeTeamName }} vs {{ game.awayTeamName }}
               </td>
@@ -930,6 +934,11 @@
           </button>
         </form>
       </ng-container>
+    </div>
+
+    <div class="d-flex gap-3 mt-5 pt-3 border-top small text-secondary">
+      <a [routerLink]="['/tournaments', t.id, 'scoreboard']" target="_blank">Arena TV scoreboard</a>
+      <a [routerLink]="['/tournaments', t.id, 'program']" target="_blank">Printable program</a>
     </div>
   </ng-container>
 </section>

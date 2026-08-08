@@ -41,11 +41,12 @@ import {
 } from '@hockeyspare/contracts';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
 import { AuthStateService } from '../../auth/auth-state.service';
+import { QrCodeComponent } from '../shared/qr-code/qr-code';
 
 @Component({
   selector: 'app-tournament-manage',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, QrCodeComponent],
   templateUrl: './tournament-manage.html',
 })
 export class TournamentManageComponent implements OnInit {
@@ -195,6 +196,8 @@ export class TournamentManageComponent implements OnInit {
   lostFoundError = signal<string | null>(null);
   updatingLostFoundItemId = signal<string | null>(null);
   deletingLostFoundItemId = signal<string | null>(null);
+
+  showingQrGameId = signal<string | null>(null);
 
   detailsForm = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
@@ -2391,5 +2394,15 @@ export class TournamentManageComponent implements OnInit {
     item: TournamentLostFoundItem,
   ): string {
     return item.id;
+  }
+
+  toggleGameQr(gameId: string): void {
+    this.showingQrGameId.set(
+      this.showingQrGameId() === gameId ? null : gameId,
+    );
+  }
+
+  gameQrValue(gameId: string): string {
+    return `${window.location.origin}/tournaments/${this.tournamentId}#game-${gameId}`;
   }
 }

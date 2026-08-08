@@ -1,0 +1,202 @@
+<style>
+  :host {
+    display: block;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+    color: #111;
+  }
+
+  .no-print {
+    margin-bottom: 1.5rem;
+  }
+
+  .program-header {
+    text-align: center;
+    border-bottom: 3px solid #111;
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .program-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin-bottom: 0.25rem;
+  }
+
+  .program-section {
+    margin-bottom: 2rem;
+    page-break-inside: avoid;
+  }
+
+  .program-section h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 0.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .day-heading {
+    font-weight: 700;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  table.program-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+
+  table.program-table th,
+  table.program-table td {
+    text-align: left;
+    padding: 0.35rem 0.5rem;
+    border-bottom: 1px solid #ddd;
+    vertical-align: middle;
+  }
+
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem 2rem;
+  }
+
+  .sponsor-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: center;
+  }
+
+  .sponsor-list img {
+    max-height: 50px;
+    max-width: 140px;
+  }
+
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+
+    :host {
+      padding: 0;
+    }
+
+    a {
+      color: #111;
+      text-decoration: none;
+    }
+  }
+</style>
+
+<ng-container *ngIf="!loading(); else loadingTpl">
+  <div *ngIf="error()" class="text-secondary">{{ error() }}</div>
+
+  <ng-container *ngIf="tournament() as t">
+    <div class="no-print d-flex justify-content-end">
+      <button type="button" class="btn btn-primary" (click)="print()">Print / Save as PDF</button>
+    </div>
+
+    <div class="program-header">
+      <img
+        *ngIf="t.logoUrl"
+        [src]="t.logoUrl"
+        [alt]="t.name + ' logo'"
+        style="height: 72px; margin-bottom: 0.5rem"
+      />
+      <div class="program-title">{{ t.name }}</div>
+      <div *ngIf="t.startDate || t.endDate">
+        {{ t.startDate | date: 'mediumDate' }}
+        <ng-container *ngIf="t.endDate"> &ndash; {{ t.endDate | date: 'mediumDate' }}</ng-container>
+      </div>
+      <p class="mt-2" *ngIf="t.description">{{ t.description }}</p>
+    </div>
+
+    <div class="program-section" *ngIf="t.venues.length > 0">
+      <h2>Venues</h2>
+      <div *ngFor="let venue of t.venues" class="mb-2">
+        <strong>{{ venue.name }}</strong>
+        <span *ngIf="venue.address"> &mdash; {{ venue.address }}</span>
+      </div>
+    </div>
+
+    <div class="program-section">
+      <h2>Schedule</h2>
+
+      <div *ngIf="t.games.length === 0" class="text-secondary">
+        No games have been scheduled yet.
+      </div>
+
+      <ng-container *ngFor="let group of gamesByDay()">
+        <div class="day-heading">{{ group.day }}</div>
+        <table class="program-table">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Matchup</th>
+              <th>Arena</th>
+              <th>Refs</th>
+              <th class="no-print">QR</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let game of group.games; trackBy: trackByGameId">
+              <td>{{ game.startsAt | date: 'shortTime' }}</td>
+              <td>{{ game.homeTeamName }} vs {{ game.awayTeamName }}</td>
+              <td>{{ game.arenaName || 'TBD' }}</td>
+              <td>
+                <span *ngFor="let assignment of game.refereeAssignments; let last = last">
+                  {{ assignment.referee.name }}{{ last ? '' : ', ' }}
+                </span>
+              </td>
+              <td class="no-print">
+                <app-qr-code [value]="gameQrValue(game.id)" [size]="48" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+    </div>
+
+    <div class="program-section" *ngIf="t.teams.length > 0">
+      <h2>Teams</h2>
+      <div class="team-grid">
+        <div *ngFor="let team of t.teams; trackBy: trackByTeamId">
+          <strong>{{ team.name }}</strong>
+          <span class="text-secondary" *ngIf="team.division"> ({{ team.division }})</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="program-section" *ngIf="t.rules">
+      <h2>Rules</h2>
+      <p style="white-space: pre-wrap">{{ t.rules }}</p>
+    </div>
+
+    <div class="program-section" *ngIf="t.sponsors.length > 0">
+      <h2>Thank you to our sponsors</h2>
+      <div class="sponsor-list">
+        <img
+          *ngFor="let sponsor of t.sponsors"
+          [src]="sponsor.logoUrl"
+          [alt]="sponsor.name"
+        />
+      </div>
+    </div>
+
+    <div class="program-section" *ngIf="t.contactName || t.contactEmail || t.contactPhone">
+      <h2>Contact</h2>
+      <p class="mb-1" *ngIf="t.contactName">{{ t.contactName }}</p>
+      <p class="mb-1" *ngIf="t.contactEmail">{{ t.contactEmail }}</p>
+      <p class="mb-1" *ngIf="t.contactPhone">{{ t.contactPhone }}</p>
+    </div>
+  </ng-container>
+</ng-container>
+
+<ng-template #loadingTpl>
+  <div class="text-secondary">Loading...</div>
+</ng-template>

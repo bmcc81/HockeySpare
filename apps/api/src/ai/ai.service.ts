@@ -4,11 +4,30 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import OpenAI from 'openai';
 import { PrismaService } from '../prisma/prisma.service';
 import { AskHelpDto } from './dto/ask-help.dto';
 import { HOCKEYSPARE_HELP_ARTICLES } from './help-seed';
 import { GenerateSpareMessageDto } from './dto/generate-spare-message.dto';
 import { RewriteMessageDto } from './dto/rewrite-message.dto';
+
+export type ScoresheetPlayerExtraction = {
+  teamSide: 'home' | 'away' | null;
+  name: string;
+  goals: number;
+  assists: number;
+  penaltyMinutes: number;
+};
+
+export type ScoresheetExtraction = {
+  homeTeamName: string | null;
+  awayTeamName: string | null;
+  homeScore: number | null;
+  awayScore: number | null;
+  players: ScoresheetPlayerExtraction[];
+  confidence: 'high' | 'medium' | 'low';
+  notes: string | null;
+};
 
 type HelpSource = {
   id: string;
@@ -55,7 +74,162 @@ export class AiService {
   private readonly embeddingModel =
     process.env.OLLAMA_EMBEDDING_MODEL || 'nomic-embed-text';
 
+  private openaiClient: OpenAI | null = null;
+
   constructor(private readonly prisma: PrismaService) {}
+
+  isScoresheetOcrConfigured(): boolean {
+    return !!process.env.OPENAI_API_KEY;
+  }
+
+  private getOpenAiClient(): OpenAI {
+    if (this.openaiClient) {
+      return this.openaiClient;
+    }
+
+    const apiKey = process.env.OPENAI_API_KEY;
+
+    if (!apiKey) {
+      throw new InternalServerErrorException(
+        'Scoresheet scanning is not configured. Set OPENAI_API_KEY to enable it.',
+      );
+    }
+
+    this.openaiClient = new OpenAI({ apiKey });
+
+    return this.openaiClient;
+  }
+
+  /**
+   * Extracts a best-effort, human-reviewable draft from a photo of a
+   * handwritten scoresheet. Never writes anything itself - the caller is
+   * responsible for having an organizer confirm the values before they're
+   * applied through the normal score/stat-entry endpoints.
+   */
+  async extractScoresheetData(
+    imageBuffer: Buffer,
+    mimeType: string,
+  ): Promise<ScoresheetExtraction> {
+    const client = this.getOpenAiClient();
+    const model = process.env.OPENAI_VISION_MODEL || 'gpt-4o-mini';
+    const dataUri = `data:${mimeType};base64,${imageBuffer.toString('base64')}`;
+
+    let text: string | null | undefined;
+
+    try {
+      const completion = await client.chat.completions.create({
+        model,
+        messages: [
+          {
+            role: 'system',
+            content:
+              'You extract structured data from photographs of handwritten hockey scoresheets. Read the team names, the final score, and any legible player stat lines (goals, assists, penalty minutes). If something is not legible or not present on the sheet, use null rather than guessing. Never invent player names or numbers that are not visibly written on the sheet.',
+          },
+          {
+            role: 'user',
+            content: [
+              {
+                type: 'text',
+                text: 'Extract the game result and player stats from this scoresheet photo.',
+              },
+              {
+                type: 'image_url',
+                image_url: { url: dataUri },
+              },
+            ],
+          },
+        ],
+        response_format: {
+          type: 'json_schema',
+          json_schema: {
+            name: 'scoresheet_extraction',
+            strict: true,
+            schema: {
+              type: 'object',
+              properties: {
+                homeTeamName: { type: ['string', 'null'] },
+                awayTeamName: { type: ['string', 'null'] },
+                homeScore: { type: ['integer', 'null'] },
+                awayScore: { type: ['integer', 'null'] },
+                players: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      teamSide: {
+                        type: ['string', 'null'],
+                        enum: ['home', 'away', null],
+                      },
+                      name: { type: 'string' },
+                      goals: { type: 'integer' },
+                      assists: { type: 'integer' },
+                      penaltyMinutes: { type: 'integer' },
+                    },
+                    required: [
+                      'teamSide',
+                      'name',
+                      'goals',
+                      'assists',
+                      'penaltyMinutes',
+                    ],
+                    additionalProperties: false,
+                  },
+                },
+                confidence: {
+                  type: 'string',
+                  enum: ['high', 'medium', 'low'],
+                },
+                notes: { type: ['string', 'null'] },
+              },
+              required: [
+                'homeTeamName',
+                'awayTeamName',
+                'homeScore',
+                'awayScore',
+                'players',
+                'confidence',
+                'notes',
+              ],
+              additionalProperties: false,
+            },
+          },
+        },
+      });
+
+      text = completion.choices[0]?.message?.content;
+    } catch (error: any) {
+      console.error('Scoresheet OCR request failed:', error);
+
+      if (
+        error?.status === 429 ||
+        error?.code === 'insufficient_quota' ||
+        error?.code === 'credit_balance_exhausted' ||
+        error?.type === 'insufficient_quota'
+      ) {
+        throw new BadRequestException(
+          'Scoresheet scanning is unavailable because the OpenAI account has no credits or has hit its rate limit. Add credits/billing at platform.openai.com and try again.',
+        );
+      }
+
+      if (error?.status === 401) {
+        throw new InternalServerErrorException(
+          'Scoresheet scanning failed: the configured OPENAI_API_KEY was rejected.',
+        );
+      }
+
+      throw new InternalServerErrorException(
+        'Scoresheet scanning failed while contacting the AI provider.',
+      );
+    }
+
+    if (!text) {
+      throw new InternalServerErrorException(
+        'The AI did not return any extracted data.',
+      );
+    }
+
+    return JSON.parse(text) as ScoresheetExtraction;
+  }
 
   async seedHelpArticles(): Promise<{ count: number }> {
     let count = 0;

@@ -562,6 +562,7 @@ export const TournamentGameScalarFieldEnum = {
   homeScore: 'homeScore',
   awayScore: 'awayScore',
   status: 'status',
+  scoresheetPhotoUrl: 'scoresheetPhotoUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

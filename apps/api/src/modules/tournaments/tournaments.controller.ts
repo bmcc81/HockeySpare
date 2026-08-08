@@ -681,4 +681,33 @@ export class TournamentsController {
       webhookId,
     );
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/scoresheet-ocr/status')
+  getScoresheetOcrStatus() {
+    return this.tournamentsService.getScoresheetOcrStatus();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/games/:gameId/scoresheet-ocr')
+  @UseInterceptors(
+    FileInterceptor('file', { limits: { fileSize: MAX_IMAGE_UPLOAD_BYTES } }),
+  )
+  scanScoresheet(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('gameId') gameId: string,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    if (!file) {
+      throw new BadRequestException('No file uploaded.');
+    }
+
+    return this.tournamentsService.scanScoresheet(
+      this.getUserId(req),
+      id,
+      gameId,
+      file,
+    );
+  }
 }

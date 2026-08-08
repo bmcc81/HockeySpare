@@ -487,6 +487,36 @@
                           Stats
                         </button>
 
+                        <span
+                          class="d-inline-block me-2"
+                          *ngIf="scoresheetOcrStatus()?.configured"
+                          title="Scan a photo of the paper scoresheet to pre-fill the score and stats"
+                        >
+                          <label
+                            class="btn btn-sm btn-outline-primary mb-0"
+                            [class.disabled]="scanningScoresheetGameId() === game.id"
+                          >
+                            {{ scanningScoresheetGameId() === game.id ? 'Scanning...' : 'Scan scoresheet' }}
+                            <input
+                              type="file"
+                              accept="image/png,image/jpeg,image/webp"
+                              hidden
+                              [disabled]="scanningScoresheetGameId() === game.id"
+                              (change)="scanScoresheetFileSelected(game, $event)"
+                            />
+                          </label>
+                        </span>
+
+                        <a
+                          *ngIf="game.scoresheetPhotoUrl"
+                          [href]="game.scoresheetPhotoUrl"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="btn btn-sm btn-outline-secondary me-2"
+                        >
+                          Photo
+                        </a>
+
                         <button
                           class="btn btn-sm btn-outline-secondary me-2"
                           type="button"
@@ -504,6 +534,50 @@
                           {{ deletingGameId() === game.id ? 'Removing...' :
                           'Remove' }}
                         </button>
+                      </td>
+                    </tr>
+
+                    <tr *ngIf="scoresheetError() as scanErr" [hidden]="scanErr.gameId !== game.id">
+                      <td colspan="5" class="bg-transparent">
+                        <div class="alert alert-danger py-2 mb-0">
+                          {{ scanErr.message }}
+                        </div>
+                      </td>
+                    </tr>
+
+                    <tr *ngIf="lastExtraction() as ex" [hidden]="ex.gameId !== game.id">
+                      <td colspan="5" class="bg-transparent">
+                        <div class="alert alert-info py-2 mb-0">
+                          <div class="d-flex justify-content-between align-items-start gap-2">
+                            <div>
+                              <strong>Scoresheet scanned</strong>
+                              <span class="badge text-bg-secondary ms-1">
+                                {{ ex.extraction.confidence }} confidence
+                              </span>
+                              <div class="small mt-1">
+                                Score and stats below were pre-filled from the photo — review
+                                before saving.
+                              </div>
+                              <div class="small text-secondary mt-1" *ngIf="ex.extraction.notes">
+                                AI note: {{ ex.extraction.notes }}
+                              </div>
+                              <div class="small text-danger mt-1" *ngIf="ex.unmatchedPlayers.length > 0">
+                                Could not match to the roster (check spelling or add them as
+                                players first):
+                                <span *ngFor="let p of ex.unmatchedPlayers; let last = last">
+                                  {{ p.name }} ({{ p.goals }}G {{ p.assists }}A {{ p.penaltyMinutes }}PIM){{ last ? '' : ', ' }}
+                                </span>
+                              </div>
+                            </div>
+
+                            <button
+                              type="button"
+                              class="btn-close"
+                              aria-label="Dismiss"
+                              (click)="dismissExtraction()"
+                            ></button>
+                          </div>
+                        </div>
                       </td>
                     </tr>
 

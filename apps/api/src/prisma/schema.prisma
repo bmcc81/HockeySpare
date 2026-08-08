@@ -599,6 +599,10 @@ model Tournament {
   mediaAssets   TournamentMediaAsset[]
   apiKeys       TournamentApiKey[]
   webhooks      TournamentWebhook[]
+  referees        TournamentReferee[]
+  volunteerShifts TournamentVolunteerShift[]
+  infoListings    TournamentInfoListing[]
+  lostFoundItems  TournamentLostFoundItem[]
 
   @@index([leagueId])
   @@index([createdById])
@@ -672,14 +676,20 @@ model TournamentAuditLogEntry {
 }
 
 model TournamentAnnouncement {
-  id           String   @id @default(cuid())
+  id           String                     @id @default(cuid())
   tournamentId String
   body         String
-  createdAt    DateTime @default(now())
+  type         TournamentAnnouncementType @default(GENERAL)
+  createdAt    DateTime                   @default(now())
 
   tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
 
   @@index([tournamentId, createdAt])
+}
+
+enum TournamentAnnouncementType {
+  GENERAL
+  WEATHER
 }
 
 model TournamentVenue {
@@ -698,6 +708,105 @@ model TournamentVenue {
   @@index([tournamentId])
 }
 
+model TournamentReferee {
+  id           String   @id @default(cuid())
+  tournamentId String
+  name         String
+  email        String?
+  phone        String?
+  createdAt    DateTime @default(now())
+
+  tournament  Tournament               @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  assignments TournamentGameReferee[]
+
+  @@index([tournamentId])
+}
+
+model TournamentGameReferee {
+  id         String   @id @default(cuid())
+  gameId     String
+  refereeId  String
+  role       String?
+  createdAt  DateTime @default(now())
+
+  game    TournamentGame    @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  referee TournamentReferee @relation(fields: [refereeId], references: [id], onDelete: Cascade)
+
+  @@unique([gameId, refereeId])
+  @@index([gameId])
+  @@index([refereeId])
+}
+
+model TournamentVolunteerShift {
+  id           String   @id @default(cuid())
+  tournamentId String
+  role         String
+  description  String?
+  startsAt     DateTime
+  endsAt       DateTime
+  location     String?
+  capacity     Int?
+  createdAt    DateTime @default(now())
+
+  tournament Tournament                  @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  signups    TournamentVolunteerSignup[]
+
+  @@index([tournamentId, startsAt])
+}
+
+model TournamentVolunteerSignup {
+  id        String   @id @default(cuid())
+  shiftId   String
+  name      String
+  email     String
+  phone     String?
+  createdAt DateTime @default(now())
+
+  shift TournamentVolunteerShift @relation(fields: [shiftId], references: [id], onDelete: Cascade)
+
+  @@index([shiftId])
+}
+
+model TournamentInfoListing {
+  id           String                       @id @default(cuid())
+  tournamentId String
+  category     TournamentInfoListingCategory
+  title        String
+  description  String?
+  url          String?
+  imageUrl     String?
+  createdAt    DateTime                     @default(now())
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  @@index([tournamentId, category])
+}
+
+enum TournamentInfoListingCategory {
+  HOTEL
+  MERCHANDISE
+  VENDOR
+}
+
+model TournamentLostFoundItem {
+  id           String                  @id @default(cuid())
+  tournamentId String
+  description  String
+  imageUrl     String?
+  contactInfo  String?
+  status       TournamentLostFoundStatus @default(UNCLAIMED)
+  createdAt    DateTime                @default(now())
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  @@index([tournamentId, status])
+}
+
+enum TournamentLostFoundStatus {
+  UNCLAIMED
+  CLAIMED
+}
+
 model TournamentGame {
   id           String               @id @default(cuid())
   tournamentId String
@@ -712,6 +821,7 @@ model TournamentGame {
   awayScore    Int?
   status       TournamentGameStatus @default(SCHEDULED)
   scoresheetPhotoUrl String?
+  livestreamUrl String?
   createdAt    DateTime             @default(now())
   updatedAt    DateTime             @updatedAt
 
@@ -720,6 +830,7 @@ model TournamentGame {
   awayTeam   TournamentTeam?        @relation("TournamentGameAwayTeam", fields: [awayTeamId], references: [id], onDelete: SetNull)
   playerStats TournamentGamePlayerStat[]
   bracketMatch TournamentBracketMatch?
+  refereeAssignments TournamentGameReferee[]
 
   @@index([tournamentId, startsAt])
   @@index([homeTeamId])

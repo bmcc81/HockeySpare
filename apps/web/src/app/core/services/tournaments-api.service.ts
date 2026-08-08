@@ -3,17 +3,23 @@ import { Injectable, inject } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import {
   AddTournamentCoOrganizerInput,
+  AssignTournamentGameRefereeInput,
   CheckoutSessionResult,
   CreateTournamentAnnouncementInput,
   CreateTournamentApiKeyInput,
   CreateTournamentBracketInput,
   CreateTournamentGameInput,
+  CreateTournamentInfoListingInput,
   CreateTournamentInput,
+  CreateTournamentLostFoundItemInput,
+  CreateTournamentRefereeInput,
   CreateTournamentRegistrationInput,
   CreateTournamentSponsorInput,
   CreateTournamentTeamInput,
   CreateTournamentTeamPlayerInput,
   CreateTournamentVenueInput,
+  CreateTournamentVolunteerShiftInput,
+  CreateTournamentVolunteerSignupInput,
   CreateTournamentWebhookInput,
   FileStorageStatus,
   ScheduleBracketMatchGameInput,
@@ -27,12 +33,16 @@ import {
   TournamentCheckoutSessionResult,
   TournamentCoOrganizer,
   TournamentGame,
+  TournamentGameRefereeAssignment,
   TournamentGamePlayerStat,
+  TournamentInfoListing,
+  TournamentLostFoundItem,
   TournamentMediaAsset,
   TournamentPaymentRow,
   TournamentPaymentsStatus,
   TournamentPaymentVerification,
   TournamentPlayerLeaderRow,
+  TournamentReferee,
   TournamentRegistration,
   ScoresheetOcrStatus,
   ScoresheetScanResult,
@@ -40,10 +50,14 @@ import {
   TournamentStandingRow,
   TournamentTeam,
   TournamentVenue,
+  TournamentVolunteerShift,
+  TournamentVolunteerSignup,
   TournamentWebhook,
   UpdateTournamentGameInput,
   UpdateTournamentGameScoreInput,
+  UpdateTournamentInfoListingInput,
   UpdateTournamentInput,
+  UpdateTournamentLostFoundItemInput,
   UpdateTournamentRegistrationInput,
   UpdateTournamentSponsorInput,
   UpdateTournamentTeamInput,
@@ -569,6 +583,151 @@ export class TournamentsApiService {
     return this.http.post<ScoresheetScanResult>(
       `/api/tournaments/${tournamentId}/games/${gameId}/scoresheet-ocr`,
       formData,
+    );
+  }
+
+  listReferees(tournamentId: string): Observable<TournamentReferee[]> {
+    return this.http.get<TournamentReferee[]>(
+      `/api/tournaments/${tournamentId}/referees`,
+    );
+  }
+
+  createReferee(
+    tournamentId: string,
+    input: CreateTournamentRefereeInput,
+  ): Observable<TournamentReferee> {
+    return this.http.post<TournamentReferee>(
+      `/api/tournaments/${tournamentId}/referees`,
+      input,
+    );
+  }
+
+  deleteReferee(
+    tournamentId: string,
+    refereeId: string,
+  ): Observable<{ id: string; deleted: boolean }> {
+    return this.http.delete<{ id: string; deleted: boolean }>(
+      `/api/tournaments/${tournamentId}/referees/${refereeId}`,
+    );
+  }
+
+  assignRefereeToGame(
+    tournamentId: string,
+    gameId: string,
+    input: AssignTournamentGameRefereeInput,
+  ): Observable<TournamentGameRefereeAssignment> {
+    return this.http.post<TournamentGameRefereeAssignment>(
+      `/api/tournaments/${tournamentId}/games/${gameId}/referees`,
+      input,
+    );
+  }
+
+  unassignRefereeFromGame(
+    tournamentId: string,
+    gameId: string,
+    assignmentId: string,
+  ): Observable<{ id: string; deleted: boolean }> {
+    return this.http.delete<{ id: string; deleted: boolean }>(
+      `/api/tournaments/${tournamentId}/games/${gameId}/referees/${assignmentId}`,
+    );
+  }
+
+  createVolunteerShift(
+    tournamentId: string,
+    input: CreateTournamentVolunteerShiftInput,
+  ): Observable<TournamentVolunteerShift> {
+    return this.http.post<TournamentVolunteerShift>(
+      `/api/tournaments/${tournamentId}/volunteer-shifts`,
+      input,
+    );
+  }
+
+  deleteVolunteerShift(
+    tournamentId: string,
+    shiftId: string,
+  ): Observable<{ id: string; deleted: boolean }> {
+    return this.http.delete<{ id: string; deleted: boolean }>(
+      `/api/tournaments/${tournamentId}/volunteer-shifts/${shiftId}`,
+    );
+  }
+
+  signUpForVolunteerShift(
+    tournamentId: string,
+    shiftId: string,
+    input: CreateTournamentVolunteerSignupInput,
+  ): Observable<TournamentVolunteerSignup> {
+    return this.http.post<TournamentVolunteerSignup>(
+      `/api/tournaments/${tournamentId}/volunteer-shifts/${shiftId}/signups`,
+      input,
+    );
+  }
+
+  listVolunteerSignups(
+    tournamentId: string,
+    shiftId: string,
+  ): Observable<TournamentVolunteerSignup[]> {
+    return this.http.get<TournamentVolunteerSignup[]>(
+      `/api/tournaments/${tournamentId}/volunteer-shifts/${shiftId}/signups`,
+    );
+  }
+
+  createInfoListing(
+    tournamentId: string,
+    input: CreateTournamentInfoListingInput,
+  ): Observable<TournamentInfoListing> {
+    return this.http.post<TournamentInfoListing>(
+      `/api/tournaments/${tournamentId}/info-listings`,
+      input,
+    );
+  }
+
+  updateInfoListing(
+    tournamentId: string,
+    listingId: string,
+    input: UpdateTournamentInfoListingInput,
+  ): Observable<TournamentInfoListing> {
+    return this.http.patch<TournamentInfoListing>(
+      `/api/tournaments/${tournamentId}/info-listings/${listingId}`,
+      input,
+    );
+  }
+
+  deleteInfoListing(
+    tournamentId: string,
+    listingId: string,
+  ): Observable<{ id: string; deleted: boolean }> {
+    return this.http.delete<{ id: string; deleted: boolean }>(
+      `/api/tournaments/${tournamentId}/info-listings/${listingId}`,
+    );
+  }
+
+  createLostFoundItem(
+    tournamentId: string,
+    input: CreateTournamentLostFoundItemInput,
+  ): Observable<TournamentLostFoundItem> {
+    return this.http.post<TournamentLostFoundItem>(
+      `/api/tournaments/${tournamentId}/lost-found`,
+      input,
+    );
+  }
+
+  updateLostFoundItem(
+    tournamentId: string,
+    itemId: string,
+    input: UpdateTournamentLostFoundItemInput,
+  ): Observable<TournamentLostFoundItem> {
+    return this.http.patch<TournamentLostFoundItem>(
+      `/api/tournaments/${tournamentId}/lost-found/${itemId}`,
+      input,
+    );
+  }
+
+  deleteLostFoundItem(
+    tournamentId: string,
+    itemId: string,
+  ): Observable<{ id: string; deleted: boolean }> {
+    return this.http.delete<{ id: string; deleted: boolean }>(
+      `/api/tournaments/${tournamentId}/lost-found/${itemId}`,
     );
   }
 }

@@ -400,9 +400,18 @@
                 <input class="form-control" formControlName="arenaName" />
               </div>
 
-              <div class="col-12">
+              <div class="col-12 col-md-6">
                 <label class="form-label">Notes</label>
                 <input class="form-control" formControlName="notes" />
+              </div>
+
+              <div class="col-12 col-md-6">
+                <label class="form-label">Livestream URL</label>
+                <input
+                  class="form-control"
+                  formControlName="livestreamUrl"
+                  placeholder="Optional - YouTube/Twitch link"
+                />
               </div>
 
               <div class="col-12 d-flex gap-2 mt-2">
@@ -520,6 +529,16 @@
                         <button
                           class="btn btn-sm btn-outline-secondary me-2"
                           type="button"
+                          [disabled]="referees().length === 0"
+                          [title]="referees().length === 0 ? 'Add referees to the roster first' : ''"
+                          (click)="toggleAssignReferee(game.id)"
+                        >
+                          Refs{{ game.refereeAssignments && game.refereeAssignments.length > 0 ? ' (' + game.refereeAssignments.length + ')' : '' }}
+                        </button>
+
+                        <button
+                          class="btn btn-sm btn-outline-secondary me-2"
+                          type="button"
                           (click)="openEditGame(game)"
                         >
                           Edit
@@ -534,6 +553,67 @@
                           {{ deletingGameId() === game.id ? 'Removing...' :
                           'Remove' }}
                         </button>
+                      </td>
+                    </tr>
+
+                    <tr *ngIf="assigningRefereeGameId() === game.id">
+                      <td colspan="5" class="bg-transparent">
+                        <div *ngIf="refereeError()" class="alert alert-danger py-2 mb-2">
+                          {{ refereeError() }}
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
+                          <span
+                            class="badge text-bg-secondary"
+                            *ngFor="let assignment of game.refereeAssignments"
+                          >
+                            {{ assignment.referee.name }}
+                            <button
+                              type="button"
+                              class="btn-close btn-close-white btn-sm ms-1"
+                              style="font-size: 0.6rem"
+                              aria-label="Remove"
+                              (click)="unassignReferee(game.id, assignment.id)"
+                            ></button>
+                          </span>
+                          <span class="text-secondary small" *ngIf="!game.refereeAssignments || game.refereeAssignments.length === 0">
+                            No referees assigned yet.
+                          </span>
+                        </div>
+
+                        <div class="d-flex gap-2 align-items-end">
+                          <div>
+                            <label class="form-label small">Add a referee</label>
+                            <select
+                              class="form-select form-select-sm"
+                              (change)="updateSelectedRefereeToAssign(game.id, $event)"
+                            >
+                              <option value="">Select...</option>
+                              <option
+                                *ngFor="let referee of referees(); trackBy: trackByRefereeId"
+                                [value]="referee.id"
+                              >
+                                {{ referee.name }}
+                              </option>
+                            </select>
+                          </div>
+
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-primary"
+                            (click)="assignReferee(game.id)"
+                          >
+                            Assign
+                          </button>
+
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-outline-secondary"
+                            (click)="toggleAssignReferee(game.id)"
+                          >
+                            Close
+                          </button>
+                        </div>
                       </td>
                     </tr>
 
@@ -1403,6 +1483,11 @@
           (ngSubmit)="addAnnouncement()"
           class="d-flex gap-2 align-items-start mb-3"
         >
+          <select class="form-select form-select-sm" style="max-width: 140px" formControlName="type">
+            <option value="GENERAL">General</option>
+            <option value="WEATHER">Weather alert</option>
+          </select>
+
           <textarea
             class="form-control"
             formControlName="body"
@@ -1426,9 +1511,11 @@
         <div class="d-flex flex-column gap-2">
           <div
             class="border rounded p-2 d-flex justify-content-between align-items-start gap-2"
+            [class.border-danger]="announcement.type === 'WEATHER'"
             *ngFor="let announcement of t.announcements; trackBy: trackByAnnouncementId"
           >
             <div>
+              <span class="badge text-bg-danger mb-1" *ngIf="announcement.type === 'WEATHER'">Weather alert</span>
               <div>{{ announcement.body }}</div>
               <div class="text-secondary small">
                 {{ announcement.createdAt | date: 'medium' }}
@@ -1546,6 +1633,348 @@
                 (click)="deleteVenue(venue.id)"
               >
                 {{ deletingVenueId() === venue.id ? '...' : 'Remove' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-4" *ngIf="isOwner">
+      <div class="card-body">
+        <h2 class="h5">Referees ({{ referees().length }})</h2>
+
+        <div *ngIf="refereeError()" class="alert alert-danger py-2">
+          {{ refereeError() }}
+        </div>
+
+        <form
+          [formGroup]="refereeForm"
+          (ngSubmit)="addReferee()"
+          class="row g-2 mb-3"
+        >
+          <div class="col-12 col-md-4">
+            <label class="form-label">Name</label>
+            <input class="form-control" formControlName="name" />
+          </div>
+          <div class="col-12 col-md-4">
+            <label class="form-label">Email</label>
+            <input class="form-control" formControlName="email" placeholder="Optional" />
+          </div>
+          <div class="col-12 col-md-3">
+            <label class="form-label">Phone</label>
+            <input class="form-control" formControlName="phone" placeholder="Optional" />
+          </div>
+          <div class="col-12 col-md-1 d-flex align-items-end">
+            <button
+              type="submit"
+              class="btn btn-primary btn-sm w-100"
+              [disabled]="refereeForm.invalid || savingReferee()"
+            >
+              {{ savingReferee() ? '...' : 'Add' }}
+            </button>
+          </div>
+        </form>
+
+        <div *ngIf="referees().length === 0" class="text-secondary py-2">
+          No referees added yet.
+        </div>
+
+        <div class="d-flex flex-column gap-2">
+          <div
+            class="border rounded p-2 d-flex justify-content-between align-items-start gap-2"
+            *ngFor="let referee of referees(); trackBy: trackByRefereeId"
+          >
+            <div>
+              <strong>{{ referee.name }}</strong>
+              <div class="text-secondary small">
+                {{ referee.email }}<span *ngIf="referee.email && referee.phone"> &middot; </span>{{ referee.phone }}
+              </div>
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-danger flex-shrink-0"
+              [disabled]="deletingRefereeId() === referee.id"
+              (click)="deleteReferee(referee.id)"
+            >
+              {{ deletingRefereeId() === referee.id ? '...' : 'Remove' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-4" *ngIf="isOwner">
+      <div class="card-body">
+        <h2 class="h5">Volunteer shifts ({{ t.volunteerShifts.length }})</h2>
+
+        <div *ngIf="volunteerShiftError()" class="alert alert-danger py-2">
+          {{ volunteerShiftError() }}
+        </div>
+
+        <form
+          [formGroup]="volunteerShiftForm"
+          (ngSubmit)="saveVolunteerShift()"
+          class="row g-2 mb-3"
+        >
+          <div class="col-12 col-md-3">
+            <label class="form-label">Role</label>
+            <input class="form-control" formControlName="role" placeholder="e.g. Scorekeeper" />
+          </div>
+          <div class="col-12 col-md-3">
+            <label class="form-label">Location</label>
+            <input class="form-control" formControlName="location" placeholder="Optional" />
+          </div>
+          <div class="col-6 col-md-2">
+            <label class="form-label">Starts</label>
+            <input type="datetime-local" class="form-control" formControlName="startsAt" />
+          </div>
+          <div class="col-6 col-md-2">
+            <label class="form-label">Ends</label>
+            <input type="datetime-local" class="form-control" formControlName="endsAt" />
+          </div>
+          <div class="col-6 col-md-1">
+            <label class="form-label">Capacity</label>
+            <input type="number" min="1" class="form-control" formControlName="capacity" placeholder="Optional" />
+          </div>
+          <div class="col-6 col-md-1 d-flex align-items-end">
+            <button
+              type="submit"
+              class="btn btn-primary btn-sm w-100"
+              [disabled]="volunteerShiftForm.invalid || savingVolunteerShift()"
+            >
+              {{ savingVolunteerShift() ? '...' : 'Add' }}
+            </button>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Description</label>
+            <input class="form-control" formControlName="description" placeholder="Optional" />
+          </div>
+        </form>
+
+        <div *ngIf="t.volunteerShifts.length === 0" class="text-secondary py-2">
+          No volunteer shifts added yet.
+        </div>
+
+        <div class="d-flex flex-column gap-2">
+          <div
+            class="border rounded p-2"
+            *ngFor="let shift of t.volunteerShifts; trackBy: trackByVolunteerShiftId"
+          >
+            <div class="d-flex justify-content-between align-items-start gap-2">
+              <div>
+                <strong>{{ shift.role }}</strong>
+                <span class="text-secondary small" *ngIf="shift.location"> &middot; {{ shift.location }}</span>
+                <div class="text-secondary small">
+                  {{ shift.startsAt | date: 'medium' }} - {{ shift.endsAt | date: 'shortTime' }}
+                </div>
+                <div class="text-secondary small" *ngIf="shift.capacity">
+                  {{ shift._count?.signups ?? 0 }} / {{ shift.capacity }} signed up
+                </div>
+                <div class="text-secondary small" *ngIf="!shift.capacity">
+                  {{ shift._count?.signups ?? 0 }} signed up
+                </div>
+              </div>
+
+              <div class="d-flex gap-2 flex-shrink-0">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-secondary"
+                  (click)="toggleViewSignups(shift.id)"
+                >
+                  {{ viewingSignupsShiftId() === shift.id ? 'Hide' : 'View' }} signups
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-danger"
+                  [disabled]="deletingVolunteerShiftId() === shift.id"
+                  (click)="deleteVolunteerShift(shift.id)"
+                >
+                  {{ deletingVolunteerShiftId() === shift.id ? '...' : 'Remove' }}
+                </button>
+              </div>
+            </div>
+
+            <div class="mt-2 ps-2 border-start" *ngIf="viewingSignupsShiftId() === shift.id">
+              <div class="text-secondary small" *ngIf="shiftSignups().length === 0">
+                No signups yet.
+              </div>
+              <div *ngFor="let signup of shiftSignups(); trackBy: trackByVolunteerSignupId" class="small">
+                {{ signup.name }} &middot; {{ signup.email }}<span *ngIf="signup.phone"> &middot; {{ signup.phone }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-4" *ngIf="isOwner">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <h2 class="h5 mb-0">Hotels, merch &amp; vendors ({{ t.infoListings.length }})</h2>
+
+          <button
+            type="button"
+            class="btn btn-sm btn-primary"
+            *ngIf="!showInfoListingForm()"
+            (click)="openAddInfoListing()"
+          >
+            Add listing
+          </button>
+        </div>
+
+        <div *ngIf="infoListingError()" class="alert alert-danger py-2 mt-3">
+          {{ infoListingError() }}
+        </div>
+
+        <form
+          [formGroup]="infoListingForm"
+          (ngSubmit)="saveInfoListing()"
+          class="row g-2 mt-1"
+          *ngIf="showInfoListingForm()"
+        >
+          <div class="col-12 col-md-3">
+            <label class="form-label">Category</label>
+            <select class="form-select" formControlName="category">
+              <option value="HOTEL">Hotel</option>
+              <option value="MERCHANDISE">Merchandise</option>
+              <option value="VENDOR">Vendor</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-4">
+            <label class="form-label">Title</label>
+            <input class="form-control" formControlName="title" />
+          </div>
+          <div class="col-12 col-md-5">
+            <label class="form-label">Link</label>
+            <input class="form-control" formControlName="url" placeholder="Optional" />
+          </div>
+          <div class="col-12">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" formControlName="description" rows="2"></textarea>
+          </div>
+
+          <div class="col-12 d-flex gap-2">
+            <button
+              type="submit"
+              class="btn btn-primary btn-sm"
+              [disabled]="infoListingForm.invalid || savingInfoListing()"
+            >
+              {{ savingInfoListing() ? 'Saving...' : (editingInfoListingId() ? 'Save' : 'Add listing') }}
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-outline-secondary btn-sm"
+              (click)="cancelInfoListingEdit()"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+
+        <div class="d-flex flex-column gap-2 mt-3" *ngIf="t.infoListings.length > 0">
+          <div
+            class="border rounded p-2 d-flex justify-content-between align-items-start gap-2"
+            *ngFor="let listing of t.infoListings; trackBy: trackByInfoListingId"
+          >
+            <div>
+              <span class="badge text-bg-secondary">{{ listing.category }}</span>
+              <strong class="ms-1">{{ listing.title }}</strong>
+              <div class="text-secondary small" *ngIf="listing.description">{{ listing.description }}</div>
+              <div class="small" *ngIf="listing.url">
+                <a [href]="listing.url" target="_blank" rel="noopener">{{ listing.url }}</a>
+              </div>
+            </div>
+
+            <div class="d-flex gap-2 flex-shrink-0">
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary"
+                (click)="openEditInfoListing(listing)"
+              >
+                Edit
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-danger"
+                [disabled]="deletingInfoListingId() === listing.id"
+                (click)="deleteInfoListing(listing.id)"
+              >
+                {{ deletingInfoListingId() === listing.id ? '...' : 'Remove' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-4" *ngIf="isOwner">
+      <div class="card-body">
+        <h2 class="h5">Lost &amp; found ({{ t.lostFoundItems.length }})</h2>
+
+        <div *ngIf="lostFoundError()" class="alert alert-danger py-2">
+          {{ lostFoundError() }}
+        </div>
+
+        <form
+          [formGroup]="lostFoundForm"
+          (ngSubmit)="addLostFoundItem()"
+          class="row g-2 mb-3"
+        >
+          <div class="col-12 col-md-6">
+            <label class="form-label">Description</label>
+            <input class="form-control" formControlName="description" placeholder="e.g. Black CCM gloves, size L" />
+          </div>
+          <div class="col-12 col-md-5">
+            <label class="form-label">Contact info</label>
+            <input class="form-control" formControlName="contactInfo" placeholder="Optional" />
+          </div>
+          <div class="col-12 col-md-1 d-flex align-items-end">
+            <button
+              type="submit"
+              class="btn btn-primary btn-sm w-100"
+              [disabled]="lostFoundForm.invalid || savingLostFoundItem()"
+            >
+              {{ savingLostFoundItem() ? '...' : 'Add' }}
+            </button>
+          </div>
+        </form>
+
+        <div *ngIf="t.lostFoundItems.length === 0" class="text-secondary py-2">
+          No lost &amp; found items yet.
+        </div>
+
+        <div class="d-flex flex-column gap-2">
+          <div
+            class="border rounded p-2 d-flex justify-content-between align-items-start gap-2"
+            *ngFor="let item of t.lostFoundItems; trackBy: trackByLostFoundItemId"
+          >
+            <div>
+              <span class="badge" [class.text-bg-success]="item.status === 'CLAIMED'" [class.text-bg-warning]="item.status === 'UNCLAIMED'">
+                {{ item.status === 'CLAIMED' ? 'Claimed' : 'Unclaimed' }}
+              </span>
+              <div>{{ item.description }}</div>
+              <div class="text-secondary small" *ngIf="item.contactInfo">{{ item.contactInfo }}</div>
+            </div>
+
+            <div class="d-flex gap-2 flex-shrink-0">
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary"
+                [disabled]="updatingLostFoundItemId() === item.id"
+                (click)="toggleLostFoundClaimed(item)"
+              >
+                {{ updatingLostFoundItemId() === item.id ? '...' : ('Mark ' + (item.status === 'CLAIMED' ? 'unclaimed' : 'claimed')) }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-danger"
+                [disabled]="deletingLostFoundItemId() === item.id"
+                (click)="deleteLostFoundItem(item.id)"
+              >
+                {{ deletingLostFoundItemId() === item.id ? '...' : 'Remove' }}
               </button>
             </div>
           </div>

@@ -39,9 +39,18 @@
       />
     </a>
 
-    <div class="alert alert-info d-flex flex-column gap-1 mb-4" *ngIf="t.announcements.length > 0">
+    <div class="alert alert-danger d-flex flex-column gap-1 mb-3" *ngIf="weatherAlerts().length > 0">
       <div
-        *ngFor="let announcement of t.announcements.slice(0, 3); trackBy: trackByAnnouncementId"
+        *ngFor="let announcement of weatherAlerts().slice(0, 3); trackBy: trackByAnnouncementId"
+      >
+        <strong>&#9888; Weather alert &middot; {{ announcement.createdAt | date: 'MMM d, h:mm a' }}:</strong>
+        {{ announcement.body }}
+      </div>
+    </div>
+
+    <div class="alert alert-info d-flex flex-column gap-1 mb-4" *ngIf="generalAnnouncements().length > 0">
+      <div
+        *ngFor="let announcement of generalAnnouncements().slice(0, 3); trackBy: trackByAnnouncementId"
       >
         <strong>{{ announcement.createdAt | date: 'MMM d' }}:</strong>
         {{ announcement.body }}
@@ -115,7 +124,7 @@
         </button>
       </li>
 
-      <li class="nav-item" *ngIf="t.contactName || t.contactEmail || t.contactPhone || t.venues.length > 0 || t.mediaAssets.length > 0">
+      <li class="nav-item" *ngIf="t.contactName || t.contactEmail || t.contactPhone || t.venues.length > 0 || t.mediaAssets.length > 0 || t.infoListings.length > 0 || t.lostFoundItems.length > 0">
         <button
           class="nav-link"
           type="button"
@@ -123,6 +132,17 @@
           (click)="setTab('info')"
         >
           Info
+        </button>
+      </li>
+
+      <li class="nav-item" *ngIf="t.volunteerShifts.length > 0">
+        <button
+          class="nav-link"
+          type="button"
+          [class.active]="activeTab() === 'volunteer'"
+          (click)="setTab('volunteer')"
+        >
+          Volunteer
         </button>
       </li>
 
@@ -194,6 +214,8 @@
               <th>Time</th>
               <th>Arena</th>
               <th>Score</th>
+              <th>Referees</th>
+              <th></th>
             </tr>
           </thead>
 
@@ -218,6 +240,23 @@
                     {{ game.status === 'LIVE' ? 'LIVE' : 'Final' }}
                   </span>
                 </ng-container>
+              </td>
+              <td class="small text-secondary">
+                <ng-container *ngIf="game.refereeAssignments && game.refereeAssignments.length > 0; else noRefs">
+                  <span *ngFor="let assignment of game.refereeAssignments; let last = last">{{ assignment.referee.name }}{{ last ? '' : ', ' }}</span>
+                </ng-container>
+                <ng-template #noRefs>—</ng-template>
+              </td>
+              <td>
+                <a
+                  *ngIf="game.livestreamUrl"
+                  [href]="game.livestreamUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn btn-sm btn-outline-danger"
+                >
+                  Watch Live
+                </a>
               </td>
             </tr>
           </tbody>
@@ -581,6 +620,152 @@
               {{ asset.caption }}
             </div>
           </div>
+        </div>
+      </div>
+
+      <ng-container *ngFor="let category of infoListingCategories">
+        <div *ngIf="infoListingsByCategory(category).length > 0">
+          <h2 class="h5">{{ infoListingCategoryLabel(category) }}</h2>
+
+          <div class="row g-2">
+            <div
+              class="col-12 col-md-6"
+              *ngFor="let listing of infoListingsByCategory(category); trackBy: trackByInfoListingId"
+            >
+              <div class="border rounded p-3 h-100">
+                <div class="d-flex gap-2 align-items-start">
+                  <img
+                    *ngIf="listing.imageUrl"
+                    [src]="listing.imageUrl"
+                    [alt]="listing.title"
+                    style="width: 56px; height: 56px; object-fit: cover; flex-shrink: 0"
+                    class="rounded"
+                  />
+                  <div>
+                    <strong>{{ listing.title }}</strong>
+                    <p class="text-secondary small mb-1" *ngIf="listing.description">
+                      {{ listing.description }}
+                    </p>
+                    <a
+                      *ngIf="listing.url"
+                      [href]="listing.url"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="small"
+                    >
+                      Learn more
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <div *ngIf="unclaimedLostFoundItems().length > 0">
+        <h2 class="h5">Lost &amp; found</h2>
+
+        <div class="d-flex flex-column gap-2">
+          <div
+            class="border rounded p-2"
+            *ngFor="let item of unclaimedLostFoundItems(); trackBy: trackByLostFoundItemId"
+          >
+            <div class="d-flex gap-2 align-items-start">
+              <img
+                *ngIf="item.imageUrl"
+                [src]="item.imageUrl"
+                alt="Lost item"
+                style="width: 48px; height: 48px; object-fit: cover; flex-shrink: 0"
+                class="rounded"
+              />
+              <div>
+                <div>{{ item.description }}</div>
+                <div class="text-secondary small" *ngIf="item.contactInfo">
+                  Contact: {{ item.contactInfo }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="activeTab() === 'volunteer'">
+      <div *ngIf="t.volunteerShifts.length === 0" class="text-secondary">
+        No volunteer shifts have been posted yet.
+      </div>
+
+      <div class="d-flex flex-column gap-3">
+        <div
+          class="border rounded p-3"
+          *ngFor="let shift of t.volunteerShifts; trackBy: trackByVolunteerShiftId"
+        >
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+            <div>
+              <strong>{{ shift.role }}</strong>
+              <span class="text-secondary small" *ngIf="shift.location"> &middot; {{ shift.location }}</span>
+              <div class="text-secondary small">
+                {{ shift.startsAt | date: 'medium' }} - {{ shift.endsAt | date: 'shortTime' }}
+              </div>
+              <p class="small mb-1" *ngIf="shift.description">{{ shift.description }}</p>
+              <div class="small" *ngIf="spotsRemaining(shift) !== null">
+                <span
+                  class="badge"
+                  [class.text-bg-success]="spotsRemaining(shift)! > 0"
+                  [class.text-bg-secondary]="spotsRemaining(shift) === 0"
+                >
+                  {{ spotsRemaining(shift) === 0 ? 'Full' : spotsRemaining(shift) + ' spots left' }}
+                </span>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-sm btn-primary flex-shrink-0"
+              [disabled]="spotsRemaining(shift) === 0"
+              (click)="toggleVolunteerSignup(shift.id)"
+            >
+              {{ signingUpShiftId() === shift.id ? 'Cancel' : 'Sign up' }}
+            </button>
+          </div>
+
+          <div
+            class="alert alert-success mt-2 mb-0 py-2"
+            *ngIf="volunteerSignupSuccessShiftId() === shift.id"
+          >
+            You're signed up. Thank you for volunteering!
+          </div>
+
+          <form
+            *ngIf="signingUpShiftId() === shift.id"
+            [formGroup]="volunteerSignupForm"
+            (ngSubmit)="submitVolunteerSignup(shift.id)"
+            class="row g-2 mt-2"
+          >
+            <div *ngIf="volunteerSignupError()" class="col-12">
+              <div class="alert alert-danger py-2 mb-0">{{ volunteerSignupError() }}</div>
+            </div>
+
+            <div class="col-12 col-md-4">
+              <input class="form-control form-control-sm" placeholder="Name" formControlName="name" />
+            </div>
+            <div class="col-12 col-md-4">
+              <input class="form-control form-control-sm" placeholder="Email" formControlName="email" />
+            </div>
+            <div class="col-12 col-md-3">
+              <input class="form-control form-control-sm" placeholder="Phone (optional)" formControlName="phone" />
+            </div>
+            <div class="col-12 col-md-1">
+              <button
+                type="submit"
+                class="btn btn-primary btn-sm w-100"
+                [disabled]="volunteerSignupForm.invalid || submittingVolunteerSignup()"
+              >
+                {{ submittingVolunteerSignup() ? '...' : 'Go' }}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>

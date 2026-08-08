@@ -28,6 +28,7 @@ export type TournamentAnnouncementMinAggregateOutputType = {
   id: string | null
   tournamentId: string | null
   body: string | null
+  type: $Enums.TournamentAnnouncementType | null
   createdAt: Date | null
 }
 
@@ -35,6 +36,7 @@ export type TournamentAnnouncementMaxAggregateOutputType = {
   id: string | null
   tournamentId: string | null
   body: string | null
+  type: $Enums.TournamentAnnouncementType | null
   createdAt: Date | null
 }
 
@@ -42,6 +44,7 @@ export type TournamentAnnouncementCountAggregateOutputType = {
   id: number
   tournamentId: number
   body: number
+  type: number
   createdAt: number
   _all: number
 }
@@ -51,6 +54,7 @@ export type TournamentAnnouncementMinAggregateInputType = {
   id?: true
   tournamentId?: true
   body?: true
+  type?: true
   createdAt?: true
 }
 
@@ -58,6 +62,7 @@ export type TournamentAnnouncementMaxAggregateInputType = {
   id?: true
   tournamentId?: true
   body?: true
+  type?: true
   createdAt?: true
 }
 
@@ -65,6 +70,7 @@ export type TournamentAnnouncementCountAggregateInputType = {
   id?: true
   tournamentId?: true
   body?: true
+  type?: true
   createdAt?: true
   _all?: true
 }
@@ -145,6 +151,7 @@ export type TournamentAnnouncementGroupByOutputType = {
   id: string
   tournamentId: string
   body: string
+  type: $Enums.TournamentAnnouncementType
   createdAt: Date
   _count: TournamentAnnouncementCountAggregateOutputType | null
   _min: TournamentAnnouncementMinAggregateOutputType | null
@@ -173,6 +180,7 @@ export type TournamentAnnouncementWhereInput = {
   id?: Prisma.StringFilter<"TournamentAnnouncement"> | string
   tournamentId?: Prisma.StringFilter<"TournamentAnnouncement"> | string
   body?: Prisma.StringFilter<"TournamentAnnouncement"> | string
+  type?: Prisma.EnumTournamentAnnouncementTypeFilter<"TournamentAnnouncement"> | $Enums.TournamentAnnouncementType
   createdAt?: Prisma.DateTimeFilter<"TournamentAnnouncement"> | Date | string
   tournament?: Prisma.XOR<Prisma.TournamentScalarRelationFilter, Prisma.TournamentWhereInput>
 }
@@ -181,6 +189,7 @@ export type TournamentAnnouncementOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   tournamentId?: Prisma.SortOrder
   body?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   tournament?: Prisma.TournamentOrderByWithRelationInput
 }
@@ -192,6 +201,7 @@ export type TournamentAnnouncementWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.TournamentAnnouncementWhereInput | Prisma.TournamentAnnouncementWhereInput[]
   tournamentId?: Prisma.StringFilter<"TournamentAnnouncement"> | string
   body?: Prisma.StringFilter<"TournamentAnnouncement"> | string
+  type?: Prisma.EnumTournamentAnnouncementTypeFilter<"TournamentAnnouncement"> | $Enums.TournamentAnnouncementType
   createdAt?: Prisma.DateTimeFilter<"TournamentAnnouncement"> | Date | string
   tournament?: Prisma.XOR<Prisma.TournamentScalarRelationFilter, Prisma.TournamentWhereInput>
 }, "id">
@@ -200,6 +210,7 @@ export type TournamentAnnouncementOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   tournamentId?: Prisma.SortOrder
   body?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.TournamentAnnouncementCountOrderByAggregateInput
   _max?: Prisma.TournamentAnnouncementMaxOrderByAggregateInput
@@ -213,12 +224,14 @@ export type TournamentAnnouncementScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"TournamentAnnouncement"> | string
   tournamentId?: Prisma.StringWithAggregatesFilter<"TournamentAnnouncement"> | string
   body?: Prisma.StringWithAggregatesFilter<"TournamentAnnouncement"> | string
+  type?: Prisma.EnumTournamentAnnouncementTypeWithAggregatesFilter<"TournamentAnnouncement"> | $Enums.TournamentAnnouncementType
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TournamentAnnouncement"> | Date | string
 }
 
 export type TournamentAnnouncementCreateInput = {
   id?: string
   body: string
+  type?: $Enums.TournamentAnnouncementType
   createdAt?: Date | string
   tournament: Prisma.TournamentCreateNestedOneWithoutAnnouncementsInput
 }
@@ -227,12 +240,14 @@ export type TournamentAnnouncementUncheckedCreateInput = {
   id?: string
   tournamentId: string
   body: string
+  type?: $Enums.TournamentAnnouncementType
   createdAt?: Date | string
 }
 
 export type TournamentAnnouncementUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumTournamentAnnouncementTypeFieldUpdateOperationsInput | $Enums.TournamentAnnouncementType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournament?: Prisma.TournamentUpdateOneRequiredWithoutAnnouncementsNestedInput
 }
@@ -241,6 +256,7 @@ export type TournamentAnnouncementUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tournamentId?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumTournamentAnnouncementTypeFieldUpdateOperationsInput | $Enums.TournamentAnnouncementType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -248,12 +264,14 @@ export type TournamentAnnouncementCreateManyInput = {
   id?: string
   tournamentId: string
   body: string
+  type?: $Enums.TournamentAnnouncementType
   createdAt?: Date | string
 }
 
 export type TournamentAnnouncementUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumTournamentAnnouncementTypeFieldUpdateOperationsInput | $Enums.TournamentAnnouncementType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -261,6 +279,7 @@ export type TournamentAnnouncementUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tournamentId?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumTournamentAnnouncementTypeFieldUpdateOperationsInput | $Enums.TournamentAnnouncementType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -278,6 +297,7 @@ export type TournamentAnnouncementCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   tournamentId?: Prisma.SortOrder
   body?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -285,6 +305,7 @@ export type TournamentAnnouncementMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   tournamentId?: Prisma.SortOrder
   body?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -292,6 +313,7 @@ export type TournamentAnnouncementMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   tournamentId?: Prisma.SortOrder
   body?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -337,15 +359,21 @@ export type TournamentAnnouncementUncheckedUpdateManyWithoutTournamentNestedInpu
   deleteMany?: Prisma.TournamentAnnouncementScalarWhereInput | Prisma.TournamentAnnouncementScalarWhereInput[]
 }
 
+export type EnumTournamentAnnouncementTypeFieldUpdateOperationsInput = {
+  set?: $Enums.TournamentAnnouncementType
+}
+
 export type TournamentAnnouncementCreateWithoutTournamentInput = {
   id?: string
   body: string
+  type?: $Enums.TournamentAnnouncementType
   createdAt?: Date | string
 }
 
 export type TournamentAnnouncementUncheckedCreateWithoutTournamentInput = {
   id?: string
   body: string
+  type?: $Enums.TournamentAnnouncementType
   createdAt?: Date | string
 }
 
@@ -382,30 +410,35 @@ export type TournamentAnnouncementScalarWhereInput = {
   id?: Prisma.StringFilter<"TournamentAnnouncement"> | string
   tournamentId?: Prisma.StringFilter<"TournamentAnnouncement"> | string
   body?: Prisma.StringFilter<"TournamentAnnouncement"> | string
+  type?: Prisma.EnumTournamentAnnouncementTypeFilter<"TournamentAnnouncement"> | $Enums.TournamentAnnouncementType
   createdAt?: Prisma.DateTimeFilter<"TournamentAnnouncement"> | Date | string
 }
 
 export type TournamentAnnouncementCreateManyTournamentInput = {
   id?: string
   body: string
+  type?: $Enums.TournamentAnnouncementType
   createdAt?: Date | string
 }
 
 export type TournamentAnnouncementUpdateWithoutTournamentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumTournamentAnnouncementTypeFieldUpdateOperationsInput | $Enums.TournamentAnnouncementType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TournamentAnnouncementUncheckedUpdateWithoutTournamentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumTournamentAnnouncementTypeFieldUpdateOperationsInput | $Enums.TournamentAnnouncementType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TournamentAnnouncementUncheckedUpdateManyWithoutTournamentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumTournamentAnnouncementTypeFieldUpdateOperationsInput | $Enums.TournamentAnnouncementType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -415,6 +448,7 @@ export type TournamentAnnouncementSelect<ExtArgs extends runtime.Types.Extension
   id?: boolean
   tournamentId?: boolean
   body?: boolean
+  type?: boolean
   createdAt?: boolean
   tournament?: boolean | Prisma.TournamentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tournamentAnnouncement"]>
@@ -423,6 +457,7 @@ export type TournamentAnnouncementSelectCreateManyAndReturn<ExtArgs extends runt
   id?: boolean
   tournamentId?: boolean
   body?: boolean
+  type?: boolean
   createdAt?: boolean
   tournament?: boolean | Prisma.TournamentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tournamentAnnouncement"]>
@@ -431,6 +466,7 @@ export type TournamentAnnouncementSelectUpdateManyAndReturn<ExtArgs extends runt
   id?: boolean
   tournamentId?: boolean
   body?: boolean
+  type?: boolean
   createdAt?: boolean
   tournament?: boolean | Prisma.TournamentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tournamentAnnouncement"]>
@@ -439,10 +475,11 @@ export type TournamentAnnouncementSelectScalar = {
   id?: boolean
   tournamentId?: boolean
   body?: boolean
+  type?: boolean
   createdAt?: boolean
 }
 
-export type TournamentAnnouncementOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tournamentId" | "body" | "createdAt", ExtArgs["result"]["tournamentAnnouncement"]>
+export type TournamentAnnouncementOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tournamentId" | "body" | "type" | "createdAt", ExtArgs["result"]["tournamentAnnouncement"]>
 export type TournamentAnnouncementInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tournament?: boolean | Prisma.TournamentDefaultArgs<ExtArgs>
 }
@@ -462,6 +499,7 @@ export type $TournamentAnnouncementPayload<ExtArgs extends runtime.Types.Extensi
     id: string
     tournamentId: string
     body: string
+    type: $Enums.TournamentAnnouncementType
     createdAt: Date
   }, ExtArgs["result"]["tournamentAnnouncement"]>
   composites: {}
@@ -890,6 +928,7 @@ export interface TournamentAnnouncementFieldRefs {
   readonly id: Prisma.FieldRef<"TournamentAnnouncement", 'String'>
   readonly tournamentId: Prisma.FieldRef<"TournamentAnnouncement", 'String'>
   readonly body: Prisma.FieldRef<"TournamentAnnouncement", 'String'>
+  readonly type: Prisma.FieldRef<"TournamentAnnouncement", 'TournamentAnnouncementType'>
   readonly createdAt: Prisma.FieldRef<"TournamentAnnouncement", 'DateTime'>
 }
     

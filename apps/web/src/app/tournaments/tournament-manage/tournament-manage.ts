@@ -21,16 +21,22 @@ import {
   TournamentCoOrganizer,
   TournamentGame,
   TournamentGamePlayerStat,
+  TournamentInfoListing,
+  TournamentInfoListingCategory,
+  TournamentLostFoundItem,
   TournamentMediaAsset,
   TournamentPaymentRow,
   TournamentPaymentsStatus,
   TournamentPlayerPosition,
+  TournamentReferee,
   TournamentRegistration,
   TournamentSponsor,
   TournamentSponsorTier,
   TournamentTeam,
   TournamentTeamPlayer,
   TournamentVenue,
+  TournamentVolunteerShift,
+  TournamentVolunteerSignup,
   TournamentWebhook,
 } from '@hockeyspare/contracts';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
@@ -165,6 +171,31 @@ export class TournamentManageComponent implements OnInit {
   webhookError = signal<string | null>(null);
   deletingWebhookId = signal<string | null>(null);
 
+  referees = signal<TournamentReferee[]>([]);
+  savingReferee = signal(false);
+  refereeError = signal<string | null>(null);
+  deletingRefereeId = signal<string | null>(null);
+  assigningRefereeGameId = signal<string | null>(null);
+  selectedRefereeToAssign = signal<Record<string, string>>({});
+
+  savingVolunteerShift = signal(false);
+  volunteerShiftError = signal<string | null>(null);
+  deletingVolunteerShiftId = signal<string | null>(null);
+  viewingSignupsShiftId = signal<string | null>(null);
+  shiftSignups = signal<TournamentVolunteerSignup[]>([]);
+  loadingSignups = signal(false);
+
+  showInfoListingForm = signal(false);
+  savingInfoListing = signal(false);
+  infoListingError = signal<string | null>(null);
+  editingInfoListingId = signal<string | null>(null);
+  deletingInfoListingId = signal<string | null>(null);
+
+  savingLostFoundItem = signal(false);
+  lostFoundError = signal<string | null>(null);
+  updatingLostFoundItemId = signal<string | null>(null);
+  deletingLostFoundItemId = signal<string | null>(null);
+
   detailsForm = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
     description: [''],
@@ -187,6 +218,7 @@ export class TournamentManageComponent implements OnInit {
     startsAt: ['', Validators.required],
     arenaName: [''],
     notes: [''],
+    livestreamUrl: [''],
   });
 
   sponsorForm = this.fb.group({
@@ -198,6 +230,7 @@ export class TournamentManageComponent implements OnInit {
 
   announcementForm = this.fb.group({
     body: ['', Validators.required],
+    type: ['GENERAL' as 'GENERAL' | 'WEATHER'],
   });
 
   venueForm = this.fb.group({
@@ -206,6 +239,35 @@ export class TournamentManageComponent implements OnInit {
     parkingInfo: [''],
     dressingRoomInfo: [''],
     concessionsInfo: [''],
+  });
+
+  refereeForm = this.fb.group({
+    name: ['', Validators.required],
+    email: [''],
+    phone: [''],
+  });
+
+  volunteerShiftForm = this.fb.group({
+    role: ['', Validators.required],
+    description: [''],
+    startsAt: ['', Validators.required],
+    endsAt: ['', Validators.required],
+    location: [''],
+    capacity: [''],
+  });
+
+  infoListingForm = this.fb.group({
+    category: ['HOTEL' as TournamentInfoListingCategory, Validators.required],
+    title: ['', Validators.required],
+    description: [''],
+    url: [''],
+    imageUrl: [''],
+  });
+
+  lostFoundForm = this.fb.group({
+    description: ['', Validators.required],
+    imageUrl: [''],
+    contactInfo: [''],
   });
 
   apiKeyForm = this.fb.group({
@@ -361,6 +423,7 @@ export class TournamentManageComponent implements OnInit {
           this.loadApiKeys();
           this.loadWebhooks();
           this.loadScoresheetOcrStatus();
+          this.loadReferees();
         } else if (this.authState.user()?.id) {
           // Not the creator, but might be a co-organizer - probing the
           // co-organizer list is itself owner-or-co-organizer gated, so a
@@ -389,6 +452,7 @@ export class TournamentManageComponent implements OnInit {
           this.loadApiKeys();
           this.loadWebhooks();
           this.loadScoresheetOcrStatus();
+          this.loadReferees();
         }
       },
       error: () => {
@@ -415,6 +479,17 @@ export class TournamentManageComponent implements OnInit {
       },
       error: () => {
         this.scoresheetOcrStatus.set(null);
+      },
+    });
+  }
+
+  private loadReferees(): void {
+    this.tournamentsApi.listReferees(this.tournamentId).subscribe({
+      next: (referees) => {
+        this.referees.set(referees);
+      },
+      error: () => {
+        this.referees.set([]);
       },
     });
   }
@@ -638,6 +713,7 @@ export class TournamentManageComponent implements OnInit {
       startsAt: '',
       arenaName: '',
       notes: '',
+      livestreamUrl: '',
     });
   }
 
@@ -653,6 +729,7 @@ export class TournamentManageComponent implements OnInit {
       startsAt: game.startsAt.slice(0, 16),
       arenaName: game.arenaName ?? '',
       notes: game.notes ?? '',
+      livestreamUrl: game.livestreamUrl ?? '',
     });
   }
 
@@ -676,6 +753,7 @@ export class TournamentManageComponent implements OnInit {
       startsAt: new Date(value.startsAt).toISOString(),
       arenaName: value.arenaName.trim() || null,
       notes: value.notes.trim() || null,
+      livestreamUrl: value.livestreamUrl.trim() || null,
     };
 
     this.savingGame.set(true);
@@ -1313,11 +1391,14 @@ export class TournamentManageComponent implements OnInit {
     this.announcementError.set(null);
 
     this.tournamentsApi
-      .addAnnouncement(this.tournamentId, { body: value.body.trim() })
+      .addAnnouncement(this.tournamentId, {
+        body: value.body.trim(),
+        type: value.type,
+      })
       .subscribe({
         next: () => {
           this.savingAnnouncement.set(false);
-          this.announcementForm.reset({ body: '' });
+          this.announcementForm.reset({ body: '', type: 'GENERAL' });
           this.load();
         },
         error: (err) => {
@@ -1907,5 +1988,408 @@ export class TournamentManageComponent implements OnInit {
 
   dismissExtraction(): void {
     this.lastExtraction.set(null);
+  }
+
+  // --- Referees ---
+
+  addReferee(): void {
+    if (this.refereeForm.invalid || this.savingReferee()) {
+      this.refereeForm.markAllAsTouched();
+      return;
+    }
+
+    const value = this.refereeForm.getRawValue();
+
+    this.savingReferee.set(true);
+    this.refereeError.set(null);
+
+    this.tournamentsApi
+      .createReferee(this.tournamentId, {
+        name: value.name.trim(),
+        email: value.email.trim() || null,
+        phone: value.phone.trim() || null,
+      })
+      .subscribe({
+        next: () => {
+          this.savingReferee.set(false);
+          this.refereeForm.reset({ name: '', email: '', phone: '' });
+          this.loadReferees();
+        },
+        error: (err) => {
+          this.refereeError.set(
+            err?.error?.message || 'Could not add this referee.',
+          );
+          this.savingReferee.set(false);
+        },
+      });
+  }
+
+  deleteReferee(refereeId: string): void {
+    this.deletingRefereeId.set(refereeId);
+    this.refereeError.set(null);
+
+    this.tournamentsApi.deleteReferee(this.tournamentId, refereeId).subscribe({
+      next: () => {
+        this.deletingRefereeId.set(null);
+        this.loadReferees();
+      },
+      error: (err) => {
+        this.refereeError.set(
+          err?.error?.message || 'Could not remove this referee.',
+        );
+        this.deletingRefereeId.set(null);
+      },
+    });
+  }
+
+  trackByRefereeId(_index: number, referee: TournamentReferee): string {
+    return referee.id;
+  }
+
+  toggleAssignReferee(gameId: string): void {
+    this.assigningRefereeGameId.set(
+      this.assigningRefereeGameId() === gameId ? null : gameId,
+    );
+    this.refereeError.set(null);
+  }
+
+  updateSelectedRefereeToAssign(gameId: string, event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    this.selectedRefereeToAssign.update((map) => ({
+      ...map,
+      [gameId]: select.value,
+    }));
+  }
+
+  assignReferee(gameId: string): void {
+    const refereeId = this.selectedRefereeToAssign()[gameId];
+
+    if (!refereeId) {
+      return;
+    }
+
+    this.refereeError.set(null);
+
+    this.tournamentsApi
+      .assignRefereeToGame(this.tournamentId, gameId, { refereeId })
+      .subscribe({
+        next: () => {
+          this.assigningRefereeGameId.set(null);
+          this.load();
+        },
+        error: (err) => {
+          this.refereeError.set(
+            err?.error?.message || 'Could not assign this referee.',
+          );
+        },
+      });
+  }
+
+  unassignReferee(gameId: string, assignmentId: string): void {
+    this.tournamentsApi
+      .unassignRefereeFromGame(this.tournamentId, gameId, assignmentId)
+      .subscribe({
+        next: () => {
+          this.load();
+        },
+        error: (err) => {
+          this.refereeError.set(
+            err?.error?.message || 'Could not remove this referee assignment.',
+          );
+        },
+      });
+  }
+
+  // --- Volunteer shifts ---
+
+  saveVolunteerShift(): void {
+    if (this.volunteerShiftForm.invalid || this.savingVolunteerShift()) {
+      this.volunteerShiftForm.markAllAsTouched();
+      return;
+    }
+
+    const value = this.volunteerShiftForm.getRawValue();
+
+    this.savingVolunteerShift.set(true);
+    this.volunteerShiftError.set(null);
+
+    this.tournamentsApi
+      .createVolunteerShift(this.tournamentId, {
+        role: value.role.trim(),
+        description: value.description.trim() || null,
+        startsAt: new Date(value.startsAt).toISOString(),
+        endsAt: new Date(value.endsAt).toISOString(),
+        location: value.location.trim() || null,
+        capacity: value.capacity ? Number(value.capacity) : null,
+      })
+      .subscribe({
+        next: () => {
+          this.savingVolunteerShift.set(false);
+          this.volunteerShiftForm.reset({
+            role: '',
+            description: '',
+            startsAt: '',
+            endsAt: '',
+            location: '',
+            capacity: '',
+          });
+          this.load();
+        },
+        error: (err) => {
+          this.volunteerShiftError.set(
+            err?.error?.message || 'Could not add this volunteer shift.',
+          );
+          this.savingVolunteerShift.set(false);
+        },
+      });
+  }
+
+  deleteVolunteerShift(shiftId: string): void {
+    this.deletingVolunteerShiftId.set(shiftId);
+    this.volunteerShiftError.set(null);
+
+    this.tournamentsApi
+      .deleteVolunteerShift(this.tournamentId, shiftId)
+      .subscribe({
+        next: () => {
+          this.deletingVolunteerShiftId.set(null);
+          this.load();
+        },
+        error: (err) => {
+          this.volunteerShiftError.set(
+            err?.error?.message || 'Could not remove this volunteer shift.',
+          );
+          this.deletingVolunteerShiftId.set(null);
+        },
+      });
+  }
+
+  toggleViewSignups(shiftId: string): void {
+    if (this.viewingSignupsShiftId() === shiftId) {
+      this.viewingSignupsShiftId.set(null);
+      return;
+    }
+
+    this.viewingSignupsShiftId.set(shiftId);
+    this.loadingSignups.set(true);
+    this.shiftSignups.set([]);
+
+    this.tournamentsApi
+      .listVolunteerSignups(this.tournamentId, shiftId)
+      .subscribe({
+        next: (signups) => {
+          this.shiftSignups.set(signups);
+          this.loadingSignups.set(false);
+        },
+        error: () => {
+          this.loadingSignups.set(false);
+        },
+      });
+  }
+
+  trackByVolunteerShiftId(
+    _index: number,
+    shift: TournamentVolunteerShift,
+  ): string {
+    return shift.id;
+  }
+
+  trackByVolunteerSignupId(
+    _index: number,
+    signup: TournamentVolunteerSignup,
+  ): string {
+    return signup.id;
+  }
+
+  // --- Info listings (hotel / merchandise / vendor) ---
+
+  openAddInfoListing(): void {
+    this.showInfoListingForm.set(true);
+    this.editingInfoListingId.set(null);
+    this.infoListingError.set(null);
+    this.infoListingForm.reset({
+      category: 'HOTEL',
+      title: '',
+      description: '',
+      url: '',
+      imageUrl: '',
+    });
+  }
+
+  openEditInfoListing(listing: TournamentInfoListing): void {
+    this.showInfoListingForm.set(true);
+    this.editingInfoListingId.set(listing.id);
+    this.infoListingError.set(null);
+    this.infoListingForm.reset({
+      category: listing.category,
+      title: listing.title,
+      description: listing.description ?? '',
+      url: listing.url ?? '',
+      imageUrl: listing.imageUrl ?? '',
+    });
+  }
+
+  cancelInfoListingEdit(): void {
+    this.showInfoListingForm.set(false);
+    this.editingInfoListingId.set(null);
+    this.infoListingError.set(null);
+  }
+
+  saveInfoListing(): void {
+    if (this.infoListingForm.invalid || this.savingInfoListing()) {
+      this.infoListingForm.markAllAsTouched();
+      return;
+    }
+
+    const value = this.infoListingForm.getRawValue();
+    const editingId = this.editingInfoListingId();
+
+    const payload = {
+      category: value.category,
+      title: value.title.trim(),
+      description: value.description.trim() || null,
+      url: value.url.trim() || null,
+      imageUrl: value.imageUrl.trim() || null,
+    };
+
+    this.savingInfoListing.set(true);
+    this.infoListingError.set(null);
+
+    const request = editingId
+      ? this.tournamentsApi.updateInfoListing(
+          this.tournamentId,
+          editingId,
+          payload,
+        )
+      : this.tournamentsApi.createInfoListing(this.tournamentId, payload);
+
+    request.subscribe({
+      next: () => {
+        this.savingInfoListing.set(false);
+        this.showInfoListingForm.set(false);
+        this.editingInfoListingId.set(null);
+        this.load();
+      },
+      error: (err) => {
+        this.infoListingError.set(
+          err?.error?.message || 'Could not save this listing.',
+        );
+        this.savingInfoListing.set(false);
+      },
+    });
+  }
+
+  deleteInfoListing(listingId: string): void {
+    this.deletingInfoListingId.set(listingId);
+    this.infoListingError.set(null);
+
+    this.tournamentsApi
+      .deleteInfoListing(this.tournamentId, listingId)
+      .subscribe({
+        next: () => {
+          this.deletingInfoListingId.set(null);
+          this.load();
+        },
+        error: (err) => {
+          this.infoListingError.set(
+            err?.error?.message || 'Could not remove this listing.',
+          );
+          this.deletingInfoListingId.set(null);
+        },
+      });
+  }
+
+  trackByInfoListingId(
+    _index: number,
+    listing: TournamentInfoListing,
+  ): string {
+    return listing.id;
+  }
+
+  // --- Lost & found ---
+
+  addLostFoundItem(): void {
+    if (this.lostFoundForm.invalid || this.savingLostFoundItem()) {
+      this.lostFoundForm.markAllAsTouched();
+      return;
+    }
+
+    const value = this.lostFoundForm.getRawValue();
+
+    this.savingLostFoundItem.set(true);
+    this.lostFoundError.set(null);
+
+    this.tournamentsApi
+      .createLostFoundItem(this.tournamentId, {
+        description: value.description.trim(),
+        imageUrl: value.imageUrl.trim() || null,
+        contactInfo: value.contactInfo.trim() || null,
+      })
+      .subscribe({
+        next: () => {
+          this.savingLostFoundItem.set(false);
+          this.lostFoundForm.reset({
+            description: '',
+            imageUrl: '',
+            contactInfo: '',
+          });
+          this.load();
+        },
+        error: (err) => {
+          this.lostFoundError.set(
+            err?.error?.message || 'Could not add this item.',
+          );
+          this.savingLostFoundItem.set(false);
+        },
+      });
+  }
+
+  toggleLostFoundClaimed(item: TournamentLostFoundItem): void {
+    this.updatingLostFoundItemId.set(item.id);
+    this.lostFoundError.set(null);
+
+    this.tournamentsApi
+      .updateLostFoundItem(this.tournamentId, item.id, {
+        status: item.status === 'CLAIMED' ? 'UNCLAIMED' : 'CLAIMED',
+      })
+      .subscribe({
+        next: () => {
+          this.updatingLostFoundItemId.set(null);
+          this.load();
+        },
+        error: (err) => {
+          this.lostFoundError.set(
+            err?.error?.message || 'Could not update this item.',
+          );
+          this.updatingLostFoundItemId.set(null);
+        },
+      });
+  }
+
+  deleteLostFoundItem(itemId: string): void {
+    this.deletingLostFoundItemId.set(itemId);
+    this.lostFoundError.set(null);
+
+    this.tournamentsApi
+      .deleteLostFoundItem(this.tournamentId, itemId)
+      .subscribe({
+        next: () => {
+          this.deletingLostFoundItemId.set(null);
+          this.load();
+        },
+        error: (err) => {
+          this.lostFoundError.set(
+            err?.error?.message || 'Could not remove this item.',
+          );
+          this.deletingLostFoundItemId.set(null);
+        },
+      });
+  }
+
+  trackByLostFoundItemId(
+    _index: number,
+    item: TournamentLostFoundItem,
+  ): string {
+    return item.id;
   }
 }

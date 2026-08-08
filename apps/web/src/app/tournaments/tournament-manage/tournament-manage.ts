@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
+  FileStorageStatus,
   Tournament,
   TournamentAnnouncement,
   TournamentAuditLogEntry,
@@ -15,6 +16,7 @@ import {
   TournamentCoOrganizer,
   TournamentGame,
   TournamentGamePlayerStat,
+  TournamentMediaAsset,
   TournamentPaymentRow,
   TournamentPaymentsStatus,
   TournamentPlayerPosition,
@@ -126,6 +128,16 @@ export class TournamentManageComponent implements OnInit {
   loadingAuditLog = signal(false);
 
   payments = signal<TournamentPaymentRow[]>([]);
+
+  fileStorageStatus = signal<FileStorageStatus | null>(null);
+  uploadingLogo = signal(false);
+  logoError = signal<string | null>(null);
+  uploadingRulebook = signal(false);
+  rulebookError = signal<string | null>(null);
+  mediaCaptionDraft = signal('');
+  uploadingMedia = signal(false);
+  mediaError = signal<string | null>(null);
+  deletingMediaAssetId = signal<string | null>(null);
 
   detailsForm = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
@@ -310,6 +322,7 @@ export class TournamentManageComponent implements OnInit {
           this.loadPaymentsStatus();
           this.loadPayments();
           this.loadCoOrganizers();
+          this.loadFileStorageStatus();
         } else if (this.authState.user()?.id) {
           // Not the creator, but might be a co-organizer - probing the
           // co-organizer list is itself owner-or-co-organizer gated, so a
@@ -334,10 +347,22 @@ export class TournamentManageComponent implements OnInit {
           this.loadRegistrations();
           this.loadPaymentsStatus();
           this.loadPayments();
+          this.loadFileStorageStatus();
         }
       },
       error: () => {
         this.coOrganizers.set([]);
+      },
+    });
+  }
+
+  private loadFileStorageStatus(): void {
+    this.tournamentsApi.getFileStorageStatus(this.tournamentId).subscribe({
+      next: (status) => {
+        this.fileStorageStatus.set(status);
+      },
+      error: () => {
+        this.fileStorageStatus.set(null);
       },
     });
   }
@@ -1487,5 +1512,116 @@ export class TournamentManageComponent implements OnInit {
     ]);
 
     this.downloadCsv(`payments-${this.tournamentId}.csv`, header, rows);
+  }
+
+  onLogoFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    this.uploadingLogo.set(true);
+    this.logoError.set(null);
+
+    this.tournamentsApi.uploadLogo(this.tournamentId, file).subscribe({
+      next: (tournament) => {
+        this.tournament.set(tournament);
+        this.uploadingLogo.set(false);
+        input.value = '';
+      },
+      error: (err) => {
+        this.logoError.set(
+          err?.error?.message || 'Could not upload this logo.',
+        );
+        this.uploadingLogo.set(false);
+        input.value = '';
+      },
+    });
+  }
+
+  onRulebookFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    this.uploadingRulebook.set(true);
+    this.rulebookError.set(null);
+
+    this.tournamentsApi.uploadRulebook(this.tournamentId, file).subscribe({
+      next: (tournament) => {
+        this.tournament.set(tournament);
+        this.uploadingRulebook.set(false);
+        input.value = '';
+      },
+      error: (err) => {
+        this.rulebookError.set(
+          err?.error?.message || 'Could not upload the rulebook.',
+        );
+        this.uploadingRulebook.set(false);
+        input.value = '';
+      },
+    });
+  }
+
+  updateMediaCaptionDraft(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.mediaCaptionDraft.set(input.value);
+  }
+
+  onMediaFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    this.uploadingMedia.set(true);
+    this.mediaError.set(null);
+
+    this.tournamentsApi
+      .addMediaAsset(this.tournamentId, file, this.mediaCaptionDraft().trim() || undefined)
+      .subscribe({
+        next: () => {
+          this.uploadingMedia.set(false);
+          this.mediaCaptionDraft.set('');
+          input.value = '';
+          this.load();
+        },
+        error: (err) => {
+          this.mediaError.set(
+            err?.error?.message || 'Could not upload this photo.',
+          );
+          this.uploadingMedia.set(false);
+          input.value = '';
+        },
+      });
+  }
+
+  deleteMediaAsset(assetId: string): void {
+    this.deletingMediaAssetId.set(assetId);
+    this.mediaError.set(null);
+
+    this.tournamentsApi.deleteMediaAsset(this.tournamentId, assetId).subscribe({
+      next: () => {
+        this.deletingMediaAssetId.set(null);
+        this.load();
+      },
+      error: (err) => {
+        this.mediaError.set(
+          err?.error?.message || 'Could not remove this photo.',
+        );
+        this.deletingMediaAssetId.set(null);
+      },
+    });
+  }
+
+  trackByMediaAssetId(_index: number, asset: TournamentMediaAsset): string {
+    return asset.id;
   }
 }

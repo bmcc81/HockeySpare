@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -9,8 +10,11 @@ import {
   Query,
   Req,
   UnauthorizedException,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { TournamentsService } from './tournaments.service';
 import { CreateTournamentDto } from './dto/create-tournament.dto';
@@ -38,6 +42,9 @@ type AuthRequest = {
     sub?: string;
   };
 };
+
+const MAX_IMAGE_UPLOAD_BYTES = 5 * 1024 * 1024;
+const MAX_PDF_UPLOAD_BYTES = 20 * 1024 * 1024;
 
 @Controller('tournaments')
 export class TournamentsController {
@@ -526,5 +533,86 @@ export class TournamentsController {
   @Get(':id/payments')
   listPayments(@Req() req: AuthRequest, @Param('id') id: string) {
     return this.tournamentsService.listPayments(this.getUserId(req), id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/file-storage/status')
+  getFileStorageStatus() {
+    return this.tournamentsService.getFileStorageStatus();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/logo')
+  @UseInterceptors(
+    FileInterceptor('file', { limits: { fileSize: MAX_IMAGE_UPLOAD_BYTES } }),
+  )
+  uploadLogo(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    if (!file) {
+      throw new BadRequestException('No file uploaded.');
+    }
+
+    return this.tournamentsService.uploadLogo(this.getUserId(req), id, file);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/rulebook')
+  @UseInterceptors(
+    FileInterceptor('file', { limits: { fileSize: MAX_PDF_UPLOAD_BYTES } }),
+  )
+  uploadRulebook(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    if (!file) {
+      throw new BadRequestException('No file uploaded.');
+    }
+
+    return this.tournamentsService.uploadRulebook(
+      this.getUserId(req),
+      id,
+      file,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/media')
+  @UseInterceptors(
+    FileInterceptor('file', { limits: { fileSize: MAX_IMAGE_UPLOAD_BYTES } }),
+  )
+  addMediaAsset(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Body('caption') caption?: string,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    if (!file) {
+      throw new BadRequestException('No file uploaded.');
+    }
+
+    return this.tournamentsService.addMediaAsset(
+      this.getUserId(req),
+      id,
+      file,
+      caption,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/media/:assetId')
+  deleteMediaAsset(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('assetId') assetId: string,
+  ) {
+    return this.tournamentsService.deleteMediaAsset(
+      this.getUserId(req),
+      id,
+      assetId,
+    );
   }
 }

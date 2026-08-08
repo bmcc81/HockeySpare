@@ -406,6 +406,7 @@ export const ModelName = {
   GameScoreSheetPlayer: 'GameScoreSheetPlayer',
   HelpArticle: 'HelpArticle',
   Tournament: 'Tournament',
+  TournamentMediaAsset: 'TournamentMediaAsset',
   TournamentCoOrganizer: 'TournamentCoOrganizer',
   TournamentAuditLogEntry: 'TournamentAuditLogEntry',
   TournamentAnnouncement: 'TournamentAnnouncement',
@@ -434,7 +435,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "request" | "requestResponse" | "playerOffer" | "user" | "league" | "leagueArena" | "leagueMember" | "team" | "teamMessage" | "teamMember" | "playerStat" | "memberFee" | "payment" | "teamGame" | "teamGameInvite" | "teamGameAvailability" | "notification" | "booking" | "gameScoreSheet" | "gameScoreSheetPlayer" | "helpArticle" | "tournament" | "tournamentCoOrganizer" | "tournamentAuditLogEntry" | "tournamentAnnouncement" | "tournamentVenue" | "tournamentGame" | "tournamentRegistration" | "tournamentTeam" | "tournamentBracket" | "tournamentBracketMatch" | "tournamentTeamPlayer" | "tournamentGamePlayerStat" | "tournamentPayment" | "tournamentSponsor"
+    modelProps: "request" | "requestResponse" | "playerOffer" | "user" | "league" | "leagueArena" | "leagueMember" | "team" | "teamMessage" | "teamMember" | "playerStat" | "memberFee" | "payment" | "teamGame" | "teamGameInvite" | "teamGameAvailability" | "notification" | "booking" | "gameScoreSheet" | "gameScoreSheetPlayer" | "helpArticle" | "tournament" | "tournamentMediaAsset" | "tournamentCoOrganizer" | "tournamentAuditLogEntry" | "tournamentAnnouncement" | "tournamentVenue" | "tournamentGame" | "tournamentRegistration" | "tournamentTeam" | "tournamentBracket" | "tournamentBracketMatch" | "tournamentTeamPlayer" | "tournamentGamePlayerStat" | "tournamentPayment" | "tournamentSponsor"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2066,6 +2067,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TournamentMediaAsset: {
+      payload: Prisma.$TournamentMediaAssetPayload<ExtArgs>
+      fields: Prisma.TournamentMediaAssetFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TournamentMediaAssetFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentMediaAssetPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TournamentMediaAssetFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentMediaAssetPayload>
+        }
+        findFirst: {
+          args: Prisma.TournamentMediaAssetFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentMediaAssetPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TournamentMediaAssetFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentMediaAssetPayload>
+        }
+        findMany: {
+          args: Prisma.TournamentMediaAssetFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentMediaAssetPayload>[]
+        }
+        create: {
+          args: Prisma.TournamentMediaAssetCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentMediaAssetPayload>
+        }
+        createMany: {
+          args: Prisma.TournamentMediaAssetCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TournamentMediaAssetCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentMediaAssetPayload>[]
+        }
+        delete: {
+          args: Prisma.TournamentMediaAssetDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentMediaAssetPayload>
+        }
+        update: {
+          args: Prisma.TournamentMediaAssetUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentMediaAssetPayload>
+        }
+        deleteMany: {
+          args: Prisma.TournamentMediaAssetDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TournamentMediaAssetUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TournamentMediaAssetUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentMediaAssetPayload>[]
+        }
+        upsert: {
+          args: Prisma.TournamentMediaAssetUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentMediaAssetPayload>
+        }
+        aggregate: {
+          args: Prisma.TournamentMediaAssetAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTournamentMediaAsset>
+        }
+        groupBy: {
+          args: Prisma.TournamentMediaAssetGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TournamentMediaAssetGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TournamentMediaAssetCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TournamentMediaAssetCountAggregateOutputType> | number
+        }
+      }
+    }
     TournamentCoOrganizer: {
       payload: Prisma.$TournamentCoOrganizerPayload<ExtArgs>
       fields: Prisma.TournamentCoOrganizerFieldRefs
@@ -3416,11 +3491,24 @@ export const TournamentScalarFieldEnum = {
   contactName: 'contactName',
   contactEmail: 'contactEmail',
   contactPhone: 'contactPhone',
+  logoUrl: 'logoUrl',
+  rulebookUrl: 'rulebookUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type TournamentScalarFieldEnum = (typeof TournamentScalarFieldEnum)[keyof typeof TournamentScalarFieldEnum]
+
+
+export const TournamentMediaAssetScalarFieldEnum = {
+  id: 'id',
+  tournamentId: 'tournamentId',
+  url: 'url',
+  caption: 'caption',
+  createdAt: 'createdAt'
+} as const
+
+export type TournamentMediaAssetScalarFieldEnum = (typeof TournamentMediaAssetScalarFieldEnum)[keyof typeof TournamentMediaAssetScalarFieldEnum]
 
 
 export const TournamentCoOrganizerScalarFieldEnum = {
@@ -4114,6 +4202,7 @@ export type GlobalOmitConfig = {
   gameScoreSheetPlayer?: Prisma.GameScoreSheetPlayerOmit
   helpArticle?: Prisma.HelpArticleOmit
   tournament?: Prisma.TournamentOmit
+  tournamentMediaAsset?: Prisma.TournamentMediaAssetOmit
   tournamentCoOrganizer?: Prisma.TournamentCoOrganizerOmit
   tournamentAuditLogEntry?: Prisma.TournamentAuditLogEntryOmit
   tournamentAnnouncement?: Prisma.TournamentAnnouncementOmit

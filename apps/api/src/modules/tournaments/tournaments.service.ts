@@ -25,6 +25,7 @@ import { CreateTournamentBracketDto } from './dto/create-tournament-bracket.dto'
 import { ScheduleBracketMatchGameDto } from './dto/schedule-bracket-match-game.dto';
 import { StripeService } from '../stripe/stripe.service';
 import { EmailService } from '../email/email.service';
+import { FileStorageService } from '../file-storage/file-storage.service';
 import type Stripe from 'stripe';
 
 @Injectable()
@@ -33,6 +34,7 @@ export class TournamentsService {
     private readonly prisma: PrismaService,
     private readonly stripeService: StripeService,
     private readonly emailService: EmailService,
+    private readonly fileStorageService: FileStorageService,
   ) {}
 
   private readonly tournamentInclude = {
@@ -61,6 +63,11 @@ export class TournamentsService {
     venues: {
       orderBy: {
         createdAt: 'asc' as const,
+      },
+    },
+    mediaAssets: {
+      orderBy: {
+        createdAt: 'desc' as const,
       },
     },
     teams: {
@@ -2120,5 +2127,147 @@ export class TournamentsService {
       },
       orderBy: { createdAt: 'desc' },
     });
+  }
+
+  getFileStorageStatus() {
+    return { configured: this.fileStorageService.isConfigured() };
+  }
+
+  private readonly allowedImageMimeTypes = [
+    'image/png',
+    'image/jpeg',
+    'image/webp',
+  ];
+
+  private assertImageFile(file: Express.Multer.File): void {
+    if (!this.allowedImageMimeTypes.includes(file.mimetype)) {
+      throw new BadRequestException(
+        'Only PNG, JPEG, or WEBP images are allowed.',
+      );
+    }
+  }
+
+  async uploadLogo(
+    userId: string,
+    tournamentId: string,
+    file: Express.Multer.File,
+  ) {
+    const tournament = await this.getOwnedTournament(userId, tournamentId);
+    this.assertImageFile(file);
+
+    const url = await this.fileStorageService.uploadFile(
+      `tournaments/${tournamentId}/logo`,
+      file.originalname,
+      file.buffer,
+      file.mimetype,
+    );
+
+    if (tournament.logoUrl) {
+      await this.fileStorageService
+        .deleteFileByUrl(tournament.logoUrl)
+        .catch(() => {});
+    }
+
+    const updated = await this.prisma.tournament.update({
+      where: { id: tournamentId },
+      data: { logoUrl: url },
+      include: this.tournamentInclude,
+    });
+
+    await this.logAudit(tournamentId, userId, 'LOGO_UPLOADED');
+
+    return updated;
+  }
+
+  async uploadRulebook(
+    userId: string,
+    tournamentId: string,
+    file: Express.Multer.File,
+  ) {
+    const tournament = await this.getOwnedTournament(userId, tournamentId);
+
+    if (file.mimetype !== 'application/pdf') {
+      throw new BadRequestException(
+        'Only PDF files are allowed for the rulebook.',
+      );
+    }
+
+    const url = await this.fileStorageService.uploadFile(
+      `tournaments/${tournamentId}/rulebook`,
+      file.originalname,
+      file.buffer,
+      file.mimetype,
+    );
+
+    if (tournament.rulebookUrl) {
+      await this.fileStorageService
+        .deleteFileByUrl(tournament.rulebookUrl)
+        .catch(() => {});
+    }
+
+    const updated = await this.prisma.tournament.update({
+      where: { id: tournamentId },
+      data: { rulebookUrl: url },
+      include: this.tournamentInclude,
+    });
+
+    await this.logAudit(tournamentId, userId, 'RULEBOOK_UPLOADED');
+
+    return updated;
+  }
+
+  async addMediaAsset(
+    userId: string,
+    tournamentId: string,
+    file: Express.Multer.File,
+    caption?: string,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+    this.assertImageFile(file);
+
+    const url = await this.fileStorageService.uploadFile(
+      `tournaments/${tournamentId}/media`,
+      file.originalname,
+      file.buffer,
+      file.mimetype,
+    );
+
+    const asset = await this.prisma.tournamentMediaAsset.create({
+      data: {
+        tournamentId,
+        url,
+        caption: caption?.trim() || null,
+      },
+    });
+
+    await this.logAudit(tournamentId, userId, 'MEDIA_ADDED');
+
+    return asset;
+  }
+
+  async deleteMediaAsset(
+    userId: string,
+    tournamentId: string,
+    assetId: string,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const asset = await this.prisma.tournamentMediaAsset.findFirst({
+      where: { id: assetId, tournamentId },
+    });
+
+    if (!asset) {
+      throw new NotFoundException('Media asset not found');
+    }
+
+    await this.fileStorageService.deleteFileByUrl(asset.url).catch(() => {});
+
+    await this.prisma.tournamentMediaAsset.delete({
+      where: { id: assetId },
+    });
+
+    await this.logAudit(tournamentId, userId, 'MEDIA_DELETED');
+
+    return { id: asset.id, deleted: true };
   }
 }

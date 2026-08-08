@@ -12,6 +12,7 @@ import {
   TournamentBracket,
   TournamentBracketMatch,
   TournamentGame,
+  TournamentMediaAsset,
   TournamentPlayerLeaderRow,
   TournamentSponsor,
   TournamentSponsorTier,
@@ -428,6 +429,10 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
 
   trackBySponsorId(_index: number, sponsor: TournamentSponsor): string {
     return sponsor.id;
+  }
+
+  trackByMediaAssetId(_index: number, asset: TournamentMediaAsset): string {
+    return asset.id;
   }
 
   trackByAnnouncementId(_index: number, announcement: { id: string }): string {

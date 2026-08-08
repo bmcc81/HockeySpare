@@ -73,6 +73,7 @@ export const ModelName = {
   GameScoreSheetPlayer: 'GameScoreSheetPlayer',
   HelpArticle: 'HelpArticle',
   Tournament: 'Tournament',
+  TournamentMediaAsset: 'TournamentMediaAsset',
   TournamentCoOrganizer: 'TournamentCoOrganizer',
   TournamentAuditLogEntry: 'TournamentAuditLogEntry',
   TournamentAnnouncement: 'TournamentAnnouncement',
@@ -453,11 +454,24 @@ export const TournamentScalarFieldEnum = {
   contactName: 'contactName',
   contactEmail: 'contactEmail',
   contactPhone: 'contactPhone',
+  logoUrl: 'logoUrl',
+  rulebookUrl: 'rulebookUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type TournamentScalarFieldEnum = (typeof TournamentScalarFieldEnum)[keyof typeof TournamentScalarFieldEnum]
+
+
+export const TournamentMediaAssetScalarFieldEnum = {
+  id: 'id',
+  tournamentId: 'tournamentId',
+  url: 'url',
+  caption: 'caption',
+  createdAt: 'createdAt'
+} as const
+
+export type TournamentMediaAssetScalarFieldEnum = (typeof TournamentMediaAssetScalarFieldEnum)[keyof typeof TournamentMediaAssetScalarFieldEnum]
 
 
 export const TournamentCoOrganizerScalarFieldEnum = {

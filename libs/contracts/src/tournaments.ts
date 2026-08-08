@@ -211,12 +211,27 @@ export interface Tournament {
   contactName?: string | null;
   contactEmail?: string | null;
   contactPhone?: string | null;
+  logoUrl?: string | null;
+  rulebookUrl?: string | null;
   games: TournamentGame[];
   sponsors: TournamentSponsor[];
   teams: TournamentTeam[];
   brackets: TournamentBracket[];
   announcements: TournamentAnnouncement[];
   venues: TournamentVenue[];
+  mediaAssets: TournamentMediaAsset[];
+}
+
+export interface TournamentMediaAsset {
+  id: string;
+  tournamentId: string;
+  url: string;
+  caption?: string | null;
+  createdAt: string;
+}
+
+export interface FileStorageStatus {
+  configured: boolean;
 }
 
 export interface CreateTournamentInput {

@@ -1628,6 +1628,171 @@
         </div>
       </div>
     </div>
+
+    <div class="card mt-4" *ngIf="isOwner">
+      <div class="card-body">
+        <h2 class="h5">API access</h2>
+        <p class="text-secondary small">
+          Documented, key-authenticated read access for third-party or AI
+          tools: <code>GET /api/v1/tournaments/{{ tournamentId }}</code>
+          (plus <code>/standings</code> and <code>/leaders</code>), sending
+          your key as <code>Authorization: Bearer &lt;key&gt;</code>.
+        </p>
+
+        <div *ngIf="apiKeyError()" class="alert alert-danger py-2">
+          {{ apiKeyError() }}
+        </div>
+
+        <div class="alert alert-success py-2" *ngIf="justCreatedApiKey() as created">
+          <strong>Copy this key now</strong> — it won't be shown again.
+          <div class="mt-1">
+            <code style="user-select: all">{{ created.key }}</code>
+          </div>
+        </div>
+
+        <form
+          [formGroup]="apiKeyForm"
+          (ngSubmit)="createApiKey()"
+          class="row g-2 align-items-end mb-3"
+        >
+          <div class="col-12 col-md-6">
+            <label class="form-label">Key label</label>
+            <input
+              class="form-control"
+              formControlName="label"
+              placeholder="e.g. Scoreboard app"
+            />
+          </div>
+
+          <div class="col-12 col-md-3">
+            <button
+              type="submit"
+              class="btn btn-primary btn-sm w-100"
+              [disabled]="apiKeyForm.invalid || creatingApiKey()"
+            >
+              {{ creatingApiKey() ? '...' : 'Generate key' }}
+            </button>
+          </div>
+        </form>
+
+        <div *ngIf="apiKeys().length === 0" class="text-secondary py-2">
+          No API keys yet.
+        </div>
+
+        <div class="table-responsive" *ngIf="apiKeys().length > 0">
+          <table class="table table-sm align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Label</th>
+                <th>Key</th>
+                <th>Status</th>
+                <th>Last used</th>
+                <th></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let apiKey of apiKeys(); trackBy: trackByApiKeyId">
+                <td>{{ apiKey.label }}</td>
+                <td><code>{{ apiKey.keyPrefix }}…</code></td>
+                <td>
+                  <span class="badge" [class.text-bg-secondary]="apiKey.revokedAt" [class.text-bg-success]="!apiKey.revokedAt">
+                    {{ apiKey.revokedAt ? 'Revoked' : 'Active' }}
+                  </span>
+                </td>
+                <td>{{ apiKey.lastUsedAt ? (apiKey.lastUsedAt | date: 'short') : 'Never' }}</td>
+                <td class="text-end">
+                  <button
+                    class="btn btn-sm btn-outline-danger"
+                    type="button"
+                    *ngIf="!apiKey.revokedAt"
+                    [disabled]="revokingApiKeyId() === apiKey.id"
+                    (click)="revokeApiKey(apiKey.id)"
+                  >
+                    {{ revokingApiKeyId() === apiKey.id ? '...' : 'Revoke' }}
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <hr />
+
+        <h3 class="h6">Webhooks</h3>
+        <p class="text-secondary small">
+          Fires a signed <code>POST</code> to your URL whenever a game goes
+          live or is finalized. Verify it with an HMAC-SHA256 of the raw
+          request body using your webhook's secret, compared against the
+          <code>X-HockeySpare-Signature: sha256=&lt;hex&gt;</code> header.
+        </p>
+
+        <div *ngIf="webhookError()" class="alert alert-danger py-2">
+          {{ webhookError() }}
+        </div>
+
+        <form
+          [formGroup]="webhookForm"
+          (ngSubmit)="createWebhook()"
+          class="row g-2 align-items-end mb-3"
+        >
+          <div class="col-12 col-md-6">
+            <label class="form-label">Webhook URL</label>
+            <input
+              class="form-control"
+              formControlName="url"
+              placeholder="https://your-app.example.com/webhook"
+            />
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label class="form-label">Secret</label>
+            <input
+              class="form-control"
+              formControlName="secret"
+              placeholder="Optional - auto-generated if blank"
+            />
+          </div>
+
+          <div class="col-12 col-md-2">
+            <button
+              type="submit"
+              class="btn btn-primary btn-sm w-100"
+              [disabled]="webhookForm.invalid || creatingWebhook()"
+            >
+              {{ creatingWebhook() ? '...' : 'Add' }}
+            </button>
+          </div>
+        </form>
+
+        <div *ngIf="webhooks().length === 0" class="text-secondary py-2">
+          No webhooks yet.
+        </div>
+
+        <div class="d-flex flex-column gap-2">
+          <div
+            class="border rounded p-2 d-flex justify-content-between align-items-center gap-2"
+            *ngFor="let webhook of webhooks(); trackBy: trackByWebhookId"
+          >
+            <div class="text-truncate">
+              <div class="text-truncate">{{ webhook.url }}</div>
+              <div class="text-secondary small">
+                Secret: <code>{{ webhook.secret }}</code>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-danger flex-shrink-0"
+              [disabled]="deletingWebhookId() === webhook.id"
+              (click)="deleteWebhook(webhook.id)"
+            >
+              {{ deletingWebhookId() === webhook.id ? '...' : 'Remove' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </ng-container>
 </section>
 

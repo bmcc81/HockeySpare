@@ -35,6 +35,8 @@ import { CreateTournamentTeamPlayerDto } from './dto/create-tournament-team-play
 import { UpsertTournamentGamePlayerStatDto } from './dto/upsert-tournament-game-player-stat.dto';
 import { CreateTournamentBracketDto } from './dto/create-tournament-bracket.dto';
 import { ScheduleBracketMatchGameDto } from './dto/schedule-bracket-match-game.dto';
+import { CreateTournamentApiKeyDto } from './dto/create-tournament-api-key.dto';
+import { CreateTournamentWebhookDto } from './dto/create-tournament-webhook.dto';
 
 type AuthRequest = {
   user?: {
@@ -613,6 +615,70 @@ export class TournamentsController {
       this.getUserId(req),
       id,
       assetId,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/api-keys')
+  listApiKeys(@Req() req: AuthRequest, @Param('id') id: string) {
+    return this.tournamentsService.listApiKeys(this.getUserId(req), id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/api-keys')
+  createApiKey(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Body() dto: CreateTournamentApiKeyDto,
+  ) {
+    return this.tournamentsService.createApiKey(this.getUserId(req), id, dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/api-keys/:keyId')
+  revokeApiKey(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('keyId') keyId: string,
+  ) {
+    return this.tournamentsService.revokeApiKey(
+      this.getUserId(req),
+      id,
+      keyId,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/webhooks')
+  listWebhooks(@Req() req: AuthRequest, @Param('id') id: string) {
+    return this.tournamentsService.listWebhooks(this.getUserId(req), id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/webhooks')
+  createWebhook(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Body() dto: CreateTournamentWebhookDto,
+  ) {
+    return this.tournamentsService.createWebhook(
+      this.getUserId(req),
+      id,
+      dto,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/webhooks/:webhookId')
+  deleteWebhook(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('webhookId') webhookId: string,
+  ) {
+    return this.tournamentsService.deleteWebhook(
+      this.getUserId(req),
+      id,
+      webhookId,
     );
   }
 }

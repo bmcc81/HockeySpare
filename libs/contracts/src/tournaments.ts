@@ -377,3 +377,36 @@ export interface TournamentPaymentRow {
     contactEmail: string;
   };
 }
+
+export interface TournamentApiKey {
+  id: string;
+  tournamentId: string;
+  label: string;
+  keyPrefix: string;
+  createdAt: string;
+  lastUsedAt?: string | null;
+  revokedAt?: string | null;
+}
+
+export interface TournamentApiKeyCreated extends TournamentApiKey {
+  /** Only present on the create response - never shown again after this. */
+  key: string;
+}
+
+export interface CreateTournamentApiKeyInput {
+  label: string;
+}
+
+export interface TournamentWebhook {
+  id: string;
+  tournamentId: string;
+  url: string;
+  secret: string;
+  active: boolean;
+  createdAt: string;
+}
+
+export interface CreateTournamentWebhookInput {
+  url: string;
+  secret?: string;
+}

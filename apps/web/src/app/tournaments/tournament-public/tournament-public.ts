@@ -12,6 +12,9 @@ import {
   TournamentBracket,
   TournamentBracketMatch,
   TournamentGame,
+  TournamentInfoListing,
+  TournamentInfoListingCategory,
+  TournamentLostFoundItem,
   TournamentMediaAsset,
   TournamentPlayerLeaderRow,
   TournamentSponsor,
@@ -19,6 +22,7 @@ import {
   TournamentStandingRow,
   TournamentTeam,
   TournamentVenue,
+  TournamentVolunteerShift,
 } from '@hockeyspare/contracts';
 import { Subscription, interval, switchMap } from 'rxjs';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
@@ -31,6 +35,7 @@ type TournamentTab =
   | 'leaders'
   | 'rules'
   | 'info'
+  | 'volunteer'
   | 'sponsors'
   | 'register';
 
@@ -89,6 +94,17 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
     contactEmail: ['', [Validators.required, Validators.email]],
     contactPhone: [''],
     notes: [''],
+  });
+
+  signingUpShiftId = signal<string | null>(null);
+  submittingVolunteerSignup = signal(false);
+  volunteerSignupError = signal<string | null>(null);
+  volunteerSignupSuccessShiftId = signal<string | null>(null);
+
+  volunteerSignupForm = this.fb.group({
+    name: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    phone: [''],
   });
 
   ngOnInit(): void {
@@ -437,6 +453,107 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
 
   trackByAnnouncementId(_index: number, announcement: { id: string }): string {
     return announcement.id;
+  }
+
+  generalAnnouncements(): Tournament['announcements'] {
+    return (this.tournament()?.announcements ?? []).filter(
+      (a) => a.type !== 'WEATHER',
+    );
+  }
+
+  weatherAlerts(): Tournament['announcements'] {
+    return (this.tournament()?.announcements ?? []).filter(
+      (a) => a.type === 'WEATHER',
+    );
+  }
+
+  readonly infoListingCategories: TournamentInfoListingCategory[] = [
+    'HOTEL',
+    'MERCHANDISE',
+    'VENDOR',
+  ];
+
+  infoListingCategoryLabel(category: TournamentInfoListingCategory): string {
+    if (category === 'HOTEL') return 'Hotels';
+    if (category === 'MERCHANDISE') return 'Merchandise';
+    return 'Vendors';
+  }
+
+  infoListingsByCategory(
+    category: TournamentInfoListingCategory,
+  ): TournamentInfoListing[] {
+    return (this.tournament()?.infoListings ?? []).filter(
+      (listing) => listing.category === category,
+    );
+  }
+
+  trackByInfoListingId(_index: number, listing: TournamentInfoListing): string {
+    return listing.id;
+  }
+
+  unclaimedLostFoundItems(): TournamentLostFoundItem[] {
+    return (this.tournament()?.lostFoundItems ?? []).filter(
+      (item) => item.status === 'UNCLAIMED',
+    );
+  }
+
+  trackByLostFoundItemId(_index: number, item: TournamentLostFoundItem): string {
+    return item.id;
+  }
+
+  spotsRemaining(shift: TournamentVolunteerShift): number | null {
+    if (shift.capacity == null) {
+      return null;
+    }
+
+    return Math.max(0, shift.capacity - (shift._count?.signups ?? 0));
+  }
+
+  trackByVolunteerShiftId(_index: number, shift: TournamentVolunteerShift): string {
+    return shift.id;
+  }
+
+  toggleVolunteerSignup(shiftId: string): void {
+    this.signingUpShiftId.set(
+      this.signingUpShiftId() === shiftId ? null : shiftId,
+    );
+    this.volunteerSignupError.set(null);
+    this.volunteerSignupForm.reset({ name: '', email: '', phone: '' });
+  }
+
+  submitVolunteerSignup(shiftId: string): void {
+    if (this.volunteerSignupForm.invalid || this.submittingVolunteerSignup()) {
+      this.volunteerSignupForm.markAllAsTouched();
+      return;
+    }
+
+    const value = this.volunteerSignupForm.getRawValue();
+
+    this.submittingVolunteerSignup.set(true);
+    this.volunteerSignupError.set(null);
+
+    this.tournamentsApi
+      .signUpForVolunteerShift(this.tournamentId, shiftId, {
+        name: value.name.trim(),
+        email: value.email.trim(),
+        phone: value.phone.trim() || null,
+      })
+      .subscribe({
+        next: () => {
+          this.submittingVolunteerSignup.set(false);
+          this.signingUpShiftId.set(null);
+          this.volunteerSignupSuccessShiftId.set(shiftId);
+          this.tournamentsApi.getPublic(this.tournamentId).subscribe({
+            next: (tournament) => this.tournament.set(tournament),
+          });
+        },
+        error: (err) => {
+          this.volunteerSignupError.set(
+            err?.error?.message || 'Could not sign up for this shift.',
+          );
+          this.submittingVolunteerSignup.set(false);
+        },
+      });
   }
 
   ngOnDestroy(): void {

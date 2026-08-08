@@ -1,4 +1,4 @@
-import { IsDateString, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsDateString, IsOptional, IsString, IsUrl, MaxLength } from 'class-validator';
 
 export class CreateTournamentGameDto {
   @IsString()
@@ -29,4 +29,9 @@ export class CreateTournamentGameDto {
   @IsOptional()
   @IsString()
   awayTeamId?: string;
+
+  @IsOptional()
+  @IsUrl({ require_tld: false })
+  @MaxLength(500)
+  livestreamUrl?: string;
 }

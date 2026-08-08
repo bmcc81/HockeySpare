@@ -163,6 +163,36 @@ export type TournamentAnnouncement = Prisma.TournamentAnnouncementModel
  */
 export type TournamentVenue = Prisma.TournamentVenueModel
 /**
+ * Model TournamentReferee
+ * 
+ */
+export type TournamentReferee = Prisma.TournamentRefereeModel
+/**
+ * Model TournamentGameReferee
+ * 
+ */
+export type TournamentGameReferee = Prisma.TournamentGameRefereeModel
+/**
+ * Model TournamentVolunteerShift
+ * 
+ */
+export type TournamentVolunteerShift = Prisma.TournamentVolunteerShiftModel
+/**
+ * Model TournamentVolunteerSignup
+ * 
+ */
+export type TournamentVolunteerSignup = Prisma.TournamentVolunteerSignupModel
+/**
+ * Model TournamentInfoListing
+ * 
+ */
+export type TournamentInfoListing = Prisma.TournamentInfoListingModel
+/**
+ * Model TournamentLostFoundItem
+ * 
+ */
+export type TournamentLostFoundItem = Prisma.TournamentLostFoundItemModel
+/**
  * Model TournamentGame
  * 
  */

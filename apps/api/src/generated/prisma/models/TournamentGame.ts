@@ -50,6 +50,7 @@ export type TournamentGameMinAggregateOutputType = {
   awayScore: number | null
   status: $Enums.TournamentGameStatus | null
   scoresheetPhotoUrl: string | null
+  livestreamUrl: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -68,6 +69,7 @@ export type TournamentGameMaxAggregateOutputType = {
   awayScore: number | null
   status: $Enums.TournamentGameStatus | null
   scoresheetPhotoUrl: string | null
+  livestreamUrl: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -86,6 +88,7 @@ export type TournamentGameCountAggregateOutputType = {
   awayScore: number
   status: number
   scoresheetPhotoUrl: number
+  livestreamUrl: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -116,6 +119,7 @@ export type TournamentGameMinAggregateInputType = {
   awayScore?: true
   status?: true
   scoresheetPhotoUrl?: true
+  livestreamUrl?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -134,6 +138,7 @@ export type TournamentGameMaxAggregateInputType = {
   awayScore?: true
   status?: true
   scoresheetPhotoUrl?: true
+  livestreamUrl?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -152,6 +157,7 @@ export type TournamentGameCountAggregateInputType = {
   awayScore?: true
   status?: true
   scoresheetPhotoUrl?: true
+  livestreamUrl?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -257,6 +263,7 @@ export type TournamentGameGroupByOutputType = {
   awayScore: number | null
   status: $Enums.TournamentGameStatus
   scoresheetPhotoUrl: string | null
+  livestreamUrl: string | null
   createdAt: Date
   updatedAt: Date
   _count: TournamentGameCountAggregateOutputType | null
@@ -298,6 +305,7 @@ export type TournamentGameWhereInput = {
   awayScore?: Prisma.IntNullableFilter<"TournamentGame"> | number | null
   status?: Prisma.EnumTournamentGameStatusFilter<"TournamentGame"> | $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: Prisma.StringNullableFilter<"TournamentGame"> | string | null
+  livestreamUrl?: Prisma.StringNullableFilter<"TournamentGame"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TournamentGame"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TournamentGame"> | Date | string
   tournament?: Prisma.XOR<Prisma.TournamentScalarRelationFilter, Prisma.TournamentWhereInput>
@@ -305,6 +313,7 @@ export type TournamentGameWhereInput = {
   awayTeam?: Prisma.XOR<Prisma.TournamentTeamNullableScalarRelationFilter, Prisma.TournamentTeamWhereInput> | null
   playerStats?: Prisma.TournamentGamePlayerStatListRelationFilter
   bracketMatch?: Prisma.XOR<Prisma.TournamentBracketMatchNullableScalarRelationFilter, Prisma.TournamentBracketMatchWhereInput> | null
+  refereeAssignments?: Prisma.TournamentGameRefereeListRelationFilter
 }
 
 export type TournamentGameOrderByWithRelationInput = {
@@ -321,6 +330,7 @@ export type TournamentGameOrderByWithRelationInput = {
   awayScore?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   scoresheetPhotoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  livestreamUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   tournament?: Prisma.TournamentOrderByWithRelationInput
@@ -328,6 +338,7 @@ export type TournamentGameOrderByWithRelationInput = {
   awayTeam?: Prisma.TournamentTeamOrderByWithRelationInput
   playerStats?: Prisma.TournamentGamePlayerStatOrderByRelationAggregateInput
   bracketMatch?: Prisma.TournamentBracketMatchOrderByWithRelationInput
+  refereeAssignments?: Prisma.TournamentGameRefereeOrderByRelationAggregateInput
 }
 
 export type TournamentGameWhereUniqueInput = Prisma.AtLeast<{
@@ -347,6 +358,7 @@ export type TournamentGameWhereUniqueInput = Prisma.AtLeast<{
   awayScore?: Prisma.IntNullableFilter<"TournamentGame"> | number | null
   status?: Prisma.EnumTournamentGameStatusFilter<"TournamentGame"> | $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: Prisma.StringNullableFilter<"TournamentGame"> | string | null
+  livestreamUrl?: Prisma.StringNullableFilter<"TournamentGame"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TournamentGame"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TournamentGame"> | Date | string
   tournament?: Prisma.XOR<Prisma.TournamentScalarRelationFilter, Prisma.TournamentWhereInput>
@@ -354,6 +366,7 @@ export type TournamentGameWhereUniqueInput = Prisma.AtLeast<{
   awayTeam?: Prisma.XOR<Prisma.TournamentTeamNullableScalarRelationFilter, Prisma.TournamentTeamWhereInput> | null
   playerStats?: Prisma.TournamentGamePlayerStatListRelationFilter
   bracketMatch?: Prisma.XOR<Prisma.TournamentBracketMatchNullableScalarRelationFilter, Prisma.TournamentBracketMatchWhereInput> | null
+  refereeAssignments?: Prisma.TournamentGameRefereeListRelationFilter
 }, "id">
 
 export type TournamentGameOrderByWithAggregationInput = {
@@ -370,6 +383,7 @@ export type TournamentGameOrderByWithAggregationInput = {
   awayScore?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   scoresheetPhotoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  livestreamUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.TournamentGameCountOrderByAggregateInput
@@ -396,6 +410,7 @@ export type TournamentGameScalarWhereWithAggregatesInput = {
   awayScore?: Prisma.IntNullableWithAggregatesFilter<"TournamentGame"> | number | null
   status?: Prisma.EnumTournamentGameStatusWithAggregatesFilter<"TournamentGame"> | $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: Prisma.StringNullableWithAggregatesFilter<"TournamentGame"> | string | null
+  livestreamUrl?: Prisma.StringNullableWithAggregatesFilter<"TournamentGame"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TournamentGame"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"TournamentGame"> | Date | string
 }
@@ -411,6 +426,7 @@ export type TournamentGameCreateInput = {
   awayScore?: number | null
   status?: $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: string | null
+  livestreamUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   tournament: Prisma.TournamentCreateNestedOneWithoutGamesInput
@@ -418,6 +434,7 @@ export type TournamentGameCreateInput = {
   awayTeam?: Prisma.TournamentTeamCreateNestedOneWithoutAwayGamesInput
   playerStats?: Prisma.TournamentGamePlayerStatCreateNestedManyWithoutGameInput
   bracketMatch?: Prisma.TournamentBracketMatchCreateNestedOneWithoutGameInput
+  refereeAssignments?: Prisma.TournamentGameRefereeCreateNestedManyWithoutGameInput
 }
 
 export type TournamentGameUncheckedCreateInput = {
@@ -434,10 +451,12 @@ export type TournamentGameUncheckedCreateInput = {
   awayScore?: number | null
   status?: $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: string | null
+  livestreamUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   playerStats?: Prisma.TournamentGamePlayerStatUncheckedCreateNestedManyWithoutGameInput
   bracketMatch?: Prisma.TournamentBracketMatchUncheckedCreateNestedOneWithoutGameInput
+  refereeAssignments?: Prisma.TournamentGameRefereeUncheckedCreateNestedManyWithoutGameInput
 }
 
 export type TournamentGameUpdateInput = {
@@ -451,6 +470,7 @@ export type TournamentGameUpdateInput = {
   awayScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumTournamentGameStatusFieldUpdateOperationsInput | $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  livestreamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournament?: Prisma.TournamentUpdateOneRequiredWithoutGamesNestedInput
@@ -458,6 +478,7 @@ export type TournamentGameUpdateInput = {
   awayTeam?: Prisma.TournamentTeamUpdateOneWithoutAwayGamesNestedInput
   playerStats?: Prisma.TournamentGamePlayerStatUpdateManyWithoutGameNestedInput
   bracketMatch?: Prisma.TournamentBracketMatchUpdateOneWithoutGameNestedInput
+  refereeAssignments?: Prisma.TournamentGameRefereeUpdateManyWithoutGameNestedInput
 }
 
 export type TournamentGameUncheckedUpdateInput = {
@@ -474,10 +495,12 @@ export type TournamentGameUncheckedUpdateInput = {
   awayScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumTournamentGameStatusFieldUpdateOperationsInput | $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  livestreamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   playerStats?: Prisma.TournamentGamePlayerStatUncheckedUpdateManyWithoutGameNestedInput
   bracketMatch?: Prisma.TournamentBracketMatchUncheckedUpdateOneWithoutGameNestedInput
+  refereeAssignments?: Prisma.TournamentGameRefereeUncheckedUpdateManyWithoutGameNestedInput
 }
 
 export type TournamentGameCreateManyInput = {
@@ -494,6 +517,7 @@ export type TournamentGameCreateManyInput = {
   awayScore?: number | null
   status?: $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: string | null
+  livestreamUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -509,6 +533,7 @@ export type TournamentGameUpdateManyMutationInput = {
   awayScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumTournamentGameStatusFieldUpdateOperationsInput | $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  livestreamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -527,6 +552,7 @@ export type TournamentGameUncheckedUpdateManyInput = {
   awayScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumTournamentGameStatusFieldUpdateOperationsInput | $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  livestreamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -539,6 +565,11 @@ export type TournamentGameListRelationFilter = {
 
 export type TournamentGameOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type TournamentGameScalarRelationFilter = {
+  is?: Prisma.TournamentGameWhereInput
+  isNot?: Prisma.TournamentGameWhereInput
 }
 
 export type TournamentGameCountOrderByAggregateInput = {
@@ -555,6 +586,7 @@ export type TournamentGameCountOrderByAggregateInput = {
   awayScore?: Prisma.SortOrder
   status?: Prisma.SortOrder
   scoresheetPhotoUrl?: Prisma.SortOrder
+  livestreamUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -578,6 +610,7 @@ export type TournamentGameMaxOrderByAggregateInput = {
   awayScore?: Prisma.SortOrder
   status?: Prisma.SortOrder
   scoresheetPhotoUrl?: Prisma.SortOrder
+  livestreamUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -596,6 +629,7 @@ export type TournamentGameMinOrderByAggregateInput = {
   awayScore?: Prisma.SortOrder
   status?: Prisma.SortOrder
   scoresheetPhotoUrl?: Prisma.SortOrder
+  livestreamUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -608,11 +642,6 @@ export type TournamentGameSumOrderByAggregateInput = {
 export type TournamentGameNullableScalarRelationFilter = {
   is?: Prisma.TournamentGameWhereInput | null
   isNot?: Prisma.TournamentGameWhereInput | null
-}
-
-export type TournamentGameScalarRelationFilter = {
-  is?: Prisma.TournamentGameWhereInput
-  isNot?: Prisma.TournamentGameWhereInput
 }
 
 export type TournamentGameCreateNestedManyWithoutTournamentInput = {
@@ -655,6 +684,20 @@ export type TournamentGameUncheckedUpdateManyWithoutTournamentNestedInput = {
   update?: Prisma.TournamentGameUpdateWithWhereUniqueWithoutTournamentInput | Prisma.TournamentGameUpdateWithWhereUniqueWithoutTournamentInput[]
   updateMany?: Prisma.TournamentGameUpdateManyWithWhereWithoutTournamentInput | Prisma.TournamentGameUpdateManyWithWhereWithoutTournamentInput[]
   deleteMany?: Prisma.TournamentGameScalarWhereInput | Prisma.TournamentGameScalarWhereInput[]
+}
+
+export type TournamentGameCreateNestedOneWithoutRefereeAssignmentsInput = {
+  create?: Prisma.XOR<Prisma.TournamentGameCreateWithoutRefereeAssignmentsInput, Prisma.TournamentGameUncheckedCreateWithoutRefereeAssignmentsInput>
+  connectOrCreate?: Prisma.TournamentGameCreateOrConnectWithoutRefereeAssignmentsInput
+  connect?: Prisma.TournamentGameWhereUniqueInput
+}
+
+export type TournamentGameUpdateOneRequiredWithoutRefereeAssignmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.TournamentGameCreateWithoutRefereeAssignmentsInput, Prisma.TournamentGameUncheckedCreateWithoutRefereeAssignmentsInput>
+  connectOrCreate?: Prisma.TournamentGameCreateOrConnectWithoutRefereeAssignmentsInput
+  upsert?: Prisma.TournamentGameUpsertWithoutRefereeAssignmentsInput
+  connect?: Prisma.TournamentGameWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TournamentGameUpdateToOneWithWhereWithoutRefereeAssignmentsInput, Prisma.TournamentGameUpdateWithoutRefereeAssignmentsInput>, Prisma.TournamentGameUncheckedUpdateWithoutRefereeAssignmentsInput>
 }
 
 export type EnumTournamentGameStatusFieldUpdateOperationsInput = {
@@ -786,12 +829,14 @@ export type TournamentGameCreateWithoutTournamentInput = {
   awayScore?: number | null
   status?: $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: string | null
+  livestreamUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   homeTeam?: Prisma.TournamentTeamCreateNestedOneWithoutHomeGamesInput
   awayTeam?: Prisma.TournamentTeamCreateNestedOneWithoutAwayGamesInput
   playerStats?: Prisma.TournamentGamePlayerStatCreateNestedManyWithoutGameInput
   bracketMatch?: Prisma.TournamentBracketMatchCreateNestedOneWithoutGameInput
+  refereeAssignments?: Prisma.TournamentGameRefereeCreateNestedManyWithoutGameInput
 }
 
 export type TournamentGameUncheckedCreateWithoutTournamentInput = {
@@ -807,10 +852,12 @@ export type TournamentGameUncheckedCreateWithoutTournamentInput = {
   awayScore?: number | null
   status?: $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: string | null
+  livestreamUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   playerStats?: Prisma.TournamentGamePlayerStatUncheckedCreateNestedManyWithoutGameInput
   bracketMatch?: Prisma.TournamentBracketMatchUncheckedCreateNestedOneWithoutGameInput
+  refereeAssignments?: Prisma.TournamentGameRefereeUncheckedCreateNestedManyWithoutGameInput
 }
 
 export type TournamentGameCreateOrConnectWithoutTournamentInput = {
@@ -856,8 +903,109 @@ export type TournamentGameScalarWhereInput = {
   awayScore?: Prisma.IntNullableFilter<"TournamentGame"> | number | null
   status?: Prisma.EnumTournamentGameStatusFilter<"TournamentGame"> | $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: Prisma.StringNullableFilter<"TournamentGame"> | string | null
+  livestreamUrl?: Prisma.StringNullableFilter<"TournamentGame"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TournamentGame"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TournamentGame"> | Date | string
+}
+
+export type TournamentGameCreateWithoutRefereeAssignmentsInput = {
+  id?: string
+  homeTeamName: string
+  awayTeamName: string
+  startsAt: Date | string
+  arenaName?: string | null
+  notes?: string | null
+  homeScore?: number | null
+  awayScore?: number | null
+  status?: $Enums.TournamentGameStatus
+  scoresheetPhotoUrl?: string | null
+  livestreamUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tournament: Prisma.TournamentCreateNestedOneWithoutGamesInput
+  homeTeam?: Prisma.TournamentTeamCreateNestedOneWithoutHomeGamesInput
+  awayTeam?: Prisma.TournamentTeamCreateNestedOneWithoutAwayGamesInput
+  playerStats?: Prisma.TournamentGamePlayerStatCreateNestedManyWithoutGameInput
+  bracketMatch?: Prisma.TournamentBracketMatchCreateNestedOneWithoutGameInput
+}
+
+export type TournamentGameUncheckedCreateWithoutRefereeAssignmentsInput = {
+  id?: string
+  tournamentId: string
+  homeTeamName: string
+  awayTeamName: string
+  homeTeamId?: string | null
+  awayTeamId?: string | null
+  startsAt: Date | string
+  arenaName?: string | null
+  notes?: string | null
+  homeScore?: number | null
+  awayScore?: number | null
+  status?: $Enums.TournamentGameStatus
+  scoresheetPhotoUrl?: string | null
+  livestreamUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  playerStats?: Prisma.TournamentGamePlayerStatUncheckedCreateNestedManyWithoutGameInput
+  bracketMatch?: Prisma.TournamentBracketMatchUncheckedCreateNestedOneWithoutGameInput
+}
+
+export type TournamentGameCreateOrConnectWithoutRefereeAssignmentsInput = {
+  where: Prisma.TournamentGameWhereUniqueInput
+  create: Prisma.XOR<Prisma.TournamentGameCreateWithoutRefereeAssignmentsInput, Prisma.TournamentGameUncheckedCreateWithoutRefereeAssignmentsInput>
+}
+
+export type TournamentGameUpsertWithoutRefereeAssignmentsInput = {
+  update: Prisma.XOR<Prisma.TournamentGameUpdateWithoutRefereeAssignmentsInput, Prisma.TournamentGameUncheckedUpdateWithoutRefereeAssignmentsInput>
+  create: Prisma.XOR<Prisma.TournamentGameCreateWithoutRefereeAssignmentsInput, Prisma.TournamentGameUncheckedCreateWithoutRefereeAssignmentsInput>
+  where?: Prisma.TournamentGameWhereInput
+}
+
+export type TournamentGameUpdateToOneWithWhereWithoutRefereeAssignmentsInput = {
+  where?: Prisma.TournamentGameWhereInput
+  data: Prisma.XOR<Prisma.TournamentGameUpdateWithoutRefereeAssignmentsInput, Prisma.TournamentGameUncheckedUpdateWithoutRefereeAssignmentsInput>
+}
+
+export type TournamentGameUpdateWithoutRefereeAssignmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  homeTeamName?: Prisma.StringFieldUpdateOperationsInput | string
+  awayTeamName?: Prisma.StringFieldUpdateOperationsInput | string
+  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  arenaName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  homeScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  awayScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  status?: Prisma.EnumTournamentGameStatusFieldUpdateOperationsInput | $Enums.TournamentGameStatus
+  scoresheetPhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  livestreamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tournament?: Prisma.TournamentUpdateOneRequiredWithoutGamesNestedInput
+  homeTeam?: Prisma.TournamentTeamUpdateOneWithoutHomeGamesNestedInput
+  awayTeam?: Prisma.TournamentTeamUpdateOneWithoutAwayGamesNestedInput
+  playerStats?: Prisma.TournamentGamePlayerStatUpdateManyWithoutGameNestedInput
+  bracketMatch?: Prisma.TournamentBracketMatchUpdateOneWithoutGameNestedInput
+}
+
+export type TournamentGameUncheckedUpdateWithoutRefereeAssignmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tournamentId?: Prisma.StringFieldUpdateOperationsInput | string
+  homeTeamName?: Prisma.StringFieldUpdateOperationsInput | string
+  awayTeamName?: Prisma.StringFieldUpdateOperationsInput | string
+  homeTeamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  awayTeamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  arenaName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  homeScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  awayScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  status?: Prisma.EnumTournamentGameStatusFieldUpdateOperationsInput | $Enums.TournamentGameStatus
+  scoresheetPhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  livestreamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  playerStats?: Prisma.TournamentGamePlayerStatUncheckedUpdateManyWithoutGameNestedInput
+  bracketMatch?: Prisma.TournamentBracketMatchUncheckedUpdateOneWithoutGameNestedInput
 }
 
 export type TournamentGameCreateWithoutHomeTeamInput = {
@@ -871,12 +1019,14 @@ export type TournamentGameCreateWithoutHomeTeamInput = {
   awayScore?: number | null
   status?: $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: string | null
+  livestreamUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   tournament: Prisma.TournamentCreateNestedOneWithoutGamesInput
   awayTeam?: Prisma.TournamentTeamCreateNestedOneWithoutAwayGamesInput
   playerStats?: Prisma.TournamentGamePlayerStatCreateNestedManyWithoutGameInput
   bracketMatch?: Prisma.TournamentBracketMatchCreateNestedOneWithoutGameInput
+  refereeAssignments?: Prisma.TournamentGameRefereeCreateNestedManyWithoutGameInput
 }
 
 export type TournamentGameUncheckedCreateWithoutHomeTeamInput = {
@@ -892,10 +1042,12 @@ export type TournamentGameUncheckedCreateWithoutHomeTeamInput = {
   awayScore?: number | null
   status?: $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: string | null
+  livestreamUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   playerStats?: Prisma.TournamentGamePlayerStatUncheckedCreateNestedManyWithoutGameInput
   bracketMatch?: Prisma.TournamentBracketMatchUncheckedCreateNestedOneWithoutGameInput
+  refereeAssignments?: Prisma.TournamentGameRefereeUncheckedCreateNestedManyWithoutGameInput
 }
 
 export type TournamentGameCreateOrConnectWithoutHomeTeamInput = {
@@ -919,12 +1071,14 @@ export type TournamentGameCreateWithoutAwayTeamInput = {
   awayScore?: number | null
   status?: $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: string | null
+  livestreamUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   tournament: Prisma.TournamentCreateNestedOneWithoutGamesInput
   homeTeam?: Prisma.TournamentTeamCreateNestedOneWithoutHomeGamesInput
   playerStats?: Prisma.TournamentGamePlayerStatCreateNestedManyWithoutGameInput
   bracketMatch?: Prisma.TournamentBracketMatchCreateNestedOneWithoutGameInput
+  refereeAssignments?: Prisma.TournamentGameRefereeCreateNestedManyWithoutGameInput
 }
 
 export type TournamentGameUncheckedCreateWithoutAwayTeamInput = {
@@ -940,10 +1094,12 @@ export type TournamentGameUncheckedCreateWithoutAwayTeamInput = {
   awayScore?: number | null
   status?: $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: string | null
+  livestreamUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   playerStats?: Prisma.TournamentGamePlayerStatUncheckedCreateNestedManyWithoutGameInput
   bracketMatch?: Prisma.TournamentBracketMatchUncheckedCreateNestedOneWithoutGameInput
+  refereeAssignments?: Prisma.TournamentGameRefereeUncheckedCreateNestedManyWithoutGameInput
 }
 
 export type TournamentGameCreateOrConnectWithoutAwayTeamInput = {
@@ -999,12 +1155,14 @@ export type TournamentGameCreateWithoutBracketMatchInput = {
   awayScore?: number | null
   status?: $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: string | null
+  livestreamUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   tournament: Prisma.TournamentCreateNestedOneWithoutGamesInput
   homeTeam?: Prisma.TournamentTeamCreateNestedOneWithoutHomeGamesInput
   awayTeam?: Prisma.TournamentTeamCreateNestedOneWithoutAwayGamesInput
   playerStats?: Prisma.TournamentGamePlayerStatCreateNestedManyWithoutGameInput
+  refereeAssignments?: Prisma.TournamentGameRefereeCreateNestedManyWithoutGameInput
 }
 
 export type TournamentGameUncheckedCreateWithoutBracketMatchInput = {
@@ -1021,9 +1179,11 @@ export type TournamentGameUncheckedCreateWithoutBracketMatchInput = {
   awayScore?: number | null
   status?: $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: string | null
+  livestreamUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   playerStats?: Prisma.TournamentGamePlayerStatUncheckedCreateNestedManyWithoutGameInput
+  refereeAssignments?: Prisma.TournamentGameRefereeUncheckedCreateNestedManyWithoutGameInput
 }
 
 export type TournamentGameCreateOrConnectWithoutBracketMatchInput = {
@@ -1053,12 +1213,14 @@ export type TournamentGameUpdateWithoutBracketMatchInput = {
   awayScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumTournamentGameStatusFieldUpdateOperationsInput | $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  livestreamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournament?: Prisma.TournamentUpdateOneRequiredWithoutGamesNestedInput
   homeTeam?: Prisma.TournamentTeamUpdateOneWithoutHomeGamesNestedInput
   awayTeam?: Prisma.TournamentTeamUpdateOneWithoutAwayGamesNestedInput
   playerStats?: Prisma.TournamentGamePlayerStatUpdateManyWithoutGameNestedInput
+  refereeAssignments?: Prisma.TournamentGameRefereeUpdateManyWithoutGameNestedInput
 }
 
 export type TournamentGameUncheckedUpdateWithoutBracketMatchInput = {
@@ -1075,9 +1237,11 @@ export type TournamentGameUncheckedUpdateWithoutBracketMatchInput = {
   awayScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumTournamentGameStatusFieldUpdateOperationsInput | $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  livestreamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   playerStats?: Prisma.TournamentGamePlayerStatUncheckedUpdateManyWithoutGameNestedInput
+  refereeAssignments?: Prisma.TournamentGameRefereeUncheckedUpdateManyWithoutGameNestedInput
 }
 
 export type TournamentGameCreateWithoutPlayerStatsInput = {
@@ -1091,12 +1255,14 @@ export type TournamentGameCreateWithoutPlayerStatsInput = {
   awayScore?: number | null
   status?: $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: string | null
+  livestreamUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   tournament: Prisma.TournamentCreateNestedOneWithoutGamesInput
   homeTeam?: Prisma.TournamentTeamCreateNestedOneWithoutHomeGamesInput
   awayTeam?: Prisma.TournamentTeamCreateNestedOneWithoutAwayGamesInput
   bracketMatch?: Prisma.TournamentBracketMatchCreateNestedOneWithoutGameInput
+  refereeAssignments?: Prisma.TournamentGameRefereeCreateNestedManyWithoutGameInput
 }
 
 export type TournamentGameUncheckedCreateWithoutPlayerStatsInput = {
@@ -1113,9 +1279,11 @@ export type TournamentGameUncheckedCreateWithoutPlayerStatsInput = {
   awayScore?: number | null
   status?: $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: string | null
+  livestreamUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   bracketMatch?: Prisma.TournamentBracketMatchUncheckedCreateNestedOneWithoutGameInput
+  refereeAssignments?: Prisma.TournamentGameRefereeUncheckedCreateNestedManyWithoutGameInput
 }
 
 export type TournamentGameCreateOrConnectWithoutPlayerStatsInput = {
@@ -1145,12 +1313,14 @@ export type TournamentGameUpdateWithoutPlayerStatsInput = {
   awayScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumTournamentGameStatusFieldUpdateOperationsInput | $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  livestreamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournament?: Prisma.TournamentUpdateOneRequiredWithoutGamesNestedInput
   homeTeam?: Prisma.TournamentTeamUpdateOneWithoutHomeGamesNestedInput
   awayTeam?: Prisma.TournamentTeamUpdateOneWithoutAwayGamesNestedInput
   bracketMatch?: Prisma.TournamentBracketMatchUpdateOneWithoutGameNestedInput
+  refereeAssignments?: Prisma.TournamentGameRefereeUpdateManyWithoutGameNestedInput
 }
 
 export type TournamentGameUncheckedUpdateWithoutPlayerStatsInput = {
@@ -1167,9 +1337,11 @@ export type TournamentGameUncheckedUpdateWithoutPlayerStatsInput = {
   awayScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumTournamentGameStatusFieldUpdateOperationsInput | $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  livestreamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bracketMatch?: Prisma.TournamentBracketMatchUncheckedUpdateOneWithoutGameNestedInput
+  refereeAssignments?: Prisma.TournamentGameRefereeUncheckedUpdateManyWithoutGameNestedInput
 }
 
 export type TournamentGameCreateManyTournamentInput = {
@@ -1185,6 +1357,7 @@ export type TournamentGameCreateManyTournamentInput = {
   awayScore?: number | null
   status?: $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: string | null
+  livestreamUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1200,12 +1373,14 @@ export type TournamentGameUpdateWithoutTournamentInput = {
   awayScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumTournamentGameStatusFieldUpdateOperationsInput | $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  livestreamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   homeTeam?: Prisma.TournamentTeamUpdateOneWithoutHomeGamesNestedInput
   awayTeam?: Prisma.TournamentTeamUpdateOneWithoutAwayGamesNestedInput
   playerStats?: Prisma.TournamentGamePlayerStatUpdateManyWithoutGameNestedInput
   bracketMatch?: Prisma.TournamentBracketMatchUpdateOneWithoutGameNestedInput
+  refereeAssignments?: Prisma.TournamentGameRefereeUpdateManyWithoutGameNestedInput
 }
 
 export type TournamentGameUncheckedUpdateWithoutTournamentInput = {
@@ -1221,10 +1396,12 @@ export type TournamentGameUncheckedUpdateWithoutTournamentInput = {
   awayScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumTournamentGameStatusFieldUpdateOperationsInput | $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  livestreamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   playerStats?: Prisma.TournamentGamePlayerStatUncheckedUpdateManyWithoutGameNestedInput
   bracketMatch?: Prisma.TournamentBracketMatchUncheckedUpdateOneWithoutGameNestedInput
+  refereeAssignments?: Prisma.TournamentGameRefereeUncheckedUpdateManyWithoutGameNestedInput
 }
 
 export type TournamentGameUncheckedUpdateManyWithoutTournamentInput = {
@@ -1240,6 +1417,7 @@ export type TournamentGameUncheckedUpdateManyWithoutTournamentInput = {
   awayScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumTournamentGameStatusFieldUpdateOperationsInput | $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  livestreamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1257,6 +1435,7 @@ export type TournamentGameCreateManyHomeTeamInput = {
   awayScore?: number | null
   status?: $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: string | null
+  livestreamUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1274,6 +1453,7 @@ export type TournamentGameCreateManyAwayTeamInput = {
   awayScore?: number | null
   status?: $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: string | null
+  livestreamUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1289,12 +1469,14 @@ export type TournamentGameUpdateWithoutHomeTeamInput = {
   awayScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumTournamentGameStatusFieldUpdateOperationsInput | $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  livestreamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournament?: Prisma.TournamentUpdateOneRequiredWithoutGamesNestedInput
   awayTeam?: Prisma.TournamentTeamUpdateOneWithoutAwayGamesNestedInput
   playerStats?: Prisma.TournamentGamePlayerStatUpdateManyWithoutGameNestedInput
   bracketMatch?: Prisma.TournamentBracketMatchUpdateOneWithoutGameNestedInput
+  refereeAssignments?: Prisma.TournamentGameRefereeUpdateManyWithoutGameNestedInput
 }
 
 export type TournamentGameUncheckedUpdateWithoutHomeTeamInput = {
@@ -1310,10 +1492,12 @@ export type TournamentGameUncheckedUpdateWithoutHomeTeamInput = {
   awayScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumTournamentGameStatusFieldUpdateOperationsInput | $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  livestreamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   playerStats?: Prisma.TournamentGamePlayerStatUncheckedUpdateManyWithoutGameNestedInput
   bracketMatch?: Prisma.TournamentBracketMatchUncheckedUpdateOneWithoutGameNestedInput
+  refereeAssignments?: Prisma.TournamentGameRefereeUncheckedUpdateManyWithoutGameNestedInput
 }
 
 export type TournamentGameUncheckedUpdateManyWithoutHomeTeamInput = {
@@ -1329,6 +1513,7 @@ export type TournamentGameUncheckedUpdateManyWithoutHomeTeamInput = {
   awayScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumTournamentGameStatusFieldUpdateOperationsInput | $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  livestreamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1344,12 +1529,14 @@ export type TournamentGameUpdateWithoutAwayTeamInput = {
   awayScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumTournamentGameStatusFieldUpdateOperationsInput | $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  livestreamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournament?: Prisma.TournamentUpdateOneRequiredWithoutGamesNestedInput
   homeTeam?: Prisma.TournamentTeamUpdateOneWithoutHomeGamesNestedInput
   playerStats?: Prisma.TournamentGamePlayerStatUpdateManyWithoutGameNestedInput
   bracketMatch?: Prisma.TournamentBracketMatchUpdateOneWithoutGameNestedInput
+  refereeAssignments?: Prisma.TournamentGameRefereeUpdateManyWithoutGameNestedInput
 }
 
 export type TournamentGameUncheckedUpdateWithoutAwayTeamInput = {
@@ -1365,10 +1552,12 @@ export type TournamentGameUncheckedUpdateWithoutAwayTeamInput = {
   awayScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumTournamentGameStatusFieldUpdateOperationsInput | $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  livestreamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   playerStats?: Prisma.TournamentGamePlayerStatUncheckedUpdateManyWithoutGameNestedInput
   bracketMatch?: Prisma.TournamentBracketMatchUncheckedUpdateOneWithoutGameNestedInput
+  refereeAssignments?: Prisma.TournamentGameRefereeUncheckedUpdateManyWithoutGameNestedInput
 }
 
 export type TournamentGameUncheckedUpdateManyWithoutAwayTeamInput = {
@@ -1384,6 +1573,7 @@ export type TournamentGameUncheckedUpdateManyWithoutAwayTeamInput = {
   awayScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumTournamentGameStatusFieldUpdateOperationsInput | $Enums.TournamentGameStatus
   scoresheetPhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  livestreamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1395,10 +1585,12 @@ export type TournamentGameUncheckedUpdateManyWithoutAwayTeamInput = {
 
 export type TournamentGameCountOutputType = {
   playerStats: number
+  refereeAssignments: number
 }
 
 export type TournamentGameCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   playerStats?: boolean | TournamentGameCountOutputTypeCountPlayerStatsArgs
+  refereeAssignments?: boolean | TournamentGameCountOutputTypeCountRefereeAssignmentsArgs
 }
 
 /**
@@ -1418,6 +1610,13 @@ export type TournamentGameCountOutputTypeCountPlayerStatsArgs<ExtArgs extends ru
   where?: Prisma.TournamentGamePlayerStatWhereInput
 }
 
+/**
+ * TournamentGameCountOutputType without action
+ */
+export type TournamentGameCountOutputTypeCountRefereeAssignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TournamentGameRefereeWhereInput
+}
+
 
 export type TournamentGameSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1433,6 +1632,7 @@ export type TournamentGameSelect<ExtArgs extends runtime.Types.Extensions.Intern
   awayScore?: boolean
   status?: boolean
   scoresheetPhotoUrl?: boolean
+  livestreamUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   tournament?: boolean | Prisma.TournamentDefaultArgs<ExtArgs>
@@ -1440,6 +1640,7 @@ export type TournamentGameSelect<ExtArgs extends runtime.Types.Extensions.Intern
   awayTeam?: boolean | Prisma.TournamentGame$awayTeamArgs<ExtArgs>
   playerStats?: boolean | Prisma.TournamentGame$playerStatsArgs<ExtArgs>
   bracketMatch?: boolean | Prisma.TournamentGame$bracketMatchArgs<ExtArgs>
+  refereeAssignments?: boolean | Prisma.TournamentGame$refereeAssignmentsArgs<ExtArgs>
   _count?: boolean | Prisma.TournamentGameCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tournamentGame"]>
 
@@ -1457,6 +1658,7 @@ export type TournamentGameSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   awayScore?: boolean
   status?: boolean
   scoresheetPhotoUrl?: boolean
+  livestreamUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   tournament?: boolean | Prisma.TournamentDefaultArgs<ExtArgs>
@@ -1478,6 +1680,7 @@ export type TournamentGameSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   awayScore?: boolean
   status?: boolean
   scoresheetPhotoUrl?: boolean
+  livestreamUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   tournament?: boolean | Prisma.TournamentDefaultArgs<ExtArgs>
@@ -1499,17 +1702,19 @@ export type TournamentGameSelectScalar = {
   awayScore?: boolean
   status?: boolean
   scoresheetPhotoUrl?: boolean
+  livestreamUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type TournamentGameOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tournamentId" | "homeTeamName" | "awayTeamName" | "homeTeamId" | "awayTeamId" | "startsAt" | "arenaName" | "notes" | "homeScore" | "awayScore" | "status" | "scoresheetPhotoUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["tournamentGame"]>
+export type TournamentGameOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tournamentId" | "homeTeamName" | "awayTeamName" | "homeTeamId" | "awayTeamId" | "startsAt" | "arenaName" | "notes" | "homeScore" | "awayScore" | "status" | "scoresheetPhotoUrl" | "livestreamUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["tournamentGame"]>
 export type TournamentGameInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tournament?: boolean | Prisma.TournamentDefaultArgs<ExtArgs>
   homeTeam?: boolean | Prisma.TournamentGame$homeTeamArgs<ExtArgs>
   awayTeam?: boolean | Prisma.TournamentGame$awayTeamArgs<ExtArgs>
   playerStats?: boolean | Prisma.TournamentGame$playerStatsArgs<ExtArgs>
   bracketMatch?: boolean | Prisma.TournamentGame$bracketMatchArgs<ExtArgs>
+  refereeAssignments?: boolean | Prisma.TournamentGame$refereeAssignmentsArgs<ExtArgs>
   _count?: boolean | Prisma.TournamentGameCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TournamentGameIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1531,6 +1736,7 @@ export type $TournamentGamePayload<ExtArgs extends runtime.Types.Extensions.Inte
     awayTeam: Prisma.$TournamentTeamPayload<ExtArgs> | null
     playerStats: Prisma.$TournamentGamePlayerStatPayload<ExtArgs>[]
     bracketMatch: Prisma.$TournamentBracketMatchPayload<ExtArgs> | null
+    refereeAssignments: Prisma.$TournamentGameRefereePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1546,6 +1752,7 @@ export type $TournamentGamePayload<ExtArgs extends runtime.Types.Extensions.Inte
     awayScore: number | null
     status: $Enums.TournamentGameStatus
     scoresheetPhotoUrl: string | null
+    livestreamUrl: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["tournamentGame"]>
@@ -1947,6 +2154,7 @@ export interface Prisma__TournamentGameClient<T, Null = never, ExtArgs extends r
   awayTeam<T extends Prisma.TournamentGame$awayTeamArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TournamentGame$awayTeamArgs<ExtArgs>>): Prisma.Prisma__TournamentTeamClient<runtime.Types.Result.GetResult<Prisma.$TournamentTeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   playerStats<T extends Prisma.TournamentGame$playerStatsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TournamentGame$playerStatsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TournamentGamePlayerStatPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   bracketMatch<T extends Prisma.TournamentGame$bracketMatchArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TournamentGame$bracketMatchArgs<ExtArgs>>): Prisma.Prisma__TournamentBracketMatchClient<runtime.Types.Result.GetResult<Prisma.$TournamentBracketMatchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  refereeAssignments<T extends Prisma.TournamentGame$refereeAssignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TournamentGame$refereeAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TournamentGameRefereePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1989,6 +2197,7 @@ export interface TournamentGameFieldRefs {
   readonly awayScore: Prisma.FieldRef<"TournamentGame", 'Int'>
   readonly status: Prisma.FieldRef<"TournamentGame", 'TournamentGameStatus'>
   readonly scoresheetPhotoUrl: Prisma.FieldRef<"TournamentGame", 'String'>
+  readonly livestreamUrl: Prisma.FieldRef<"TournamentGame", 'String'>
   readonly createdAt: Prisma.FieldRef<"TournamentGame", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"TournamentGame", 'DateTime'>
 }
@@ -2470,6 +2679,30 @@ export type TournamentGame$bracketMatchArgs<ExtArgs extends runtime.Types.Extens
    */
   include?: Prisma.TournamentBracketMatchInclude<ExtArgs> | null
   where?: Prisma.TournamentBracketMatchWhereInput
+}
+
+/**
+ * TournamentGame.refereeAssignments
+ */
+export type TournamentGame$refereeAssignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TournamentGameReferee
+   */
+  select?: Prisma.TournamentGameRefereeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TournamentGameReferee
+   */
+  omit?: Prisma.TournamentGameRefereeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TournamentGameRefereeInclude<ExtArgs> | null
+  where?: Prisma.TournamentGameRefereeWhereInput
+  orderBy?: Prisma.TournamentGameRefereeOrderByWithRelationInput | Prisma.TournamentGameRefereeOrderByWithRelationInput[]
+  cursor?: Prisma.TournamentGameRefereeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TournamentGameRefereeScalarFieldEnum | Prisma.TournamentGameRefereeScalarFieldEnum[]
 }
 
 /**

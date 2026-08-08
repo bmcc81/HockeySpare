@@ -167,6 +167,31 @@ export const TournamentGameStatus = {
 export type TournamentGameStatus = (typeof TournamentGameStatus)[keyof typeof TournamentGameStatus]
 
 
+export const TournamentAnnouncementType = {
+  GENERAL: 'GENERAL',
+  WEATHER: 'WEATHER'
+} as const
+
+export type TournamentAnnouncementType = (typeof TournamentAnnouncementType)[keyof typeof TournamentAnnouncementType]
+
+
+export const TournamentInfoListingCategory = {
+  HOTEL: 'HOTEL',
+  MERCHANDISE: 'MERCHANDISE',
+  VENDOR: 'VENDOR'
+} as const
+
+export type TournamentInfoListingCategory = (typeof TournamentInfoListingCategory)[keyof typeof TournamentInfoListingCategory]
+
+
+export const TournamentLostFoundStatus = {
+  UNCLAIMED: 'UNCLAIMED',
+  CLAIMED: 'CLAIMED'
+} as const
+
+export type TournamentLostFoundStatus = (typeof TournamentLostFoundStatus)[keyof typeof TournamentLostFoundStatus]
+
+
 export const TournamentRegistrationMode = {
   OPEN: 'OPEN',
   WAITLIST: 'WAITLIST',

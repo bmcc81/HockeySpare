@@ -4,6 +4,7 @@ import {
   IsInt,
   IsOptional,
   IsString,
+  IsUrl,
   Min,
   MaxLength,
 } from 'class-validator';
@@ -55,4 +56,9 @@ export class UpdateTournamentGameDto {
   @IsOptional()
   @IsString()
   awayTeamId?: string;
+
+  @IsOptional()
+  @IsUrl({ require_tld: false })
+  @MaxLength(500)
+  livestreamUrl?: string;
 }

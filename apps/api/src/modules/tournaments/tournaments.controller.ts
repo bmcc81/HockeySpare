@@ -37,6 +37,14 @@ import { CreateTournamentBracketDto } from './dto/create-tournament-bracket.dto'
 import { ScheduleBracketMatchGameDto } from './dto/schedule-bracket-match-game.dto';
 import { CreateTournamentApiKeyDto } from './dto/create-tournament-api-key.dto';
 import { CreateTournamentWebhookDto } from './dto/create-tournament-webhook.dto';
+import { CreateTournamentRefereeDto } from './dto/create-tournament-referee.dto';
+import { AssignTournamentGameRefereeDto } from './dto/assign-tournament-game-referee.dto';
+import { CreateTournamentVolunteerShiftDto } from './dto/create-tournament-volunteer-shift.dto';
+import { CreateTournamentVolunteerSignupDto } from './dto/create-tournament-volunteer-signup.dto';
+import { CreateTournamentInfoListingDto } from './dto/create-tournament-info-listing.dto';
+import { UpdateTournamentInfoListingDto } from './dto/update-tournament-info-listing.dto';
+import { CreateTournamentLostFoundItemDto } from './dto/create-tournament-lost-found-item.dto';
+import { UpdateTournamentLostFoundItemDto } from './dto/update-tournament-lost-found-item.dto';
 
 type AuthRequest = {
   user?: {
@@ -708,6 +716,208 @@ export class TournamentsController {
       id,
       gameId,
       file,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/referees')
+  listReferees(@Req() req: AuthRequest, @Param('id') id: string) {
+    return this.tournamentsService.listReferees(this.getUserId(req), id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/referees')
+  createReferee(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Body() dto: CreateTournamentRefereeDto,
+  ) {
+    return this.tournamentsService.createReferee(this.getUserId(req), id, dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/referees/:refereeId')
+  deleteReferee(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('refereeId') refereeId: string,
+  ) {
+    return this.tournamentsService.deleteReferee(
+      this.getUserId(req),
+      id,
+      refereeId,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/games/:gameId/referees')
+  assignRefereeToGame(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('gameId') gameId: string,
+    @Body() dto: AssignTournamentGameRefereeDto,
+  ) {
+    return this.tournamentsService.assignRefereeToGame(
+      this.getUserId(req),
+      id,
+      gameId,
+      dto,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/games/:gameId/referees/:assignmentId')
+  unassignRefereeFromGame(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('gameId') gameId: string,
+    @Param('assignmentId') assignmentId: string,
+  ) {
+    return this.tournamentsService.unassignRefereeFromGame(
+      this.getUserId(req),
+      id,
+      gameId,
+      assignmentId,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/volunteer-shifts')
+  createVolunteerShift(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Body() dto: CreateTournamentVolunteerShiftDto,
+  ) {
+    return this.tournamentsService.createVolunteerShift(
+      this.getUserId(req),
+      id,
+      dto,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/volunteer-shifts/:shiftId')
+  deleteVolunteerShift(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('shiftId') shiftId: string,
+  ) {
+    return this.tournamentsService.deleteVolunteerShift(
+      this.getUserId(req),
+      id,
+      shiftId,
+    );
+  }
+
+  // Public - anyone with the link can sign up for a volunteer shift.
+  @Post(':id/volunteer-shifts/:shiftId/signups')
+  signUpForVolunteerShift(
+    @Param('id') id: string,
+    @Param('shiftId') shiftId: string,
+    @Body() dto: CreateTournamentVolunteerSignupDto,
+  ) {
+    return this.tournamentsService.signUpForVolunteerShift(id, shiftId, dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/volunteer-shifts/:shiftId/signups')
+  listVolunteerSignups(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('shiftId') shiftId: string,
+  ) {
+    return this.tournamentsService.listVolunteerSignups(
+      this.getUserId(req),
+      id,
+      shiftId,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/info-listings')
+  createInfoListing(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Body() dto: CreateTournamentInfoListingDto,
+  ) {
+    return this.tournamentsService.createInfoListing(
+      this.getUserId(req),
+      id,
+      dto,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/info-listings/:listingId')
+  updateInfoListing(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('listingId') listingId: string,
+    @Body() dto: UpdateTournamentInfoListingDto,
+  ) {
+    return this.tournamentsService.updateInfoListing(
+      this.getUserId(req),
+      id,
+      listingId,
+      dto,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/info-listings/:listingId')
+  deleteInfoListing(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('listingId') listingId: string,
+  ) {
+    return this.tournamentsService.deleteInfoListing(
+      this.getUserId(req),
+      id,
+      listingId,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/lost-found')
+  createLostFoundItem(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Body() dto: CreateTournamentLostFoundItemDto,
+  ) {
+    return this.tournamentsService.createLostFoundItem(
+      this.getUserId(req),
+      id,
+      dto,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/lost-found/:itemId')
+  updateLostFoundItem(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('itemId') itemId: string,
+    @Body() dto: UpdateTournamentLostFoundItemDto,
+  ) {
+    return this.tournamentsService.updateLostFoundItem(
+      this.getUserId(req),
+      id,
+      itemId,
+      dto,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/lost-found/:itemId')
+  deleteLostFoundItem(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('itemId') itemId: string,
+  ) {
+    return this.tournamentsService.deleteLostFoundItem(
+      this.getUserId(req),
+      id,
+      itemId,
     );
   }
 }

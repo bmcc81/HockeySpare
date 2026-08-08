@@ -75,6 +75,17 @@ export interface TournamentPlayerLeaderRow {
   penaltyMins: number;
 }
 
+export interface TournamentGameRefereeAssignment {
+  id: string;
+  gameId: string;
+  refereeId: string;
+  role?: string | null;
+  referee: {
+    id: string;
+    name: string;
+  };
+}
+
 export interface TournamentGame {
   id: string;
   tournamentId: string;
@@ -89,7 +100,9 @@ export interface TournamentGame {
   awayScore?: number | null;
   status: TournamentGameStatus;
   scoresheetPhotoUrl?: string | null;
+  livestreamUrl?: string | null;
   playerStats?: TournamentGamePlayerStat[];
+  refereeAssignments?: TournamentGameRefereeAssignment[];
 }
 
 export type TournamentSponsorTier = 'GOLD' | 'SILVER' | 'BRONZE';
@@ -113,15 +126,19 @@ export interface CreateTournamentSponsorInput {
 
 export type UpdateTournamentSponsorInput = Partial<CreateTournamentSponsorInput>;
 
+export type TournamentAnnouncementType = 'GENERAL' | 'WEATHER';
+
 export interface TournamentAnnouncement {
   id: string;
   tournamentId: string;
   body: string;
+  type: TournamentAnnouncementType;
   createdAt: string;
 }
 
 export interface CreateTournamentAnnouncementInput {
   body: string;
+  type?: TournamentAnnouncementType;
 }
 
 export interface TournamentVenue {
@@ -221,6 +238,9 @@ export interface Tournament {
   announcements: TournamentAnnouncement[];
   venues: TournamentVenue[];
   mediaAssets: TournamentMediaAsset[];
+  volunteerShifts: TournamentVolunteerShift[];
+  infoListings: TournamentInfoListing[];
+  lostFoundItems: TournamentLostFoundItem[];
 }
 
 export interface TournamentMediaAsset {
@@ -260,6 +280,7 @@ export interface CreateTournamentGameInput {
   startsAt: string;
   arenaName?: string | null;
   notes?: string | null;
+  livestreamUrl?: string | null;
 }
 
 export type UpdateTournamentGameInput = Partial<CreateTournamentGameInput>;
@@ -437,4 +458,109 @@ export interface ScoresheetExtraction {
 export interface ScoresheetScanResult {
   game: TournamentGame;
   extraction: ScoresheetExtraction;
+}
+
+export interface TournamentReferee {
+  id: string;
+  tournamentId: string;
+  name: string;
+  email?: string | null;
+  phone?: string | null;
+  createdAt: string;
+}
+
+export interface CreateTournamentRefereeInput {
+  name: string;
+  email?: string | null;
+  phone?: string | null;
+}
+
+export interface AssignTournamentGameRefereeInput {
+  refereeId: string;
+  role?: string | null;
+}
+
+export interface TournamentVolunteerShift {
+  id: string;
+  tournamentId: string;
+  role: string;
+  description?: string | null;
+  startsAt: string;
+  endsAt: string;
+  location?: string | null;
+  capacity?: number | null;
+  createdAt: string;
+  _count?: { signups: number };
+}
+
+export interface CreateTournamentVolunteerShiftInput {
+  role: string;
+  description?: string | null;
+  startsAt: string;
+  endsAt: string;
+  location?: string | null;
+  capacity?: number | null;
+}
+
+export interface TournamentVolunteerSignup {
+  id: string;
+  shiftId: string;
+  name: string;
+  email: string;
+  phone?: string | null;
+  createdAt: string;
+}
+
+export interface CreateTournamentVolunteerSignupInput {
+  name: string;
+  email: string;
+  phone?: string | null;
+}
+
+export type TournamentInfoListingCategory = 'HOTEL' | 'MERCHANDISE' | 'VENDOR';
+
+export interface TournamentInfoListing {
+  id: string;
+  tournamentId: string;
+  category: TournamentInfoListingCategory;
+  title: string;
+  description?: string | null;
+  url?: string | null;
+  imageUrl?: string | null;
+  createdAt: string;
+}
+
+export interface CreateTournamentInfoListingInput {
+  category: TournamentInfoListingCategory;
+  title: string;
+  description?: string | null;
+  url?: string | null;
+  imageUrl?: string | null;
+}
+
+export type UpdateTournamentInfoListingInput = Partial<CreateTournamentInfoListingInput>;
+
+export type TournamentLostFoundStatus = 'UNCLAIMED' | 'CLAIMED';
+
+export interface TournamentLostFoundItem {
+  id: string;
+  tournamentId: string;
+  description: string;
+  imageUrl?: string | null;
+  contactInfo?: string | null;
+  status: TournamentLostFoundStatus;
+  createdAt: string;
+}
+
+export interface CreateTournamentLostFoundItemInput {
+  description: string;
+  imageUrl?: string | null;
+  contactInfo?: string | null;
+}
+
+export interface UpdateTournamentLostFoundItemInput {
+  description?: string;
+  imageUrl?: string | null;
+  contactInfo?: string | null;
+  status?: TournamentLostFoundStatus;
 }

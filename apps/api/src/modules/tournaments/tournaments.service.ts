@@ -25,6 +25,14 @@ import { CreateTournamentBracketDto } from './dto/create-tournament-bracket.dto'
 import { ScheduleBracketMatchGameDto } from './dto/schedule-bracket-match-game.dto';
 import { CreateTournamentApiKeyDto } from './dto/create-tournament-api-key.dto';
 import { CreateTournamentWebhookDto } from './dto/create-tournament-webhook.dto';
+import { CreateTournamentRefereeDto } from './dto/create-tournament-referee.dto';
+import { AssignTournamentGameRefereeDto } from './dto/assign-tournament-game-referee.dto';
+import { CreateTournamentVolunteerShiftDto } from './dto/create-tournament-volunteer-shift.dto';
+import { CreateTournamentVolunteerSignupDto } from './dto/create-tournament-volunteer-signup.dto';
+import { CreateTournamentInfoListingDto } from './dto/create-tournament-info-listing.dto';
+import { UpdateTournamentInfoListingDto } from './dto/update-tournament-info-listing.dto';
+import { CreateTournamentLostFoundItemDto } from './dto/create-tournament-lost-found-item.dto';
+import { UpdateTournamentLostFoundItemDto } from './dto/update-tournament-lost-found-item.dto';
 import { generateApiKey } from './api-key.util';
 import { StripeService } from '../stripe/stripe.service';
 import { EmailService } from '../email/email.service';
@@ -52,6 +60,11 @@ export class TournamentsService {
         playerStats: {
           include: {
             teamPlayer: true,
+          },
+        },
+        refereeAssignments: {
+          include: {
+            referee: { select: { id: true, name: true } },
           },
         },
       },
@@ -110,6 +123,26 @@ export class TournamentsService {
             },
           },
         },
+      },
+    },
+    volunteerShifts: {
+      orderBy: {
+        startsAt: 'asc' as const,
+      },
+      include: {
+        _count: {
+          select: { signups: true },
+        },
+      },
+    },
+    infoListings: {
+      orderBy: {
+        createdAt: 'asc' as const,
+      },
+    },
+    lostFoundItems: {
+      orderBy: {
+        createdAt: 'desc' as const,
       },
     },
   };
@@ -340,6 +373,7 @@ export class TournamentsService {
         startsAt: new Date(dto.startsAt),
         arenaName: dto.arenaName?.trim() || null,
         notes: dto.notes?.trim() || null,
+        livestreamUrl: dto.livestreamUrl?.trim() || null,
       },
     });
 
@@ -431,6 +465,9 @@ export class TournamentsService {
         ...(dto.homeScore !== undefined ? { homeScore: dto.homeScore } : {}),
         ...(dto.awayScore !== undefined ? { awayScore: dto.awayScore } : {}),
         ...(dto.status !== undefined ? { status: dto.status } : {}),
+        ...(dto.livestreamUrl !== undefined
+          ? { livestreamUrl: dto.livestreamUrl.trim() || null }
+          : {}),
       },
     });
 
@@ -1111,10 +1148,15 @@ export class TournamentsService {
       data: {
         tournamentId,
         body: dto.body.trim(),
+        type: dto.type ?? 'GENERAL',
       },
     });
 
-    await this.logAudit(tournamentId, userId, 'ANNOUNCEMENT_POSTED');
+    await this.logAudit(
+      tournamentId,
+      userId,
+      dto.type === 'WEATHER' ? 'WEATHER_ALERT_POSTED' : 'ANNOUNCEMENT_POSTED',
+    );
 
     return announcement;
   }
@@ -2529,5 +2571,439 @@ export class TournamentsService {
     );
 
     return { game: updatedGame, extraction };
+  }
+
+  // --- Referees ---
+
+  async listReferees(userId: string, tournamentId: string) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    return this.prisma.tournamentReferee.findMany({
+      where: { tournamentId },
+      orderBy: { name: 'asc' },
+    });
+  }
+
+  async createReferee(
+    userId: string,
+    tournamentId: string,
+    dto: CreateTournamentRefereeDto,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const referee = await this.prisma.tournamentReferee.create({
+      data: {
+        tournamentId,
+        name: dto.name.trim(),
+        email: dto.email?.trim() || null,
+        phone: dto.phone?.trim() || null,
+      },
+    });
+
+    await this.logAudit(tournamentId, userId, 'REFEREE_ADDED', referee.name);
+
+    return referee;
+  }
+
+  async deleteReferee(userId: string, tournamentId: string, refereeId: string) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const referee = await this.prisma.tournamentReferee.findFirst({
+      where: { id: refereeId, tournamentId },
+    });
+
+    if (!referee) {
+      throw new NotFoundException('Referee not found');
+    }
+
+    await this.prisma.tournamentReferee.delete({ where: { id: refereeId } });
+
+    await this.logAudit(tournamentId, userId, 'REFEREE_REMOVED', referee.name);
+
+    return { id: referee.id, deleted: true };
+  }
+
+  async assignRefereeToGame(
+    userId: string,
+    tournamentId: string,
+    gameId: string,
+    dto: AssignTournamentGameRefereeDto,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const game = await this.prisma.tournamentGame.findFirst({
+      where: { id: gameId, tournamentId },
+      select: { id: true },
+    });
+
+    if (!game) {
+      throw new NotFoundException('Tournament game not found');
+    }
+
+    const referee = await this.prisma.tournamentReferee.findFirst({
+      where: { id: dto.refereeId, tournamentId },
+    });
+
+    if (!referee) {
+      throw new BadRequestException(
+        'Selected referee does not belong to this tournament.',
+      );
+    }
+
+    const existing = await this.prisma.tournamentGameReferee.findUnique({
+      where: { gameId_refereeId: { gameId, refereeId: dto.refereeId } },
+    });
+
+    if (existing) {
+      throw new BadRequestException(
+        'This referee is already assigned to this game.',
+      );
+    }
+
+    const assignment = await this.prisma.tournamentGameReferee.create({
+      data: {
+        gameId,
+        refereeId: dto.refereeId,
+        role: dto.role?.trim() || null,
+      },
+      include: {
+        referee: { select: { id: true, name: true } },
+      },
+    });
+
+    await this.logAudit(
+      tournamentId,
+      userId,
+      'REFEREE_ASSIGNED',
+      referee.name,
+    );
+
+    return assignment;
+  }
+
+  async unassignRefereeFromGame(
+    userId: string,
+    tournamentId: string,
+    gameId: string,
+    assignmentId: string,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const assignment = await this.prisma.tournamentGameReferee.findFirst({
+      where: { id: assignmentId, gameId, game: { tournamentId } },
+      include: { referee: { select: { name: true } } },
+    });
+
+    if (!assignment) {
+      throw new NotFoundException('Referee assignment not found');
+    }
+
+    await this.prisma.tournamentGameReferee.delete({
+      where: { id: assignmentId },
+    });
+
+    await this.logAudit(
+      tournamentId,
+      userId,
+      'REFEREE_UNASSIGNED',
+      assignment.referee.name,
+    );
+
+    return { id: assignment.id, deleted: true };
+  }
+
+  // --- Volunteer shifts ---
+
+  async createVolunteerShift(
+    userId: string,
+    tournamentId: string,
+    dto: CreateTournamentVolunteerShiftDto,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const shift = await this.prisma.tournamentVolunteerShift.create({
+      data: {
+        tournamentId,
+        role: dto.role.trim(),
+        description: dto.description?.trim() || null,
+        startsAt: new Date(dto.startsAt),
+        endsAt: new Date(dto.endsAt),
+        location: dto.location?.trim() || null,
+        capacity: dto.capacity ?? null,
+      },
+    });
+
+    await this.logAudit(
+      tournamentId,
+      userId,
+      'VOLUNTEER_SHIFT_ADDED',
+      shift.role,
+    );
+
+    return shift;
+  }
+
+  async deleteVolunteerShift(
+    userId: string,
+    tournamentId: string,
+    shiftId: string,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const shift = await this.prisma.tournamentVolunteerShift.findFirst({
+      where: { id: shiftId, tournamentId },
+    });
+
+    if (!shift) {
+      throw new NotFoundException('Volunteer shift not found');
+    }
+
+    await this.prisma.tournamentVolunteerShift.delete({
+      where: { id: shiftId },
+    });
+
+    await this.logAudit(
+      tournamentId,
+      userId,
+      'VOLUNTEER_SHIFT_REMOVED',
+      shift.role,
+    );
+
+    return { id: shift.id, deleted: true };
+  }
+
+  // Public - anyone with the link can sign up for a volunteer shift, same
+  // trust model as tournament registration.
+  async signUpForVolunteerShift(
+    tournamentId: string,
+    shiftId: string,
+    dto: CreateTournamentVolunteerSignupDto,
+  ) {
+    const shift = await this.prisma.tournamentVolunteerShift.findFirst({
+      where: { id: shiftId, tournamentId },
+      include: { _count: { select: { signups: true } } },
+    });
+
+    if (!shift) {
+      throw new NotFoundException('Volunteer shift not found');
+    }
+
+    if (shift.capacity !== null && shift._count.signups >= shift.capacity) {
+      throw new BadRequestException('This volunteer shift is already full.');
+    }
+
+    return this.prisma.tournamentVolunteerSignup.create({
+      data: {
+        shiftId,
+        name: dto.name.trim(),
+        email: dto.email.trim().toLowerCase(),
+        phone: dto.phone?.trim() || null,
+      },
+    });
+  }
+
+  async listVolunteerSignups(
+    userId: string,
+    tournamentId: string,
+    shiftId: string,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const shift = await this.prisma.tournamentVolunteerShift.findFirst({
+      where: { id: shiftId, tournamentId },
+    });
+
+    if (!shift) {
+      throw new NotFoundException('Volunteer shift not found');
+    }
+
+    return this.prisma.tournamentVolunteerSignup.findMany({
+      where: { shiftId },
+      orderBy: { createdAt: 'asc' },
+    });
+  }
+
+  // --- Info listings (hotel / merchandise / vendor) ---
+
+  async createInfoListing(
+    userId: string,
+    tournamentId: string,
+    dto: CreateTournamentInfoListingDto,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const listing = await this.prisma.tournamentInfoListing.create({
+      data: {
+        tournamentId,
+        category: dto.category,
+        title: dto.title.trim(),
+        description: dto.description?.trim() || null,
+        url: dto.url?.trim() || null,
+        imageUrl: dto.imageUrl?.trim() || null,
+      },
+    });
+
+    await this.logAudit(
+      tournamentId,
+      userId,
+      'INFO_LISTING_ADDED',
+      `${listing.category}: ${listing.title}`,
+    );
+
+    return listing;
+  }
+
+  async updateInfoListing(
+    userId: string,
+    tournamentId: string,
+    listingId: string,
+    dto: UpdateTournamentInfoListingDto,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const listing = await this.prisma.tournamentInfoListing.findFirst({
+      where: { id: listingId, tournamentId },
+    });
+
+    if (!listing) {
+      throw new NotFoundException('Listing not found');
+    }
+
+    const updated = await this.prisma.tournamentInfoListing.update({
+      where: { id: listingId },
+      data: {
+        ...(dto.category !== undefined ? { category: dto.category } : {}),
+        ...(dto.title !== undefined ? { title: dto.title.trim() } : {}),
+        ...(dto.description !== undefined
+          ? { description: dto.description.trim() || null }
+          : {}),
+        ...(dto.url !== undefined ? { url: dto.url.trim() || null } : {}),
+        ...(dto.imageUrl !== undefined
+          ? { imageUrl: dto.imageUrl.trim() || null }
+          : {}),
+      },
+    });
+
+    await this.logAudit(
+      tournamentId,
+      userId,
+      'INFO_LISTING_UPDATED',
+      updated.title,
+    );
+
+    return updated;
+  }
+
+  async deleteInfoListing(
+    userId: string,
+    tournamentId: string,
+    listingId: string,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const listing = await this.prisma.tournamentInfoListing.findFirst({
+      where: { id: listingId, tournamentId },
+    });
+
+    if (!listing) {
+      throw new NotFoundException('Listing not found');
+    }
+
+    await this.prisma.tournamentInfoListing.delete({
+      where: { id: listingId },
+    });
+
+    await this.logAudit(
+      tournamentId,
+      userId,
+      'INFO_LISTING_REMOVED',
+      listing.title,
+    );
+
+    return { id: listing.id, deleted: true };
+  }
+
+  // --- Lost & found ---
+
+  async createLostFoundItem(
+    userId: string,
+    tournamentId: string,
+    dto: CreateTournamentLostFoundItemDto,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const item = await this.prisma.tournamentLostFoundItem.create({
+      data: {
+        tournamentId,
+        description: dto.description.trim(),
+        imageUrl: dto.imageUrl?.trim() || null,
+        contactInfo: dto.contactInfo?.trim() || null,
+      },
+    });
+
+    await this.logAudit(tournamentId, userId, 'LOST_FOUND_ITEM_ADDED');
+
+    return item;
+  }
+
+  async updateLostFoundItem(
+    userId: string,
+    tournamentId: string,
+    itemId: string,
+    dto: UpdateTournamentLostFoundItemDto,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const item = await this.prisma.tournamentLostFoundItem.findFirst({
+      where: { id: itemId, tournamentId },
+    });
+
+    if (!item) {
+      throw new NotFoundException('Lost & found item not found');
+    }
+
+    const updated = await this.prisma.tournamentLostFoundItem.update({
+      where: { id: itemId },
+      data: {
+        ...(dto.description !== undefined
+          ? { description: dto.description.trim() }
+          : {}),
+        ...(dto.imageUrl !== undefined
+          ? { imageUrl: dto.imageUrl.trim() || null }
+          : {}),
+        ...(dto.contactInfo !== undefined
+          ? { contactInfo: dto.contactInfo.trim() || null }
+          : {}),
+        ...(dto.status !== undefined ? { status: dto.status } : {}),
+      },
+    });
+
+    await this.logAudit(tournamentId, userId, 'LOST_FOUND_ITEM_UPDATED');
+
+    return updated;
+  }
+
+  async deleteLostFoundItem(
+    userId: string,
+    tournamentId: string,
+    itemId: string,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const item = await this.prisma.tournamentLostFoundItem.findFirst({
+      where: { id: itemId, tournamentId },
+    });
+
+    if (!item) {
+      throw new NotFoundException('Lost & found item not found');
+    }
+
+    await this.prisma.tournamentLostFoundItem.delete({
+      where: { id: itemId },
+    });
+
+    await this.logAudit(tournamentId, userId, 'LOST_FOUND_ITEM_REMOVED');
+
+    return { id: item.id, deleted: true };
   }
 }

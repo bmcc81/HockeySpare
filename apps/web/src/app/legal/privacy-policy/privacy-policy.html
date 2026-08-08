@@ -1,0 +1,167 @@
+<section class="container py-4" style="max-width: 820px">
+  <div class="alert alert-warning">
+    <strong>Draft — pending legal review.</strong> This page describes how
+    HockeySpare currently handles personal information, written to comply
+    with Quebec's <em>Act respecting the protection of personal information
+    in the private sector</em> (as amended by Law 25 / Bill 64). It has not
+    yet been reviewed by a lawyer and should not be relied on as your final,
+    published privacy policy until it has been.
+  </div>
+
+  <h1 class="mb-1">Privacy Policy</h1>
+  <p class="text-secondary">Last updated: August 8, 2026</p>
+
+  <h2 class="h5 mt-4">1. Who this policy covers</h2>
+  <p>
+    This policy applies to HockeySpare (the "Service"), a web application for
+    finding spare hockey players, and running leagues, teams, and
+    tournaments. It applies to anyone who creates an account, is added to a
+    team or league roster, registers a team for a tournament, or otherwise
+    has personal information collected through the Service.
+  </p>
+
+  <h2 class="h5 mt-4">2. Information we collect</h2>
+  <ul>
+    <li>
+      <strong>Account information:</strong> name, email address, and
+      password (stored as a salted hash, never in plain text).
+    </li>
+    <li>
+      <strong>Team, league, and tournament data:</strong> team/league/roster
+      membership, player positions, game schedules, scores, and player
+      statistics (goals, assists, penalty minutes).
+    </li>
+    <li>
+      <strong>Tournament registration contact information:</strong> the
+      name, email, and phone number a team submits when registering for a
+      tournament, even if that person doesn't have a HockeySpare account.
+    </li>
+    <li>
+      <strong>Payment information:</strong> team fees and tournament
+      registration fees are processed by Stripe. HockeySpare does not
+      receive or store full card numbers — only what Stripe returns after a
+      payment (amount, status, and identifiers needed to reconcile it).
+    </li>
+    <li>
+      <strong>Messages:</strong> team chat messages between rostered
+      teammates.
+    </li>
+    <li>
+      <strong>Uploaded files:</strong> team/tournament logos, tournament
+      rulebooks, tournament photo galleries, and photographs of paper
+      scoresheets submitted for AI-assisted data extraction.
+    </li>
+    <li>
+      <strong>AI interactions:</strong> text you submit to in-app AI
+      features (e.g. generating or rewriting a spare-player request message,
+      asking the help assistant a question, or scanning a scoresheet photo)
+      is sent to the configured AI provider to generate a response.
+    </li>
+    <li>
+      <strong>Technical information:</strong> standard web server logs
+      (IP address, browser type, timestamps) generated automatically by
+      hosting and analytics infrastructure.
+    </li>
+  </ul>
+
+  <h2 class="h5 mt-4">3. Why we collect it</h2>
+  <p>We use personal information only for purposes directly related to running the Service:</p>
+  <ul>
+    <li>Creating and authenticating your account.</li>
+    <li>Operating leagues, teams, and tournaments you participate in or organize (schedules, standings, rosters, stats).</li>
+    <li>Processing payments for team fees and tournament registration.</li>
+    <li>Sending transactional communications (registration confirmations, payment receipts, notifications relevant to your teams/games) by email or SMS.</li>
+    <li>Providing AI-assisted features you choose to use (message drafting, help answers, scoresheet scanning).</li>
+    <li>Maintaining an audit log of organizer actions on a tournament, for accountability between an organizer and their co-organizers.</li>
+    <li>Securing the Service and diagnosing technical problems.</li>
+  </ul>
+  <p>
+    We do not sell personal information, and we do not use it for
+    advertising or profiling unrelated to the Service.
+  </p>
+
+  <h2 class="h5 mt-4">4. Who we share it with</h2>
+  <p>
+    We share personal information only with service providers who help us
+    operate the Service, under the minimum access needed for their role:
+  </p>
+  <ul>
+    <li><strong>Stripe</strong> — payment processing for team and tournament fees.</li>
+    <li><strong>Brevo</strong> — transactional email and SMS delivery.</li>
+    <li><strong>OpenAI</strong> — powers AI features you actively use (message drafting, help answers, scoresheet photo scanning). Only the content you submit to that specific feature is sent.</li>
+    <li><strong>Ollama (self-hosted)</strong> — powers some AI help-assistant features on infrastructure we control directly.</li>
+    <li><strong>File storage provider</strong> — an S3-compatible object storage service (self-hosted) that stores uploaded logos, rulebooks, photo galleries, and scoresheet photos.</li>
+  </ul>
+  <p>
+    Other members of a team, league, or tournament you belong to can see the
+    roster, schedule, and stat information relevant to that team/league/
+    tournament, consistent with how the feature is meant to work (e.g. a
+    tournament's public schedule page is visible to anyone with the link, by
+    design, so opposing teams and parents can follow along).
+  </p>
+
+  <h2 class="h5 mt-4">5. Cross-border data transfers</h2>
+  <p>
+    Some of our service providers (Stripe, OpenAI) process data on servers
+    located outside Quebec, including in the United States. Before relying
+    on this policy, a privacy impact assessment for these transfers should
+    be completed and the outcome summarized here, as required under Law 25
+    for personal information transferred outside Quebec.
+  </p>
+
+  <h2 class="h5 mt-4">6. How long we keep information</h2>
+  <p>
+    We retain account and team/league/tournament data for as long as your
+    account or organization remains active on the Service, plus a
+    reasonable period afterward for legal, accounting, and dispute-
+    resolution purposes. A specific retention schedule (e.g. "X months after
+    account deletion") should be finalized and documented here.
+  </p>
+
+  <h2 class="h5 mt-4">7. Your rights</h2>
+  <p>Under Quebec privacy law, you have the right to:</p>
+  <ul>
+    <li>Access the personal information we hold about you.</li>
+    <li>Request correction of inaccurate or incomplete information.</li>
+    <li>Withdraw consent to certain uses of your information, where consent is the basis for that use.</li>
+    <li>Request that we cease disseminating your information or de-index it, in certain circumstances.</li>
+    <li>File a complaint with Quebec's <em>Commission d'accès à l'information</em> (CAI) if you believe your rights have been violated.</li>
+  </ul>
+  <p>To exercise any of these rights, contact us using the information in Section 10.</p>
+
+  <h2 class="h5 mt-4">8. Security</h2>
+  <p>
+    We use industry-standard measures to protect personal information,
+    including encrypted password storage, encrypted connections (HTTPS),
+    and access controls limiting who can view organizer-only data (such as
+    registration contact details and payment records) to the tournament/
+    team/league owner and anyone they've explicitly granted co-organizer
+    access to. No system is completely secure, and we cannot guarantee
+    absolute security.
+  </p>
+
+  <h2 class="h5 mt-4">9. Data breach notification</h2>
+  <p>
+    In the event of a confidentiality incident involving personal
+    information that presents a risk of serious harm, we will notify the
+    CAI and affected individuals as required by law, and maintain an
+    internal incident register. The specific incident-response process and
+    responsible contact should be documented and tested before this policy
+    is finalized.
+  </p>
+
+  <h2 class="h5 mt-4">10. Privacy officer &amp; contact</h2>
+  <p>
+    Under Law 25, the person with the highest authority in an organization
+    is, by default, responsible for the protection of personal information
+    unless that role is delegated to someone else in writing. That
+    designation, and a dedicated contact address for privacy inquiries,
+    needs to be finalized and added here.
+  </p>
+
+  <h2 class="h5 mt-4">11. Changes to this policy</h2>
+  <p>
+    We may update this policy as the Service changes. Material changes will
+    be reflected by updating the "Last updated" date above.
+  </p>
+</section>

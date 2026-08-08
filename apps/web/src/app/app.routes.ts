@@ -180,5 +180,13 @@ export const routes: Routes = [
       ),
   },
 
+  {
+    path: 'privacy',
+    loadComponent: () =>
+      import('./legal/privacy-policy/privacy-policy').then(
+        (m) => m.PrivacyPolicyComponent,
+      ),
+  },
+
   { path: '**', redirectTo: '' },
 ];

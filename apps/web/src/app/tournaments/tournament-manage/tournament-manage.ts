@@ -10,6 +10,8 @@ import {
   FileStorageStatus,
   Tournament,
   TournamentAnnouncement,
+  TournamentApiKey,
+  TournamentApiKeyCreated,
   TournamentAuditLogEntry,
   TournamentBracket,
   TournamentBracketMatch,
@@ -26,6 +28,7 @@ import {
   TournamentTeam,
   TournamentTeamPlayer,
   TournamentVenue,
+  TournamentWebhook,
 } from '@hockeyspare/contracts';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
 import { AuthStateService } from '../../auth/auth-state.service';
@@ -139,6 +142,17 @@ export class TournamentManageComponent implements OnInit {
   mediaError = signal<string | null>(null);
   deletingMediaAssetId = signal<string | null>(null);
 
+  apiKeys = signal<TournamentApiKey[]>([]);
+  creatingApiKey = signal(false);
+  apiKeyError = signal<string | null>(null);
+  revokingApiKeyId = signal<string | null>(null);
+  justCreatedApiKey = signal<TournamentApiKeyCreated | null>(null);
+
+  webhooks = signal<TournamentWebhook[]>([]);
+  creatingWebhook = signal(false);
+  webhookError = signal<string | null>(null);
+  deletingWebhookId = signal<string | null>(null);
+
   detailsForm = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
     description: [''],
@@ -180,6 +194,15 @@ export class TournamentManageComponent implements OnInit {
     parkingInfo: [''],
     dressingRoomInfo: [''],
     concessionsInfo: [''],
+  });
+
+  apiKeyForm = this.fb.group({
+    label: ['', Validators.required],
+  });
+
+  webhookForm = this.fb.group({
+    url: ['', Validators.required],
+    secret: [''],
   });
 
   scoreForm = this.fb.group({
@@ -323,6 +346,8 @@ export class TournamentManageComponent implements OnInit {
           this.loadPayments();
           this.loadCoOrganizers();
           this.loadFileStorageStatus();
+          this.loadApiKeys();
+          this.loadWebhooks();
         } else if (this.authState.user()?.id) {
           // Not the creator, but might be a co-organizer - probing the
           // co-organizer list is itself owner-or-co-organizer gated, so a
@@ -348,6 +373,8 @@ export class TournamentManageComponent implements OnInit {
           this.loadPaymentsStatus();
           this.loadPayments();
           this.loadFileStorageStatus();
+          this.loadApiKeys();
+          this.loadWebhooks();
         }
       },
       error: () => {
@@ -363,6 +390,28 @@ export class TournamentManageComponent implements OnInit {
       },
       error: () => {
         this.fileStorageStatus.set(null);
+      },
+    });
+  }
+
+  private loadApiKeys(): void {
+    this.tournamentsApi.listApiKeys(this.tournamentId).subscribe({
+      next: (apiKeys) => {
+        this.apiKeys.set(apiKeys);
+      },
+      error: () => {
+        this.apiKeys.set([]);
+      },
+    });
+  }
+
+  private loadWebhooks(): void {
+    this.tournamentsApi.listWebhooks(this.tournamentId).subscribe({
+      next: (webhooks) => {
+        this.webhooks.set(webhooks);
+      },
+      error: () => {
+        this.webhooks.set([]);
       },
     });
   }
@@ -1623,5 +1672,115 @@ export class TournamentManageComponent implements OnInit {
 
   trackByMediaAssetId(_index: number, asset: TournamentMediaAsset): string {
     return asset.id;
+  }
+
+  createApiKey(): void {
+    if (this.apiKeyForm.invalid || this.creatingApiKey()) {
+      this.apiKeyForm.markAllAsTouched();
+      return;
+    }
+
+    const value = this.apiKeyForm.getRawValue();
+
+    this.creatingApiKey.set(true);
+    this.apiKeyError.set(null);
+    this.justCreatedApiKey.set(null);
+
+    this.tournamentsApi
+      .createApiKey(this.tournamentId, { label: value.label.trim() })
+      .subscribe({
+        next: (apiKey) => {
+          this.creatingApiKey.set(false);
+          this.justCreatedApiKey.set(apiKey);
+          this.apiKeyForm.reset({ label: '' });
+          this.loadApiKeys();
+        },
+        error: (err) => {
+          this.apiKeyError.set(
+            err?.error?.message || 'Could not create this API key.',
+          );
+          this.creatingApiKey.set(false);
+        },
+      });
+  }
+
+  revokeApiKey(keyId: string): void {
+    this.revokingApiKeyId.set(keyId);
+    this.apiKeyError.set(null);
+
+    this.tournamentsApi.revokeApiKey(this.tournamentId, keyId).subscribe({
+      next: () => {
+        this.revokingApiKeyId.set(null);
+
+        if (this.justCreatedApiKey()?.id === keyId) {
+          this.justCreatedApiKey.set(null);
+        }
+
+        this.loadApiKeys();
+      },
+      error: (err) => {
+        this.apiKeyError.set(
+          err?.error?.message || 'Could not revoke this API key.',
+        );
+        this.revokingApiKeyId.set(null);
+      },
+    });
+  }
+
+  trackByApiKeyId(_index: number, apiKey: TournamentApiKey): string {
+    return apiKey.id;
+  }
+
+  createWebhook(): void {
+    if (this.webhookForm.invalid || this.creatingWebhook()) {
+      this.webhookForm.markAllAsTouched();
+      return;
+    }
+
+    const value = this.webhookForm.getRawValue();
+
+    this.creatingWebhook.set(true);
+    this.webhookError.set(null);
+
+    this.tournamentsApi
+      .createWebhook(this.tournamentId, {
+        url: value.url.trim(),
+        secret: value.secret.trim() || undefined,
+      })
+      .subscribe({
+        next: () => {
+          this.creatingWebhook.set(false);
+          this.webhookForm.reset({ url: '', secret: '' });
+          this.loadWebhooks();
+        },
+        error: (err) => {
+          this.webhookError.set(
+            err?.error?.message || 'Could not add this webhook.',
+          );
+          this.creatingWebhook.set(false);
+        },
+      });
+  }
+
+  deleteWebhook(webhookId: string): void {
+    this.deletingWebhookId.set(webhookId);
+    this.webhookError.set(null);
+
+    this.tournamentsApi.deleteWebhook(this.tournamentId, webhookId).subscribe({
+      next: () => {
+        this.deletingWebhookId.set(null);
+        this.loadWebhooks();
+      },
+      error: (err) => {
+        this.webhookError.set(
+          err?.error?.message || 'Could not remove this webhook.',
+        );
+        this.deletingWebhookId.set(null);
+      },
+    });
+  }
+
+  trackByWebhookId(_index: number, webhook: TournamentWebhook): string {
+    return webhook.id;
   }
 }

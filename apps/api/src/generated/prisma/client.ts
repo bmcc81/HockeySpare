@@ -155,6 +155,16 @@ export type Tournament = Prisma.TournamentModel
  */
 export type TournamentMediaAsset = Prisma.TournamentMediaAssetModel
 /**
+ * Model TournamentApiKey
+ * 
+ */
+export type TournamentApiKey = Prisma.TournamentApiKeyModel
+/**
+ * Model TournamentWebhook
+ * 
+ */
+export type TournamentWebhook = Prisma.TournamentWebhookModel
+/**
  * Model TournamentCoOrganizer
  * 
  */

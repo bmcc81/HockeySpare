@@ -23,9 +23,13 @@ import { CreateTournamentTeamPlayerDto } from './dto/create-tournament-team-play
 import { UpsertTournamentGamePlayerStatDto } from './dto/upsert-tournament-game-player-stat.dto';
 import { CreateTournamentBracketDto } from './dto/create-tournament-bracket.dto';
 import { ScheduleBracketMatchGameDto } from './dto/schedule-bracket-match-game.dto';
+import { CreateTournamentApiKeyDto } from './dto/create-tournament-api-key.dto';
+import { CreateTournamentWebhookDto } from './dto/create-tournament-webhook.dto';
+import { generateApiKey } from './api-key.util';
 import { StripeService } from '../stripe/stripe.service';
 import { EmailService } from '../email/email.service';
 import { FileStorageService } from '../file-storage/file-storage.service';
+import { createHmac, randomBytes } from 'crypto';
 import type Stripe from 'stripe';
 
 @Injectable()
@@ -432,7 +436,81 @@ export class TournamentsService {
       await this.advanceBracketIfNeeded(updatedGame.id);
     }
 
+    if (
+      (dto.status !== undefined ||
+        dto.homeScore !== undefined ||
+        dto.awayScore !== undefined) &&
+      (updatedGame.status === 'LIVE' || updatedGame.status === 'FINAL')
+    ) {
+      this.fireGameWebhooks(tournamentId, updatedGame).catch((err) => {
+        console.warn('Webhook dispatch failed', err);
+      });
+    }
+
     return updatedGame;
+  }
+
+  /**
+   * Fire-and-forget delivery to any active webhooks for this tournament -
+   * third-party/AI integrations (F017) shouldn't be able to slow down or
+   * fail an organizer's score update.
+   */
+  private async fireGameWebhooks(
+    tournamentId: string,
+    game: {
+      id: string;
+      homeTeamName: string;
+      awayTeamName: string;
+      homeScore: number | null;
+      awayScore: number | null;
+      status: string;
+      startsAt: Date;
+    },
+  ): Promise<void> {
+    const webhooks = await this.prisma.tournamentWebhook.findMany({
+      where: { tournamentId, active: true },
+    });
+
+    if (webhooks.length === 0) {
+      return;
+    }
+
+    const payload = {
+      event: game.status === 'FINAL' ? 'game.final' : 'game.updated',
+      tournamentId,
+      game: {
+        id: game.id,
+        homeTeamName: game.homeTeamName,
+        awayTeamName: game.awayTeamName,
+        homeScore: game.homeScore,
+        awayScore: game.awayScore,
+        status: game.status,
+        startsAt: game.startsAt,
+      },
+      sentAt: new Date().toISOString(),
+    };
+
+    const body = JSON.stringify(payload);
+
+    for (const webhook of webhooks) {
+      const signature = createHmac('sha256', webhook.secret)
+        .update(body)
+        .digest('hex');
+
+      fetch(webhook.url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-HockeySpare-Signature': `sha256=${signature}`,
+        },
+        body,
+      }).catch((err) => {
+        console.warn(
+          `Webhook delivery failed for tournament ${tournamentId} -> ${webhook.url}`,
+          err,
+        );
+      });
+    }
   }
 
   /**
@@ -2269,5 +2347,124 @@ export class TournamentsService {
     await this.logAudit(tournamentId, userId, 'MEDIA_DELETED');
 
     return { id: asset.id, deleted: true };
+  }
+
+  async listApiKeys(userId: string, tournamentId: string) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    return this.prisma.tournamentApiKey.findMany({
+      where: { tournamentId },
+      select: {
+        id: true,
+        tournamentId: true,
+        label: true,
+        keyPrefix: true,
+        createdAt: true,
+        lastUsedAt: true,
+        revokedAt: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async createApiKey(
+    userId: string,
+    tournamentId: string,
+    dto: CreateTournamentApiKeyDto,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const { plaintext, hash, prefix } = generateApiKey();
+
+    const apiKey = await this.prisma.tournamentApiKey.create({
+      data: {
+        tournamentId,
+        label: dto.label.trim(),
+        keyHash: hash,
+        keyPrefix: prefix,
+      },
+    });
+
+    await this.logAudit(tournamentId, userId, 'API_KEY_CREATED', apiKey.label);
+
+    // The plaintext key is only ever available in this response - only
+    // keyPrefix is stored/returned from here on. keyHash is never sent to
+    // the client, even here.
+    const { keyHash: _keyHash, ...apiKeyWithoutHash } = apiKey;
+    return { ...apiKeyWithoutHash, key: plaintext };
+  }
+
+  async revokeApiKey(userId: string, tournamentId: string, keyId: string) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const apiKey = await this.prisma.tournamentApiKey.findFirst({
+      where: { id: keyId, tournamentId },
+    });
+
+    if (!apiKey) {
+      throw new NotFoundException('API key not found');
+    }
+
+    if (apiKey.revokedAt) {
+      return { id: apiKey.id, deleted: true };
+    }
+
+    // Soft-revoke rather than delete, so the organizer can still see when
+    // a given key was cut off instead of it just vanishing from the list.
+    await this.prisma.tournamentApiKey.update({
+      where: { id: keyId },
+      data: { revokedAt: new Date() },
+    });
+
+    await this.logAudit(tournamentId, userId, 'API_KEY_REVOKED', apiKey.label);
+
+    return { id: apiKey.id, deleted: true };
+  }
+
+  async listWebhooks(userId: string, tournamentId: string) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    return this.prisma.tournamentWebhook.findMany({
+      where: { tournamentId },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async createWebhook(
+    userId: string,
+    tournamentId: string,
+    dto: CreateTournamentWebhookDto,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const webhook = await this.prisma.tournamentWebhook.create({
+      data: {
+        tournamentId,
+        url: dto.url.trim(),
+        secret: dto.secret?.trim() || randomBytes(24).toString('hex'),
+      },
+    });
+
+    await this.logAudit(tournamentId, userId, 'WEBHOOK_ADDED', webhook.url);
+
+    return webhook;
+  }
+
+  async deleteWebhook(userId: string, tournamentId: string, webhookId: string) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const webhook = await this.prisma.tournamentWebhook.findFirst({
+      where: { id: webhookId, tournamentId },
+    });
+
+    if (!webhook) {
+      throw new NotFoundException('Webhook not found');
+    }
+
+    await this.prisma.tournamentWebhook.delete({ where: { id: webhookId } });
+
+    await this.logAudit(tournamentId, userId, 'WEBHOOK_REMOVED', webhook.url);
+
+    return { id: webhook.id, deleted: true };
   }
 }

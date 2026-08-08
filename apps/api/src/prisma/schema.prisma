@@ -597,6 +597,8 @@ model Tournament {
   coOrganizers  TournamentCoOrganizer[]
   auditLogEntries TournamentAuditLogEntry[]
   mediaAssets   TournamentMediaAsset[]
+  apiKeys       TournamentApiKey[]
+  webhooks      TournamentWebhook[]
 
   @@index([leagueId])
   @@index([createdById])
@@ -612,6 +614,34 @@ model TournamentMediaAsset {
   tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
 
   @@index([tournamentId, createdAt])
+}
+
+model TournamentApiKey {
+  id           String    @id @default(cuid())
+  tournamentId String
+  label        String
+  keyHash      String    @unique
+  keyPrefix    String
+  createdAt    DateTime  @default(now())
+  lastUsedAt   DateTime?
+  revokedAt    DateTime?
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  @@index([tournamentId])
+}
+
+model TournamentWebhook {
+  id           String   @id @default(cuid())
+  tournamentId String
+  url          String
+  secret       String
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  @@index([tournamentId])
 }
 
 model TournamentCoOrganizer {

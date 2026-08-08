@@ -74,6 +74,8 @@ export const ModelName = {
   HelpArticle: 'HelpArticle',
   Tournament: 'Tournament',
   TournamentMediaAsset: 'TournamentMediaAsset',
+  TournamentApiKey: 'TournamentApiKey',
+  TournamentWebhook: 'TournamentWebhook',
   TournamentCoOrganizer: 'TournamentCoOrganizer',
   TournamentAuditLogEntry: 'TournamentAuditLogEntry',
   TournamentAnnouncement: 'TournamentAnnouncement',
@@ -472,6 +474,32 @@ export const TournamentMediaAssetScalarFieldEnum = {
 } as const
 
 export type TournamentMediaAssetScalarFieldEnum = (typeof TournamentMediaAssetScalarFieldEnum)[keyof typeof TournamentMediaAssetScalarFieldEnum]
+
+
+export const TournamentApiKeyScalarFieldEnum = {
+  id: 'id',
+  tournamentId: 'tournamentId',
+  label: 'label',
+  keyHash: 'keyHash',
+  keyPrefix: 'keyPrefix',
+  createdAt: 'createdAt',
+  lastUsedAt: 'lastUsedAt',
+  revokedAt: 'revokedAt'
+} as const
+
+export type TournamentApiKeyScalarFieldEnum = (typeof TournamentApiKeyScalarFieldEnum)[keyof typeof TournamentApiKeyScalarFieldEnum]
+
+
+export const TournamentWebhookScalarFieldEnum = {
+  id: 'id',
+  tournamentId: 'tournamentId',
+  url: 'url',
+  secret: 'secret',
+  active: 'active',
+  createdAt: 'createdAt'
+} as const
+
+export type TournamentWebhookScalarFieldEnum = (typeof TournamentWebhookScalarFieldEnum)[keyof typeof TournamentWebhookScalarFieldEnum]
 
 
 export const TournamentCoOrganizerScalarFieldEnum = {

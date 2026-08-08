@@ -4,12 +4,14 @@ import { StripeModule } from '../stripe/stripe.module';
 import { EmailModule } from '../email/email.module';
 import { FileStorageModule } from '../file-storage/file-storage.module';
 import { TournamentsController } from './tournaments.controller';
+import { TournamentsPublicApiController } from './tournaments-public-api.controller';
 import { TournamentsService } from './tournaments.service';
+import { ApiKeyGuard } from './api-key.guard';
 
 @Module({
   imports: [PrismaModule, StripeModule, EmailModule, FileStorageModule],
-  controllers: [TournamentsController],
-  providers: [TournamentsService],
+  controllers: [TournamentsController, TournamentsPublicApiController],
+  providers: [TournamentsService, ApiKeyGuard],
   exports: [TournamentsService],
 })
 export class TournamentsModule {}

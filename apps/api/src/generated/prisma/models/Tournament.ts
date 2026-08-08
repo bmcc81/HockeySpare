@@ -349,6 +349,8 @@ export type TournamentWhereInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerListRelationFilter
   auditLogEntries?: Prisma.TournamentAuditLogEntryListRelationFilter
   mediaAssets?: Prisma.TournamentMediaAssetListRelationFilter
+  apiKeys?: Prisma.TournamentApiKeyListRelationFilter
+  webhooks?: Prisma.TournamentWebhookListRelationFilter
 }
 
 export type TournamentOrderByWithRelationInput = {
@@ -385,6 +387,8 @@ export type TournamentOrderByWithRelationInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerOrderByRelationAggregateInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryOrderByRelationAggregateInput
   mediaAssets?: Prisma.TournamentMediaAssetOrderByRelationAggregateInput
+  apiKeys?: Prisma.TournamentApiKeyOrderByRelationAggregateInput
+  webhooks?: Prisma.TournamentWebhookOrderByRelationAggregateInput
 }
 
 export type TournamentWhereUniqueInput = Prisma.AtLeast<{
@@ -424,6 +428,8 @@ export type TournamentWhereUniqueInput = Prisma.AtLeast<{
   coOrganizers?: Prisma.TournamentCoOrganizerListRelationFilter
   auditLogEntries?: Prisma.TournamentAuditLogEntryListRelationFilter
   mediaAssets?: Prisma.TournamentMediaAssetListRelationFilter
+  apiKeys?: Prisma.TournamentApiKeyListRelationFilter
+  webhooks?: Prisma.TournamentWebhookListRelationFilter
 }, "id" | "stripeAccountId">
 
 export type TournamentOrderByWithAggregationInput = {
@@ -512,6 +518,8 @@ export type TournamentCreateInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerCreateNestedManyWithoutTournamentInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryCreateNestedManyWithoutTournamentInput
   mediaAssets?: Prisma.TournamentMediaAssetCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateInput = {
@@ -546,6 +554,8 @@ export type TournamentUncheckedCreateInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUncheckedCreateNestedManyWithoutTournamentInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedCreateNestedManyWithoutTournamentInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUpdateInput = {
@@ -580,6 +590,8 @@ export type TournamentUpdateInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUpdateManyWithoutTournamentNestedInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateInput = {
@@ -614,6 +626,8 @@ export type TournamentUncheckedUpdateInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUncheckedUpdateManyWithoutTournamentNestedInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateManyInput = {
@@ -877,6 +891,34 @@ export type TournamentUpdateOneRequiredWithoutMediaAssetsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TournamentUpdateToOneWithWhereWithoutMediaAssetsInput, Prisma.TournamentUpdateWithoutMediaAssetsInput>, Prisma.TournamentUncheckedUpdateWithoutMediaAssetsInput>
 }
 
+export type TournamentCreateNestedOneWithoutApiKeysInput = {
+  create?: Prisma.XOR<Prisma.TournamentCreateWithoutApiKeysInput, Prisma.TournamentUncheckedCreateWithoutApiKeysInput>
+  connectOrCreate?: Prisma.TournamentCreateOrConnectWithoutApiKeysInput
+  connect?: Prisma.TournamentWhereUniqueInput
+}
+
+export type TournamentUpdateOneRequiredWithoutApiKeysNestedInput = {
+  create?: Prisma.XOR<Prisma.TournamentCreateWithoutApiKeysInput, Prisma.TournamentUncheckedCreateWithoutApiKeysInput>
+  connectOrCreate?: Prisma.TournamentCreateOrConnectWithoutApiKeysInput
+  upsert?: Prisma.TournamentUpsertWithoutApiKeysInput
+  connect?: Prisma.TournamentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TournamentUpdateToOneWithWhereWithoutApiKeysInput, Prisma.TournamentUpdateWithoutApiKeysInput>, Prisma.TournamentUncheckedUpdateWithoutApiKeysInput>
+}
+
+export type TournamentCreateNestedOneWithoutWebhooksInput = {
+  create?: Prisma.XOR<Prisma.TournamentCreateWithoutWebhooksInput, Prisma.TournamentUncheckedCreateWithoutWebhooksInput>
+  connectOrCreate?: Prisma.TournamentCreateOrConnectWithoutWebhooksInput
+  connect?: Prisma.TournamentWhereUniqueInput
+}
+
+export type TournamentUpdateOneRequiredWithoutWebhooksNestedInput = {
+  create?: Prisma.XOR<Prisma.TournamentCreateWithoutWebhooksInput, Prisma.TournamentUncheckedCreateWithoutWebhooksInput>
+  connectOrCreate?: Prisma.TournamentCreateOrConnectWithoutWebhooksInput
+  upsert?: Prisma.TournamentUpsertWithoutWebhooksInput
+  connect?: Prisma.TournamentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TournamentUpdateToOneWithWhereWithoutWebhooksInput, Prisma.TournamentUpdateWithoutWebhooksInput>, Prisma.TournamentUncheckedUpdateWithoutWebhooksInput>
+}
+
 export type TournamentCreateNestedOneWithoutCoOrganizersInput = {
   create?: Prisma.XOR<Prisma.TournamentCreateWithoutCoOrganizersInput, Prisma.TournamentUncheckedCreateWithoutCoOrganizersInput>
   connectOrCreate?: Prisma.TournamentCreateOrConnectWithoutCoOrganizersInput
@@ -1048,6 +1090,8 @@ export type TournamentCreateWithoutCreatedByInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerCreateNestedManyWithoutTournamentInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryCreateNestedManyWithoutTournamentInput
   mediaAssets?: Prisma.TournamentMediaAssetCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutCreatedByInput = {
@@ -1081,6 +1125,8 @@ export type TournamentUncheckedCreateWithoutCreatedByInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUncheckedCreateNestedManyWithoutTournamentInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedCreateNestedManyWithoutTournamentInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutCreatedByInput = {
@@ -1166,6 +1212,8 @@ export type TournamentCreateWithoutLeagueInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerCreateNestedManyWithoutTournamentInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryCreateNestedManyWithoutTournamentInput
   mediaAssets?: Prisma.TournamentMediaAssetCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutLeagueInput = {
@@ -1199,6 +1247,8 @@ export type TournamentUncheckedCreateWithoutLeagueInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUncheckedCreateNestedManyWithoutTournamentInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedCreateNestedManyWithoutTournamentInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutLeagueInput = {
@@ -1258,6 +1308,8 @@ export type TournamentCreateWithoutMediaAssetsInput = {
   venues?: Prisma.TournamentVenueCreateNestedManyWithoutTournamentInput
   coOrganizers?: Prisma.TournamentCoOrganizerCreateNestedManyWithoutTournamentInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutMediaAssetsInput = {
@@ -1291,6 +1343,8 @@ export type TournamentUncheckedCreateWithoutMediaAssetsInput = {
   venues?: Prisma.TournamentVenueUncheckedCreateNestedManyWithoutTournamentInput
   coOrganizers?: Prisma.TournamentCoOrganizerUncheckedCreateNestedManyWithoutTournamentInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutMediaAssetsInput = {
@@ -1340,6 +1394,8 @@ export type TournamentUpdateWithoutMediaAssetsInput = {
   venues?: Prisma.TournamentVenueUpdateManyWithoutTournamentNestedInput
   coOrganizers?: Prisma.TournamentCoOrganizerUpdateManyWithoutTournamentNestedInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutMediaAssetsInput = {
@@ -1373,6 +1429,320 @@ export type TournamentUncheckedUpdateWithoutMediaAssetsInput = {
   venues?: Prisma.TournamentVenueUncheckedUpdateManyWithoutTournamentNestedInput
   coOrganizers?: Prisma.TournamentCoOrganizerUncheckedUpdateManyWithoutTournamentNestedInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUncheckedUpdateManyWithoutTournamentNestedInput
+}
+
+export type TournamentCreateWithoutApiKeysInput = {
+  id?: string
+  name: string
+  description?: string | null
+  rules?: string | null
+  startDate?: Date | string | null
+  endDate?: Date | string | null
+  registrationMode?: $Enums.TournamentRegistrationMode
+  registrationDeadline?: Date | string | null
+  registrationFeeCents?: number | null
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  contactName?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  logoUrl?: string | null
+  rulebookUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  league?: Prisma.LeagueCreateNestedOneWithoutTournamentsInput
+  createdBy: Prisma.UserCreateNestedOneWithoutCreatedTournamentsInput
+  games?: Prisma.TournamentGameCreateNestedManyWithoutTournamentInput
+  registrations?: Prisma.TournamentRegistrationCreateNestedManyWithoutTournamentInput
+  sponsors?: Prisma.TournamentSponsorCreateNestedManyWithoutTournamentInput
+  payments?: Prisma.TournamentPaymentCreateNestedManyWithoutTournamentInput
+  teams?: Prisma.TournamentTeamCreateNestedManyWithoutTournamentInput
+  brackets?: Prisma.TournamentBracketCreateNestedManyWithoutTournamentInput
+  announcements?: Prisma.TournamentAnnouncementCreateNestedManyWithoutTournamentInput
+  venues?: Prisma.TournamentVenueCreateNestedManyWithoutTournamentInput
+  coOrganizers?: Prisma.TournamentCoOrganizerCreateNestedManyWithoutTournamentInput
+  auditLogEntries?: Prisma.TournamentAuditLogEntryCreateNestedManyWithoutTournamentInput
+  mediaAssets?: Prisma.TournamentMediaAssetCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookCreateNestedManyWithoutTournamentInput
+}
+
+export type TournamentUncheckedCreateWithoutApiKeysInput = {
+  id?: string
+  name: string
+  description?: string | null
+  rules?: string | null
+  startDate?: Date | string | null
+  endDate?: Date | string | null
+  leagueId?: string | null
+  createdById: string
+  registrationMode?: $Enums.TournamentRegistrationMode
+  registrationDeadline?: Date | string | null
+  registrationFeeCents?: number | null
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  contactName?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  logoUrl?: string | null
+  rulebookUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  games?: Prisma.TournamentGameUncheckedCreateNestedManyWithoutTournamentInput
+  registrations?: Prisma.TournamentRegistrationUncheckedCreateNestedManyWithoutTournamentInput
+  sponsors?: Prisma.TournamentSponsorUncheckedCreateNestedManyWithoutTournamentInput
+  payments?: Prisma.TournamentPaymentUncheckedCreateNestedManyWithoutTournamentInput
+  teams?: Prisma.TournamentTeamUncheckedCreateNestedManyWithoutTournamentInput
+  brackets?: Prisma.TournamentBracketUncheckedCreateNestedManyWithoutTournamentInput
+  announcements?: Prisma.TournamentAnnouncementUncheckedCreateNestedManyWithoutTournamentInput
+  venues?: Prisma.TournamentVenueUncheckedCreateNestedManyWithoutTournamentInput
+  coOrganizers?: Prisma.TournamentCoOrganizerUncheckedCreateNestedManyWithoutTournamentInput
+  auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedCreateNestedManyWithoutTournamentInput
+  mediaAssets?: Prisma.TournamentMediaAssetUncheckedCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookUncheckedCreateNestedManyWithoutTournamentInput
+}
+
+export type TournamentCreateOrConnectWithoutApiKeysInput = {
+  where: Prisma.TournamentWhereUniqueInput
+  create: Prisma.XOR<Prisma.TournamentCreateWithoutApiKeysInput, Prisma.TournamentUncheckedCreateWithoutApiKeysInput>
+}
+
+export type TournamentUpsertWithoutApiKeysInput = {
+  update: Prisma.XOR<Prisma.TournamentUpdateWithoutApiKeysInput, Prisma.TournamentUncheckedUpdateWithoutApiKeysInput>
+  create: Prisma.XOR<Prisma.TournamentCreateWithoutApiKeysInput, Prisma.TournamentUncheckedCreateWithoutApiKeysInput>
+  where?: Prisma.TournamentWhereInput
+}
+
+export type TournamentUpdateToOneWithWhereWithoutApiKeysInput = {
+  where?: Prisma.TournamentWhereInput
+  data: Prisma.XOR<Prisma.TournamentUpdateWithoutApiKeysInput, Prisma.TournamentUncheckedUpdateWithoutApiKeysInput>
+}
+
+export type TournamentUpdateWithoutApiKeysInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rules?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationMode?: Prisma.EnumTournamentRegistrationModeFieldUpdateOperationsInput | $Enums.TournamentRegistrationMode
+  registrationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rulebookUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  league?: Prisma.LeagueUpdateOneWithoutTournamentsNestedInput
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedTournamentsNestedInput
+  games?: Prisma.TournamentGameUpdateManyWithoutTournamentNestedInput
+  registrations?: Prisma.TournamentRegistrationUpdateManyWithoutTournamentNestedInput
+  sponsors?: Prisma.TournamentSponsorUpdateManyWithoutTournamentNestedInput
+  payments?: Prisma.TournamentPaymentUpdateManyWithoutTournamentNestedInput
+  teams?: Prisma.TournamentTeamUpdateManyWithoutTournamentNestedInput
+  brackets?: Prisma.TournamentBracketUpdateManyWithoutTournamentNestedInput
+  announcements?: Prisma.TournamentAnnouncementUpdateManyWithoutTournamentNestedInput
+  venues?: Prisma.TournamentVenueUpdateManyWithoutTournamentNestedInput
+  coOrganizers?: Prisma.TournamentCoOrganizerUpdateManyWithoutTournamentNestedInput
+  auditLogEntries?: Prisma.TournamentAuditLogEntryUpdateManyWithoutTournamentNestedInput
+  mediaAssets?: Prisma.TournamentMediaAssetUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUpdateManyWithoutTournamentNestedInput
+}
+
+export type TournamentUncheckedUpdateWithoutApiKeysInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rules?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  leagueId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  registrationMode?: Prisma.EnumTournamentRegistrationModeFieldUpdateOperationsInput | $Enums.TournamentRegistrationMode
+  registrationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rulebookUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  games?: Prisma.TournamentGameUncheckedUpdateManyWithoutTournamentNestedInput
+  registrations?: Prisma.TournamentRegistrationUncheckedUpdateManyWithoutTournamentNestedInput
+  sponsors?: Prisma.TournamentSponsorUncheckedUpdateManyWithoutTournamentNestedInput
+  payments?: Prisma.TournamentPaymentUncheckedUpdateManyWithoutTournamentNestedInput
+  teams?: Prisma.TournamentTeamUncheckedUpdateManyWithoutTournamentNestedInput
+  brackets?: Prisma.TournamentBracketUncheckedUpdateManyWithoutTournamentNestedInput
+  announcements?: Prisma.TournamentAnnouncementUncheckedUpdateManyWithoutTournamentNestedInput
+  venues?: Prisma.TournamentVenueUncheckedUpdateManyWithoutTournamentNestedInput
+  coOrganizers?: Prisma.TournamentCoOrganizerUncheckedUpdateManyWithoutTournamentNestedInput
+  auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedUpdateManyWithoutTournamentNestedInput
+  mediaAssets?: Prisma.TournamentMediaAssetUncheckedUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUncheckedUpdateManyWithoutTournamentNestedInput
+}
+
+export type TournamentCreateWithoutWebhooksInput = {
+  id?: string
+  name: string
+  description?: string | null
+  rules?: string | null
+  startDate?: Date | string | null
+  endDate?: Date | string | null
+  registrationMode?: $Enums.TournamentRegistrationMode
+  registrationDeadline?: Date | string | null
+  registrationFeeCents?: number | null
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  contactName?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  logoUrl?: string | null
+  rulebookUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  league?: Prisma.LeagueCreateNestedOneWithoutTournamentsInput
+  createdBy: Prisma.UserCreateNestedOneWithoutCreatedTournamentsInput
+  games?: Prisma.TournamentGameCreateNestedManyWithoutTournamentInput
+  registrations?: Prisma.TournamentRegistrationCreateNestedManyWithoutTournamentInput
+  sponsors?: Prisma.TournamentSponsorCreateNestedManyWithoutTournamentInput
+  payments?: Prisma.TournamentPaymentCreateNestedManyWithoutTournamentInput
+  teams?: Prisma.TournamentTeamCreateNestedManyWithoutTournamentInput
+  brackets?: Prisma.TournamentBracketCreateNestedManyWithoutTournamentInput
+  announcements?: Prisma.TournamentAnnouncementCreateNestedManyWithoutTournamentInput
+  venues?: Prisma.TournamentVenueCreateNestedManyWithoutTournamentInput
+  coOrganizers?: Prisma.TournamentCoOrganizerCreateNestedManyWithoutTournamentInput
+  auditLogEntries?: Prisma.TournamentAuditLogEntryCreateNestedManyWithoutTournamentInput
+  mediaAssets?: Prisma.TournamentMediaAssetCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyCreateNestedManyWithoutTournamentInput
+}
+
+export type TournamentUncheckedCreateWithoutWebhooksInput = {
+  id?: string
+  name: string
+  description?: string | null
+  rules?: string | null
+  startDate?: Date | string | null
+  endDate?: Date | string | null
+  leagueId?: string | null
+  createdById: string
+  registrationMode?: $Enums.TournamentRegistrationMode
+  registrationDeadline?: Date | string | null
+  registrationFeeCents?: number | null
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  contactName?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  logoUrl?: string | null
+  rulebookUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  games?: Prisma.TournamentGameUncheckedCreateNestedManyWithoutTournamentInput
+  registrations?: Prisma.TournamentRegistrationUncheckedCreateNestedManyWithoutTournamentInput
+  sponsors?: Prisma.TournamentSponsorUncheckedCreateNestedManyWithoutTournamentInput
+  payments?: Prisma.TournamentPaymentUncheckedCreateNestedManyWithoutTournamentInput
+  teams?: Prisma.TournamentTeamUncheckedCreateNestedManyWithoutTournamentInput
+  brackets?: Prisma.TournamentBracketUncheckedCreateNestedManyWithoutTournamentInput
+  announcements?: Prisma.TournamentAnnouncementUncheckedCreateNestedManyWithoutTournamentInput
+  venues?: Prisma.TournamentVenueUncheckedCreateNestedManyWithoutTournamentInput
+  coOrganizers?: Prisma.TournamentCoOrganizerUncheckedCreateNestedManyWithoutTournamentInput
+  auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedCreateNestedManyWithoutTournamentInput
+  mediaAssets?: Prisma.TournamentMediaAssetUncheckedCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedCreateNestedManyWithoutTournamentInput
+}
+
+export type TournamentCreateOrConnectWithoutWebhooksInput = {
+  where: Prisma.TournamentWhereUniqueInput
+  create: Prisma.XOR<Prisma.TournamentCreateWithoutWebhooksInput, Prisma.TournamentUncheckedCreateWithoutWebhooksInput>
+}
+
+export type TournamentUpsertWithoutWebhooksInput = {
+  update: Prisma.XOR<Prisma.TournamentUpdateWithoutWebhooksInput, Prisma.TournamentUncheckedUpdateWithoutWebhooksInput>
+  create: Prisma.XOR<Prisma.TournamentCreateWithoutWebhooksInput, Prisma.TournamentUncheckedCreateWithoutWebhooksInput>
+  where?: Prisma.TournamentWhereInput
+}
+
+export type TournamentUpdateToOneWithWhereWithoutWebhooksInput = {
+  where?: Prisma.TournamentWhereInput
+  data: Prisma.XOR<Prisma.TournamentUpdateWithoutWebhooksInput, Prisma.TournamentUncheckedUpdateWithoutWebhooksInput>
+}
+
+export type TournamentUpdateWithoutWebhooksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rules?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationMode?: Prisma.EnumTournamentRegistrationModeFieldUpdateOperationsInput | $Enums.TournamentRegistrationMode
+  registrationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rulebookUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  league?: Prisma.LeagueUpdateOneWithoutTournamentsNestedInput
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedTournamentsNestedInput
+  games?: Prisma.TournamentGameUpdateManyWithoutTournamentNestedInput
+  registrations?: Prisma.TournamentRegistrationUpdateManyWithoutTournamentNestedInput
+  sponsors?: Prisma.TournamentSponsorUpdateManyWithoutTournamentNestedInput
+  payments?: Prisma.TournamentPaymentUpdateManyWithoutTournamentNestedInput
+  teams?: Prisma.TournamentTeamUpdateManyWithoutTournamentNestedInput
+  brackets?: Prisma.TournamentBracketUpdateManyWithoutTournamentNestedInput
+  announcements?: Prisma.TournamentAnnouncementUpdateManyWithoutTournamentNestedInput
+  venues?: Prisma.TournamentVenueUpdateManyWithoutTournamentNestedInput
+  coOrganizers?: Prisma.TournamentCoOrganizerUpdateManyWithoutTournamentNestedInput
+  auditLogEntries?: Prisma.TournamentAuditLogEntryUpdateManyWithoutTournamentNestedInput
+  mediaAssets?: Prisma.TournamentMediaAssetUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUpdateManyWithoutTournamentNestedInput
+}
+
+export type TournamentUncheckedUpdateWithoutWebhooksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rules?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  leagueId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  registrationMode?: Prisma.EnumTournamentRegistrationModeFieldUpdateOperationsInput | $Enums.TournamentRegistrationMode
+  registrationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rulebookUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  games?: Prisma.TournamentGameUncheckedUpdateManyWithoutTournamentNestedInput
+  registrations?: Prisma.TournamentRegistrationUncheckedUpdateManyWithoutTournamentNestedInput
+  sponsors?: Prisma.TournamentSponsorUncheckedUpdateManyWithoutTournamentNestedInput
+  payments?: Prisma.TournamentPaymentUncheckedUpdateManyWithoutTournamentNestedInput
+  teams?: Prisma.TournamentTeamUncheckedUpdateManyWithoutTournamentNestedInput
+  brackets?: Prisma.TournamentBracketUncheckedUpdateManyWithoutTournamentNestedInput
+  announcements?: Prisma.TournamentAnnouncementUncheckedUpdateManyWithoutTournamentNestedInput
+  venues?: Prisma.TournamentVenueUncheckedUpdateManyWithoutTournamentNestedInput
+  coOrganizers?: Prisma.TournamentCoOrganizerUncheckedUpdateManyWithoutTournamentNestedInput
+  auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedUpdateManyWithoutTournamentNestedInput
+  mediaAssets?: Prisma.TournamentMediaAssetUncheckedUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutCoOrganizersInput = {
@@ -1406,6 +1776,8 @@ export type TournamentCreateWithoutCoOrganizersInput = {
   venues?: Prisma.TournamentVenueCreateNestedManyWithoutTournamentInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryCreateNestedManyWithoutTournamentInput
   mediaAssets?: Prisma.TournamentMediaAssetCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutCoOrganizersInput = {
@@ -1439,6 +1811,8 @@ export type TournamentUncheckedCreateWithoutCoOrganizersInput = {
   venues?: Prisma.TournamentVenueUncheckedCreateNestedManyWithoutTournamentInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedCreateNestedManyWithoutTournamentInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutCoOrganizersInput = {
@@ -1488,6 +1862,8 @@ export type TournamentUpdateWithoutCoOrganizersInput = {
   venues?: Prisma.TournamentVenueUpdateManyWithoutTournamentNestedInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutCoOrganizersInput = {
@@ -1521,6 +1897,8 @@ export type TournamentUncheckedUpdateWithoutCoOrganizersInput = {
   venues?: Prisma.TournamentVenueUncheckedUpdateManyWithoutTournamentNestedInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutAuditLogEntriesInput = {
@@ -1554,6 +1932,8 @@ export type TournamentCreateWithoutAuditLogEntriesInput = {
   venues?: Prisma.TournamentVenueCreateNestedManyWithoutTournamentInput
   coOrganizers?: Prisma.TournamentCoOrganizerCreateNestedManyWithoutTournamentInput
   mediaAssets?: Prisma.TournamentMediaAssetCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutAuditLogEntriesInput = {
@@ -1587,6 +1967,8 @@ export type TournamentUncheckedCreateWithoutAuditLogEntriesInput = {
   venues?: Prisma.TournamentVenueUncheckedCreateNestedManyWithoutTournamentInput
   coOrganizers?: Prisma.TournamentCoOrganizerUncheckedCreateNestedManyWithoutTournamentInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutAuditLogEntriesInput = {
@@ -1636,6 +2018,8 @@ export type TournamentUpdateWithoutAuditLogEntriesInput = {
   venues?: Prisma.TournamentVenueUpdateManyWithoutTournamentNestedInput
   coOrganizers?: Prisma.TournamentCoOrganizerUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutAuditLogEntriesInput = {
@@ -1669,6 +2053,8 @@ export type TournamentUncheckedUpdateWithoutAuditLogEntriesInput = {
   venues?: Prisma.TournamentVenueUncheckedUpdateManyWithoutTournamentNestedInput
   coOrganizers?: Prisma.TournamentCoOrganizerUncheckedUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutAnnouncementsInput = {
@@ -1702,6 +2088,8 @@ export type TournamentCreateWithoutAnnouncementsInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerCreateNestedManyWithoutTournamentInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryCreateNestedManyWithoutTournamentInput
   mediaAssets?: Prisma.TournamentMediaAssetCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutAnnouncementsInput = {
@@ -1735,6 +2123,8 @@ export type TournamentUncheckedCreateWithoutAnnouncementsInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUncheckedCreateNestedManyWithoutTournamentInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedCreateNestedManyWithoutTournamentInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutAnnouncementsInput = {
@@ -1784,6 +2174,8 @@ export type TournamentUpdateWithoutAnnouncementsInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUpdateManyWithoutTournamentNestedInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutAnnouncementsInput = {
@@ -1817,6 +2209,8 @@ export type TournamentUncheckedUpdateWithoutAnnouncementsInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUncheckedUpdateManyWithoutTournamentNestedInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutVenuesInput = {
@@ -1850,6 +2244,8 @@ export type TournamentCreateWithoutVenuesInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerCreateNestedManyWithoutTournamentInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryCreateNestedManyWithoutTournamentInput
   mediaAssets?: Prisma.TournamentMediaAssetCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutVenuesInput = {
@@ -1883,6 +2279,8 @@ export type TournamentUncheckedCreateWithoutVenuesInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUncheckedCreateNestedManyWithoutTournamentInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedCreateNestedManyWithoutTournamentInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutVenuesInput = {
@@ -1932,6 +2330,8 @@ export type TournamentUpdateWithoutVenuesInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUpdateManyWithoutTournamentNestedInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutVenuesInput = {
@@ -1965,6 +2365,8 @@ export type TournamentUncheckedUpdateWithoutVenuesInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUncheckedUpdateManyWithoutTournamentNestedInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutGamesInput = {
@@ -1998,6 +2400,8 @@ export type TournamentCreateWithoutGamesInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerCreateNestedManyWithoutTournamentInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryCreateNestedManyWithoutTournamentInput
   mediaAssets?: Prisma.TournamentMediaAssetCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutGamesInput = {
@@ -2031,6 +2435,8 @@ export type TournamentUncheckedCreateWithoutGamesInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUncheckedCreateNestedManyWithoutTournamentInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedCreateNestedManyWithoutTournamentInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutGamesInput = {
@@ -2080,6 +2486,8 @@ export type TournamentUpdateWithoutGamesInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUpdateManyWithoutTournamentNestedInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutGamesInput = {
@@ -2113,6 +2521,8 @@ export type TournamentUncheckedUpdateWithoutGamesInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUncheckedUpdateManyWithoutTournamentNestedInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutRegistrationsInput = {
@@ -2146,6 +2556,8 @@ export type TournamentCreateWithoutRegistrationsInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerCreateNestedManyWithoutTournamentInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryCreateNestedManyWithoutTournamentInput
   mediaAssets?: Prisma.TournamentMediaAssetCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutRegistrationsInput = {
@@ -2179,6 +2591,8 @@ export type TournamentUncheckedCreateWithoutRegistrationsInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUncheckedCreateNestedManyWithoutTournamentInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedCreateNestedManyWithoutTournamentInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutRegistrationsInput = {
@@ -2228,6 +2642,8 @@ export type TournamentUpdateWithoutRegistrationsInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUpdateManyWithoutTournamentNestedInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutRegistrationsInput = {
@@ -2261,6 +2677,8 @@ export type TournamentUncheckedUpdateWithoutRegistrationsInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUncheckedUpdateManyWithoutTournamentNestedInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutTeamsInput = {
@@ -2294,6 +2712,8 @@ export type TournamentCreateWithoutTeamsInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerCreateNestedManyWithoutTournamentInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryCreateNestedManyWithoutTournamentInput
   mediaAssets?: Prisma.TournamentMediaAssetCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutTeamsInput = {
@@ -2327,6 +2747,8 @@ export type TournamentUncheckedCreateWithoutTeamsInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUncheckedCreateNestedManyWithoutTournamentInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedCreateNestedManyWithoutTournamentInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutTeamsInput = {
@@ -2376,6 +2798,8 @@ export type TournamentUpdateWithoutTeamsInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUpdateManyWithoutTournamentNestedInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutTeamsInput = {
@@ -2409,6 +2833,8 @@ export type TournamentUncheckedUpdateWithoutTeamsInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUncheckedUpdateManyWithoutTournamentNestedInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutBracketsInput = {
@@ -2442,6 +2868,8 @@ export type TournamentCreateWithoutBracketsInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerCreateNestedManyWithoutTournamentInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryCreateNestedManyWithoutTournamentInput
   mediaAssets?: Prisma.TournamentMediaAssetCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutBracketsInput = {
@@ -2475,6 +2903,8 @@ export type TournamentUncheckedCreateWithoutBracketsInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUncheckedCreateNestedManyWithoutTournamentInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedCreateNestedManyWithoutTournamentInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutBracketsInput = {
@@ -2524,6 +2954,8 @@ export type TournamentUpdateWithoutBracketsInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUpdateManyWithoutTournamentNestedInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutBracketsInput = {
@@ -2557,6 +2989,8 @@ export type TournamentUncheckedUpdateWithoutBracketsInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUncheckedUpdateManyWithoutTournamentNestedInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutPaymentsInput = {
@@ -2590,6 +3024,8 @@ export type TournamentCreateWithoutPaymentsInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerCreateNestedManyWithoutTournamentInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryCreateNestedManyWithoutTournamentInput
   mediaAssets?: Prisma.TournamentMediaAssetCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutPaymentsInput = {
@@ -2623,6 +3059,8 @@ export type TournamentUncheckedCreateWithoutPaymentsInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUncheckedCreateNestedManyWithoutTournamentInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedCreateNestedManyWithoutTournamentInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutPaymentsInput = {
@@ -2672,6 +3110,8 @@ export type TournamentUpdateWithoutPaymentsInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUpdateManyWithoutTournamentNestedInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutPaymentsInput = {
@@ -2705,6 +3145,8 @@ export type TournamentUncheckedUpdateWithoutPaymentsInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUncheckedUpdateManyWithoutTournamentNestedInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutSponsorsInput = {
@@ -2738,6 +3180,8 @@ export type TournamentCreateWithoutSponsorsInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerCreateNestedManyWithoutTournamentInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryCreateNestedManyWithoutTournamentInput
   mediaAssets?: Prisma.TournamentMediaAssetCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutSponsorsInput = {
@@ -2771,6 +3215,8 @@ export type TournamentUncheckedCreateWithoutSponsorsInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUncheckedCreateNestedManyWithoutTournamentInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedCreateNestedManyWithoutTournamentInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutSponsorsInput = {
@@ -2820,6 +3266,8 @@ export type TournamentUpdateWithoutSponsorsInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUpdateManyWithoutTournamentNestedInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutSponsorsInput = {
@@ -2853,6 +3301,8 @@ export type TournamentUncheckedUpdateWithoutSponsorsInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUncheckedUpdateManyWithoutTournamentNestedInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateManyCreatedByInput = {
@@ -2908,6 +3358,8 @@ export type TournamentUpdateWithoutCreatedByInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUpdateManyWithoutTournamentNestedInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutCreatedByInput = {
@@ -2941,6 +3393,8 @@ export type TournamentUncheckedUpdateWithoutCreatedByInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUncheckedUpdateManyWithoutTournamentNestedInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateManyWithoutCreatedByInput = {
@@ -3018,6 +3472,8 @@ export type TournamentUpdateWithoutLeagueInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUpdateManyWithoutTournamentNestedInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutLeagueInput = {
@@ -3051,6 +3507,8 @@ export type TournamentUncheckedUpdateWithoutLeagueInput = {
   coOrganizers?: Prisma.TournamentCoOrganizerUncheckedUpdateManyWithoutTournamentNestedInput
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateManyWithoutLeagueInput = {
@@ -3092,6 +3550,8 @@ export type TournamentCountOutputType = {
   coOrganizers: number
   auditLogEntries: number
   mediaAssets: number
+  apiKeys: number
+  webhooks: number
 }
 
 export type TournamentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3106,6 +3566,8 @@ export type TournamentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extens
   coOrganizers?: boolean | TournamentCountOutputTypeCountCoOrganizersArgs
   auditLogEntries?: boolean | TournamentCountOutputTypeCountAuditLogEntriesArgs
   mediaAssets?: boolean | TournamentCountOutputTypeCountMediaAssetsArgs
+  apiKeys?: boolean | TournamentCountOutputTypeCountApiKeysArgs
+  webhooks?: boolean | TournamentCountOutputTypeCountWebhooksArgs
 }
 
 /**
@@ -3195,6 +3657,20 @@ export type TournamentCountOutputTypeCountMediaAssetsArgs<ExtArgs extends runtim
   where?: Prisma.TournamentMediaAssetWhereInput
 }
 
+/**
+ * TournamentCountOutputType without action
+ */
+export type TournamentCountOutputTypeCountApiKeysArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TournamentApiKeyWhereInput
+}
+
+/**
+ * TournamentCountOutputType without action
+ */
+export type TournamentCountOutputTypeCountWebhooksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TournamentWebhookWhereInput
+}
+
 
 export type TournamentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3230,6 +3706,8 @@ export type TournamentSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   coOrganizers?: boolean | Prisma.Tournament$coOrganizersArgs<ExtArgs>
   auditLogEntries?: boolean | Prisma.Tournament$auditLogEntriesArgs<ExtArgs>
   mediaAssets?: boolean | Prisma.Tournament$mediaAssetsArgs<ExtArgs>
+  apiKeys?: boolean | Prisma.Tournament$apiKeysArgs<ExtArgs>
+  webhooks?: boolean | Prisma.Tournament$webhooksArgs<ExtArgs>
   _count?: boolean | Prisma.TournamentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tournament"]>
 
@@ -3321,6 +3799,8 @@ export type TournamentInclude<ExtArgs extends runtime.Types.Extensions.InternalA
   coOrganizers?: boolean | Prisma.Tournament$coOrganizersArgs<ExtArgs>
   auditLogEntries?: boolean | Prisma.Tournament$auditLogEntriesArgs<ExtArgs>
   mediaAssets?: boolean | Prisma.Tournament$mediaAssetsArgs<ExtArgs>
+  apiKeys?: boolean | Prisma.Tournament$apiKeysArgs<ExtArgs>
+  webhooks?: boolean | Prisma.Tournament$webhooksArgs<ExtArgs>
   _count?: boolean | Prisma.TournamentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TournamentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3348,6 +3828,8 @@ export type $TournamentPayload<ExtArgs extends runtime.Types.Extensions.Internal
     coOrganizers: Prisma.$TournamentCoOrganizerPayload<ExtArgs>[]
     auditLogEntries: Prisma.$TournamentAuditLogEntryPayload<ExtArgs>[]
     mediaAssets: Prisma.$TournamentMediaAssetPayload<ExtArgs>[]
+    apiKeys: Prisma.$TournamentApiKeyPayload<ExtArgs>[]
+    webhooks: Prisma.$TournamentWebhookPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3777,6 +4259,8 @@ export interface Prisma__TournamentClient<T, Null = never, ExtArgs extends runti
   coOrganizers<T extends Prisma.Tournament$coOrganizersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tournament$coOrganizersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TournamentCoOrganizerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditLogEntries<T extends Prisma.Tournament$auditLogEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tournament$auditLogEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TournamentAuditLogEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   mediaAssets<T extends Prisma.Tournament$mediaAssetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tournament$mediaAssetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TournamentMediaAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  apiKeys<T extends Prisma.Tournament$apiKeysArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tournament$apiKeysArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TournamentApiKeyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  webhooks<T extends Prisma.Tournament$webhooksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tournament$webhooksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TournamentWebhookPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4507,6 +4991,54 @@ export type Tournament$mediaAssetsArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.TournamentMediaAssetScalarFieldEnum | Prisma.TournamentMediaAssetScalarFieldEnum[]
+}
+
+/**
+ * Tournament.apiKeys
+ */
+export type Tournament$apiKeysArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TournamentApiKey
+   */
+  select?: Prisma.TournamentApiKeySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TournamentApiKey
+   */
+  omit?: Prisma.TournamentApiKeyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TournamentApiKeyInclude<ExtArgs> | null
+  where?: Prisma.TournamentApiKeyWhereInput
+  orderBy?: Prisma.TournamentApiKeyOrderByWithRelationInput | Prisma.TournamentApiKeyOrderByWithRelationInput[]
+  cursor?: Prisma.TournamentApiKeyWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TournamentApiKeyScalarFieldEnum | Prisma.TournamentApiKeyScalarFieldEnum[]
+}
+
+/**
+ * Tournament.webhooks
+ */
+export type Tournament$webhooksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TournamentWebhook
+   */
+  select?: Prisma.TournamentWebhookSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TournamentWebhook
+   */
+  omit?: Prisma.TournamentWebhookOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TournamentWebhookInclude<ExtArgs> | null
+  where?: Prisma.TournamentWebhookWhereInput
+  orderBy?: Prisma.TournamentWebhookOrderByWithRelationInput | Prisma.TournamentWebhookOrderByWithRelationInput[]
+  cursor?: Prisma.TournamentWebhookWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TournamentWebhookScalarFieldEnum | Prisma.TournamentWebhookScalarFieldEnum[]
 }
 
 /**

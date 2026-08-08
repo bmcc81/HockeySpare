@@ -5,6 +5,7 @@ import {
   AddTournamentCoOrganizerInput,
   CheckoutSessionResult,
   CreateTournamentAnnouncementInput,
+  CreateTournamentApiKeyInput,
   CreateTournamentBracketInput,
   CreateTournamentGameInput,
   CreateTournamentInput,
@@ -13,11 +14,14 @@ import {
   CreateTournamentTeamInput,
   CreateTournamentTeamPlayerInput,
   CreateTournamentVenueInput,
+  CreateTournamentWebhookInput,
   FileStorageStatus,
   ScheduleBracketMatchGameInput,
   SubmitTournamentRegistrationResult,
   Tournament,
   TournamentAnnouncement,
+  TournamentApiKey,
+  TournamentApiKeyCreated,
   TournamentAuditLogEntry,
   TournamentBracket,
   TournamentCheckoutSessionResult,
@@ -34,6 +38,7 @@ import {
   TournamentStandingRow,
   TournamentTeam,
   TournamentVenue,
+  TournamentWebhook,
   UpdateTournamentGameInput,
   UpdateTournamentGameScoreInput,
   UpdateTournamentInput,
@@ -490,6 +495,56 @@ export class TournamentsApiService {
   ): Observable<{ id: string; deleted: boolean }> {
     return this.http.delete<{ id: string; deleted: boolean }>(
       `/api/tournaments/${tournamentId}/media/${assetId}`,
+    );
+  }
+
+  listApiKeys(tournamentId: string): Observable<TournamentApiKey[]> {
+    return this.http.get<TournamentApiKey[]>(
+      `/api/tournaments/${tournamentId}/api-keys`,
+    );
+  }
+
+  createApiKey(
+    tournamentId: string,
+    input: CreateTournamentApiKeyInput,
+  ): Observable<TournamentApiKeyCreated> {
+    return this.http.post<TournamentApiKeyCreated>(
+      `/api/tournaments/${tournamentId}/api-keys`,
+      input,
+    );
+  }
+
+  revokeApiKey(
+    tournamentId: string,
+    keyId: string,
+  ): Observable<{ id: string; deleted: boolean }> {
+    return this.http.delete<{ id: string; deleted: boolean }>(
+      `/api/tournaments/${tournamentId}/api-keys/${keyId}`,
+    );
+  }
+
+  listWebhooks(tournamentId: string): Observable<TournamentWebhook[]> {
+    return this.http.get<TournamentWebhook[]>(
+      `/api/tournaments/${tournamentId}/webhooks`,
+    );
+  }
+
+  createWebhook(
+    tournamentId: string,
+    input: CreateTournamentWebhookInput,
+  ): Observable<TournamentWebhook> {
+    return this.http.post<TournamentWebhook>(
+      `/api/tournaments/${tournamentId}/webhooks`,
+      input,
+    );
+  }
+
+  deleteWebhook(
+    tournamentId: string,
+    webhookId: string,
+  ): Observable<{ id: string; deleted: boolean }> {
+    return this.http.delete<{ id: string; deleted: boolean }>(
+      `/api/tournaments/${tournamentId}/webhooks/${webhookId}`,
     );
   }
 }

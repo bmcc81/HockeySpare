@@ -24,6 +24,7 @@ import { UpdateTournamentSponsorDto } from './dto/update-tournament-sponsor.dto'
 import { CreateTournamentAnnouncementDto } from './dto/create-tournament-announcement.dto';
 import { CreateTournamentVenueDto } from './dto/create-tournament-venue.dto';
 import { UpdateTournamentVenueDto } from './dto/update-tournament-venue.dto';
+import { AddTournamentCoOrganizerDto } from './dto/add-tournament-co-organizer.dto';
 import { CreateTournamentTeamDto } from './dto/create-tournament-team.dto';
 import { UpdateTournamentTeamDto } from './dto/update-tournament-team.dto';
 import { CreateTournamentTeamPlayerDto } from './dto/create-tournament-team-player.dto';
@@ -479,5 +480,51 @@ export class TournamentsController {
       id,
       venueId,
     );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/co-organizers')
+  listCoOrganizers(@Req() req: AuthRequest, @Param('id') id: string) {
+    return this.tournamentsService.listCoOrganizers(this.getUserId(req), id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/co-organizers')
+  addCoOrganizer(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Body() dto: AddTournamentCoOrganizerDto,
+  ) {
+    return this.tournamentsService.addCoOrganizer(
+      this.getUserId(req),
+      id,
+      dto,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/co-organizers/:coOrganizerId')
+  removeCoOrganizer(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('coOrganizerId') coOrganizerId: string,
+  ) {
+    return this.tournamentsService.removeCoOrganizer(
+      this.getUserId(req),
+      id,
+      coOrganizerId,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/audit-log')
+  listAuditLog(@Req() req: AuthRequest, @Param('id') id: string) {
+    return this.tournamentsService.listAuditLog(this.getUserId(req), id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/payments')
+  listPayments(@Req() req: AuthRequest, @Param('id') id: string) {
+    return this.tournamentsService.listPayments(this.getUserId(req), id);
   }
 }

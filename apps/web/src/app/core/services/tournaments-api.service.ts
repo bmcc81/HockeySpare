@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import {
+  AddTournamentCoOrganizerInput,
   CheckoutSessionResult,
   CreateTournamentAnnouncementInput,
   CreateTournamentBracketInput,
@@ -16,10 +17,13 @@ import {
   SubmitTournamentRegistrationResult,
   Tournament,
   TournamentAnnouncement,
+  TournamentAuditLogEntry,
   TournamentBracket,
   TournamentCheckoutSessionResult,
+  TournamentCoOrganizer,
   TournamentGame,
   TournamentGamePlayerStat,
+  TournamentPaymentRow,
   TournamentPaymentsStatus,
   TournamentPaymentVerification,
   TournamentPlayerLeaderRow,
@@ -394,6 +398,43 @@ export class TournamentsApiService {
   ): Observable<{ id: string; deleted: boolean }> {
     return this.http.delete<{ id: string; deleted: boolean }>(
       `/api/tournaments/${tournamentId}/venues/${venueId}`,
+    );
+  }
+
+  listCoOrganizers(tournamentId: string): Observable<TournamentCoOrganizer[]> {
+    return this.http.get<TournamentCoOrganizer[]>(
+      `/api/tournaments/${tournamentId}/co-organizers`,
+    );
+  }
+
+  addCoOrganizer(
+    tournamentId: string,
+    input: AddTournamentCoOrganizerInput,
+  ): Observable<TournamentCoOrganizer> {
+    return this.http.post<TournamentCoOrganizer>(
+      `/api/tournaments/${tournamentId}/co-organizers`,
+      input,
+    );
+  }
+
+  removeCoOrganizer(
+    tournamentId: string,
+    coOrganizerId: string,
+  ): Observable<{ id: string; deleted: boolean }> {
+    return this.http.delete<{ id: string; deleted: boolean }>(
+      `/api/tournaments/${tournamentId}/co-organizers/${coOrganizerId}`,
+    );
+  }
+
+  listAuditLog(tournamentId: string): Observable<TournamentAuditLogEntry[]> {
+    return this.http.get<TournamentAuditLogEntry[]>(
+      `/api/tournaments/${tournamentId}/audit-log`,
+    );
+  }
+
+  listPayments(tournamentId: string): Observable<TournamentPaymentRow[]> {
+    return this.http.get<TournamentPaymentRow[]>(
+      `/api/tournaments/${tournamentId}/payments`,
     );
   }
 }

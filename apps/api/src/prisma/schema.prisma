@@ -189,6 +189,8 @@ model User {
   createdTournaments Tournament[]   @relation("CreatedTournaments")
   teamMessages       TeamMessage[]
   payments           Payment[]
+  coOrganizedTournaments   TournamentCoOrganizer[]
+  tournamentAuditLogEntries TournamentAuditLogEntry[]
 }
 
 model League {
@@ -590,9 +592,38 @@ model Tournament {
   brackets      TournamentBracket[]
   announcements TournamentAnnouncement[]
   venues        TournamentVenue[]
+  coOrganizers  TournamentCoOrganizer[]
+  auditLogEntries TournamentAuditLogEntry[]
 
   @@index([leagueId])
   @@index([createdById])
+}
+
+model TournamentCoOrganizer {
+  id           String   @id @default(cuid())
+  tournamentId String
+  userId       String
+  createdAt    DateTime @default(now())
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([tournamentId, userId])
+  @@index([tournamentId])
+}
+
+model TournamentAuditLogEntry {
+  id           String   @id @default(cuid())
+  tournamentId String
+  userId       String?
+  action       String
+  detail       String?
+  createdAt    DateTime @default(now())
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  user       User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([tournamentId, createdAt])
 }
 
 model TournamentAnnouncement {

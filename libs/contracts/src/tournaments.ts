@@ -314,3 +314,51 @@ export interface TournamentStandingRow {
   goalDifferential: number;
   points: number;
 }
+
+export interface TournamentCoOrganizerUserRef {
+  id: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  email: string;
+}
+
+export interface TournamentCoOrganizer {
+  id: string;
+  tournamentId: string;
+  userId: string;
+  createdAt: string;
+  user: TournamentCoOrganizerUserRef;
+}
+
+export interface AddTournamentCoOrganizerInput {
+  email: string;
+}
+
+export interface TournamentAuditLogEntry {
+  id: string;
+  tournamentId: string;
+  userId?: string | null;
+  action: string;
+  detail?: string | null;
+  createdAt: string;
+  user?: {
+    id: string;
+    firstName?: string | null;
+    lastName?: string | null;
+  } | null;
+}
+
+export interface TournamentPaymentRow {
+  id: string;
+  tournamentId: string;
+  registrationId: string;
+  amountCents: number;
+  currency: string;
+  status: string;
+  createdAt: string;
+  registration: {
+    teamName: string;
+    contactName: string;
+    contactEmail: string;
+  };
+}

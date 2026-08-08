@@ -9,10 +9,13 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
   Tournament,
   TournamentAnnouncement,
+  TournamentAuditLogEntry,
   TournamentBracket,
   TournamentBracketMatch,
+  TournamentCoOrganizer,
   TournamentGame,
   TournamentGamePlayerStat,
+  TournamentPaymentRow,
   TournamentPaymentsStatus,
   TournamentPlayerPosition,
   TournamentRegistration,
@@ -112,6 +115,18 @@ export class TournamentManageComponent implements OnInit {
 
   editingSponsorId = signal<string | null>(null);
 
+  coOrganizers = signal<TournamentCoOrganizer[]>([]);
+  coOrganizerUserIds = signal<string[]>([]);
+  addingCoOrganizer = signal(false);
+  coOrganizerError = signal<string | null>(null);
+  removingCoOrganizerId = signal<string | null>(null);
+
+  auditLog = signal<TournamentAuditLogEntry[]>([]);
+  showAuditLog = signal(false);
+  loadingAuditLog = signal(false);
+
+  payments = signal<TournamentPaymentRow[]>([]);
+
   detailsForm = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
     description: [''],
@@ -174,6 +189,10 @@ export class TournamentManageComponent implements OnInit {
     jerseyNumber: [''],
   });
 
+  coOrganizerForm = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+  });
+
   bracketForm = this.fb.group({
     name: ['Playoffs', Validators.required],
     division: [''],
@@ -186,6 +205,20 @@ export class TournamentManageComponent implements OnInit {
   });
 
   get isOwner(): boolean {
+    const userId = this.authState.user()?.id;
+    if (!userId) {
+      return false;
+    }
+
+    if (this.tournament()?.createdById === userId) {
+      return true;
+    }
+
+    return this.coOrganizerUserIds().includes(userId);
+  }
+
+  /** Only the tournament creator can invite/remove co-organizers. */
+  get isPrimaryOwner(): boolean {
     const userId = this.authState.user()?.id;
     return !!userId && this.tournament()?.createdById === userId;
   }
@@ -275,6 +308,13 @@ export class TournamentManageComponent implements OnInit {
         if (this.isOwner) {
           this.loadRegistrations();
           this.loadPaymentsStatus();
+          this.loadPayments();
+          this.loadCoOrganizers();
+        } else if (this.authState.user()?.id) {
+          // Not the creator, but might be a co-organizer - probing the
+          // co-organizer list is itself owner-or-co-organizer gated, so a
+          // 403 here just means "not authorized," which is expected.
+          this.loadCoOrganizers(true);
         }
       },
       error: () => {
@@ -282,6 +322,53 @@ export class TournamentManageComponent implements OnInit {
         this.loading.set(false);
       },
     });
+  }
+
+  private loadCoOrganizers(probingAccess = false): void {
+    this.tournamentsApi.listCoOrganizers(this.tournamentId).subscribe({
+      next: (coOrganizers) => {
+        this.coOrganizers.set(coOrganizers);
+        this.coOrganizerUserIds.set(coOrganizers.map((c) => c.user.id));
+
+        if (probingAccess && this.isOwner) {
+          this.loadRegistrations();
+          this.loadPaymentsStatus();
+          this.loadPayments();
+        }
+      },
+      error: () => {
+        this.coOrganizers.set([]);
+      },
+    });
+  }
+
+  private loadPayments(): void {
+    this.tournamentsApi.listPayments(this.tournamentId).subscribe({
+      next: (payments) => {
+        this.payments.set(payments);
+      },
+      error: () => {
+        this.payments.set([]);
+      },
+    });
+  }
+
+  toggleAuditLog(): void {
+    this.showAuditLog.set(!this.showAuditLog());
+
+    if (this.showAuditLog() && this.auditLog().length === 0) {
+      this.loadingAuditLog.set(true);
+
+      this.tournamentsApi.listAuditLog(this.tournamentId).subscribe({
+        next: (entries) => {
+          this.auditLog.set(entries);
+          this.loadingAuditLog.set(false);
+        },
+        error: () => {
+          this.loadingAuditLog.set(false);
+        },
+      });
+    }
   }
 
   private loadRegistrations(): void {
@@ -1258,5 +1345,147 @@ export class TournamentManageComponent implements OnInit {
 
   trackByVenueId(_index: number, venue: TournamentVenue): string {
     return venue.id;
+  }
+
+  addCoOrganizer(): void {
+    if (this.coOrganizerForm.invalid || this.addingCoOrganizer()) {
+      this.coOrganizerForm.markAllAsTouched();
+      return;
+    }
+
+    const value = this.coOrganizerForm.getRawValue();
+
+    this.addingCoOrganizer.set(true);
+    this.coOrganizerError.set(null);
+
+    this.tournamentsApi
+      .addCoOrganizer(this.tournamentId, { email: value.email.trim() })
+      .subscribe({
+        next: () => {
+          this.addingCoOrganizer.set(false);
+          this.coOrganizerForm.reset({ email: '' });
+          this.loadCoOrganizers();
+        },
+        error: (err) => {
+          this.coOrganizerError.set(
+            err?.error?.message || 'Could not add this co-organizer.',
+          );
+          this.addingCoOrganizer.set(false);
+        },
+      });
+  }
+
+  removeCoOrganizer(coOrganizerId: string): void {
+    this.removingCoOrganizerId.set(coOrganizerId);
+    this.coOrganizerError.set(null);
+
+    this.tournamentsApi
+      .removeCoOrganizer(this.tournamentId, coOrganizerId)
+      .subscribe({
+        next: () => {
+          this.removingCoOrganizerId.set(null);
+          this.loadCoOrganizers();
+        },
+        error: (err) => {
+          this.coOrganizerError.set(
+            err?.error?.message || 'Could not remove this co-organizer.',
+          );
+          this.removingCoOrganizerId.set(null);
+        },
+      });
+  }
+
+  trackByCoOrganizerId(_index: number, coOrganizer: TournamentCoOrganizer): string {
+    return coOrganizer.id;
+  }
+
+  trackByAuditLogId(_index: number, entry: TournamentAuditLogEntry): string {
+    return entry.id;
+  }
+
+  private csvEscape(value: string): string {
+    if (value.includes(',') || value.includes('"') || value.includes('\n')) {
+      return `"${value.replace(/"/g, '""')}"`;
+    }
+
+    return value;
+  }
+
+  private downloadCsv(filename: string, header: string[], rows: string[][]): void {
+    const lines = [
+      header.join(','),
+      ...rows.map((row) => row.map((v) => this.csvEscape(v)).join(',')),
+    ];
+
+    const blob = new Blob([lines.join('\n')], {
+      type: 'text/csv;charset=utf-8;',
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  exportRegistrationsCsv(): void {
+    const header = [
+      'Team Name',
+      'Division',
+      'Contact Name',
+      'Contact Email',
+      'Contact Phone',
+      'Status',
+      'Paid',
+      'Submitted',
+    ];
+
+    const rows = this.registrations().map((r) => [
+      r.teamName,
+      r.division ?? '',
+      r.contactName,
+      r.contactEmail,
+      r.contactPhone ?? '',
+      r.status,
+      r.paid ? 'Yes' : 'No',
+      r.createdAt,
+    ]);
+
+    this.downloadCsv(`registrations-${this.tournamentId}.csv`, header, rows);
+  }
+
+  exportTeamsCsv(): void {
+    const header = ['Team Name', 'Division', 'Coach', 'Player Count'];
+
+    const rows = (this.tournament()?.teams ?? []).map((t) => [
+      t.name,
+      t.division ?? '',
+      t.coachName ?? '',
+      String(t.players.length),
+    ]);
+
+    this.downloadCsv(`teams-${this.tournamentId}.csv`, header, rows);
+  }
+
+  exportPaymentsCsv(): void {
+    const header = [
+      'Team Name',
+      'Contact Email',
+      'Amount',
+      'Currency',
+      'Status',
+      'Date',
+    ];
+
+    const rows = this.payments().map((p) => [
+      p.registration.teamName,
+      p.registration.contactEmail,
+      (p.amountCents / 100).toFixed(2),
+      p.currency.toUpperCase(),
+      p.status,
+      p.createdAt,
+    ]);
+
+    this.downloadCsv(`payments-${this.tournamentId}.csv`, header, rows);
   }
 }

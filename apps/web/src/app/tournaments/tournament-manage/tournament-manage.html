@@ -1361,6 +1361,156 @@
         </div>
       </div>
     </div>
+
+    <div class="card mt-4" *ngIf="isOwner">
+      <div class="card-body">
+        <h2 class="h5">Reports &amp; exports</h2>
+        <p class="text-secondary small">
+          Download a CSV snapshot of the current data. Files open directly in
+          Excel/Sheets.
+        </p>
+
+        <div class="d-flex flex-wrap gap-2">
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary"
+            [disabled]="registrations().length === 0"
+            (click)="exportRegistrationsCsv()"
+          >
+            Export registrations CSV
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary"
+            [disabled]="t.teams.length === 0"
+            (click)="exportTeamsCsv()"
+          >
+            Export teams CSV
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary"
+            [disabled]="payments().length === 0"
+            (click)="exportPaymentsCsv()"
+          >
+            Export payments CSV
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-4" *ngIf="isPrimaryOwner">
+      <div class="card-body">
+        <h2 class="h5">Co-organizers ({{ coOrganizers().length }})</h2>
+        <p class="text-secondary small">
+          Co-organizers can manage every part of this tournament except
+          inviting/removing other co-organizers.
+        </p>
+
+        <div *ngIf="coOrganizerError()" class="alert alert-danger py-2">
+          {{ coOrganizerError() }}
+        </div>
+
+        <form
+          [formGroup]="coOrganizerForm"
+          (ngSubmit)="addCoOrganizer()"
+          class="row g-2 align-items-end mb-3"
+        >
+          <div class="col-12 col-md-6">
+            <label class="form-label">Their HockeySpare account email</label>
+            <input class="form-control" formControlName="email" />
+          </div>
+
+          <div class="col-12 col-md-3">
+            <button
+              type="submit"
+              class="btn btn-primary btn-sm w-100"
+              [disabled]="coOrganizerForm.invalid || addingCoOrganizer()"
+            >
+              {{ addingCoOrganizer() ? '...' : 'Add' }}
+            </button>
+          </div>
+        </form>
+
+        <div *ngIf="coOrganizers().length === 0" class="text-secondary py-2">
+          No co-organizers yet.
+        </div>
+
+        <div class="d-flex flex-column gap-2">
+          <div
+            class="d-flex justify-content-between align-items-center border rounded p-2"
+            *ngFor="let co of coOrganizers(); trackBy: trackByCoOrganizerId"
+          >
+            <div>
+              {{ co.user.firstName || co.user.lastName ? (co.user.firstName + ' ' + co.user.lastName) : co.user.email }}
+              <span class="text-secondary small ms-1">{{ co.user.email }}</span>
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-danger"
+              [disabled]="removingCoOrganizerId() === co.id"
+              (click)="removeCoOrganizer(co.id)"
+            >
+              {{ removingCoOrganizerId() === co.id ? '...' : 'Remove' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-4" *ngIf="isOwner">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2 class="h5 mb-0">Audit log</h2>
+
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary"
+            (click)="toggleAuditLog()"
+          >
+            {{ showAuditLog() ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+
+        <div class="mt-3" *ngIf="showAuditLog()">
+          <div *ngIf="loadingAuditLog()" class="text-secondary">Loading...</div>
+
+          <div
+            *ngIf="!loadingAuditLog() && auditLog().length === 0"
+            class="text-secondary"
+          >
+            No changes recorded yet.
+          </div>
+
+          <div class="table-responsive" *ngIf="!loadingAuditLog() && auditLog().length > 0">
+            <table class="table table-sm align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>When</th>
+                  <th>Who</th>
+                  <th>Action</th>
+                  <th>Detail</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr *ngFor="let entry of auditLog(); trackBy: trackByAuditLogId">
+                  <td class="text-nowrap">{{ entry.createdAt | date: 'short' }}</td>
+                  <td>
+                    {{ entry.user ? (entry.user.firstName || entry.user.lastName ? (entry.user.firstName + ' ' + entry.user.lastName) : 'Unknown') : 'System' }}
+                  </td>
+                  <td>{{ entry.action }}</td>
+                  <td>{{ entry.detail || '—' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
   </ng-container>
 </section>
 

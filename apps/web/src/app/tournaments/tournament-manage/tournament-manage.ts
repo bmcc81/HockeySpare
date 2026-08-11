@@ -322,6 +322,10 @@ export class TournamentManageComponent implements OnInit {
       return false;
     }
 
+    if (this.authState.isAdmin()) {
+      return true;
+    }
+
     if (this.tournament()?.createdById === userId) {
       return true;
     }
@@ -329,10 +333,14 @@ export class TournamentManageComponent implements OnInit {
     return this.coOrganizerUserIds().includes(userId);
   }
 
-  /** Only the tournament creator can invite/remove co-organizers. */
+  /** Only the tournament creator (or an admin) can invite/remove co-organizers. */
   get isPrimaryOwner(): boolean {
     const userId = this.authState.user()?.id;
-    return !!userId && this.tournament()?.createdById === userId;
+    if (!userId) {
+      return false;
+    }
+
+    return this.authState.isAdmin() || this.tournament()?.createdById === userId;
   }
 
   get publicUrl(): string {

@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { isAppAdmin } from '../../common/is-app-admin';
 import { NotificationsService } from '../notifications/notifications.service';
 import {
   NotificationType,
@@ -149,6 +150,10 @@ export class TeamsService {
 
       if (!targetTeam) {
         throw new NotFoundException('Team not found.');
+      }
+
+      if (await isAppAdmin(this.prisma, userId)) {
+        return targetTeam;
       }
 
       const teamManagerMembership = await this.prisma.teamMember.findFirst({
@@ -1739,6 +1744,10 @@ export class TeamsService {
 
     if (!team) {
       throw new NotFoundException('Team not found.');
+    }
+
+    if (await isAppAdmin(this.prisma, userId)) {
+      return team;
     }
 
     const membership = await this.prisma.teamMember.findFirst({

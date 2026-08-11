@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { isAppAdmin } from '../../common/is-app-admin';
 import { EmailService } from '../email/email.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingStatusDto } from './dto/update-booking-status.dto';
@@ -236,7 +237,10 @@ export class BookingsService {
       throw new NotFoundException('Booking not found');
     }
 
-    if (booking.request.userId !== userId) {
+    if (
+      booking.request.userId !== userId &&
+      !(await isAppAdmin(this.prisma, userId))
+    ) {
       throw new ForbiddenException(
         'You do not have permission to manage this booking',
       );
@@ -340,7 +344,10 @@ export class BookingsService {
       throw new NotFoundException('Booking not found');
     }
 
-    if (booking.userId !== userId) {
+    if (
+      booking.userId !== userId &&
+      !(await isAppAdmin(this.prisma, userId))
+    ) {
       throw new ForbiddenException(
         'You do not have permission to cancel this booking',
       );
@@ -386,7 +393,10 @@ export class BookingsService {
       throw new NotFoundException('Booking not found');
     }
 
-    if (booking.userId !== userId) {
+    if (
+      booking.userId !== userId &&
+      !(await isAppAdmin(this.prisma, userId))
+    ) {
       throw new ForbiddenException(
         'You do not have permission to update this booking',
       );

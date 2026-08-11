@@ -6,6 +6,7 @@ export interface AuthUser {
   firstName: string | null;
   lastName: string | null;
   createdAt: string;
+  appRole: 'USER' | 'ADMIN';
 }
 
 export interface AuthSession {
@@ -24,6 +25,7 @@ export class AuthStateService {
   token = this.tokenSignal.asReadonly();
   user = this.userSignal.asReadonly();
   isLoggedIn = computed(() => !!this.tokenSignal());
+  isAdmin = computed(() => this.userSignal()?.appRole === 'ADMIN');
 
   setSession(session: AuthSession): void {
     localStorage.setItem(TOKEN_KEY, session.accessToken);

@@ -43,6 +43,7 @@ export class AuthService {
         firstName: true,
         lastName: true,
         createdAt: true,
+        appRole: true,
       },
     });
 
@@ -89,6 +90,7 @@ export class AuthService {
         firstName: user.firstName,
         lastName: user.lastName,
         createdAt: user.createdAt,
+        appRole: user.appRole,
       },
     };
   }

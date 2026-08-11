@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { isAppAdmin } from '../../common/is-app-admin';
 import { CreateTournamentDto } from './dto/create-tournament.dto';
 import { UpdateTournamentDto } from './dto/update-tournament.dto';
 import { CreateTournamentGameDto } from './dto/create-tournament-game.dto';
@@ -167,6 +168,10 @@ export class TournamentsService {
       return tournament;
     }
 
+    if (await isAppAdmin(this.prisma, userId)) {
+      return tournament;
+    }
+
     const coOrganizer = await this.prisma.tournamentCoOrganizer.findUnique({
       where: {
         tournamentId_userId: {
@@ -196,7 +201,10 @@ export class TournamentsService {
       throw new NotFoundException('Tournament not found');
     }
 
-    if (tournament.createdById !== userId) {
+    if (
+      tournament.createdById !== userId &&
+      !(await isAppAdmin(this.prisma, userId))
+    ) {
       throw new ForbiddenException(
         'Only the tournament creator can manage co-organizers.',
       );
@@ -245,6 +253,15 @@ export class TournamentsService {
   }
 
   async listMine(userId: string) {
+    if (await isAppAdmin(this.prisma, userId)) {
+      return this.prisma.tournament.findMany({
+        include: this.tournamentInclude,
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+    }
+
     return this.prisma.tournament.findMany({
       where: {
         createdById: userId,

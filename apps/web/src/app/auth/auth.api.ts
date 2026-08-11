@@ -27,6 +27,7 @@ export interface AuthResponse {
     lastName: string | null;
     createdAt: string;
     role: 'PLAYER' | 'CAPTAIN' | 'GENERAL_MANAGER';
+    appRole: 'USER' | 'ADMIN';
   };
 }
 

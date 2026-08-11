@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { isAppAdmin } from '../common/is-app-admin';
 import { CreateLeagueDto } from './dto/create-league.dto';
 import { CreateLeagueTeamDto } from './dto/create-league-team.dto';
 import { CreateLeagueGameDto } from './dto/create-league-game.dto';
@@ -22,37 +23,41 @@ export class LeaguesService {
   ) {}
 
   async listForUser(userId: string) {
+    const isAdmin = await isAppAdmin(this.prisma, userId);
+
     return this.prisma.league.findMany({
-      where: {
-        OR: [
-          {
-            members: {
-              some: {
-                userId,
-              },
-            },
-          },
-          {
-            teams: {
-              some: {
-                createdById: userId,
-              },
-            },
-          },
-          {
-            teams: {
-              some: {
+      where: isAdmin
+        ? undefined
+        : {
+            OR: [
+              {
                 members: {
                   some: {
                     userId,
-                    isActive: true,
                   },
                 },
               },
-            },
+              {
+                teams: {
+                  some: {
+                    createdById: userId,
+                  },
+                },
+              },
+              {
+                teams: {
+                  some: {
+                    members: {
+                      some: {
+                        userId,
+                        isActive: true,
+                      },
+                    },
+                  },
+                },
+              },
+            ],
           },
-        ],
-      },
       include: {
         members: true,
         teams: {
@@ -257,6 +262,10 @@ export class LeaguesService {
 
     if (!team) {
       throw new NotFoundException('Team not found in this league');
+    }
+
+    if (await isAppAdmin(this.prisma, userId)) {
+      return;
     }
 
     const canManageLeague = await this.prisma.league.findFirst({
@@ -520,6 +529,10 @@ export class LeaguesService {
       throw new NotFoundException('League not found');
     }
 
+    if (await isAppAdmin(this.prisma, userId)) {
+      return;
+    }
+
     const membership = await this.prisma.leagueMember.findFirst({
       where: {
         leagueId,
@@ -667,6 +680,10 @@ export class LeaguesService {
 
     if (!league) {
       throw new NotFoundException('League not found');
+    }
+
+    if (await isAppAdmin(this.prisma, userId)) {
+      return;
     }
 
     const access = await this.prisma.league.findFirst({
@@ -1089,6 +1106,10 @@ export class LeaguesService {
 
     if (!league) {
       throw new NotFoundException('League not found');
+    }
+
+    if (await isAppAdmin(this.prisma, userId)) {
+      return;
     }
 
     const membership = await this.prisma.leagueMember.findFirst({

@@ -254,6 +254,10 @@ export class LeagueDetailComponent {
       return false;
     }
 
+    if (this.authState.isAdmin()) {
+      return true;
+    }
+
     return (
       league.members?.some(
         (member) =>

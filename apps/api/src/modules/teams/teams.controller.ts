@@ -199,6 +199,11 @@ export class TeamsController {
     return this.teamsService.listMyTeams(this.getUserId(req));
   }
 
+  @Get('admin/teams')
+  listAllTeamsForAdmin(@Req() req: any) {
+    return this.teamsService.listAllTeamsForAdmin(this.getUserId(req));
+  }
+
   @Get('messages')
   getTeamMessages(@Req() req: any, @Query('teamId') teamId: string) {
     return this.teamsService.getTeamMessages(this.getUserId(req), teamId);

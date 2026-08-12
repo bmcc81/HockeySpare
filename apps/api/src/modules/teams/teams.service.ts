@@ -1732,6 +1732,10 @@ export class TeamsService {
     userId: string,
     teamId: string,
   ): Promise<{ id: string; name: string }> {
+    if (!teamId) {
+      throw new BadRequestException('teamId is required.');
+    }
+
     const team = await this.prisma.team.findUnique({
       where: {
         id: teamId,
@@ -1799,6 +1803,45 @@ export class TeamsService {
       id: membership.team.id,
       name: membership.team.name,
       league: membership.team.league,
+    }));
+  }
+
+  /**
+   * Admin-only directory of every team in the system, including standalone
+   * teams that don't belong to any league (which otherwise have no
+   * discovery path in the UI - a league gives you a "Manage" button per
+   * team, but a leagueless team is only reachable if you already know its
+   * id). Not exposed to non-admins.
+   */
+  async listAllTeamsForAdmin(userId: string) {
+    if (!(await isAppAdmin(this.prisma, userId))) {
+      throw new ForbiddenException('Only an admin can view all teams.');
+    }
+
+    const teams = await this.prisma.team.findMany({
+      include: {
+        league: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        _count: {
+          select: {
+            members: { where: { isActive: true } },
+          },
+        },
+      },
+      orderBy: {
+        name: 'asc',
+      },
+    });
+
+    return teams.map((team) => ({
+      id: team.id,
+      name: team.name,
+      league: team.league,
+      memberCount: team._count.members,
     }));
   }
 

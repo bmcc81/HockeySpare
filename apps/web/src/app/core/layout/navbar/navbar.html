@@ -190,6 +190,16 @@
               Team Profile
             </a>
 
+            @if (authState.isAdmin()) {
+            <a
+              routerLink="/admin/teams"
+              class="dropdown-link"
+              (click)="closeAll()"
+            >
+              All Teams
+            </a>
+            }
+
             <button
               type="button"
               class="dropdown-link dropdown-button"

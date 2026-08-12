@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import {
+  AdminTeamSummary,
   CheckoutSessionResult,
   CreateTeamMessageInput,
   MemberFee,
@@ -268,6 +269,10 @@ export class TeamService {
 
   listMyTeams(): Observable<MyTeamSummary[]> {
     return this.http.get<MyTeamSummary[]>(`${this.baseUrl}/teams`);
+  }
+
+  listAllTeamsForAdmin(): Observable<AdminTeamSummary[]> {
+    return this.http.get<AdminTeamSummary[]>(`${this.baseUrl}/admin/teams`);
   }
 
   getTeamMessages(teamId: string): Observable<TeamMessage[]> {

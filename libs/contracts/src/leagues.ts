@@ -266,6 +266,16 @@ export interface MyTeamSummary {
   } | null;
 }
 
+export interface AdminTeamSummary {
+  id: string;
+  name: string;
+  league: {
+    id: string;
+    name: string;
+  } | null;
+  memberCount: number;
+}
+
 export interface TeamMessageAuthor {
   id: string;
   firstName?: string | null;

@@ -296,11 +296,13 @@ export class TournamentsService {
         id: tournamentId,
       },
       data: {
-        ...(dto.name !== undefined ? { name: dto.name.trim() } : {}),
+        ...(dto.name ? { name: dto.name.trim() } : {}),
         ...(dto.description !== undefined
-          ? { description: dto.description.trim() || null }
+          ? { description: dto.description?.trim() || null }
           : {}),
-        ...(dto.rules !== undefined ? { rules: dto.rules.trim() || null } : {}),
+        ...(dto.rules !== undefined
+          ? { rules: dto.rules?.trim() || null }
+          : {}),
         ...(dto.startDate !== undefined
           ? { startDate: dto.startDate ? new Date(dto.startDate) : null }
           : {}),
@@ -324,13 +326,13 @@ export class TournamentsService {
           ? { registrationFeeCents: dto.registrationFeeCents ?? null }
           : {}),
         ...(dto.contactName !== undefined
-          ? { contactName: dto.contactName.trim() || null }
+          ? { contactName: dto.contactName?.trim() || null }
           : {}),
         ...(dto.contactEmail !== undefined
-          ? { contactEmail: dto.contactEmail.trim() || null }
+          ? { contactEmail: dto.contactEmail?.trim() || null }
           : {}),
         ...(dto.contactPhone !== undefined
-          ? { contactPhone: dto.contactPhone.trim() || null }
+          ? { contactPhone: dto.contactPhone?.trim() || null }
           : {}),
       },
       include: this.tournamentInclude,
@@ -476,14 +478,16 @@ export class TournamentsService {
           ? { startsAt: new Date(dto.startsAt) }
           : {}),
         ...(dto.arenaName !== undefined
-          ? { arenaName: dto.arenaName.trim() || null }
+          ? { arenaName: dto.arenaName?.trim() || null }
           : {}),
-        ...(dto.notes !== undefined ? { notes: dto.notes.trim() || null } : {}),
+        ...(dto.notes !== undefined
+          ? { notes: dto.notes?.trim() || null }
+          : {}),
         ...(dto.homeScore !== undefined ? { homeScore: dto.homeScore } : {}),
         ...(dto.awayScore !== undefined ? { awayScore: dto.awayScore } : {}),
         ...(dto.status !== undefined ? { status: dto.status } : {}),
         ...(dto.livestreamUrl !== undefined
-          ? { livestreamUrl: dto.livestreamUrl.trim() || null }
+          ? { livestreamUrl: dto.livestreamUrl?.trim() || null }
           : {}),
       },
     });
@@ -1110,12 +1114,12 @@ export class TournamentsService {
     const updated = await this.prisma.tournamentSponsor.update({
       where: { id: sponsorId },
       data: {
-        ...(dto.name !== undefined ? { name: dto.name.trim() } : {}),
+        ...(dto.name ? { name: dto.name.trim() } : {}),
         ...(dto.logoUrl !== undefined
-          ? { logoUrl: dto.logoUrl.trim() || null }
+          ? { logoUrl: dto.logoUrl?.trim() || null }
           : {}),
         ...(dto.linkUrl !== undefined
-          ? { linkUrl: dto.linkUrl.trim() || null }
+          ? { linkUrl: dto.linkUrl?.trim() || null }
           : {}),
         ...(dto.tier !== undefined ? { tier: dto.tier ?? null } : {}),
       },
@@ -1244,18 +1248,18 @@ export class TournamentsService {
     const updated = await this.prisma.tournamentVenue.update({
       where: { id: venueId },
       data: {
-        ...(dto.name !== undefined ? { name: dto.name.trim() } : {}),
+        ...(dto.name ? { name: dto.name.trim() } : {}),
         ...(dto.address !== undefined
-          ? { address: dto.address.trim() || null }
+          ? { address: dto.address?.trim() || null }
           : {}),
         ...(dto.parkingInfo !== undefined
-          ? { parkingInfo: dto.parkingInfo.trim() || null }
+          ? { parkingInfo: dto.parkingInfo?.trim() || null }
           : {}),
         ...(dto.dressingRoomInfo !== undefined
-          ? { dressingRoomInfo: dto.dressingRoomInfo.trim() || null }
+          ? { dressingRoomInfo: dto.dressingRoomInfo?.trim() || null }
           : {}),
         ...(dto.concessionsInfo !== undefined
-          ? { concessionsInfo: dto.concessionsInfo.trim() || null }
+          ? { concessionsInfo: dto.concessionsInfo?.trim() || null }
           : {}),
       },
     });
@@ -1378,15 +1382,15 @@ export class TournamentsService {
     const updated = await this.prisma.tournamentTeam.update({
       where: { id: teamId },
       data: {
-        ...(dto.name !== undefined ? { name: dto.name.trim() } : {}),
+        ...(dto.name ? { name: dto.name.trim() } : {}),
         ...(dto.division !== undefined
-          ? { division: dto.division.trim() || null }
+          ? { division: dto.division?.trim() || null }
           : {}),
         ...(dto.logoUrl !== undefined
-          ? { logoUrl: dto.logoUrl.trim() || null }
+          ? { logoUrl: dto.logoUrl?.trim() || null }
           : {}),
         ...(dto.coachName !== undefined
-          ? { coachName: dto.coachName.trim() || null }
+          ? { coachName: dto.coachName?.trim() || null }
           : {}),
       },
       include: { players: true },
@@ -2890,13 +2894,13 @@ export class TournamentsService {
       where: { id: listingId },
       data: {
         ...(dto.category !== undefined ? { category: dto.category } : {}),
-        ...(dto.title !== undefined ? { title: dto.title.trim() } : {}),
+        ...(dto.title ? { title: dto.title.trim() } : {}),
         ...(dto.description !== undefined
-          ? { description: dto.description.trim() || null }
+          ? { description: dto.description?.trim() || null }
           : {}),
-        ...(dto.url !== undefined ? { url: dto.url.trim() || null } : {}),
+        ...(dto.url !== undefined ? { url: dto.url?.trim() || null } : {}),
         ...(dto.imageUrl !== undefined
-          ? { imageUrl: dto.imageUrl.trim() || null }
+          ? { imageUrl: dto.imageUrl?.trim() || null }
           : {}),
       },
     });
@@ -2982,14 +2986,12 @@ export class TournamentsService {
     const updated = await this.prisma.tournamentLostFoundItem.update({
       where: { id: itemId },
       data: {
-        ...(dto.description !== undefined
-          ? { description: dto.description.trim() }
-          : {}),
+        ...(dto.description ? { description: dto.description.trim() } : {}),
         ...(dto.imageUrl !== undefined
-          ? { imageUrl: dto.imageUrl.trim() || null }
+          ? { imageUrl: dto.imageUrl?.trim() || null }
           : {}),
         ...(dto.contactInfo !== undefined
-          ? { contactInfo: dto.contactInfo.trim() || null }
+          ? { contactInfo: dto.contactInfo?.trim() || null }
           : {}),
         ...(dto.status !== undefined ? { status: dto.status } : {}),
       },

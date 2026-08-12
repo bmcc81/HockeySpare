@@ -168,7 +168,7 @@
                 class="btn btn-primary btn-sm"
                 [disabled]="detailsForm.invalid || savingDetails()"
               >
-                {{ savingDetails() ? 'Saving...' : 'Save' }}
+                {{ savingDetails() ? 'Saving...' : (hasSavedDetails() ? 'Update' : 'Save') }}
               </button>
             </form>
           </div>

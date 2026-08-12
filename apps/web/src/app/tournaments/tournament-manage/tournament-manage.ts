@@ -63,6 +63,7 @@ export class TournamentManageComponent implements OnInit {
 
   savingDetails = signal(false);
   detailsSuccess = signal<string | null>(null);
+  hasSavedDetails = signal(false);
 
   savingGame = signal(false);
   gameError = signal<string | null>(null);
@@ -702,6 +703,7 @@ export class TournamentManageComponent implements OnInit {
           this.tournament.set(tournament);
           this.savingDetails.set(false);
           this.detailsSuccess.set('Saved.');
+          this.hasSavedDetails.set(true);
         },
         error: (err) => {
           this.error.set(

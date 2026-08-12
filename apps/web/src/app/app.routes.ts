@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { adminGuard } from './auth/admin.guard';
 import { authGuard } from './auth/auth.guard';
 import { guestGuard } from './auth/guest.guard';
 
@@ -194,6 +195,14 @@ export const routes: Routes = [
       import('./tournaments/tournament-public/tournament-public').then(
         (m) => m.TournamentPublicComponent,
       ),
+  },
+
+  // Admin routes
+  {
+    path: 'admin/teams',
+    canActivate: [authGuard, adminGuard],
+    loadComponent: () =>
+      import('./admin/all-teams/all-teams').then((m) => m.AllTeamsComponent),
   },
 
   {

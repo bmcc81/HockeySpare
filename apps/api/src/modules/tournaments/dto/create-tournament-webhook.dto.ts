@@ -1,7 +1,7 @@
 import { IsOptional, IsString, IsUrl, MaxLength } from 'class-validator';
 
 export class CreateTournamentWebhookDto {
-  @IsUrl({ require_tld: false })
+  @IsUrl({ protocols: ['http', 'https'], require_protocol: true })
   @MaxLength(500)
   url!: string;
 

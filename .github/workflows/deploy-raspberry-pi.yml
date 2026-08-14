@@ -75,6 +75,12 @@ jobs:
     timeout-minutes: 10
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Clean up disk space before deploy
+        run: bash scripts/pi-cleanup.sh
+
       - name: Prepare deployment directory
         run: |
           rm -rf /tmp/hockeyspare-deploy

@@ -150,9 +150,24 @@ jobs:
       - name: Health check local API
         if: ${{ inputs.deploy == true }}
         run: |
-          sleep 8
+          # NestJS bootstrap time on this Pi is inconsistent (seen anywhere from
+          # ~4s to ~35s wall clock after `systemctl restart`, likely load/disk-I/O
+          # dependent on this hardware) -- poll instead of a fixed sleep so a slow
+          # boot doesn't read as a failed deploy.
+          READY=0
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:3000/api/requests > /dev/null 2>&1; then
+              READY=1
+              break
+            fi
+            sleep 2
+          done
 
-          curl -fsS http://127.0.0.1:3000/api/requests > /dev/null
+          if [ "$READY" -ne 1 ]; then
+            echo "API did not become ready on :3000 within 60s." >&2
+            exit 1
+          fi
+
           echo "GET /api/requests passed."
 
           LOGIN_STATUS=$(curl -s -o /tmp/hockeyspare-login-check.txt -w "%{http_code}" \

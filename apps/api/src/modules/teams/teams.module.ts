@@ -10,6 +10,7 @@ import { RequestsModule } from '../requests/requests.module';
 import { StripeModule } from '../stripe/stripe.module';
 import { TournamentsModule } from '../tournaments/tournaments.module';
 import { TournamentAuctionsModule } from '../tournament-auctions/tournament-auctions.module';
+import { FileStorageModule } from '../file-storage/file-storage.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { TournamentAuctionsModule } from '../tournament-auctions/tournament-auct
     StripeModule,
     TournamentsModule,
     TournamentAuctionsModule,
+    FileStorageModule,
   ],
   controllers: [TeamsController, PaymentsWebhookController],
   providers: [TeamsService],

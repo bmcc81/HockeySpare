@@ -953,6 +953,16 @@ export class LeagueDetailComponent {
       });
   }
 
+  initials(name: string): string {
+    return name
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((part) => part[0] ?? '')
+      .join('')
+      .toUpperCase();
+  }
+
   updateTeamMemberRole(team: TeamDto, member: TeamMember, event: Event): void {
     const select = event.target as HTMLSelectElement;
     const role = select.value as TeamRole;

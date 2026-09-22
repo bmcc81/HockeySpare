@@ -74,6 +74,9 @@ export class MyTeamComponent implements OnInit {
   savingRoleMemberId = signal<string | null>(null);
   roleError = signal<string | null>(null);
 
+  uploadingPhotoMemberId = signal<string | null>(null);
+  photoError = signal<string | null>(null);
+
   teamForm = this.fb.group({
     name: ['', [Validators.required, Validators.maxLength(80)]],
   });
@@ -778,6 +781,69 @@ export class MyTeamComponent implements OnInit {
       next: () => this.reload(),
       error: () => {
         this.error = 'Could not remove player.';
+      },
+    });
+  }
+
+  initials(name: string): string {
+    return name
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((part) => part[0] ?? '')
+      .join('')
+      .toUpperCase();
+  }
+
+  onMemberPhotoSelected(member: TeamMember, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+
+    if (!file) return;
+
+    if (!this.canManageTeam) {
+      this.photoError.set('You do not have permission to update photos.');
+      return;
+    }
+
+    this.uploadingPhotoMemberId.set(member.id);
+    this.photoError.set(null);
+
+    this.teamApi
+      .uploadMemberPhoto(member.id, file, this.selectedTeamId)
+      .subscribe({
+        next: () => {
+          this.uploadingPhotoMemberId.set(null);
+          this.reload();
+        },
+        error: (err) => {
+          this.uploadingPhotoMemberId.set(null);
+          this.photoError.set(
+            err?.error?.message || 'Could not upload photo.',
+          );
+          this.cdr.detectChanges();
+        },
+      });
+  }
+
+  removeMemberPhoto(member: TeamMember): void {
+    if (!this.canManageTeam || this.uploadingPhotoMemberId()) {
+      return;
+    }
+
+    this.uploadingPhotoMemberId.set(member.id);
+    this.photoError.set(null);
+
+    this.teamApi.removeMemberPhoto(member.id, this.selectedTeamId).subscribe({
+      next: () => {
+        this.uploadingPhotoMemberId.set(null);
+        this.reload();
+      },
+      error: (err) => {
+        this.uploadingPhotoMemberId.set(null);
+        this.photoError.set(err?.error?.message || 'Could not remove photo.');
+        this.cdr.detectChanges();
       },
     });
   }

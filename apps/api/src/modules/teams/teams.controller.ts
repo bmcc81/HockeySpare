@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -9,8 +10,11 @@ import {
   Patch,
   Req,
   UnauthorizedException,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { TeamsService } from './teams.service';
 import { CreateTeamMemberDto } from './dto/create-team-member.dto';
@@ -23,6 +27,8 @@ import { UpsertMemberFeeDto } from './dto/upsert-member-fee.dto';
 import { CreateMyTeamDto } from './dto/create-my-team.dto';
 import { UpdateTeamMemberRoleDto } from './dto/update-team-member-role.dto';
 import { CreateTeamMessageDto } from './dto/create-team-message.dto';
+
+const MAX_PHOTO_UPLOAD_BYTES = 5 * 1024 * 1024;
 
 @Controller('my-team')
 @UseGuards(JwtAuthGuard)
@@ -64,8 +70,51 @@ export class TeamsController {
   }
 
   @Delete('members/:memberId')
-  removeMember(@Req() req: any, @Param('memberId') memberId: string) {
-    return this.teamsService.removeMember(this.getUserId(req), memberId);
+  removeMember(
+    @Req() req: any,
+    @Param('memberId') memberId: string,
+    @Query('teamId') teamId?: string,
+  ) {
+    return this.teamsService.removeMember(
+      this.getUserId(req),
+      memberId,
+      teamId,
+    );
+  }
+
+  @Post('members/:memberId/photo')
+  @UseInterceptors(
+    FileInterceptor('file', { limits: { fileSize: MAX_PHOTO_UPLOAD_BYTES } }),
+  )
+  uploadMemberPhoto(
+    @Req() req: any,
+    @Param('memberId') memberId: string,
+    @Query('teamId') teamId?: string,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    if (!file) {
+      throw new BadRequestException('No file uploaded.');
+    }
+
+    return this.teamsService.uploadMemberPhoto(
+      this.getUserId(req),
+      memberId,
+      file,
+      teamId,
+    );
+  }
+
+  @Delete('members/:memberId/photo')
+  removeMemberPhoto(
+    @Req() req: any,
+    @Param('memberId') memberId: string,
+    @Query('teamId') teamId?: string,
+  ) {
+    return this.teamsService.removeMemberPhoto(
+      this.getUserId(req),
+      memberId,
+      teamId,
+    );
   }
 
   @Patch('members/:memberId/role')

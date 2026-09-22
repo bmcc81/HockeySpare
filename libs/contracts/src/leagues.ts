@@ -57,6 +57,7 @@ export interface TeamMember {
   notifyByApp?: boolean;
   notifyByEmail?: boolean;
   isActive?: boolean;
+  photoUrl?: string | null;
 }
 
 export type TeamMemberType = "REGULAR" | "SPARE";

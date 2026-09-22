@@ -1,0 +1,27 @@
+name: Pi API Crash Diagnostics (scratch)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    name: Report hockeyspare-api status and recent logs
+    runs-on: [self-hosted, Linux, ARM, hockeyspare-pi]
+    timeout-minutes: 5
+
+    steps:
+      - name: Service status and logs
+        run: |
+          echo "=== systemctl status (full) ==="
+          sudo systemctl status hockeyspare-api.service --no-pager -l || true
+
+          echo ""
+          echo "=== journalctl, last 150 lines ==="
+          sudo journalctl -u hockeyspare-api.service -n 150 --no-pager || true
+
+          echo ""
+          echo "=== Is anything listening on :3000? ==="
+          sudo ss -ltnp | grep 3000 || echo "nothing listening on 3000"

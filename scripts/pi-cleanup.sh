@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-# Disk cleanup for the HockeySpare Raspberry Pi (also the self-hosted deploy runner).
+# Disk cleanup for the HockeySpare Raspberry Pi (also the self-hosted deploy runner,
+# and host to a few other small sites/services).
 # Safe to run manually or as a pre-deploy step: only touches logs, apt cache,
-# and stale GitHub Actions runner work dirs -- never app/service files.
+# reclaimable package-manager/build caches, unused Docker images, and stale
+# GitHub Actions runner version dirs -- never app/service files or data volumes.
 
 set -uo pipefail
 
@@ -37,6 +39,41 @@ DIAG_DIR="$(dirname "$RUNNER_WORK_DIR")/_diag"
 if [ -d "$DIAG_DIR" ]; then
   echo "=== Pruning runner diag logs older than ${RUNNER_WORK_KEEP_DAYS}d ==="
   find "$DIAG_DIR" -type f -mtime +"${RUNNER_WORK_KEEP_DAYS}" -print -delete
+fi
+
+RUNNER_HOME="$(dirname "$RUNNER_WORK_DIR")"
+echo "=== Pruning superseded GitHub Actions runner version dirs in ${RUNNER_HOME} ==="
+if [ -d "$RUNNER_HOME" ]; then
+  (
+    cd "$RUNNER_HOME" || exit 0
+    CURRENT_BIN="$(readlink -f bin 2>/dev/null || true)"
+    CURRENT_EXTERNALS="$(readlink -f externals 2>/dev/null || true)"
+    if [ -z "$CURRENT_BIN" ] || [ -z "$CURRENT_EXTERNALS" ]; then
+      echo "Could not resolve the active bin/externals symlinks, skipping (don't want to guess and delete the wrong version)."
+      exit 0
+    fi
+    for d in bin.* externals.*; do
+      [ -d "$d" ] || continue
+      full="$RUNNER_HOME/$d"
+      if [ "$full" != "$CURRENT_BIN" ] && [ "$full" != "$CURRENT_EXTERNALS" ]; then
+        echo "Removing superseded runner version dir: $d"
+        rm -rf -- "$d"
+      fi
+    done
+  )
+else
+  echo "Runner home not found at $RUNNER_HOME, skipping."
+fi
+
+echo "=== Clearing npm/node-gyp caches (reclaimable, rebuilt on demand) ==="
+npm cache clean --force >/dev/null 2>&1 || echo "npm cache clean skipped/failed, continuing"
+rm -rf "$HOME/.cache/node-gyp" 2>/dev/null || true
+
+if command -v docker >/dev/null 2>&1; then
+  echo "=== Pruning unused Docker images (no running containers use them) ==="
+  sudo docker image prune -a -f || echo "docker image prune skipped/failed, continuing"
+else
+  echo "=== Docker not installed, skipping image prune ==="
 fi
 
 echo "=== Clearing files in /tmp older than 1 day ==="

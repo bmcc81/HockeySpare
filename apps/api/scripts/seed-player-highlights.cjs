@@ -8,8 +8,13 @@ const bcrypt = require('bcryptjs');
 
 const connectionString = process.env.DATABASE_URL;
 const host = new URL(connectionString).hostname;
-if (!['localhost', '127.0.0.1', '[::1]'].includes(host)) {
-  throw new Error('This demo seed only runs against a local database.');
+const isLocalDb = ['localhost', '127.0.0.1', '[::1]'].includes(host);
+if (!isLocalDb && process.env.ALLOW_NON_LOCAL_SEED !== '1') {
+  throw new Error(
+    'This demo seed only runs against a local database by default. ' +
+      'This inserts fictional players/games with AI-generated portraits -- ' +
+      'set ALLOW_NON_LOCAL_SEED=1 to deliberately run it elsewhere (e.g. production).',
+  );
 }
 const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
 const tournamentId = 'demo-highlights-cup';

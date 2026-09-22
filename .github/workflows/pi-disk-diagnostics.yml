@@ -1,0 +1,51 @@
+name: Pi Disk Diagnostics (scratch)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    name: Report disk usage on the Pi
+    runs-on: [self-hosted, Linux, ARM, hockeyspare-pi]
+    timeout-minutes: 5
+
+    steps:
+      - name: Disk usage overview
+        run: |
+          echo "=== df -h ==="
+          df -h
+
+          echo ""
+          echo "=== Top-level directory sizes on / (this can take a bit) ==="
+          sudo du -xh --max-depth=1 / 2>/dev/null | sort -rh
+
+          echo ""
+          echo "=== /var breakdown ==="
+          sudo du -xh --max-depth=2 /var 2>/dev/null | sort -rh | head -30
+
+          echo ""
+          echo "=== /opt breakdown ==="
+          sudo du -xh --max-depth=2 /opt 2>/dev/null | sort -rh | head -30
+
+          echo ""
+          echo "=== /home breakdown ==="
+          sudo du -xh --max-depth=3 /home 2>/dev/null | sort -rh | head -30
+
+          echo ""
+          echo "=== Largest individual files on / (top 25) ==="
+          sudo find / -xdev -type f -size +50M -exec du -h {} + 2>/dev/null | sort -rh | head -25
+
+          echo ""
+          echo "=== journald disk usage ==="
+          sudo journalctl --disk-usage || true
+
+          echo ""
+          echo "=== apt cache size ==="
+          du -sh /var/cache/apt/archives 2>/dev/null || true
+
+          echo ""
+          echo "=== docker (if present) ==="
+          command -v docker >/dev/null 2>&1 && sudo docker system df || echo "docker not installed"

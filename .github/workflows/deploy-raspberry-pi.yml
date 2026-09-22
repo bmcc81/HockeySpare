@@ -127,43 +127,19 @@ jobs:
             /tmp/hockeyspare-deploy/api/ \
             /opt/hockeyspare/apps/api/dist/
 
-      - name: Apply pending Prisma migrations
-        if: ${{ inputs.deploy == true }}
-        # Runs from this job's own checkout ($GITHUB_WORKSPACE), which already has
-        # prisma.config.ts, apps/api/src/prisma/schema.prisma, and apps/api/prisma/migrations
-        # at the deployed ref. That checkout has no node_modules at all though (only
-        # actions/checkout ran, no install), and prisma.config.ts needs the `dotenv`
-        # package to load -- so install just that one small package first rather than
-        # a full (slow, disk-heavy) npm ci.
-        # The production DATABASE_URL lives in the .env file the systemd unit loads,
-        # not in this checkout, so it's discovered from the unit and exported here.
-        run: |
-          ENV_FILE=$(systemctl show hockeyspare-api.service -p EnvironmentFile --value 2>/dev/null | sed 's/^-//')
-
-          if [ -z "$ENV_FILE" ] || [ ! -f "$ENV_FILE" ]; then
-            echo "Falling back to the documented default env file path."
-            ENV_FILE=/opt/hockeyspare/apps/api/.env
-          fi
-
-          if [ ! -f "$ENV_FILE" ]; then
-            echo "ERROR: could not locate the hockeyspare-api env file (looked at: $ENV_FILE)." >&2
-            echo "Set DATABASE_URL some other way or fix this step before re-running." >&2
-            exit 1
-          fi
-
-          echo "Loading DATABASE_URL from $ENV_FILE"
-          set -a
-          # shellcheck disable=SC1090
-          source "$ENV_FILE"
-          set +a
-
-          if [ -z "${DATABASE_URL:-}" ]; then
-            echo "ERROR: DATABASE_URL was not set after loading $ENV_FILE." >&2
-            exit 1
-          fi
-
-          npm install --no-save --no-audit --fund=false dotenv
-          npx --yes prisma@7.5.0 migrate deploy
+      # NOTE: Prisma migrations are NOT applied automatically by this workflow.
+      # This Pi runs 32-bit ARM (armv7l), which Prisma does not officially support --
+      # `prisma migrate deploy` via a fresh `npx` download here fails trying to fetch
+      # a linux-arm schema-engine binary (404, no such build exists). It also isn't
+      # cheap to work around: the ephemeral checkout has no node_modules, and even a
+      # single-package `npm install` here reconciles the whole workspace lockfile
+      # (~480 packages, several minutes) because package-lock.json is present.
+      # When the Prisma schema changes, apply migrations manually first, from a shell
+      # with the Pi's existing environment (which already has a working engine for
+      # this platform) -- see README.md's "If Prisma schema changed" section, e.g.:
+      #   ssh pi@<host>
+      #   cd /opt/hockeyspare/apps/api && npx prisma migrate deploy
+      # then dispatch this workflow with deploy=true as usual.
 
       - name: Restart NestJS API
         if: ${{ inputs.deploy == true }}

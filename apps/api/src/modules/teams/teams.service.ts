@@ -25,7 +25,10 @@ import { RequestsService } from '../requests/requests.service';
 import { UpsertMemberFeeDto } from './dto/upsert-member-fee.dto';
 import { CreateTeamMessageDto } from './dto/create-team-message.dto';
 import { StripeService } from '../stripe/stripe.service';
+import { FileStorageService } from '../file-storage/file-storage.service';
 import type Stripe from 'stripe';
+
+const ALLOWED_PHOTO_MIME_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
 
 @Injectable()
 export class TeamsService {
@@ -36,6 +39,7 @@ export class TeamsService {
     private readonly smsService: SmsService,
     private readonly requestsService: RequestsService,
     private readonly stripeService: StripeService,
+    private readonly fileStorageService: FileStorageService,
   ) {}
 
   private buildDisplayName(user: {
@@ -603,6 +607,78 @@ export class TeamsService {
     return {
       success: true,
     };
+  }
+
+  async uploadMemberPhoto(
+    userId: string,
+    memberId: string,
+    file: Express.Multer.File,
+    teamId?: string,
+  ) {
+    const team = await this.getManagedTeam(userId, teamId);
+
+    if (!ALLOWED_PHOTO_MIME_TYPES.includes(file.mimetype)) {
+      throw new BadRequestException(
+        'Only PNG, JPEG, or WEBP images are allowed.',
+      );
+    }
+
+    const member = await this.prisma.teamMember.findFirst({
+      where: {
+        id: memberId,
+        teamId: team.id,
+        isActive: true,
+      },
+    });
+
+    if (!member) {
+      throw new NotFoundException('Team member not found');
+    }
+
+    const url = await this.fileStorageService.uploadFile(
+      `teams/${team.id}/members/${memberId}`,
+      file.originalname,
+      file.buffer,
+      file.mimetype,
+    );
+
+    if (member.photoUrl) {
+      await this.fileStorageService
+        .deleteFileByUrl(member.photoUrl)
+        .catch(() => {});
+    }
+
+    return this.prisma.teamMember.update({
+      where: { id: memberId },
+      data: { photoUrl: url },
+    });
+  }
+
+  async removeMemberPhoto(userId: string, memberId: string, teamId?: string) {
+    const team = await this.getManagedTeam(userId, teamId);
+
+    const member = await this.prisma.teamMember.findFirst({
+      where: {
+        id: memberId,
+        teamId: team.id,
+        isActive: true,
+      },
+    });
+
+    if (!member) {
+      throw new NotFoundException('Team member not found');
+    }
+
+    if (member.photoUrl) {
+      await this.fileStorageService
+        .deleteFileByUrl(member.photoUrl)
+        .catch(() => {});
+    }
+
+    return this.prisma.teamMember.update({
+      where: { id: memberId },
+      data: { photoUrl: null },
+    });
   }
 
   async createGame(userId: string, dto: CreateTeamGameDto, teamId?: string) {

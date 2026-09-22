@@ -477,11 +477,29 @@
                     <tbody>
                       <tr *ngFor="let member of team.members">
                         <td>
-                          <div class="fw-semibold">
-                            {{ member.displayName }}
-                          </div>
-                          <div class="text-secondary small">
-                            {{ member.email || member.phone || 'No contact' }}
+                          <div class="d-flex align-items-center gap-2">
+                            <div class="roster-avatar-sm">
+                              <img
+                                *ngIf="member.photoUrl"
+                                [src]="member.photoUrl"
+                                [alt]="member.displayName + ' photo'"
+                              />
+                              <span
+                                *ngIf="!member.photoUrl"
+                                class="roster-avatar-sm-initials"
+                                aria-hidden="true"
+                                >{{ initials(member.displayName) }}</span
+                              >
+                            </div>
+
+                            <div>
+                              <div class="fw-semibold">
+                                {{ member.displayName }}
+                              </div>
+                              <div class="text-secondary small">
+                                {{ member.email || member.phone || 'No contact' }}
+                              </div>
+                            </div>
                           </div>
                         </td>
 

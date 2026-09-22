@@ -119,6 +119,35 @@ export class TeamService {
     });
   }
 
+  uploadMemberPhoto(
+    memberId: string,
+    file: File,
+    teamId?: string | null,
+  ): Observable<TeamMember> {
+    const form = new FormData();
+    form.append('file', file);
+
+    return this.http.post<TeamMember>(
+      `${this.baseUrl}/members/${memberId}/photo`,
+      form,
+      {
+        params: this.teamParams(teamId),
+      },
+    );
+  }
+
+  removeMemberPhoto(
+    memberId: string,
+    teamId?: string | null,
+  ): Observable<TeamMember> {
+    return this.http.delete<TeamMember>(
+      `${this.baseUrl}/members/${memberId}/photo`,
+      {
+        params: this.teamParams(teamId),
+      },
+    );
+  }
+
   updateMemberRole(
     memberId: string,
     role: TeamMemberRole,

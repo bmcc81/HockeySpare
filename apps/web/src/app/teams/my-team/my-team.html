@@ -180,6 +180,10 @@
           {{ roleError() }}
         </div>
 
+        <div *ngIf="photoError()" class="alert alert-danger">
+          {{ photoError() }}
+        </div>
+
         <div class="card panel-card mb-4">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -208,21 +212,70 @@
                   <ng-container *ngFor="let player of regulars">
                     <tr>
                       <td>
-                        <div class="fw-semibold">{{ player.displayName }}</div>
+                        <div class="d-flex align-items-center gap-2">
+                          <div class="roster-avatar">
+                            <img
+                              *ngIf="player.photoUrl"
+                              [src]="player.photoUrl"
+                              [alt]="player.displayName + ' photo'"
+                            />
+                            <span
+                              *ngIf="!player.photoUrl"
+                              class="roster-avatar-initials"
+                              aria-hidden="true"
+                              >{{ initials(player.displayName) }}</span
+                            >
+                          </div>
 
-                        <span
-                          *ngIf="player.role === 'CAPTAIN'"
-                          class="badge text-bg-primary mt-1"
-                        >
-                          Captain
-                        </span>
+                          <div>
+                            <div class="fw-semibold">
+                              {{ player.displayName }}
+                            </div>
 
-                        <span
-                          *ngIf="player.role === 'GENERAL_MANAGER'"
-                          class="badge text-bg-dark mt-1"
-                        >
-                          General Manager
-                        </span>
+                            <span
+                              *ngIf="player.role === 'CAPTAIN'"
+                              class="badge text-bg-primary mt-1"
+                            >
+                              Captain
+                            </span>
+
+                            <span
+                              *ngIf="player.role === 'GENERAL_MANAGER'"
+                              class="badge text-bg-dark mt-1"
+                            >
+                              General Manager
+                            </span>
+
+                            <div
+                              *ngIf="canManageTeam"
+                              class="roster-photo-actions mt-1"
+                            >
+                              <label class="roster-photo-btn">
+                                {{ uploadingPhotoMemberId() === player.id ?
+                                'Uploading...' : (player.photoUrl ? 'Change
+                                photo' : 'Add photo') }}
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  capture="environment"
+                                  hidden
+                                  [disabled]="uploadingPhotoMemberId() === player.id"
+                                  (change)="onMemberPhotoSelected(player, $event)"
+                                />
+                              </label>
+
+                              <button
+                                *ngIf="player.photoUrl"
+                                type="button"
+                                class="roster-photo-remove"
+                                [disabled]="uploadingPhotoMemberId() === player.id"
+                                (click)="removeMemberPhoto(player)"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          </div>
+                        </div>
                       </td>
 
                       <td>
@@ -547,21 +600,70 @@
                   <ng-container *ngFor="let player of spares">
                     <tr>
                       <td>
-                        <div class="fw-semibold">{{ player.displayName }}</div>
+                        <div class="d-flex align-items-center gap-2">
+                          <div class="roster-avatar">
+                            <img
+                              *ngIf="player.photoUrl"
+                              [src]="player.photoUrl"
+                              [alt]="player.displayName + ' photo'"
+                            />
+                            <span
+                              *ngIf="!player.photoUrl"
+                              class="roster-avatar-initials"
+                              aria-hidden="true"
+                              >{{ initials(player.displayName) }}</span
+                            >
+                          </div>
 
-                        <span
-                          *ngIf="player.role === 'CAPTAIN'"
-                          class="badge text-bg-primary mt-1"
-                        >
-                          Captain
-                        </span>
+                          <div>
+                            <div class="fw-semibold">
+                              {{ player.displayName }}
+                            </div>
 
-                        <span
-                          *ngIf="player.role === 'GENERAL_MANAGER'"
-                          class="badge text-bg-dark mt-1"
-                        >
-                          General Manager
-                        </span>
+                            <span
+                              *ngIf="player.role === 'CAPTAIN'"
+                              class="badge text-bg-primary mt-1"
+                            >
+                              Captain
+                            </span>
+
+                            <span
+                              *ngIf="player.role === 'GENERAL_MANAGER'"
+                              class="badge text-bg-dark mt-1"
+                            >
+                              General Manager
+                            </span>
+
+                            <div
+                              *ngIf="canManageTeam"
+                              class="roster-photo-actions mt-1"
+                            >
+                              <label class="roster-photo-btn">
+                                {{ uploadingPhotoMemberId() === player.id ?
+                                'Uploading...' : (player.photoUrl ? 'Change
+                                photo' : 'Add photo') }}
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  capture="environment"
+                                  hidden
+                                  [disabled]="uploadingPhotoMemberId() === player.id"
+                                  (change)="onMemberPhotoSelected(player, $event)"
+                                />
+                              </label>
+
+                              <button
+                                *ngIf="player.photoUrl"
+                                type="button"
+                                class="roster-photo-remove"
+                                [disabled]="uploadingPhotoMemberId() === player.id"
+                                (click)="removeMemberPhoto(player)"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          </div>
+                        </div>
                       </td>
 
                       <td>

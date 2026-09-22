@@ -1,0 +1,153 @@
+<section
+  class="highlights"
+  aria-label="Player highlights"
+  [attr.aria-busy]="loading()"
+>
+  <header class="heading">
+    <div>
+      <span class="eyebrow">Making an impact</span>
+      <h2>On the ice. On the board.</h2>
+    </div>
+    <span class="scope">{{ data()?.scopeLabel || 'Player highlights' }}</span>
+  </header>
+  <p *ngIf="loading() && !data()" role="status" class="state">
+    Loading player highlights…
+  </p>
+  <div *ngIf="error()" role="alert" class="state">
+    {{ data() ? 'Could not refresh player highlights. Showing the last loaded
+    results.' : 'Player highlights could not be loaded.' }}
+    <button type="button" (click)="load(true)">Try again</button>
+  </div>
+  <ng-container *ngIf="data() as board">
+    <div class="board-grid">
+      <section class="weekly">
+        <span class="eyebrow">The weekly spotlight</span>
+        <h3>Players of the Week</h3>
+        <p class="description">Top scorers over the past seven days.</p>
+        <p class="date">
+          {{ board.weekStart | date:'MMM d' }} – {{ board.asOf | date:'MMM d, y'
+          }}
+        </p>
+        <div class="stars">
+          <article
+            class="star"
+            *ngFor="let player of board.playersOfTheWeek; index as i"
+          >
+            <div class="portrait">
+              <img
+                *ngIf="player.photoUrl && !failedPhotos().has(player.photoUrl); else initialsAvatar"
+                [src]="player.photoUrl"
+                [alt]="player.displayName + ' portrait'"
+                width="400"
+                height="400"
+                loading="lazy"
+                (error)="photoFailed(player.photoUrl)"
+              />
+              <ng-template #initialsAvatar
+                ><span class="avatar" aria-hidden="true"
+                  >{{ initials(player.displayName) }}</span
+                ></ng-template
+              >
+              <span class="jersey" *ngIf="player.jerseyNumber != null"
+                >#{{ player.jerseyNumber }}</span
+              >
+            </div>
+            <div class="player">
+              <span class="star-label"
+                >{{ ['First star', 'Second star', 'Third star'][i] }}</span
+              >
+              <h4>{{ player.displayName }}</h4>
+              <p>{{ player.teamName }}</p>
+              <small *ngIf="scope === 'home'"
+                >{{ player.competitionName }}</small
+              ><small
+                >{{ player.goals }} goals · {{ player.assists }} assists · {{
+                player.gamesPlayed }} games</small
+              >
+            </div>
+            <div class="points">
+              <strong>{{ player.points }}</strong><span>PTS</span>
+            </div>
+          </article>
+        </div>
+        <p *ngIf="!board.playersOfTheWeek.length" class="empty">
+          The next stars are still to come. Weekly highlights appear when
+          players score in completed games.
+        </p>
+      </section>
+      <section class="leaders">
+        <div class="leader-heading">
+          <div>
+            <span class="eyebrow">Leading the way</span>
+            <h3>Point Leaders</h3>
+          </div>
+          <span class="points-key">G + A = PTS</span>
+        </div>
+        <p class="description">
+          {{ scope === 'home' ? 'Public tournament results from the past 30
+          days.' : 'Recorded results across this competition.' }}
+        </p>
+        <div class="table-scroll" *ngIf="board.pointLeaders.length">
+          <table>
+            <caption class="visually-hidden">
+              Point leaders ranked by points, then goals. Equal totals share a
+              rank.
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Player</th>
+                <th scope="col"><abbr title="Games played">GP</abbr></th>
+                <th scope="col"><abbr title="Goals">G</abbr></th>
+                <th scope="col"><abbr title="Assists">A</abbr></th>
+                <th scope="col"><abbr title="Points">PTS</abbr></th>
+                <th scope="col"><abbr title="Penalty minutes">PIM</abbr></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let player of filteredLeaders()">
+                <td>{{ player.rank }}</td>
+                <th scope="row">
+                  <img
+                    class="leader-photo"
+                    *ngIf="player.photoUrl && !failedPhotos().has(player.photoUrl)"
+                    [src]="player.photoUrl"
+                    alt=""
+                    width="40"
+                    height="40"
+                    loading="lazy"
+                    (error)="photoFailed(player.photoUrl)"
+                  />
+                  <strong>{{ player.displayName }}</strong
+                  ><small>{{ player.teamName }}</small
+                  ><small *ngIf="scope === 'home'"
+                    >{{ player.competitionName }}</small
+                  >
+                </th>
+                <td>{{ player.gamesPlayed }}</td>
+                <td>{{ player.goals }}</td>
+                <td>{{ player.assists }}</td>
+                <td class="total">{{ player.points }}</td>
+                <td>{{ player.penaltyMins }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p
+          *ngIf="board.pointLeaders.length && !filteredLeaders().length"
+          class="empty"
+        >
+          No players match your search.
+        </p>
+        <p *ngIf="!board.pointLeaders.length" class="empty">
+          No completed game stats yet. The leaderboard will appear as scores are
+          recorded and games are finalized.
+        </p>
+      </section>
+    </div>
+    <p class="footnote">
+      Completed games only. Points = goals + assists. Ties are ordered by goals,
+      then name. Tournament rosters are ranked separately.
+    </p>
+  </ng-container>
+</section>

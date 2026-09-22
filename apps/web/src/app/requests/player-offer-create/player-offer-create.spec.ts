@@ -1,18 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
-import { PlayerOfferCreate } from './player-offer-create';
+import { PlayerOfferCreateComponent } from './player-offer-create';
 
-describe('PlayerOfferCreate', () => {
-  let component: PlayerOfferCreate;
-  let fixture: ComponentFixture<PlayerOfferCreate>;
+describe('PlayerOfferCreateComponent', () => {
+  let component: PlayerOfferCreateComponent;
+  let fixture: ComponentFixture<PlayerOfferCreateComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PlayerOfferCreate]
+      imports: [PlayerOfferCreateComponent],
+      providers: [provideRouter([])]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(PlayerOfferCreate);
+    fixture = TestBed.createComponent(PlayerOfferCreateComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

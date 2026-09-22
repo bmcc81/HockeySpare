@@ -1,61 +1,53 @@
 <section class="home-page">
-  <section class="hero">
-    <div class="hero-copy" [appInView]="0">
-      <span class="eyebrow">HockeySpare</span>
-      <h1>Find a spare goalie or player fast</h1>
-      <p class="hero-text">
-        Post a game, browse available spares, and fill your lineup without the usual last-minute
-        stress.
-      </p>
-
+  <section class="hero" aria-labelledby="hero-title">
+    <img class="hero-image" src="/images/hockey-hero.png" alt="Hockey players chasing the puck across an indoor ice rink" width="1536" height="1024" fetchpriority="high" />
+    <div class="hero-copy">
+      <span class="eyebrow">Your community. Your game.</span>
+      <h1 id="hero-title">Less organizing.<br />More <span>hockey.</span></h1>
+      <p class="hero-text">Run your league, bring your tournament to life, and find the spare that completes your lineup. It all starts here.</p>
       <div class="hero-actions">
-        <a class="btn btn-primary btn-lg" routerLink="/requests">Find a Spare</a>
-        <a class="btn btn-outline-light btn-lg" routerLink="/requests/player/new">Offer to Play</a>
+        <a class="btn btn-primary btn-lg" routerLink="/leagues/new">Create a League</a>
+        <a class="btn btn-outline-light btn-lg" routerLink="/tournaments/new">Create a Tournament</a>
       </div>
+      <a class="hero-spare-link" routerLink="/requests">Looking for your next game? <strong>Find a game &rarr;</strong></a>
+    </div>
+    <div class="hero-footer"><strong>Built around the game we love.</strong><span>Leagues / Tournaments / Spares</span></div>
+  </section>
+  <nav class="quick-links" aria-label="Get started">
+    <a routerLink="/leagues"><span>01</span><span><strong>Run the season</strong><small>Explore leagues &rarr;</small></span></a>
+    <a routerLink="/tournaments"><span>02</span><span><strong>Make it game day</strong><small>Explore tournaments &rarr;</small></span></a>
+    <a routerLink="/requests/team/new"><span>03</span><span><strong>Complete your lineup</strong><small>Find a spare &rarr;</small></span></a>
+  </nav>
 
-      <div class="hero-meta">
-        <span>Teams post quickly</span>
-        <span>Players find games faster</span>
-        <span>Built for local hockey communities</span>
-      </div>
+  <app-player-highlights scope="home"></app-player-highlights>
+
+  <section class="management">
+    <div class="section-heading">
+      <span class="eyebrow">League & tournament management</span>
+      <h2>Everything to run game day, in one place</h2>
+      <p>
+        Set up divisions, build the schedule, and hand your players and fans a live scoreboard —
+        without juggling spreadsheets.
+      </p>
     </div>
 
-    <div class="hero-panel" [appInView]="120">
-      <div class="hero-card hero-card-main">
-        <div class="badge">Live Marketplace</div>
-        <h3>Tonight’s needs</h3>
-
-        <div class="mini-request">
-          <div>
-            <strong>Goalie Needed</strong>
-            <span>9:30 PM · Pierrefonds Arena</span>
-          </div>
-          <span class="price">$45</span>
-        </div>
-
-        <div class="mini-request">
-          <div>
-            <strong>Defense Needed</strong>
-            <span>7:00 PM · Forum de Montréal</span>
-          </div>
-          <span class="price">$20</span>
-        </div>
-
-        <a class="inline-link" routerLink="/requests">Browse open requests</a>
-      </div>
-
-      <div class="hero-card hero-card-secondary">
-        <p class="small-label">Fast posting</p>
-        <h4>Simple, clean, mobile-friendly booking flow</h4>
-      </div>
+    <div class="management-grid">
+      <article
+        class="management-card"
+        *ngFor="let feature of managementFeatures; index as i"
+        [appInView]="i * 70"
+      >
+        <h3>{{ feature.title }}</h3>
+        <p>{{ feature.text }}</p>
+      </article>
     </div>
   </section>
 
   <section class="audiences">
     <div class="section-heading">
       <span class="eyebrow">Choose your path</span>
-      <h2>Built for both sides of the game</h2>
-      <p>Keep the experience simple by guiding teams and spares into the right flow immediately.</p>
+      <h2>Built for organizers, teams, and spares</h2>
+      <p>Behind the bench or out on the ice, there is a place for you here.</p>
     </div>
 
     <div class="audience-grid">
@@ -75,20 +67,20 @@
   <section class="how-it-works">
     <div class="section-heading">
       <span class="eyebrow">How it works</span>
-      <h2>A simple marketplace flow</h2>
+      <h2>From season setup to game-day coverage</h2>
     </div>
 
     <div class="flows">
       <div class="flow-card" [appInView]="0">
         <div class="flow-header">
-          <h3>For Teams</h3>
-          <a routerLink="/requests/team/new">Post a request</a>
+          <h3>For Organizers</h3>
+          <a routerLink="/leagues/new">Create a league</a>
         </div>
 
         <div class="step-list">
           <article
             class="step-card"
-            *ngFor="let step of teamSteps; index as i"
+            *ngFor="let step of organizerSteps; index as i"
             [appInView]="i * 80"
           >
             <span class="step-number">{{ i + 1 }}</span>
@@ -126,8 +118,8 @@
   <section class="featured-requests">
     <div class="section-heading section-heading-inline">
       <div>
-        <span class="eyebrow">Open games</span>
-        <h2>Featured requests</h2>
+        <span class="eyebrow">Example spare requests</span>
+        <h2>Find your kind of game</h2>
       </div>
 
       <a class="btn btn-outline-light" routerLink="/requests">View all requests</a>
@@ -164,15 +156,15 @@
   <section class="final-cta">
     <div class="final-cta-card" [appInView]="80">
       <span class="eyebrow">Ready to get on the ice?</span>
-      <h2>Post a request or join as a spare</h2>
+      <h2>Run your league, launch your tournament, or find a spare</h2>
       <p>
-        HockeySpare should feel fast and useful from the first click. Keep the decision simple and
-        the action obvious.
+        From the first puck drop to the final whistle, keep your hockey community connected. Get started with your next season, tournament, or game.
       </p>
 
       <div class="hero-actions">
-        <a class="btn btn-primary btn-lg" routerLink="/requests/team/new">Post a Request</a>
-        <a class="btn btn-outline-light btn-lg" routerLink="/requests/player/new">Offer to Play</a>
+        <a class="btn btn-primary btn-lg" routerLink="/leagues/new">Create a League</a>
+        <a class="btn btn-outline-light btn-lg" routerLink="/tournaments/new">Create a Tournament</a>
+        <a class="btn btn-outline-light btn-lg" routerLink="/requests/team/new">Post a Request</a>
       </div>
     </div>
   </section>

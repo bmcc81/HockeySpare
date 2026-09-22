@@ -9,6 +9,7 @@ import { SmsModule } from '../sms/sms.module';
 import { RequestsModule } from '../requests/requests.module';
 import { StripeModule } from '../stripe/stripe.module';
 import { TournamentsModule } from '../tournaments/tournaments.module';
+import { TournamentAuctionsModule } from '../tournament-auctions/tournament-auctions.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { TournamentsModule } from '../tournaments/tournaments.module';
     RequestsModule,
     StripeModule,
     TournamentsModule,
+    TournamentAuctionsModule,
   ],
   controllers: [TeamsController, PaymentsWebhookController],
   providers: [TeamsService],

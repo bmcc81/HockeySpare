@@ -1,0 +1,290 @@
+<div class="card mb-4">
+  <div class="card-body">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+      <h2 class="h5 mb-0">Silent auction</h2>
+      <a
+        *ngIf="enabled()"
+        class="btn btn-outline-secondary btn-sm"
+        [routerLink]="['/tournaments', tournamentId, 'auction']"
+        target="_blank"
+      >
+        Open public auction page
+      </a>
+    </div>
+
+    <div class="alert alert-danger" *ngIf="error()">{{ error() }}</div>
+
+    <ng-container *ngIf="!loading(); else loadingTpl">
+      <div *ngIf="!enabled()">
+        <p class="text-muted">
+          Run an online silent auction alongside this tournament - add items,
+          take bids from anyone, and settle winners with card or cash.
+        </p>
+        <button class="btn btn-primary" (click)="enable()" [disabled]="busy()">
+          Enable auction
+        </button>
+      </div>
+
+      <ng-container *ngIf="enabled() && view() as v">
+        <!-- Status / settings -->
+        <form [formGroup]="settingsForm" (ngSubmit)="saveSettings()" class="mb-3">
+          <div class="row g-2">
+            <div class="col-12 col-md-6">
+              <label class="form-label small mb-0">Title</label>
+              <input class="form-control form-control-sm" formControlName="title" />
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label small mb-0">Anti-snipe minutes</label>
+              <input
+                class="form-control form-control-sm"
+                type="number"
+                min="0"
+                max="60"
+                formControlName="antiSnipeMinutes"
+              />
+            </div>
+            <div class="col-12">
+              <label class="form-label small mb-0">Description</label>
+              <textarea
+                class="form-control form-control-sm"
+                rows="2"
+                formControlName="description"
+              ></textarea>
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label small mb-0">Opens</label>
+              <input
+                class="form-control form-control-sm"
+                type="datetime-local"
+                formControlName="opensAt"
+              />
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label small mb-0">Default close</label>
+              <input
+                class="form-control form-control-sm"
+                type="datetime-local"
+                formControlName="closesAt"
+              />
+            </div>
+          </div>
+          <div class="d-flex flex-wrap gap-2 mt-2">
+            <button class="btn btn-outline-primary btn-sm" type="submit" [disabled]="busy()">
+              Save settings
+            </button>
+            <button
+              class="btn btn-success btn-sm"
+              type="button"
+              *ngIf="v.auction.status !== 'OPEN'"
+              (click)="setStatus('OPEN')"
+              [disabled]="busy()"
+            >
+              Open bidding
+            </button>
+            <button
+              class="btn btn-outline-secondary btn-sm"
+              type="button"
+              *ngIf="v.auction.status === 'OPEN'"
+              (click)="setStatus('DRAFT')"
+              [disabled]="busy()"
+            >
+              Pause (back to draft)
+            </button>
+            <button
+              class="btn btn-outline-danger btn-sm"
+              type="button"
+              (click)="closeAuction()"
+              [disabled]="busy()"
+            >
+              Close entire auction
+            </button>
+            <span class="badge align-self-center text-bg-secondary">{{ v.auction.status }}</span>
+          </div>
+        </form>
+
+        <!-- Items -->
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h3 class="h6 mb-0">Items ({{ v.items.length }})</h3>
+          <button
+            class="btn btn-primary btn-sm"
+            (click)="startNewItem()"
+            *ngIf="editingItemId() !== 'new'"
+          >
+            Add item
+          </button>
+        </div>
+
+        <form
+          *ngIf="editingItemId() as editId"
+          [formGroup]="itemForm"
+          (ngSubmit)="saveItem()"
+          class="border rounded p-2 mb-3"
+        >
+          <div class="row g-2">
+            <div class="col-12 col-md-6">
+              <label class="form-label small mb-0">Name</label>
+              <input class="form-control form-control-sm" formControlName="name" />
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label small mb-0">Donor</label>
+              <input class="form-control form-control-sm" formControlName="donorName" />
+            </div>
+            <div class="col-12">
+              <label class="form-label small mb-0">Description</label>
+              <textarea
+                class="form-control form-control-sm"
+                rows="2"
+                formControlName="description"
+              ></textarea>
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label small mb-0">Starting bid ($)</label>
+              <input class="form-control form-control-sm" type="number" min="0" formControlName="startingBidDollars" />
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label small mb-0">Min increment ($)</label>
+              <input class="form-control form-control-sm" type="number" min="1" formControlName="minIncrementDollars" />
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label small mb-0">Buy now ($, 0 = none)</label>
+              <input class="form-control form-control-sm" type="number" min="0" formControlName="buyNowDollars" />
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label small mb-0">Value ($, optional)</label>
+              <input class="form-control form-control-sm" type="number" min="0" formControlName="fairMarketValueDollars" />
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label small mb-0">Item close (optional)</label>
+              <input class="form-control form-control-sm" type="datetime-local" formControlName="closesAt" />
+            </div>
+          </div>
+          <div class="d-flex gap-2 mt-2">
+            <button class="btn btn-primary btn-sm" type="submit" [disabled]="busy()">
+              {{ editId === 'new' ? 'Add item' : 'Save item' }}
+            </button>
+            <button class="btn btn-outline-secondary btn-sm" type="button" (click)="cancelItemEdit()">
+              Cancel
+            </button>
+          </div>
+        </form>
+
+        <div class="table-responsive">
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th class="text-end">Current / final</th>
+                <th>Bids</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let item of v.items">
+                <tr>
+                  <td>
+                    <div class="fw-semibold">{{ item.name }}</div>
+                    <div class="small text-muted" *ngIf="item.winner">
+                      Winner: {{ item.winner.name }} ({{ item.winner.email }})
+                    </div>
+                  </td>
+                  <td class="text-end">{{ item.currentBidCents / 100 | currency }}</td>
+                  <td>
+                    <button class="btn btn-link btn-sm p-0" (click)="toggleExpanded(item.id)">
+                      {{ item.bidCount }}
+                    </button>
+                  </td>
+                  <td><span class="badge text-bg-secondary">{{ item.status }}</span></td>
+                  <td class="text-end">
+                    <div class="btn-group btn-group-sm">
+                      <button class="btn btn-outline-secondary" (click)="editItem(item)">Edit</button>
+                      <label class="btn btn-outline-secondary mb-0">
+                        Photo
+                        <input type="file" accept="image/*" hidden (change)="onImage(item, $event)" />
+                      </label>
+                      <button
+                        class="btn btn-outline-warning"
+                        *ngIf="item.status === 'OPEN'"
+                        (click)="closeItem(item)"
+                      >
+                        Close
+                      </button>
+                      <button
+                        class="btn btn-outline-success"
+                        *ngIf="item.status === 'CLOSED' && item.winner"
+                        (click)="markPaid(item, true)"
+                      >
+                        Mark paid
+                      </button>
+                      <button
+                        class="btn btn-outline-secondary"
+                        *ngIf="item.status === 'PAID'"
+                        (click)="markFulfilled(item, true)"
+                      >
+                        Mark picked up
+                      </button>
+                      <button class="btn btn-outline-danger" (click)="deleteItem(item)">Del</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr *ngIf="expandedItemId() === item.id">
+                  <td colspan="5">
+                    <div class="small" *ngIf="item.bids.length === 0">No bids yet.</div>
+                    <table class="table table-sm mb-0" *ngIf="item.bids.length > 0">
+                      <tbody>
+                        <tr *ngFor="let bid of item.bids">
+                          <td>{{ bid.bidder.name }}</td>
+                          <td class="small text-muted">{{ bid.bidder.email }} {{ bid.bidder.phone }}</td>
+                          <td class="text-end">{{ bid.amountCents / 100 | currency }} max</td>
+                          <td class="small text-muted">{{ bid.createdAt | date: 'short' }}</td>
+                          <td class="text-end">
+                            <button class="btn btn-outline-danger btn-sm" (click)="voidBid(item, bid.id)">
+                              Void
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Bidder totals -->
+        <div *ngIf="v.bidders.length > 0" class="mt-3">
+          <h3 class="h6">Winning bidders</h3>
+          <div class="table-responsive">
+            <table class="table table-sm align-middle">
+              <thead>
+                <tr>
+                  <th>Bidder</th>
+                  <th>Contact</th>
+                  <th class="text-end">Items</th>
+                  <th class="text-end">Owed</th>
+                  <th class="text-end">Paid</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let b of v.bidders">
+                  <td>{{ b.name }}</td>
+                  <td class="small text-muted">{{ b.email }} {{ b.phone }}</td>
+                  <td class="text-end">{{ b.itemsWon }}</td>
+                  <td class="text-end">{{ b.totalOwedCents / 100 | currency }}</td>
+                  <td class="text-end">{{ b.totalPaidCents / 100 | currency }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="small text-muted" *ngIf="!v.stripePaymentsEnabled">
+            Connect a Stripe payout account (Payments section above) to let winners
+            pay by card. Otherwise collect payment directly and use "Mark paid".
+          </p>
+        </div>
+      </ng-container>
+    </ng-container>
+
+    <ng-template #loadingTpl><p class="text-muted mb-0">Loading auction…</p></ng-template>
+  </div>
+</div>

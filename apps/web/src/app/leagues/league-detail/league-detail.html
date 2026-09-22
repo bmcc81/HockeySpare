@@ -12,6 +12,8 @@
       <p class="subtitle">{{ league.season || 'No season set' }}</p>
     </div>
 
+    <app-player-highlights scope="league" [competitionId]="leagueId"></app-player-highlights>
+
     <div class="setup-grid">
       <div class="panel">
         <h2>Add Team</h2>

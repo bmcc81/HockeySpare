@@ -189,6 +189,22 @@ export const routes: Routes = [
       ),
   },
   {
+    // Public - no auth guard. Anyone with the link can bid in the silent auction.
+    path: 'tournaments/:id/auction/my-bids',
+    loadComponent: () =>
+      import('./tournaments/auction-my-bids/auction-my-bids').then(
+        (m) => m.AuctionMyBidsComponent,
+      ),
+  },
+  {
+    // Public - no auth guard. Anyone with the link can bid in the silent auction.
+    path: 'tournaments/:id/auction',
+    loadComponent: () =>
+      import('./tournaments/tournament-auction/tournament-auction').then(
+        (m) => m.TournamentAuctionComponent,
+      ),
+  },
+  {
     // Public - no auth guard. Anyone with the link can view the schedule/rules.
     path: 'tournaments/:id',
     loadComponent: () =>

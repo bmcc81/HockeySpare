@@ -42,11 +42,18 @@ import {
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
 import { AuthStateService } from '../../auth/auth-state.service';
 import { QrCodeComponent } from '../shared/qr-code/qr-code';
+import { TournamentManageAuctionComponent } from '../tournament-manage-auction/tournament-manage-auction';
 
 @Component({
   selector: 'app-tournament-manage',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, QrCodeComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    QrCodeComponent,
+    TournamentManageAuctionComponent,
+  ],
   templateUrl: './tournament-manage.html',
 })
 export class TournamentManageComponent implements OnInit {

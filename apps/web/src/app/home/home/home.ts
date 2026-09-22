@@ -1,3 +1,4 @@
+import { PlayerHighlightsComponent } from '../../shared/player-highlights/player-highlights';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -26,22 +27,65 @@ type FeaturedRequest = {
   link: string;
 };
 
+type ManagementFeature = {
+  title: string;
+  text: string;
+};
+
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink, InViewDirective],
+  imports: [PlayerHighlightsComponent, CommonModule, RouterLink, InViewDirective],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
 export class HomeComponent {
+  managementFeatures: ManagementFeature[] = [
+    {
+      title: 'Standings & schedules',
+      text: 'Run a full season with automatic standings, game schedules, and division tracking.',
+    },
+    {
+      title: 'Brackets & live scoreboard',
+      text: 'Build tournament brackets and put live scores up on an arena TV or projector.',
+    },
+    {
+      title: 'Rosters & registration',
+      text: 'Collect team registrations, manage rosters, and keep everyone on the same schedule.',
+    },
+    {
+      title: 'Silent auctions & fundraising',
+      text: 'Run a tournament silent auction with public bidding, right alongside the schedule.',
+    },
+    {
+      title: 'Printable programs',
+      text: 'Generate a print-ready schedule, team list, and sponsor page for game day.',
+    },
+    {
+      title: 'Spare coverage built in',
+      text: 'When a team is short players, post a request without leaving your league or tournament.',
+    },
+  ];
+
   audienceCards: AudienceCard[] = [
     {
-      title: 'For Teams',
-      text: 'Post a request fast and fill your lineup without the last-minute scramble.',
+      title: 'For League & Tournament Organizers',
+      text: 'Run the whole event from one place — schedules, standings, brackets, and the scoreboard.',
       points: [
-        'Post your game in minutes',
+        'Set up a league or tournament in minutes',
+        'Manage divisions, schedules, and standings',
+        'Share a public scoreboard and program',
+      ],
+      cta: 'Create a League or Tournament',
+      link: '/leagues/new',
+    },
+    {
+      title: 'For Teams',
+      text: 'Manage your team and post a request fast when you need to fill your lineup.',
+      points: [
+        'Track your schedule and standings',
+        'Post your game in minutes when short a player',
         'Choose position, level, date, and arena',
-        'Review available players and goalies',
       ],
       cta: 'Post a Request',
       link: '/requests/team/new',
@@ -59,22 +103,22 @@ export class HomeComponent {
     },
   ];
 
-  teamSteps: Step[] = [
+  organizerSteps: Step[] = [
     {
-      title: 'Post your game',
-      text: 'Add the date, time, arena, and the kind of spare you need.',
+      title: 'Set up your league or tournament',
+      text: 'Add divisions, teams, dates, and arenas to get your event structured.',
     },
     {
-      title: 'Set your preferences',
-      text: 'Choose position, skill level, pay, and any extra notes.',
+      title: 'Build the schedule',
+      text: 'Generate the schedule or bracket and keep standings updating automatically.',
     },
     {
-      title: 'Review matches',
-      text: 'See available players or goalies that fit your request.',
+      title: 'Go live on game day',
+      text: 'Share the public scoreboard, program, and schedule with everyone involved.',
     },
     {
-      title: 'Confirm and play',
-      text: 'Book your spare and get your team back on track.',
+      title: 'Cover last-minute gaps',
+      text: 'If a team is short, post a spare request straight from the same platform.',
     },
   ];
 
@@ -128,8 +172,8 @@ export class HomeComponent {
   ];
 
   stats = [
-    { value: 'Fast', label: 'Last-minute booking flow' },
-    { value: 'Clear', label: 'Simple post and browse experience' },
+    { value: 'End to end', label: 'Leagues, tournaments, and spares in one place' },
+    { value: 'Live', label: 'Standings, brackets, and scoreboards' },
     { value: 'Local', label: 'Built for hockey communities' },
   ];
 }

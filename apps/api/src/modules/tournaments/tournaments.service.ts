@@ -190,6 +190,16 @@ export class TournamentsService {
     return tournament;
   }
 
+  /**
+   * Public wrapper around getOwnedTournament for sibling modules (e.g. the
+   * auction module) that hang their own resources off a tournament and need
+   * the same "creator, co-organizer, or app admin" gate. Throws
+   * NotFound/Forbidden; returns the tournament row on success.
+   */
+  async assertCanManageTournament(userId: string, tournamentId: string) {
+    return this.getOwnedTournament(userId, tournamentId);
+  }
+
   private async getOwnerOnlyTournament(userId: string, tournamentId: string) {
     const tournament = await this.prisma.tournament.findUnique({
       where: {

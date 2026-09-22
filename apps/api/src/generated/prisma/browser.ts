@@ -237,3 +237,28 @@ export type TournamentPayment = Prisma.TournamentPaymentModel
  * 
  */
 export type TournamentSponsor = Prisma.TournamentSponsorModel
+/**
+ * Model TournamentAuction
+ * 
+ */
+export type TournamentAuction = Prisma.TournamentAuctionModel
+/**
+ * Model TournamentAuctionItem
+ * 
+ */
+export type TournamentAuctionItem = Prisma.TournamentAuctionItemModel
+/**
+ * Model TournamentAuctionBidder
+ * 
+ */
+export type TournamentAuctionBidder = Prisma.TournamentAuctionBidderModel
+/**
+ * Model TournamentAuctionBid
+ * 
+ */
+export type TournamentAuctionBid = Prisma.TournamentAuctionBidModel
+/**
+ * Model TournamentAuctionPayment
+ * 
+ */
+export type TournamentAuctionPayment = Prisma.TournamentAuctionPaymentModel

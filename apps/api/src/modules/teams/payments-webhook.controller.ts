@@ -10,12 +10,14 @@ import type { Request } from 'express';
 import { TeamsService } from './teams.service';
 import { StripeService } from '../stripe/stripe.service';
 import { TournamentsService } from '../tournaments/tournaments.service';
+import { TournamentAuctionsService } from '../tournament-auctions/tournament-auctions.service';
 
 @Controller('payments')
 export class PaymentsWebhookController {
   constructor(
     private readonly teamsService: TeamsService,
     private readonly tournamentsService: TournamentsService,
+    private readonly auctionsService: TournamentAuctionsService,
     private readonly stripeService: StripeService,
   ) {}
 
@@ -45,6 +47,8 @@ export class PaymentsWebhookController {
         await this.tournamentsService.handleTournamentCheckoutSessionCompleted(
           session,
         );
+      } else if (session.metadata?.type === 'tournament_auction') {
+        await this.auctionsService.handleCheckoutSessionCompleted(session);
       } else {
         await this.teamsService.handleStripeCheckoutSessionCompleted(session);
       }

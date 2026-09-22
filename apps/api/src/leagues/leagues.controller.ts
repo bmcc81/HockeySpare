@@ -1,3 +1,4 @@
+import { PlayerHighlightsService } from '../modules/player-highlights/player-highlights.service';
 import {
   Body,
   Controller,
@@ -32,7 +33,13 @@ type AuthRequest = {
 @Controller('leagues')
 @UseGuards(JwtAuthGuard)
 export class LeaguesController {
-  constructor(private readonly leaguesService: LeaguesService) {}
+  constructor(private readonly leaguesService: LeaguesService, private readonly highlights: PlayerHighlightsService) {}
+
+  @Get(':id/player-highlights')
+  async playerHighlights(@Req() req: AuthRequest, @Param('id') id: string) {
+    await this.leaguesService.getById(this.getUserId(req), id);
+    return this.highlights.league(id);
+  }
 
   @Get()
   list(@Req() req: AuthRequest) {

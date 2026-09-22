@@ -131,7 +131,10 @@ jobs:
         if: ${{ inputs.deploy == true }}
         # Runs from this job's own checkout ($GITHUB_WORKSPACE), which already has
         # prisma.config.ts, apps/api/src/prisma/schema.prisma, and apps/api/prisma/migrations
-        # at the deployed ref -- nothing extra needs to be rsynced for this step.
+        # at the deployed ref. That checkout has no node_modules at all though (only
+        # actions/checkout ran, no install), and prisma.config.ts needs the `dotenv`
+        # package to load -- so install just that one small package first rather than
+        # a full (slow, disk-heavy) npm ci.
         # The production DATABASE_URL lives in the .env file the systemd unit loads,
         # not in this checkout, so it's discovered from the unit and exported here.
         run: |
@@ -159,6 +162,7 @@ jobs:
             exit 1
           fi
 
+          npm install --no-save --no-audit --fund=false dotenv
           npx --yes prisma@7.5.0 migrate deploy
 
       - name: Restart NestJS API

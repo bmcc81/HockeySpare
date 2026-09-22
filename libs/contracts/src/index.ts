@@ -5,3 +5,6 @@ export * from './leagues';
 export * from './scoresheets';
 export * from './tournaments';
 export * from './payments';
+export * from './auctions';
+
+export * from './player-highlights';

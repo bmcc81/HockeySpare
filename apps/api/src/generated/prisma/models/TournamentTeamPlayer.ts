@@ -35,6 +35,7 @@ export type TournamentTeamPlayerSumAggregateOutputType = {
 }
 
 export type TournamentTeamPlayerMinAggregateOutputType = {
+  photoUrl: string | null
   id: string | null
   teamId: string | null
   displayName: string | null
@@ -44,6 +45,7 @@ export type TournamentTeamPlayerMinAggregateOutputType = {
 }
 
 export type TournamentTeamPlayerMaxAggregateOutputType = {
+  photoUrl: string | null
   id: string | null
   teamId: string | null
   displayName: string | null
@@ -53,6 +55,7 @@ export type TournamentTeamPlayerMaxAggregateOutputType = {
 }
 
 export type TournamentTeamPlayerCountAggregateOutputType = {
+  photoUrl: number
   id: number
   teamId: number
   displayName: number
@@ -72,6 +75,7 @@ export type TournamentTeamPlayerSumAggregateInputType = {
 }
 
 export type TournamentTeamPlayerMinAggregateInputType = {
+  photoUrl?: true
   id?: true
   teamId?: true
   displayName?: true
@@ -81,6 +85,7 @@ export type TournamentTeamPlayerMinAggregateInputType = {
 }
 
 export type TournamentTeamPlayerMaxAggregateInputType = {
+  photoUrl?: true
   id?: true
   teamId?: true
   displayName?: true
@@ -90,6 +95,7 @@ export type TournamentTeamPlayerMaxAggregateInputType = {
 }
 
 export type TournamentTeamPlayerCountAggregateInputType = {
+  photoUrl?: true
   id?: true
   teamId?: true
   displayName?: true
@@ -186,6 +192,7 @@ export type TournamentTeamPlayerGroupByArgs<ExtArgs extends runtime.Types.Extens
 }
 
 export type TournamentTeamPlayerGroupByOutputType = {
+  photoUrl: string | null
   id: string
   teamId: string
   displayName: string
@@ -218,6 +225,7 @@ export type TournamentTeamPlayerWhereInput = {
   AND?: Prisma.TournamentTeamPlayerWhereInput | Prisma.TournamentTeamPlayerWhereInput[]
   OR?: Prisma.TournamentTeamPlayerWhereInput[]
   NOT?: Prisma.TournamentTeamPlayerWhereInput | Prisma.TournamentTeamPlayerWhereInput[]
+  photoUrl?: Prisma.StringNullableFilter<"TournamentTeamPlayer"> | string | null
   id?: Prisma.StringFilter<"TournamentTeamPlayer"> | string
   teamId?: Prisma.StringFilter<"TournamentTeamPlayer"> | string
   displayName?: Prisma.StringFilter<"TournamentTeamPlayer"> | string
@@ -229,6 +237,7 @@ export type TournamentTeamPlayerWhereInput = {
 }
 
 export type TournamentTeamPlayerOrderByWithRelationInput = {
+  photoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   id?: Prisma.SortOrder
   teamId?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
@@ -244,6 +253,7 @@ export type TournamentTeamPlayerWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.TournamentTeamPlayerWhereInput | Prisma.TournamentTeamPlayerWhereInput[]
   OR?: Prisma.TournamentTeamPlayerWhereInput[]
   NOT?: Prisma.TournamentTeamPlayerWhereInput | Prisma.TournamentTeamPlayerWhereInput[]
+  photoUrl?: Prisma.StringNullableFilter<"TournamentTeamPlayer"> | string | null
   teamId?: Prisma.StringFilter<"TournamentTeamPlayer"> | string
   displayName?: Prisma.StringFilter<"TournamentTeamPlayer"> | string
   position?: Prisma.EnumPositionNullableFilter<"TournamentTeamPlayer"> | $Enums.Position | null
@@ -254,6 +264,7 @@ export type TournamentTeamPlayerWhereUniqueInput = Prisma.AtLeast<{
 }, "id">
 
 export type TournamentTeamPlayerOrderByWithAggregationInput = {
+  photoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   id?: Prisma.SortOrder
   teamId?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
@@ -271,6 +282,7 @@ export type TournamentTeamPlayerScalarWhereWithAggregatesInput = {
   AND?: Prisma.TournamentTeamPlayerScalarWhereWithAggregatesInput | Prisma.TournamentTeamPlayerScalarWhereWithAggregatesInput[]
   OR?: Prisma.TournamentTeamPlayerScalarWhereWithAggregatesInput[]
   NOT?: Prisma.TournamentTeamPlayerScalarWhereWithAggregatesInput | Prisma.TournamentTeamPlayerScalarWhereWithAggregatesInput[]
+  photoUrl?: Prisma.StringNullableWithAggregatesFilter<"TournamentTeamPlayer"> | string | null
   id?: Prisma.StringWithAggregatesFilter<"TournamentTeamPlayer"> | string
   teamId?: Prisma.StringWithAggregatesFilter<"TournamentTeamPlayer"> | string
   displayName?: Prisma.StringWithAggregatesFilter<"TournamentTeamPlayer"> | string
@@ -280,6 +292,7 @@ export type TournamentTeamPlayerScalarWhereWithAggregatesInput = {
 }
 
 export type TournamentTeamPlayerCreateInput = {
+  photoUrl?: string | null
   id?: string
   displayName: string
   position?: $Enums.Position | null
@@ -290,6 +303,7 @@ export type TournamentTeamPlayerCreateInput = {
 }
 
 export type TournamentTeamPlayerUncheckedCreateInput = {
+  photoUrl?: string | null
   id?: string
   teamId: string
   displayName: string
@@ -300,6 +314,7 @@ export type TournamentTeamPlayerUncheckedCreateInput = {
 }
 
 export type TournamentTeamPlayerUpdateInput = {
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
@@ -310,6 +325,7 @@ export type TournamentTeamPlayerUpdateInput = {
 }
 
 export type TournamentTeamPlayerUncheckedUpdateInput = {
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id?: Prisma.StringFieldUpdateOperationsInput | string
   teamId?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -320,6 +336,7 @@ export type TournamentTeamPlayerUncheckedUpdateInput = {
 }
 
 export type TournamentTeamPlayerCreateManyInput = {
+  photoUrl?: string | null
   id?: string
   teamId: string
   displayName: string
@@ -329,6 +346,7 @@ export type TournamentTeamPlayerCreateManyInput = {
 }
 
 export type TournamentTeamPlayerUpdateManyMutationInput = {
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
@@ -337,6 +355,7 @@ export type TournamentTeamPlayerUpdateManyMutationInput = {
 }
 
 export type TournamentTeamPlayerUncheckedUpdateManyInput = {
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id?: Prisma.StringFieldUpdateOperationsInput | string
   teamId?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -356,6 +375,7 @@ export type TournamentTeamPlayerOrderByRelationAggregateInput = {
 }
 
 export type TournamentTeamPlayerCountOrderByAggregateInput = {
+  photoUrl?: Prisma.SortOrder
   id?: Prisma.SortOrder
   teamId?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
@@ -369,6 +389,7 @@ export type TournamentTeamPlayerAvgOrderByAggregateInput = {
 }
 
 export type TournamentTeamPlayerMaxOrderByAggregateInput = {
+  photoUrl?: Prisma.SortOrder
   id?: Prisma.SortOrder
   teamId?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
@@ -378,6 +399,7 @@ export type TournamentTeamPlayerMaxOrderByAggregateInput = {
 }
 
 export type TournamentTeamPlayerMinOrderByAggregateInput = {
+  photoUrl?: Prisma.SortOrder
   id?: Prisma.SortOrder
   teamId?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
@@ -452,6 +474,7 @@ export type TournamentTeamPlayerUpdateOneRequiredWithoutStatsNestedInput = {
 }
 
 export type TournamentTeamPlayerCreateWithoutTeamInput = {
+  photoUrl?: string | null
   id?: string
   displayName: string
   position?: $Enums.Position | null
@@ -461,6 +484,7 @@ export type TournamentTeamPlayerCreateWithoutTeamInput = {
 }
 
 export type TournamentTeamPlayerUncheckedCreateWithoutTeamInput = {
+  photoUrl?: string | null
   id?: string
   displayName: string
   position?: $Enums.Position | null
@@ -499,6 +523,7 @@ export type TournamentTeamPlayerScalarWhereInput = {
   AND?: Prisma.TournamentTeamPlayerScalarWhereInput | Prisma.TournamentTeamPlayerScalarWhereInput[]
   OR?: Prisma.TournamentTeamPlayerScalarWhereInput[]
   NOT?: Prisma.TournamentTeamPlayerScalarWhereInput | Prisma.TournamentTeamPlayerScalarWhereInput[]
+  photoUrl?: Prisma.StringNullableFilter<"TournamentTeamPlayer"> | string | null
   id?: Prisma.StringFilter<"TournamentTeamPlayer"> | string
   teamId?: Prisma.StringFilter<"TournamentTeamPlayer"> | string
   displayName?: Prisma.StringFilter<"TournamentTeamPlayer"> | string
@@ -508,6 +533,7 @@ export type TournamentTeamPlayerScalarWhereInput = {
 }
 
 export type TournamentTeamPlayerCreateWithoutStatsInput = {
+  photoUrl?: string | null
   id?: string
   displayName: string
   position?: $Enums.Position | null
@@ -517,6 +543,7 @@ export type TournamentTeamPlayerCreateWithoutStatsInput = {
 }
 
 export type TournamentTeamPlayerUncheckedCreateWithoutStatsInput = {
+  photoUrl?: string | null
   id?: string
   teamId: string
   displayName: string
@@ -542,6 +569,7 @@ export type TournamentTeamPlayerUpdateToOneWithWhereWithoutStatsInput = {
 }
 
 export type TournamentTeamPlayerUpdateWithoutStatsInput = {
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
@@ -551,6 +579,7 @@ export type TournamentTeamPlayerUpdateWithoutStatsInput = {
 }
 
 export type TournamentTeamPlayerUncheckedUpdateWithoutStatsInput = {
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id?: Prisma.StringFieldUpdateOperationsInput | string
   teamId?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -560,6 +589,7 @@ export type TournamentTeamPlayerUncheckedUpdateWithoutStatsInput = {
 }
 
 export type TournamentTeamPlayerCreateManyTeamInput = {
+  photoUrl?: string | null
   id?: string
   displayName: string
   position?: $Enums.Position | null
@@ -568,6 +598,7 @@ export type TournamentTeamPlayerCreateManyTeamInput = {
 }
 
 export type TournamentTeamPlayerUpdateWithoutTeamInput = {
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
@@ -577,6 +608,7 @@ export type TournamentTeamPlayerUpdateWithoutTeamInput = {
 }
 
 export type TournamentTeamPlayerUncheckedUpdateWithoutTeamInput = {
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
@@ -586,6 +618,7 @@ export type TournamentTeamPlayerUncheckedUpdateWithoutTeamInput = {
 }
 
 export type TournamentTeamPlayerUncheckedUpdateManyWithoutTeamInput = {
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.NullableEnumPositionFieldUpdateOperationsInput | $Enums.Position | null
@@ -625,6 +658,7 @@ export type TournamentTeamPlayerCountOutputTypeCountStatsArgs<ExtArgs extends ru
 
 
 export type TournamentTeamPlayerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  photoUrl?: boolean
   id?: boolean
   teamId?: boolean
   displayName?: boolean
@@ -637,6 +671,7 @@ export type TournamentTeamPlayerSelect<ExtArgs extends runtime.Types.Extensions.
 }, ExtArgs["result"]["tournamentTeamPlayer"]>
 
 export type TournamentTeamPlayerSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  photoUrl?: boolean
   id?: boolean
   teamId?: boolean
   displayName?: boolean
@@ -647,6 +682,7 @@ export type TournamentTeamPlayerSelectCreateManyAndReturn<ExtArgs extends runtim
 }, ExtArgs["result"]["tournamentTeamPlayer"]>
 
 export type TournamentTeamPlayerSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  photoUrl?: boolean
   id?: boolean
   teamId?: boolean
   displayName?: boolean
@@ -657,6 +693,7 @@ export type TournamentTeamPlayerSelectUpdateManyAndReturn<ExtArgs extends runtim
 }, ExtArgs["result"]["tournamentTeamPlayer"]>
 
 export type TournamentTeamPlayerSelectScalar = {
+  photoUrl?: boolean
   id?: boolean
   teamId?: boolean
   displayName?: boolean
@@ -665,7 +702,7 @@ export type TournamentTeamPlayerSelectScalar = {
   createdAt?: boolean
 }
 
-export type TournamentTeamPlayerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "teamId" | "displayName" | "position" | "jerseyNumber" | "createdAt", ExtArgs["result"]["tournamentTeamPlayer"]>
+export type TournamentTeamPlayerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"photoUrl" | "id" | "teamId" | "displayName" | "position" | "jerseyNumber" | "createdAt", ExtArgs["result"]["tournamentTeamPlayer"]>
 export type TournamentTeamPlayerInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   team?: boolean | Prisma.TournamentTeamDefaultArgs<ExtArgs>
   stats?: boolean | Prisma.TournamentTeamPlayer$statsArgs<ExtArgs>
@@ -685,6 +722,7 @@ export type $TournamentTeamPlayerPayload<ExtArgs extends runtime.Types.Extension
     stats: Prisma.$TournamentGamePlayerStatPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
+    photoUrl: string | null
     id: string
     teamId: string
     displayName: string
@@ -774,8 +812,8 @@ export interface TournamentTeamPlayerDelegate<ExtArgs extends runtime.Types.Exte
    * // Get first 10 TournamentTeamPlayers
    * const tournamentTeamPlayers = await prisma.tournamentTeamPlayer.findMany({ take: 10 })
    * 
-   * // Only select the `id`
-   * const tournamentTeamPlayerWithIdOnly = await prisma.tournamentTeamPlayer.findMany({ select: { id: true } })
+   * // Only select the `photoUrl`
+   * const tournamentTeamPlayerWithPhotoUrlOnly = await prisma.tournamentTeamPlayer.findMany({ select: { photoUrl: true } })
    * 
    */
   findMany<T extends TournamentTeamPlayerFindManyArgs>(args?: Prisma.SelectSubset<T, TournamentTeamPlayerFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TournamentTeamPlayerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -819,9 +857,9 @@ export interface TournamentTeamPlayerDelegate<ExtArgs extends runtime.Types.Exte
    *   ]
    * })
    * 
-   * // Create many TournamentTeamPlayers and only return the `id`
-   * const tournamentTeamPlayerWithIdOnly = await prisma.tournamentTeamPlayer.createManyAndReturn({
-   *   select: { id: true },
+   * // Create many TournamentTeamPlayers and only return the `photoUrl`
+   * const tournamentTeamPlayerWithPhotoUrlOnly = await prisma.tournamentTeamPlayer.createManyAndReturn({
+   *   select: { photoUrl: true },
    *   data: [
    *     // ... provide data here
    *   ]
@@ -910,9 +948,9 @@ export interface TournamentTeamPlayerDelegate<ExtArgs extends runtime.Types.Exte
    *   ]
    * })
    * 
-   * // Update zero or more TournamentTeamPlayers and only return the `id`
-   * const tournamentTeamPlayerWithIdOnly = await prisma.tournamentTeamPlayer.updateManyAndReturn({
-   *   select: { id: true },
+   * // Update zero or more TournamentTeamPlayers and only return the `photoUrl`
+   * const tournamentTeamPlayerWithPhotoUrlOnly = await prisma.tournamentTeamPlayer.updateManyAndReturn({
+   *   select: { photoUrl: true },
    *   where: {
    *     // ... provide filter here
    *   },
@@ -1116,6 +1154,7 @@ export interface Prisma__TournamentTeamPlayerClient<T, Null = never, ExtArgs ext
  * Fields of the TournamentTeamPlayer model
  */
 export interface TournamentTeamPlayerFieldRefs {
+  readonly photoUrl: Prisma.FieldRef<"TournamentTeamPlayer", 'String'>
   readonly id: Prisma.FieldRef<"TournamentTeamPlayer", 'String'>
   readonly teamId: Prisma.FieldRef<"TournamentTeamPlayer", 'String'>
   readonly displayName: Prisma.FieldRef<"TournamentTeamPlayer", 'String'>

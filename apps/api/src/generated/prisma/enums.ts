@@ -216,3 +216,23 @@ export const TournamentSponsorTier = {
 } as const
 
 export type TournamentSponsorTier = (typeof TournamentSponsorTier)[keyof typeof TournamentSponsorTier]
+
+
+export const AuctionStatus = {
+  DRAFT: 'DRAFT',
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED'
+} as const
+
+export type AuctionStatus = (typeof AuctionStatus)[keyof typeof AuctionStatus]
+
+
+export const AuctionItemStatus = {
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED',
+  PAID: 'PAID',
+  FULFILLED: 'FULFILLED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type AuctionItemStatus = (typeof AuctionItemStatus)[keyof typeof AuctionItemStatus]

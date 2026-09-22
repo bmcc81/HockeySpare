@@ -75,6 +75,12 @@ jobs:
     timeout-minutes: 10
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Clean up disk space before deploy
+        run: bash scripts/pi-cleanup.sh
+
       - name: Prepare deployment directory
         run: |
           rm -rf /tmp/hockeyspare-deploy
@@ -121,6 +127,40 @@ jobs:
             /tmp/hockeyspare-deploy/api/ \
             /opt/hockeyspare/apps/api/dist/
 
+      - name: Apply pending Prisma migrations
+        if: ${{ inputs.deploy == true }}
+        # Runs from this job's own checkout ($GITHUB_WORKSPACE), which already has
+        # prisma.config.ts, apps/api/src/prisma/schema.prisma, and apps/api/prisma/migrations
+        # at the deployed ref -- nothing extra needs to be rsynced for this step.
+        # The production DATABASE_URL lives in the .env file the systemd unit loads,
+        # not in this checkout, so it's discovered from the unit and exported here.
+        run: |
+          ENV_FILE=$(systemctl show hockeyspare-api.service -p EnvironmentFile --value 2>/dev/null | sed 's/^-//')
+
+          if [ -z "$ENV_FILE" ] || [ ! -f "$ENV_FILE" ]; then
+            echo "Falling back to the documented default env file path."
+            ENV_FILE=/opt/hockeyspare/apps/api/.env
+          fi
+
+          if [ ! -f "$ENV_FILE" ]; then
+            echo "ERROR: could not locate the hockeyspare-api env file (looked at: $ENV_FILE)." >&2
+            echo "Set DATABASE_URL some other way or fix this step before re-running." >&2
+            exit 1
+          fi
+
+          echo "Loading DATABASE_URL from $ENV_FILE"
+          set -a
+          # shellcheck disable=SC1090
+          source "$ENV_FILE"
+          set +a
+
+          if [ -z "${DATABASE_URL:-}" ]; then
+            echo "ERROR: DATABASE_URL was not set after loading $ENV_FILE." >&2
+            exit 1
+          fi
+
+          npx --yes prisma@7.5.0 migrate deploy
+
       - name: Restart NestJS API
         if: ${{ inputs.deploy == true }}
         run: |
@@ -130,7 +170,7 @@ jobs:
       - name: Health check local API
         if: ${{ inputs.deploy == true }}
         run: |
-          sleep 3
+          sleep 8
 
           curl -fsS http://127.0.0.1:3000/api/requests > /dev/null
           echo "GET /api/requests passed."

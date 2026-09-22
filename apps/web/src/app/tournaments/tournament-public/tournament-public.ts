@@ -1,3 +1,4 @@
+import { PlayerHighlightsComponent } from '../../shared/player-highlights/player-highlights';
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import {
@@ -26,6 +27,7 @@ import {
 } from '@hockeyspare/contracts';
 import { Subscription, interval, switchMap } from 'rxjs';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
+import { AuctionApiService } from '../../core/services/auction-api.service';
 
 type TournamentTab =
   | 'schedule'
@@ -46,14 +48,17 @@ const BANNER_ROTATE_MS = 5000;
 @Component({
   selector: 'app-tournament-public',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [PlayerHighlightsComponent, CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './tournament-public.html',
 })
 export class TournamentPublicComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly tournamentsApi = inject(TournamentsApiService);
+  private readonly auctionApi = inject(AuctionApiService);
   private readonly sanitizer = inject(DomSanitizer);
+
+  auctionActive = signal(false);
 
   private pollSubscription: Subscription | null = null;
   private countdownIntervalId: ReturnType<typeof setInterval> | null = null;
@@ -123,6 +128,14 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
 
     this.loadStandings();
     this.loadLeaders();
+
+    this.auctionApi.getPublic(this.tournamentId).subscribe({
+      next: (view) =>
+        this.auctionActive.set(
+          view.auction.status === 'OPEN' || view.auction.status === 'CLOSED',
+        ),
+      error: () => this.auctionActive.set(false),
+    });
 
     const paymentSessionId =
       this.route.snapshot.queryParamMap.get('paymentSessionId');

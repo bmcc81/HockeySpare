@@ -191,6 +191,7 @@ model User {
   payments           Payment[]
   coOrganizedTournaments   TournamentCoOrganizer[]
   tournamentAuditLogEntries TournamentAuditLogEntry[]
+  auctionBidderProfiles    TournamentAuctionBidder[]
 }
 
 model League {
@@ -285,6 +286,7 @@ model TeamMessage {
 }
 
 model TeamMember {
+  photoUrl      String?
   id            String         @id @default(cuid())
   teamId        String
   userId        String?
@@ -603,6 +605,7 @@ model Tournament {
   volunteerShifts TournamentVolunteerShift[]
   infoListings    TournamentInfoListing[]
   lostFoundItems  TournamentLostFoundItem[]
+  auction         TournamentAuction?
 
   @@index([leagueId])
   @@index([createdById])
@@ -923,6 +926,7 @@ model TournamentBracketMatch {
 }
 
 model TournamentTeamPlayer {
+  photoUrl     String?
   id           String   @id @default(cuid())
   teamId       String
   displayName  String
@@ -1003,4 +1007,121 @@ enum TournamentSponsorTier {
   GOLD
   SILVER
   BRONZE
+}
+
+enum AuctionStatus {
+  DRAFT
+  OPEN
+  CLOSED
+}
+
+enum AuctionItemStatus {
+  OPEN
+  CLOSED
+  PAID
+  FULFILLED
+  CANCELLED
+}
+
+model TournamentAuction {
+  id               String        @id @default(cuid())
+  tournamentId     String        @unique
+  title            String        @default("Silent Auction")
+  description      String?
+  status           AuctionStatus @default(DRAFT)
+  opensAt          DateTime?
+  closesAt         DateTime?
+  antiSnipeMinutes Int           @default(2)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  tournament Tournament                 @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  items      TournamentAuctionItem[]
+  bidders    TournamentAuctionBidder[]
+  payments   TournamentAuctionPayment[]
+}
+
+model TournamentAuctionItem {
+  id                   String            @id @default(cuid())
+  auctionId            String
+  name                 String
+  description          String?
+  imageUrl             String?
+  donorName            String?
+  fairMarketValueCents Int?
+  startingBidCents     Int               @default(0)
+  minIncrementCents    Int               @default(500)
+  buyNowCents          Int?
+  status               AuctionItemStatus @default(OPEN)
+  closesAt             DateTime?
+  sortOrder            Int               @default(0)
+  currentBidCents      Int?
+  winningBidId         String?           @unique
+  paymentId            String?
+  paidAt               DateTime?
+  fulfilledAt          DateTime?
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+
+  auction    TournamentAuction         @relation(fields: [auctionId], references: [id], onDelete: Cascade)
+  bids       TournamentAuctionBid[]    @relation("ItemBids")
+  winningBid TournamentAuctionBid?     @relation("WinningBid", fields: [winningBidId], references: [id], onDelete: SetNull)
+  payment    TournamentAuctionPayment? @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+
+  @@index([auctionId, status])
+  @@index([paymentId])
+}
+
+model TournamentAuctionBidder {
+  id         String    @id @default(cuid())
+  auctionId  String
+  name       String
+  email      String
+  phone      String?
+  userId     String?
+  claimToken String    @unique
+  createdAt  DateTime  @default(now())
+
+  auction  TournamentAuction         @relation(fields: [auctionId], references: [id], onDelete: Cascade)
+  user     User?                     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  bids     TournamentAuctionBid[]
+  payments TournamentAuctionPayment[]
+
+  @@unique([auctionId, email])
+  @@index([auctionId])
+}
+
+model TournamentAuctionBid {
+  id          String   @id @default(cuid())
+  itemId      String
+  bidderId    String
+  amountCents Int
+  createdAt   DateTime @default(now())
+
+  item        TournamentAuctionItem   @relation("ItemBids", fields: [itemId], references: [id], onDelete: Cascade)
+  bidder      TournamentAuctionBidder @relation(fields: [bidderId], references: [id], onDelete: Cascade)
+  winningItem TournamentAuctionItem?  @relation("WinningBid")
+
+  @@index([itemId, amountCents])
+  @@index([bidderId])
+}
+
+model TournamentAuctionPayment {
+  id                      String        @id @default(cuid())
+  auctionId               String
+  bidderId                String
+  amountCents             Int
+  currency                String        @default("usd")
+  status                  PaymentStatus @default(PENDING)
+  stripeCheckoutSessionId String?       @unique
+  stripePaymentIntentId   String?       @unique
+  createdAt               DateTime      @default(now())
+  updatedAt               DateTime      @updatedAt
+
+  auction TournamentAuction       @relation(fields: [auctionId], references: [id], onDelete: Cascade)
+  bidder  TournamentAuctionBidder @relation(fields: [bidderId], references: [id], onDelete: Cascade)
+  items   TournamentAuctionItem[]
+
+  @@index([auctionId])
+  @@index([bidderId])
 }

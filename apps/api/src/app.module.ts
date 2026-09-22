@@ -16,6 +16,7 @@ import { LeaguesModule } from './leagues/leagues.module';
 import { ScoreSheetsModule } from './modules/score-sheets/score-sheets.module';
 import { AiModule } from './ai/ai.module';
 import { TournamentsModule } from './modules/tournaments/tournaments.module';
+import { TournamentAuctionsModule } from './modules/tournament-auctions/tournament-auctions.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { TournamentsModule } from './modules/tournaments/tournaments.module';
     LeaguesModule,
     AiModule,
     TournamentsModule,
+    TournamentAuctionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

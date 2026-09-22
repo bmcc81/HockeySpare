@@ -167,6 +167,12 @@
           Register
         </button>
       </li>
+
+      <li class="nav-item" *ngIf="auctionActive()">
+        <a class="nav-link" [routerLink]="['/tournaments', tournamentId, 'auction']">
+          Auction
+        </a>
+      </li>
     </ul>
 
     <div class="d-flex flex-wrap gap-3 mb-3">
@@ -495,53 +501,7 @@
       </div>
     </div>
 
-    <div *ngIf="activeTab() === 'leaders'">
-      <div *ngIf="leadersLoading()" class="text-secondary">
-        Loading leaders...
-      </div>
-
-      <div
-        *ngIf="!leadersLoading() && leaders().length === 0"
-        class="text-secondary"
-      >
-        No player stats yet. Leaders appear once games have stats entered.
-      </div>
-
-      <div
-        *ngIf="!leadersLoading() && leaders().length > 0 && filteredLeaders().length === 0"
-        class="text-secondary"
-      >
-        No players match your search.
-      </div>
-
-      <div class="table-responsive" *ngIf="!leadersLoading() && filteredLeaders().length > 0">
-        <table class="table align-middle mb-0">
-          <thead>
-            <tr>
-              <th>Player</th>
-              <th>Team</th>
-              <th>GP</th>
-              <th>G</th>
-              <th>A</th>
-              <th>PTS</th>
-              <th>PIM</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr *ngFor="let leader of filteredLeaders(); trackBy: trackByLeaderId">
-              <td class="fw-semibold">{{ leader.displayName }}</td>
-              <td>{{ leader.teamName }}</td>
-              <td>{{ leader.gamesPlayed }}</td>
-              <td>{{ leader.goals }}</td>
-              <td>{{ leader.assists }}</td>
-              <td class="fw-bold">{{ leader.points }}</td>
-              <td>{{ leader.penaltyMins }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <app-player-highlights *ngIf="activeTab() === 'leaders'" scope="tournament" [competitionId]="tournamentId" [searchTerm]="searchQuery()" [refreshKey]="tournament()"></app-player-highlights>
 
     <div *ngIf="activeTab() === 'rules'">
       <p class="mb-3" *ngIf="t.rulebookUrl">

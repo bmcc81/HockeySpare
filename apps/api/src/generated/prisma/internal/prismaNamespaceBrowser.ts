@@ -94,7 +94,12 @@ export const ModelName = {
   TournamentTeamPlayer: 'TournamentTeamPlayer',
   TournamentGamePlayerStat: 'TournamentGamePlayerStat',
   TournamentPayment: 'TournamentPayment',
-  TournamentSponsor: 'TournamentSponsor'
+  TournamentSponsor: 'TournamentSponsor',
+  TournamentAuction: 'TournamentAuction',
+  TournamentAuctionItem: 'TournamentAuctionItem',
+  TournamentAuctionBidder: 'TournamentAuctionBidder',
+  TournamentAuctionBid: 'TournamentAuctionBid',
+  TournamentAuctionPayment: 'TournamentAuctionPayment'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -245,6 +250,7 @@ export type TeamMessageScalarFieldEnum = (typeof TeamMessageScalarFieldEnum)[key
 
 
 export const TeamMemberScalarFieldEnum = {
+  photoUrl: 'photoUrl',
   id: 'id',
   teamId: 'teamId',
   userId: 'userId',
@@ -718,6 +724,7 @@ export type TournamentBracketMatchScalarFieldEnum = (typeof TournamentBracketMat
 
 
 export const TournamentTeamPlayerScalarFieldEnum = {
+  photoUrl: 'photoUrl',
   id: 'id',
   teamId: 'teamId',
   displayName: 'displayName',
@@ -771,6 +778,89 @@ export const TournamentSponsorScalarFieldEnum = {
 } as const
 
 export type TournamentSponsorScalarFieldEnum = (typeof TournamentSponsorScalarFieldEnum)[keyof typeof TournamentSponsorScalarFieldEnum]
+
+
+export const TournamentAuctionScalarFieldEnum = {
+  id: 'id',
+  tournamentId: 'tournamentId',
+  title: 'title',
+  description: 'description',
+  status: 'status',
+  opensAt: 'opensAt',
+  closesAt: 'closesAt',
+  antiSnipeMinutes: 'antiSnipeMinutes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TournamentAuctionScalarFieldEnum = (typeof TournamentAuctionScalarFieldEnum)[keyof typeof TournamentAuctionScalarFieldEnum]
+
+
+export const TournamentAuctionItemScalarFieldEnum = {
+  id: 'id',
+  auctionId: 'auctionId',
+  name: 'name',
+  description: 'description',
+  imageUrl: 'imageUrl',
+  donorName: 'donorName',
+  fairMarketValueCents: 'fairMarketValueCents',
+  startingBidCents: 'startingBidCents',
+  minIncrementCents: 'minIncrementCents',
+  buyNowCents: 'buyNowCents',
+  status: 'status',
+  closesAt: 'closesAt',
+  sortOrder: 'sortOrder',
+  currentBidCents: 'currentBidCents',
+  winningBidId: 'winningBidId',
+  paymentId: 'paymentId',
+  paidAt: 'paidAt',
+  fulfilledAt: 'fulfilledAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TournamentAuctionItemScalarFieldEnum = (typeof TournamentAuctionItemScalarFieldEnum)[keyof typeof TournamentAuctionItemScalarFieldEnum]
+
+
+export const TournamentAuctionBidderScalarFieldEnum = {
+  id: 'id',
+  auctionId: 'auctionId',
+  name: 'name',
+  email: 'email',
+  phone: 'phone',
+  userId: 'userId',
+  claimToken: 'claimToken',
+  createdAt: 'createdAt'
+} as const
+
+export type TournamentAuctionBidderScalarFieldEnum = (typeof TournamentAuctionBidderScalarFieldEnum)[keyof typeof TournamentAuctionBidderScalarFieldEnum]
+
+
+export const TournamentAuctionBidScalarFieldEnum = {
+  id: 'id',
+  itemId: 'itemId',
+  bidderId: 'bidderId',
+  amountCents: 'amountCents',
+  createdAt: 'createdAt'
+} as const
+
+export type TournamentAuctionBidScalarFieldEnum = (typeof TournamentAuctionBidScalarFieldEnum)[keyof typeof TournamentAuctionBidScalarFieldEnum]
+
+
+export const TournamentAuctionPaymentScalarFieldEnum = {
+  id: 'id',
+  auctionId: 'auctionId',
+  bidderId: 'bidderId',
+  amountCents: 'amountCents',
+  currency: 'currency',
+  status: 'status',
+  stripeCheckoutSessionId: 'stripeCheckoutSessionId',
+  stripePaymentIntentId: 'stripePaymentIntentId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TournamentAuctionPaymentScalarFieldEnum = (typeof TournamentAuctionPaymentScalarFieldEnum)[keyof typeof TournamentAuctionPaymentScalarFieldEnum]
 
 
 export const SortOrder = {

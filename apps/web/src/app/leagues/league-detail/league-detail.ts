@@ -1,3 +1,4 @@
+import { PlayerHighlightsComponent } from '../../shared/player-highlights/player-highlights';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, inject, signal, computed } from '@angular/core';
 import {
@@ -123,7 +124,7 @@ function parseRosterText(text: string): ParsedRosterRow[] {
 @Component({
   selector: 'app-league-detail',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [PlayerHighlightsComponent, CommonModule, ReactiveFormsModule, RouterLink],
   providers: [DatePipe],
   templateUrl: './league-detail.html',
   styleUrl: './league-detail.scss',

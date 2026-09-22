@@ -1,0 +1,182 @@
+<section class="container py-4">
+  <ng-container *ngIf="!loading(); else loadingTpl">
+    <ng-container *ngIf="!error(); else errorTpl">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <div>
+          <h1 class="h3 mb-1">{{ view()?.auction?.title }}</h1>
+          <p class="text-muted mb-0" *ngIf="view()?.auction?.description">
+            {{ view()?.auction?.description }}
+          </p>
+        </div>
+        <a class="btn btn-outline-secondary btn-sm" [routerLink]="['/tournaments', tournamentId]">
+          Back to tournament
+        </a>
+      </div>
+
+      <div class="alert alert-secondary" *ngIf="view()?.auction?.status === 'DRAFT'">
+        This auction has not opened yet. Check back soon.
+      </div>
+      <div class="alert alert-warning" *ngIf="view()?.auction?.status === 'CLOSED'">
+        This auction has closed. Winning bids are shown below.
+      </div>
+
+      <!-- Open items -->
+      <div class="row g-3" *ngIf="openItems().length > 0">
+        <div class="col-12 col-md-6 col-lg-4" *ngFor="let item of openItems(); trackBy: trackById">
+          <div class="card h-100">
+            <img
+              *ngIf="item.imageUrl"
+              [src]="item.imageUrl"
+              [alt]="item.name"
+              class="card-img-top"
+              style="aspect-ratio: 4 / 3; object-fit: cover"
+            />
+            <div class="card-body d-flex flex-column">
+              <h2 class="h5 mb-1">{{ item.name }}</h2>
+              <p class="small text-muted mb-2" *ngIf="item.donorName">
+                Donated by {{ item.donorName }}
+              </p>
+              <p class="small mb-2" *ngIf="item.description">{{ item.description }}</p>
+
+              <div class="mt-auto">
+                <div class="d-flex justify-content-between align-items-baseline">
+                  <span class="fw-bold fs-5">
+                    {{ item.currentBidCents / 100 | currency }}
+                  </span>
+                  <span class="small text-muted">
+                    {{ item.bidCount }} bid{{ item.bidCount === 1 ? '' : 's' }}
+                  </span>
+                </div>
+                <div class="small text-muted mb-1" *ngIf="item.leaderName">
+                  Leading: {{ item.leaderName }}
+                </div>
+                <div class="small mb-1" *ngIf="item.fairMarketValueCents">
+                  Value: {{ item.fairMarketValueCents / 100 | currency }}
+                </div>
+                <div class="small text-danger mb-2" *ngIf="timeLeft(item) as tl">{{ tl }}</div>
+
+                <div
+                  class="alert py-2 px-2 small mb-2"
+                  *ngIf="lastResult() as r"
+                  [class.alert-success]="r.itemId === item.id && (r.leading || r.wonViaBuyNow)"
+                  [class.alert-warning]="r.itemId === item.id && !r.leading && !r.wonViaBuyNow"
+                  [hidden]="r.itemId !== item.id"
+                >
+                  <ng-container *ngIf="r.wonViaBuyNow">You bought this now! </ng-container>
+                  <ng-container *ngIf="!r.wonViaBuyNow && r.leading">You're the top bidder. </ng-container>
+                  <ng-container *ngIf="!r.wonViaBuyNow && !r.leading">
+                    Your max was placed but someone is still ahead.
+                  </ng-container>
+                  <a [href]="r.claimUrl">Track your bids</a>
+                </div>
+
+                <div class="d-grid gap-2" *ngIf="auctionOpen()">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    (click)="toggleBid(item)"
+                  >
+                    {{ openBidItemId() === item.id ? 'Cancel' : 'Place bid' }}
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-outline-success btn-sm"
+                    *ngIf="item.buyNowCents"
+                    (click)="buyNow(item)"
+                  >
+                    Buy now {{ item.buyNowCents / 100 | currency }}
+                  </button>
+                </div>
+
+                <form
+                  *ngIf="openBidItemId() === item.id"
+                  [formGroup]="bidForm"
+                  (ngSubmit)="submitBid(item)"
+                  class="mt-2 border-top pt-2"
+                >
+                  <div class="mb-2">
+                    <label class="form-label small mb-0">Your name</label>
+                    <input class="form-control form-control-sm" formControlName="bidderName" />
+                  </div>
+                  <div class="mb-2">
+                    <label class="form-label small mb-0">Email</label>
+                    <input class="form-control form-control-sm" type="email" formControlName="bidderEmail" />
+                  </div>
+                  <div class="mb-2">
+                    <label class="form-label small mb-0">Phone (optional)</label>
+                    <input class="form-control form-control-sm" formControlName="bidderPhone" />
+                  </div>
+                  <div class="mb-2">
+                    <label class="form-label small mb-0">Your maximum bid ($)</label>
+                    <input
+                      class="form-control form-control-sm"
+                      type="number"
+                      min="1"
+                      step="1"
+                      formControlName="amountDollars"
+                    />
+                    <div class="btn-group btn-group-sm mt-1" role="group">
+                      <button type="button" class="btn btn-outline-secondary" (click)="quickBid(item, 0)">
+                        Min
+                      </button>
+                      <button type="button" class="btn btn-outline-secondary" (click)="quickBid(item, 1)">
+                        +1
+                      </button>
+                      <button type="button" class="btn btn-outline-secondary" (click)="quickBid(item, 4)">
+                        +5
+                      </button>
+                    </div>
+                    <p class="form-text mb-0">
+                      Minimum {{ item.minNextBidCents / 100 | currency }}. We bid up to your
+                      max only as needed.
+                    </p>
+                  </div>
+                  <div class="text-danger small mb-2" *ngIf="bidError()">{{ bidError() }}</div>
+                  <button class="btn btn-primary btn-sm w-100" type="submit" [disabled]="submitting()">
+                    {{ submitting() ? 'Placing…' : 'Confirm bid' }}
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-muted" *ngIf="openItems().length === 0 && closedItems().length === 0">
+        No auction items yet.
+      </p>
+
+      <!-- Closed / results -->
+      <div *ngIf="closedItems().length > 0" class="mt-4">
+        <h2 class="h5">Closed items</h2>
+        <div class="table-responsive">
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th class="text-end">Final bid</th>
+                <th>Winner</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of closedItems(); trackBy: trackById">
+                <td>{{ item.name }}</td>
+                <td class="text-end">
+                  {{ item.bidCount > 0 ? (item.currentBidCents / 100 | currency) : 'No bids' }}
+                </td>
+                <td>{{ item.leaderName || '—' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <ng-template #loadingTpl>
+    <p class="text-muted">Loading auction…</p>
+  </ng-template>
+  <ng-template #errorTpl>
+    <div class="alert alert-danger">{{ error() }}</div>
+  </ng-template>
+</section>

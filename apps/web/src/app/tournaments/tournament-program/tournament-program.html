@@ -110,8 +110,8 @@
       />
       <div class="program-title">{{ t.name }}</div>
       <div *ngIf="t.startDate || t.endDate">
-        {{ t.startDate | date: 'mediumDate' }}
-        <ng-container *ngIf="t.endDate"> &ndash; {{ t.endDate | date: 'mediumDate' }}</ng-container>
+        {{ t.startDate | date: 'mediumDate' : 'UTC' }}
+        <ng-container *ngIf="t.endDate"> &ndash; {{ t.endDate | date: 'mediumDate' : 'UTC' }}</ng-container>
       </div>
       <p class="mt-2" *ngIf="t.description">{{ t.description }}</p>
     </div>
@@ -146,7 +146,11 @@
           <tbody>
             <tr *ngFor="let game of group.games; trackBy: trackByGameId">
               <td>{{ game.startsAt | date: 'shortTime' }}</td>
-              <td>{{ game.homeTeamName }} vs {{ game.awayTeamName }}</td>
+              <td>
+                <span class="text-secondary" *ngIf="game.gameNumber">{{ game.gameNumber }} &middot; </span>
+                <ng-container *ngIf="game.stage === 'EVENT'; else programMatchup">{{ game.homeTeamName }}</ng-container>
+                <ng-template #programMatchup>{{ game.homeTeamName }} vs {{ game.awayTeamName }}</ng-template>
+              </td>
               <td>{{ game.arenaName || 'TBD' }}</td>
               <td>
                 <span *ngFor="let assignment of game.refereeAssignments; let last = last">

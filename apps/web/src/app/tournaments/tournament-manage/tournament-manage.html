@@ -416,6 +416,34 @@
                 <input class="form-control" formControlName="arenaName" />
               </div>
 
+              <div class="col-6 col-md-2">
+                <label class="form-label">Game #</label>
+                <input
+                  class="form-control"
+                  formControlName="gameNumber"
+                  placeholder="e.g. A1"
+                />
+              </div>
+
+              <div class="col-6 col-md-2">
+                <label class="form-label">Division</label>
+                <input
+                  class="form-control"
+                  formControlName="division"
+                  placeholder="e.g. 35B"
+                />
+              </div>
+
+              <div class="col-12 col-md-3">
+                <label class="form-label">Type</label>
+                <select class="form-select" formControlName="stage">
+                  <option value="ROUND_ROBIN">Round robin (counts in standings)</option>
+                  <option value="PLAYOFF">Playoff</option>
+                  <option value="EXHIBITION">Exhibition</option>
+                  <option value="EVENT">Event (ceremony, no teams)</option>
+                </select>
+              </div>
+
               <div class="col-12 col-md-6">
                 <label class="form-label">Notes</label>
                 <input class="form-control" formControlName="notes" />
@@ -476,7 +504,13 @@
                 <tbody>
                   <ng-container *ngFor="let game of t.games; trackBy: trackByGameId">
                     <tr>
-                      <td>{{ game.homeTeamName }} vs {{ game.awayTeamName }}</td>
+                      <td>
+                        <span class="badge text-bg-secondary me-1" *ngIf="game.gameNumber">{{ game.gameNumber }}</span>
+                        <ng-container *ngIf="game.stage === 'EVENT'; else manageMatchup">{{ game.homeTeamName }}</ng-container>
+                        <ng-template #manageMatchup>{{ game.homeTeamName }} vs {{ game.awayTeamName }}</ng-template>
+                        <span class="badge text-bg-warning ms-1" *ngIf="game.stage === 'EXHIBITION'">Exhibition</span>
+                        <span class="badge text-bg-info ms-1" *ngIf="game.stage === 'PLAYOFF'">Playoff</span>
+                      </td>
                       <td>{{ game.startsAt | date: 'short' }}</td>
                       <td>{{ game.arenaName || 'TBD' }}</td>
                       <td>

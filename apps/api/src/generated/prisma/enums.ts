@@ -192,6 +192,16 @@ export const TournamentLostFoundStatus = {
 export type TournamentLostFoundStatus = (typeof TournamentLostFoundStatus)[keyof typeof TournamentLostFoundStatus]
 
 
+export const TournamentGameStage = {
+  ROUND_ROBIN: 'ROUND_ROBIN',
+  PLAYOFF: 'PLAYOFF',
+  EXHIBITION: 'EXHIBITION',
+  EVENT: 'EVENT'
+} as const
+
+export type TournamentGameStage = (typeof TournamentGameStage)[keyof typeof TournamentGameStage]
+
+
 export const TournamentRegistrationMode = {
   OPEN: 'OPEN',
   WAITLIST: 'WAITLIST',

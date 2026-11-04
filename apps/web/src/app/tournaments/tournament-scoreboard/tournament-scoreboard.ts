@@ -69,7 +69,12 @@ export class TournamentScoreboardComponent implements OnInit, OnDestroy {
     const now = Date.now();
 
     return (this.tournament()?.games ?? [])
-      .filter((g) => g.status === 'SCHEDULED' && new Date(g.startsAt).getTime() >= now)
+      .filter(
+        (g) =>
+          g.status === 'SCHEDULED' &&
+          g.stage !== 'EVENT' &&
+          new Date(g.startsAt).getTime() >= now,
+      )
       .sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime())
       .slice(0, 6);
   }

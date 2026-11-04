@@ -308,10 +308,13 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
         teams.filter((t) => t.division === division).map((t) => t.id),
       );
 
-      games = games.filter(
-        (game) =>
-          (game.homeTeamId && divisionTeamIds.has(game.homeTeamId)) ||
-          (game.awayTeamId && divisionTeamIds.has(game.awayTeamId)),
+      // A game's own division wins (placeholder playoff slots and events
+      // have no team ids yet); fall back to the teams for older data.
+      games = games.filter((game) =>
+        game.division
+          ? game.division === division
+          : (game.homeTeamId && divisionTeamIds.has(game.homeTeamId)) ||
+            (game.awayTeamId && divisionTeamIds.has(game.awayTeamId)),
       );
     }
 
@@ -327,6 +330,47 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
         game.awayTeamName.toLowerCase().includes(query) ||
         (game.arenaName ?? '').toLowerCase().includes(query),
     );
+  }
+
+  /** The filtered schedule, grouped under one heading per calendar day. */
+  gamesByDay(): { day: string; games: TournamentGame[] }[] {
+    const sorted = [...this.filteredGames()].sort(
+      (a, b) =>
+        new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime(),
+    );
+
+    const groups = new Map<string, TournamentGame[]>();
+
+    for (const game of sorted) {
+      const day = new Date(game.startsAt).toLocaleDateString(undefined, {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+      });
+      const list = groups.get(day) ?? [];
+      list.push(game);
+      groups.set(day, list);
+    }
+
+    return Array.from(groups.entries()).map(([day, games]) => ({
+      day,
+      games,
+    }));
+  }
+
+  hasReferees(): boolean {
+    return (this.tournament()?.games ?? []).some(
+      (game) => (game.refereeAssignments?.length ?? 0) > 0,
+    );
+  }
+
+  hasLivestreams(): boolean {
+    return (this.tournament()?.games ?? []).some((game) => !!game.livestreamUrl);
+  }
+
+  /** Game, Time, Division, Matchup, Arena, Score + the optional columns. */
+  scheduleColumnCount(): number {
+    return 6 + (this.hasReferees() ? 1 : 0) + (this.hasLivestreams() ? 1 : 0);
   }
 
   filteredTeams(): TournamentTeam[] {

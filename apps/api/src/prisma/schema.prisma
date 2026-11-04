@@ -810,6 +810,13 @@ enum TournamentLostFoundStatus {
   CLAIMED
 }
 
+enum TournamentGameStage {
+  ROUND_ROBIN
+  PLAYOFF
+  EXHIBITION
+  EVENT
+}
+
 model TournamentGame {
   id           String               @id @default(cuid())
   tournamentId String
@@ -817,6 +824,9 @@ model TournamentGame {
   awayTeamName String
   homeTeamId   String?
   awayTeamId   String?
+  gameNumber   String?
+  division     String?
+  stage        TournamentGameStage  @default(ROUND_ROBIN)
   startsAt     DateTime
   arenaName    String?
   notes        String?

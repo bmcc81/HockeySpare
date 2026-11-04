@@ -15,8 +15,8 @@
           {{ t.description }}
         </p>
         <p class="text-secondary mb-0" *ngIf="t.startDate || t.endDate">
-          {{ t.startDate | date: 'mediumDate' }}
-          <ng-container *ngIf="t.endDate"> – {{ t.endDate | date: 'mediumDate' }}</ng-container>
+          {{ t.startDate | date: 'mediumDate' : 'UTC' }}
+          <ng-container *ngIf="t.endDate"> – {{ t.endDate | date: 'mediumDate' : 'UTC' }}</ng-container>
         </p>
         <p class="mb-0 mt-1" *ngIf="countdownText() as countdown">
           <span class="badge text-bg-primary">Starts in {{ countdown }}</span>
@@ -216,59 +216,89 @@
         <table class="table align-middle mb-0">
           <thead>
             <tr>
-              <th>Matchup</th>
+              <th>Game</th>
               <th>Time</th>
+              <th>Division</th>
+              <th>Matchup</th>
               <th>Arena</th>
               <th>Score</th>
-              <th>Referees</th>
-              <th></th>
+              <th *ngIf="hasReferees()">Referees</th>
+              <th *ngIf="hasLivestreams()"></th>
             </tr>
           </thead>
 
-          <tbody>
-            <tr
-              *ngFor="let game of filteredGames(); trackBy: trackByGameId"
-              [id]="'game-' + game.id"
-              [class.table-warning]="highlightedGameId() === game.id"
-            >
-              <td class="fw-semibold">
-                {{ game.homeTeamName }} vs {{ game.awayTeamName }}
-              </td>
-              <td>{{ game.startsAt | date: 'short' }}</td>
-              <td>{{ game.arenaName || 'TBD' }}</td>
-              <td>
-                <ng-container *ngIf="game.status === 'SCHEDULED'">
-                  <span class="text-secondary">—</span>
-                </ng-container>
-                <ng-container *ngIf="game.status !== 'SCHEDULED'">
-                  {{ game.homeScore ?? 0 }} - {{ game.awayScore ?? 0 }}
-                  <span
-                    class="badge rounded-pill ms-1"
-                    [class.text-bg-danger]="game.status === 'LIVE'"
-                    [class.text-bg-secondary]="game.status === 'FINAL'"
-                  >
-                    {{ game.status === 'LIVE' ? 'LIVE' : 'Final' }}
-                  </span>
-                </ng-container>
-              </td>
-              <td class="small text-secondary">
-                <ng-container *ngIf="game.refereeAssignments && game.refereeAssignments.length > 0; else noRefs">
-                  <span *ngFor="let assignment of game.refereeAssignments; let last = last">{{ assignment.referee.name }}{{ last ? '' : ', ' }}</span>
-                </ng-container>
-                <ng-template #noRefs>—</ng-template>
-              </td>
-              <td>
-                <a
-                  *ngIf="game.livestreamUrl"
-                  [href]="game.livestreamUrl"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="btn btn-sm btn-outline-danger"
-                >
-                  Watch Live
-                </a>
-              </td>
+          <tbody *ngFor="let group of gamesByDay()">
+            <tr class="table-light">
+              <th [attr.colspan]="scheduleColumnCount()" class="text-uppercase small text-secondary">
+                {{ group.day }}
+              </th>
             </tr>
+
+            <ng-container *ngFor="let game of group.games; trackBy: trackByGameId">
+              <tr
+                *ngIf="game.stage === 'EVENT'"
+                [id]="'game-' + game.id"
+                class="table-info"
+                [class.table-warning]="highlightedGameId() === game.id"
+              >
+                <td></td>
+                <td class="text-nowrap">{{ game.startsAt | date: 'shortTime' }}</td>
+                <td [attr.colspan]="scheduleColumnCount() - 2" class="fw-semibold">
+                  {{ game.homeTeamName }}
+                  <span class="fw-normal text-secondary" *ngIf="game.arenaName"> &middot; {{ game.arenaName }}</span>
+                </td>
+              </tr>
+
+              <tr
+                *ngIf="game.stage !== 'EVENT'"
+                [id]="'game-' + game.id"
+                [class.table-warning]="highlightedGameId() === game.id"
+              >
+                <td class="text-secondary small text-nowrap">{{ game.gameNumber || '' }}</td>
+                <td class="text-nowrap">{{ game.startsAt | date: 'shortTime' }}</td>
+                <td>
+                  <span class="badge text-bg-light border" *ngIf="game.division">{{ game.division }}</span>
+                </td>
+                <td class="fw-semibold">
+                  {{ game.homeTeamName }} vs {{ game.awayTeamName }}
+                  <span class="badge text-bg-warning ms-1" *ngIf="game.stage === 'EXHIBITION'">Exhibition</span>
+                  <span class="badge text-bg-info ms-1" *ngIf="game.stage === 'PLAYOFF'">Playoff</span>
+                </td>
+                <td>{{ game.arenaName || 'TBD' }}</td>
+                <td class="text-nowrap">
+                  <ng-container *ngIf="game.status === 'SCHEDULED'">
+                    <span class="text-secondary">—</span>
+                  </ng-container>
+                  <ng-container *ngIf="game.status !== 'SCHEDULED'">
+                    {{ game.homeScore ?? 0 }} - {{ game.awayScore ?? 0 }}
+                    <span
+                      class="badge rounded-pill ms-1"
+                      [class.text-bg-danger]="game.status === 'LIVE'"
+                      [class.text-bg-secondary]="game.status === 'FINAL'"
+                    >
+                      {{ game.status === 'LIVE' ? 'LIVE' : 'Final' }}
+                    </span>
+                  </ng-container>
+                </td>
+                <td *ngIf="hasReferees()" class="small text-secondary">
+                  <ng-container *ngIf="game.refereeAssignments && game.refereeAssignments.length > 0; else noRefs">
+                    <span *ngFor="let assignment of game.refereeAssignments; let last = last">{{ assignment.referee.name }}{{ last ? '' : ', ' }}</span>
+                  </ng-container>
+                  <ng-template #noRefs>—</ng-template>
+                </td>
+                <td *ngIf="hasLivestreams()">
+                  <a
+                    *ngIf="game.livestreamUrl"
+                    [href]="game.livestreamUrl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn btn-sm btn-outline-danger"
+                  >
+                    Watch Live
+                  </a>
+                </td>
+              </tr>
+            </ng-container>
           </tbody>
         </table>
       </div>

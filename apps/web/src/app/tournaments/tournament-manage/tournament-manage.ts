@@ -21,6 +21,7 @@ import {
   TournamentCoOrganizer,
   TournamentGame,
   TournamentGamePlayerStat,
+  TournamentGameStage,
   TournamentInfoListing,
   TournamentInfoListingCategory,
   TournamentLostFoundItem,
@@ -225,7 +226,12 @@ export class TournamentManageComponent implements OnInit {
     homeTeamId: [''],
     awayTeamId: [''],
     homeTeamName: ['', Validators.required],
-    awayTeamName: ['', Validators.required],
+    // Optional at the form level because an EVENT (e.g. an opening
+    // ceremony) has only one name; saveGame() enforces it for real games.
+    awayTeamName: [''],
+    gameNumber: [''],
+    division: [''],
+    stage: ['ROUND_ROBIN' as TournamentGameStage],
     startsAt: ['', Validators.required],
     arenaName: [''],
     notes: [''],
@@ -397,12 +403,28 @@ export class TournamentManageComponent implements OnInit {
     return value.slice(0, 10);
   }
 
+  /**
+   * Dates come back from the API as UTC ISO strings, but a datetime-local
+   * input is wall-clock time in the browser's zone. Slicing the UTC string
+   * (the old behaviour) showed the wrong hour and shifted the time on save.
+   */
   private toDateTimeInputValue(value?: string | null): string {
     if (!value) {
       return '';
     }
 
-    return value.slice(0, 16);
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+      return '';
+    }
+
+    const pad = (n: number) => String(n).padStart(2, '0');
+
+    return (
+      `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}` +
+      `T${pad(date.getHours())}:${pad(date.getMinutes())}`
+    );
   }
 
   load(): void {
@@ -730,6 +752,9 @@ export class TournamentManageComponent implements OnInit {
       awayTeamId: '',
       homeTeamName: '',
       awayTeamName: '',
+      gameNumber: '',
+      division: '',
+      stage: 'ROUND_ROBIN',
       startsAt: '',
       arenaName: '',
       notes: '',
@@ -746,7 +771,10 @@ export class TournamentManageComponent implements OnInit {
       awayTeamId: game.awayTeamId ?? '',
       homeTeamName: game.homeTeamName,
       awayTeamName: game.awayTeamName,
-      startsAt: game.startsAt.slice(0, 16),
+      gameNumber: game.gameNumber ?? '',
+      division: game.division ?? '',
+      stage: game.stage ?? 'ROUND_ROBIN',
+      startsAt: this.toDateTimeInputValue(game.startsAt),
       arenaName: game.arenaName ?? '',
       notes: game.notes ?? '',
       livestreamUrl: game.livestreamUrl ?? '',
@@ -765,11 +793,20 @@ export class TournamentManageComponent implements OnInit {
     }
 
     const value = this.gameForm.getRawValue();
+
+    if (value.stage !== 'EVENT' && !value.awayTeamName.trim()) {
+      this.gameError.set('Enter both team names (or choose the Event stage).');
+      return;
+    }
+
     const payload = {
       homeTeamName: value.homeTeamName.trim(),
       awayTeamName: value.awayTeamName.trim(),
       homeTeamId: value.homeTeamId || null,
       awayTeamId: value.awayTeamId || null,
+      gameNumber: value.gameNumber.trim() || null,
+      division: value.division.trim() || null,
+      stage: value.stage,
       startsAt: new Date(value.startsAt).toISOString(),
       arenaName: value.arenaName.trim() || null,
       notes: value.notes.trim() || null,

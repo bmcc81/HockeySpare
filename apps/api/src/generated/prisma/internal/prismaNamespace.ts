@@ -4645,6 +4645,9 @@ export const TournamentGameScalarFieldEnum = {
   awayTeamName: 'awayTeamName',
   homeTeamId: 'homeTeamId',
   awayTeamId: 'awayTeamId',
+  gameNumber: 'gameNumber',
+  division: 'division',
+  stage: 'stage',
   startsAt: 'startsAt',
   arenaName: 'arenaName',
   notes: 'notes',
@@ -5235,6 +5238,20 @@ export type EnumTournamentLostFoundStatusFieldRefInput<$PrismaModel> = FieldRefI
  * Reference to a field of type 'TournamentLostFoundStatus[]'
  */
 export type ListEnumTournamentLostFoundStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TournamentLostFoundStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'TournamentGameStage'
+ */
+export type EnumTournamentGameStageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TournamentGameStage'>
+    
+
+
+/**
+ * Reference to a field of type 'TournamentGameStage[]'
+ */
+export type ListEnumTournamentGameStageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TournamentGameStage[]'>
     
 
 

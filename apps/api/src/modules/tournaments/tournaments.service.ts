@@ -399,6 +399,9 @@ export class TournamentsService {
         awayTeamName,
         homeTeamId: dto.homeTeamId || null,
         awayTeamId: dto.awayTeamId || null,
+        gameNumber: dto.gameNumber?.trim() || null,
+        division: dto.division?.trim() || null,
+        stage: dto.stage ?? 'ROUND_ROBIN',
         startsAt: new Date(dto.startsAt),
         arenaName: dto.arenaName?.trim() || null,
         notes: dto.notes?.trim() || null,
@@ -484,6 +487,13 @@ export class TournamentsService {
         ...(dto.awayTeamId !== undefined
           ? { awayTeamId: dto.awayTeamId || null }
           : {}),
+        ...(dto.gameNumber !== undefined
+          ? { gameNumber: dto.gameNumber?.trim() || null }
+          : {}),
+        ...(dto.division !== undefined
+          ? { division: dto.division?.trim() || null }
+          : {}),
+        ...(dto.stage !== undefined ? { stage: dto.stage } : {}),
         ...(dto.startsAt !== undefined
           ? { startsAt: new Date(dto.startsAt) }
           : {}),
@@ -1671,6 +1681,9 @@ export class TournamentsService {
       where: {
         tournamentId,
         status: 'FINAL',
+        // Round-robin table only: playoff, exhibition and ceremony games
+        // must not feed the standings.
+        stage: 'ROUND_ROBIN',
         homeScore: { not: null },
         awayScore: { not: null },
         ...(divisionTeamIds

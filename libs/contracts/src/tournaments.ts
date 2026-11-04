@@ -86,6 +86,16 @@ export interface TournamentGameRefereeAssignment {
   };
 }
 
+/**
+ * ROUND_ROBIN feeds the standings; PLAYOFF, EXHIBITION and EVENT (a
+ * ceremony or other non-game schedule entry) do not.
+ */
+export type TournamentGameStage =
+  | 'ROUND_ROBIN'
+  | 'PLAYOFF'
+  | 'EXHIBITION'
+  | 'EVENT';
+
 export interface TournamentGame {
   id: string;
   tournamentId: string;
@@ -93,6 +103,9 @@ export interface TournamentGame {
   awayTeamName: string;
   homeTeamId?: string | null;
   awayTeamId?: string | null;
+  gameNumber?: string | null;
+  division?: string | null;
+  stage?: TournamentGameStage;
   startsAt: string;
   arenaName?: string | null;
   notes?: string | null;
@@ -277,6 +290,9 @@ export interface CreateTournamentGameInput {
   awayTeamName: string;
   homeTeamId?: string | null;
   awayTeamId?: string | null;
+  gameNumber?: string | null;
+  division?: string | null;
+  stage?: TournamentGameStage;
   startsAt: string;
   arenaName?: string | null;
   notes?: string | null;

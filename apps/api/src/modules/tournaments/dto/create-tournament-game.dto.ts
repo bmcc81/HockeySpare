@@ -1,6 +1,28 @@
-import { IsDateString, IsOptional, IsString, IsUrl, MaxLength } from 'class-validator';
+import {
+  IsDateString,
+  IsIn,
+  IsOptional,
+  IsString,
+  IsUrl,
+  MaxLength,
+} from 'class-validator';
+import { TournamentGameStage } from '../../../generated/prisma/client';
 
 export class CreateTournamentGameDto {
+  @IsOptional()
+  @IsString()
+  @MaxLength(20)
+  gameNumber?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(60)
+  division?: string;
+
+  @IsOptional()
+  @IsIn(['ROUND_ROBIN', 'PLAYOFF', 'EXHIBITION', 'EVENT'])
+  stage?: TournamentGameStage;
+
   @IsString()
   @MaxLength(120)
   homeTeamName!: string;

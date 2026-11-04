@@ -8,9 +8,26 @@ import {
   Min,
   MaxLength,
 } from 'class-validator';
-import { TournamentGameStatus } from '../../../generated/prisma/client';
+import {
+  TournamentGameStage,
+  TournamentGameStatus,
+} from '../../../generated/prisma/client';
 
 export class UpdateTournamentGameDto {
+  @IsOptional()
+  @IsString()
+  @MaxLength(20)
+  gameNumber?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(60)
+  division?: string;
+
+  @IsOptional()
+  @IsIn(['ROUND_ROBIN', 'PLAYOFF', 'EXHIBITION', 'EVENT'])
+  stage?: TournamentGameStage;
+
   @IsOptional()
   @IsString()
   @MaxLength(120)

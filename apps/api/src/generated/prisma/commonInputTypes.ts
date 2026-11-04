@@ -593,11 +593,28 @@ export type EnumTournamentLostFoundStatusWithAggregatesFilter<$PrismaModel = nev
   _max?: Prisma.NestedEnumTournamentLostFoundStatusFilter<$PrismaModel>
 }
 
+export type EnumTournamentGameStageFilter<$PrismaModel = never> = {
+  equals?: $Enums.TournamentGameStage | Prisma.EnumTournamentGameStageFieldRefInput<$PrismaModel>
+  in?: $Enums.TournamentGameStage[] | Prisma.ListEnumTournamentGameStageFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TournamentGameStage[] | Prisma.ListEnumTournamentGameStageFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTournamentGameStageFilter<$PrismaModel> | $Enums.TournamentGameStage
+}
+
 export type EnumTournamentGameStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.TournamentGameStatus | Prisma.EnumTournamentGameStatusFieldRefInput<$PrismaModel>
   in?: $Enums.TournamentGameStatus[] | Prisma.ListEnumTournamentGameStatusFieldRefInput<$PrismaModel>
   notIn?: $Enums.TournamentGameStatus[] | Prisma.ListEnumTournamentGameStatusFieldRefInput<$PrismaModel>
   not?: Prisma.NestedEnumTournamentGameStatusFilter<$PrismaModel> | $Enums.TournamentGameStatus
+}
+
+export type EnumTournamentGameStageWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TournamentGameStage | Prisma.EnumTournamentGameStageFieldRefInput<$PrismaModel>
+  in?: $Enums.TournamentGameStage[] | Prisma.ListEnumTournamentGameStageFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TournamentGameStage[] | Prisma.ListEnumTournamentGameStageFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTournamentGameStageWithAggregatesFilter<$PrismaModel> | $Enums.TournamentGameStage
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTournamentGameStageFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTournamentGameStageFilter<$PrismaModel>
 }
 
 export type EnumTournamentGameStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -1243,11 +1260,28 @@ export type NestedEnumTournamentLostFoundStatusWithAggregatesFilter<$PrismaModel
   _max?: Prisma.NestedEnumTournamentLostFoundStatusFilter<$PrismaModel>
 }
 
+export type NestedEnumTournamentGameStageFilter<$PrismaModel = never> = {
+  equals?: $Enums.TournamentGameStage | Prisma.EnumTournamentGameStageFieldRefInput<$PrismaModel>
+  in?: $Enums.TournamentGameStage[] | Prisma.ListEnumTournamentGameStageFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TournamentGameStage[] | Prisma.ListEnumTournamentGameStageFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTournamentGameStageFilter<$PrismaModel> | $Enums.TournamentGameStage
+}
+
 export type NestedEnumTournamentGameStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.TournamentGameStatus | Prisma.EnumTournamentGameStatusFieldRefInput<$PrismaModel>
   in?: $Enums.TournamentGameStatus[] | Prisma.ListEnumTournamentGameStatusFieldRefInput<$PrismaModel>
   notIn?: $Enums.TournamentGameStatus[] | Prisma.ListEnumTournamentGameStatusFieldRefInput<$PrismaModel>
   not?: Prisma.NestedEnumTournamentGameStatusFilter<$PrismaModel> | $Enums.TournamentGameStatus
+}
+
+export type NestedEnumTournamentGameStageWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TournamentGameStage | Prisma.EnumTournamentGameStageFieldRefInput<$PrismaModel>
+  in?: $Enums.TournamentGameStage[] | Prisma.ListEnumTournamentGameStageFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TournamentGameStage[] | Prisma.ListEnumTournamentGameStageFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTournamentGameStageWithAggregatesFilter<$PrismaModel> | $Enums.TournamentGameStage
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTournamentGameStageFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTournamentGameStageFilter<$PrismaModel>
 }
 
 export type NestedEnumTournamentGameStatusWithAggregatesFilter<$PrismaModel = never> = {

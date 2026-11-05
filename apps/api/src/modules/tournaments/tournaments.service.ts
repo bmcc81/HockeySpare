@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { isAppAdmin } from '../../common/is-app-admin';
+import { computeStandings } from './tournament-standings';
 import { CreateTournamentDto } from './dto/create-tournament.dto';
 import { UpdateTournamentDto } from './dto/update-tournament.dto';
 import { CreateTournamentGameDto } from './dto/create-tournament-game.dto';
@@ -467,7 +468,7 @@ export class TournamentsService {
         },
       );
 
-      if (bracketMatch) {
+      if (bracketMatch || (dto.stage ?? game.stage) === 'PLAYOFF') {
         throw new BadRequestException(
           'Playoff games cannot end in a tie. Enter the final score including any overtime/shootout winner before marking this game final.',
         );
@@ -1652,6 +1653,11 @@ export class TournamentsService {
   // Public - standings are computed from final scores, same visibility as
   // the schedule. Tournament games store opponents as plain team-name
   // strings rather than real Team records, so teams are grouped by name.
+  /**
+   * Round-robin standings per division, ranked by the tournament's own
+   * tie-break rules - see tournament-standings.ts. Playoff, exhibition and
+   * event entries never count.
+   */
   async getStandings(tournamentId: string, division?: string) {
     const tournament = await this.prisma.tournament.findUnique({
       where: {
@@ -1666,122 +1672,48 @@ export class TournamentsService {
       throw new NotFoundException('Tournament not found');
     }
 
-    let divisionTeamIds: Set<string> | null = null;
+    const [teams, games] = await Promise.all([
+      this.prisma.tournamentTeam.findMany({
+        where: { tournamentId },
+        select: { id: true, name: true, division: true },
+      }),
+      this.prisma.tournamentGame.findMany({
+        where: { tournamentId, stage: 'ROUND_ROBIN' },
+        select: {
+          homeTeamId: true,
+          awayTeamId: true,
+          homeTeamName: true,
+          awayTeamName: true,
+          homeScore: true,
+          awayScore: true,
+          status: true,
+          division: true,
+        },
+      }),
+    ]);
 
-    if (division) {
-      const divisionTeams = await this.prisma.tournamentTeam.findMany({
-        where: { tournamentId, division },
-        select: { id: true },
-      });
+    const teamById = new Map(teams.map((team) => [team.id, team]));
 
-      divisionTeamIds = new Set(divisionTeams.map((team) => team.id));
-    }
+    const rows = computeStandings(
+      teams.map((team) => ({ name: team.name, division: team.division })),
+      games.map((game) => ({
+        homeTeamName: game.homeTeamName,
+        awayTeamName: game.awayTeamName,
+        homeScore: game.homeScore,
+        awayScore: game.awayScore,
+        final:
+          game.status === 'FINAL' &&
+          game.homeScore != null &&
+          game.awayScore != null,
+        division:
+          game.division ??
+          teamById.get(game.homeTeamId ?? '')?.division ??
+          teamById.get(game.awayTeamId ?? '')?.division ??
+          null,
+      })),
+    );
 
-    const games = await this.prisma.tournamentGame.findMany({
-      where: {
-        tournamentId,
-        status: 'FINAL',
-        // Round-robin table only: playoff, exhibition and ceremony games
-        // must not feed the standings.
-        stage: 'ROUND_ROBIN',
-        homeScore: { not: null },
-        awayScore: { not: null },
-        ...(divisionTeamIds
-          ? {
-              homeTeamId: { in: Array.from(divisionTeamIds) },
-              awayTeamId: { in: Array.from(divisionTeamIds) },
-            }
-          : {}),
-      },
-      select: {
-        homeTeamName: true,
-        awayTeamName: true,
-        homeScore: true,
-        awayScore: true,
-      },
-    });
-
-    type StandingRow = {
-      teamName: string;
-      gamesPlayed: number;
-      wins: number;
-      losses: number;
-      ties: number;
-      goalsFor: number;
-      goalsAgainst: number;
-      goalDifferential: number;
-      points: number;
-    };
-
-    const standingsByTeamName = new Map<string, StandingRow>();
-
-    const rowFor = (teamName: string): StandingRow => {
-      const existing = standingsByTeamName.get(teamName);
-
-      if (existing) {
-        return existing;
-      }
-
-      const created: StandingRow = {
-        teamName,
-        gamesPlayed: 0,
-        wins: 0,
-        losses: 0,
-        ties: 0,
-        goalsFor: 0,
-        goalsAgainst: 0,
-        goalDifferential: 0,
-        points: 0,
-      };
-
-      standingsByTeamName.set(teamName, created);
-
-      return created;
-    };
-
-    const creditResult = (
-      teamName: string,
-      goalsFor: number,
-      goalsAgainst: number,
-    ) => {
-      const row = rowFor(teamName);
-
-      row.gamesPlayed += 1;
-      row.goalsFor += goalsFor;
-      row.goalsAgainst += goalsAgainst;
-      row.goalDifferential = row.goalsFor - row.goalsAgainst;
-
-      if (goalsFor > goalsAgainst) {
-        row.wins += 1;
-        row.points += 2;
-      } else if (goalsFor < goalsAgainst) {
-        row.losses += 1;
-      } else {
-        row.ties += 1;
-        row.points += 1;
-      }
-    };
-
-    for (const game of games) {
-      creditResult(game.homeTeamName, game.homeScore!, game.awayScore!);
-      creditResult(game.awayTeamName, game.awayScore!, game.homeScore!);
-    }
-
-    return Array.from(standingsByTeamName.values()).sort((a, b) => {
-      if (b.points !== a.points) {
-        return b.points - a.points;
-      }
-
-      if (b.wins !== a.wins) {
-        return b.wins - a.wins;
-      }
-
-      if (b.goalDifferential !== a.goalDifferential) {
-        return b.goalDifferential - a.goalDifferential;
-      }
-
-      return a.teamName.localeCompare(b.teamName);
-    });
+    return division ? rows.filter((row) => row.division === division) : rows;
   }
 
   private appUrl(): string {

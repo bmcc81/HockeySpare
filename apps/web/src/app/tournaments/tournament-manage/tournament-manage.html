@@ -20,6 +20,12 @@
           View public page
         </a>
         <a
+          [routerLink]="['/tournaments', tournamentId, 'scores']"
+          class="btn btn-primary"
+        >
+          Score entry
+        </a>
+        <a
           [routerLink]="['/tournaments', tournamentId, 'scoreboard']"
           target="_blank"
           class="btn btn-outline-secondary"

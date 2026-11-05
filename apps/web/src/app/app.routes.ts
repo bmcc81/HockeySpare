@@ -173,6 +173,15 @@ export const routes: Routes = [
       ),
   },
   {
+    // Phone-first score entry for organizers working the rinks.
+    path: 'tournaments/:id/scores',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./tournaments/tournament-scores/tournament-scores').then(
+        (m) => m.TournamentScoresComponent,
+      ),
+  },
+  {
     // Public - no auth guard. Meant for an arena TV/projector.
     path: 'tournaments/:id/scoreboard',
     loadComponent: () =>

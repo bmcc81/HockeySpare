@@ -332,6 +332,23 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
     );
   }
 
+  /** Standings, one table per division (the API already ranks each division). */
+  standingsByDivision(): { division: string | null; rows: TournamentStandingRow[] }[] {
+    const groups = new Map<string | null, TournamentStandingRow[]>();
+
+    for (const row of this.standings()) {
+      const key = row.division ?? null;
+      const list = groups.get(key) ?? [];
+      list.push(row);
+      groups.set(key, list);
+    }
+
+    return Array.from(groups.entries()).map(([division, rows]) => ({
+      division,
+      rows,
+    }));
+  }
+
   /** The filtered schedule, grouped under one heading per calendar day. */
   gamesByDay(): { day: string; games: TournamentGame[] }[] {
     // At the same start time an event (e.g. the opening ceremony) comes

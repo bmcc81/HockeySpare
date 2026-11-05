@@ -358,6 +358,14 @@ export type TournamentPaymentVerification = {
 
 export interface TournamentStandingRow {
   teamName: string;
+  division?: string | null;
+  /** 1-based place within the division; teams still level share a place. */
+  rank?: number;
+  /**
+   * Level after every rule the site can apply, with the division's round
+   * robin complete - the tournament committee has to decide.
+   */
+  needsCommitteeDecision?: boolean;
   gamesPlayed: number;
   wins: number;
   losses: number;

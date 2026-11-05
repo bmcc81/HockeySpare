@@ -148,6 +148,7 @@ export class TournamentManageComponent implements OnInit {
   auditLog = signal<TournamentAuditLogEntry[]>([]);
   showAuditLog = signal(false);
   loadingAuditLog = signal(false);
+  auditFilter = signal('');
 
   payments = signal<TournamentPaymentRow[]>([]);
 
@@ -1638,6 +1639,39 @@ export class TournamentManageComponent implements OnInit {
 
   trackByAuditLogId(_index: number, entry: TournamentAuditLogEntry): string {
     return entry.id;
+  }
+
+  /** Who made a change: their name, else their email, else "System". */
+  auditWho(entry: TournamentAuditLogEntry): string {
+    const user = entry.user;
+
+    if (!user) {
+      return 'System';
+    }
+
+    const name = `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim();
+
+    return name || user.email || 'Unknown';
+  }
+
+  /** The log narrowed by a search box: matches who, action or detail (e.g. "A3" or a name). */
+  filteredAuditLog(): TournamentAuditLogEntry[] {
+    const query = this.auditFilter().trim().toLowerCase();
+
+    if (!query) {
+      return this.auditLog();
+    }
+
+    return this.auditLog().filter((entry) =>
+      [this.auditWho(entry), entry.user?.email ?? '', entry.action, entry.detail ?? '']
+        .join(' ')
+        .toLowerCase()
+        .includes(query),
+    );
+  }
+
+  setAuditFilter(event: Event): void {
+    this.auditFilter.set((event.target as HTMLInputElement).value);
   }
 
   private csvEscape(value: string): string {

@@ -429,56 +429,166 @@ export class TournamentScoresComponent implements OnInit, OnDestroy {
       return '';
     }
 
+    if (game.homeScore === game.awayScore) {
+      return '';
+    }
+
     return (
       (game.homeScore > game.awayScore ? game.homeTeamId : game.awayTeamId) ?? ''
     );
   }
 
-  /**
-   * Fill the two selects from the standings. "1st place"/"4th place" slots
-   * take that place; "Finalist 1/2" slots take the semi-final winners when the
-   * division has semi-finals, otherwise the top two. It is only a suggestion:
-   * nothing is saved until the organizer taps Save.
-   */
-  private applySuggestion(game: TournamentGame, rows: TournamentStandingRow[]): void {
-    const byPlace = (n: number) => this.teamIdByName(rows[n - 1]?.teamName ?? '');
-    const semis = (this.tournament()?.games ?? [])
-      .filter(
-        (g) =>
-          g.division === game.division &&
-          g.stage === 'PLAYOFF' &&
-          /^SEMI/i.test(g.homeTeamName),
-      )
+  /** Same shape rule as the server: three playoff games in a division = 2 semi-finals + the final. */
+  private semiFinalsOf(game: TournamentGame): [TournamentGame, TournamentGame] | null {
+    if (game.stage !== 'PLAYOFF' || !game.division) {
+      return null;
+    }
+
+    const playoffs = (this.tournament()?.games ?? [])
+      .filter((g) => g.division === game.division && g.stage === 'PLAYOFF')
       .sort(
         (a, b) =>
           new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime() ||
           (a.gameNumber ?? '').localeCompare(b.gameNumber ?? ''),
       );
 
-    const resolve = (placeholder: string): string => {
+    return playoffs.length === 3 && playoffs[2].id === game.id
+      ? [playoffs[0], playoffs[1]]
+      : null;
+  }
+
+  private teamNameById(teamId: string): string {
+    return (
+      (this.tournament()?.teams ?? []).find((t) => t.id === teamId)?.name ?? 'That team'
+    );
+  }
+
+  /**
+   * Why the chosen teams can't play this final, or null if they can (or the
+   * rule doesn't apply). Mirrors the server, which is the real enforcement.
+   */
+  finalistWarning(game: TournamentGame): string | null {
+    const semis = this.semiFinalsOf(game);
+    const { home, away } = this.teamsDraft();
+
+    if (!semis || !home || !away) {
+      return null;
+    }
+
+    if (home === away) {
+      return 'Choose two different teams.';
+    }
+
+    const winners = semis.map((s) => this.winnerId(s));
+
+    if (winners.some((w) => !w)) {
+      const pending = semis
+        .filter((_, i) => !winners[i])
+        .map((s) => s.gameNumber ?? 'the semi-final')
+        .join(' and ');
+      return `Finish ${pending} before setting the final's teams.`;
+    }
+
+    for (const teamId of [home, away]) {
+      if (!winners.includes(teamId)) {
+        const lost = semis.find((s) => s.homeTeamId === teamId || s.awayTeamId === teamId);
+        const who = this.teamNameById(teamId);
+        return (
+          (lost
+            ? `${who} lost semi-final ${lost.gameNumber ?? ''}, so can't play in the final.`
+            : `${who} didn't win a semi-final, so can't play in the final.`) +
+          ` The finalists are ${this.teamNameById(winners[0])} and ${this.teamNameById(winners[1])}.`
+        );
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Fill the two selects from the standings or semi-final results, without
+   * guessing: a place that is tied is left blank with a note, and a final
+   * only suggests the actual semi-final winners. Nothing is saved until the
+   * organizer taps Save.
+   */
+  private applySuggestion(game: TournamentGame, rows: TournamentStandingRow[]): void {
+    const notes: string[] = [];
+
+    const divisionGames = (this.tournament()?.games ?? []).filter(
+      (g) => g.division === game.division && g.stage === 'ROUND_ROBIN',
+    );
+    const roundRobinDone =
+      divisionGames.length > 0 && divisionGames.every((g) => g.status === 'FINAL');
+
+    const byPlace = (n: number): string => {
+      const row = rows[n - 1];
+
+      if (!row) {
+        return '';
+      }
+
+      const rank = row.rank ?? n;
+      const level = rows.filter((r) => (r.rank ?? 0) === rank);
+
+      if (level.length > 1) {
+        const span = `places ${rank}\u2013${rank + level.length - 1}`;
+        const names = level.map((r) => r.teamName).join(', ');
+        const note = row.needsCommitteeDecision
+          ? `The ${span} are tied (${names}) \u2014 the committee must decide. Pick the team they chose.`
+          : `The ${span} are level so far (${names}).`;
+
+        if (!notes.includes(note)) {
+          notes.push(note);
+        }
+
+        return '';
+      }
+
+      return this.teamIdByName(row.teamName);
+    };
+
+    const semis = this.semiFinalsOf(game);
+
+    const resolve = (placeholder: string, slot: number): string => {
       const place = /(\d+)(?:st|nd|rd|th) place/i.exec(placeholder);
+
       if (place) {
         return byPlace(Number(place[1]));
       }
 
-      const finalist = /finalist (\d)/i.exec(placeholder);
-      if (finalist) {
-        const n = Number(finalist[1]);
-        return semis.length > 0 ? this.winnerId(semis[n - 1] ?? game) : byPlace(n);
+      if (/finalist/i.test(placeholder)) {
+        if (semis) {
+          const winner = this.winnerId(semis[slot]);
+
+          if (!winner) {
+            const note = `Finish ${semis[slot].gameNumber ?? 'the semi-final'} first \u2014 the finalists are the semi-final winners.`;
+            if (!notes.includes(note)) notes.push(note);
+          }
+
+          return winner;
+        }
+
+        return byPlace(slot + 1);
       }
 
       return '';
     };
 
-    const home = this.teamsDraft().home || resolve(game.homeTeamName);
-    const away = this.teamsDraft().away || resolve(game.awayTeamName);
+    const home = this.teamsDraft().home || resolve(game.homeTeamName, 0);
+    const away = this.teamsDraft().away || resolve(game.awayTeamName, 1);
     this.teamsDraft.set({ home, away });
 
-    this.suggestionNote.set(
-      home && away
-        ? 'Suggested from the standings — check, then save.'
-        : 'Pick both teams. (The standings or semi-finals aren’t settled enough to suggest them yet.)',
-    );
+    if (!roundRobinDone && !semis) {
+      notes.push("The round robin isn't finished, so this suggestion may change.");
+    }
+
+    if (home && away && notes.length === 0) {
+      notes.push('Suggested from the standings \u2014 check, then save.');
+    } else if (!home || !away) {
+      notes.push('Pick the team(s) left blank.');
+    }
+
+    this.suggestionNote.set(notes.join(' '));
   }
 
   saveTeams(game: TournamentGame): void {

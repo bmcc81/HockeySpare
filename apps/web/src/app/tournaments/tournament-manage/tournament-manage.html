@@ -2185,7 +2185,20 @@
             No changes recorded yet.
           </div>
 
-          <div class="table-responsive" *ngIf="!loadingAuditLog() && auditLog().length > 0">
+          <input
+            *ngIf="!loadingAuditLog() && auditLog().length > 0"
+            class="form-control form-control-sm mb-2"
+            style="max-width: 360px"
+            placeholder="Filter by game (e.g. A3), person or action..."
+            [value]="auditFilter()"
+            (input)="setAuditFilter($event)"
+          />
+
+          <div class="text-secondary small mb-2" *ngIf="!loadingAuditLog() && auditLog().length > 0 && filteredAuditLog().length === 0">
+            Nothing matches that filter.
+          </div>
+
+          <div class="table-responsive" *ngIf="!loadingAuditLog() && filteredAuditLog().length > 0">
             <table class="table table-sm align-middle mb-0">
               <thead>
                 <tr>
@@ -2197,10 +2210,13 @@
               </thead>
 
               <tbody>
-                <tr *ngFor="let entry of auditLog(); trackBy: trackByAuditLogId">
-                  <td class="text-nowrap">{{ entry.createdAt | date: 'short' }}</td>
+                <tr *ngFor="let entry of filteredAuditLog(); trackBy: trackByAuditLogId">
+                  <td class="text-nowrap">{{ entry.createdAt | date: 'MMM d, h:mm:ss a' }}</td>
                   <td>
-                    {{ entry.user ? (entry.user.firstName || entry.user.lastName ? (entry.user.firstName + ' ' + entry.user.lastName) : 'Unknown') : 'System' }}
+                    {{ auditWho(entry) }}
+                    <div class="text-secondary small" *ngIf="entry.user?.email && auditWho(entry) !== entry.user?.email">
+                      {{ entry.user?.email }}
+                    </div>
                   </td>
                   <td>{{ entry.action }}</td>
                   <td>{{ entry.detail || '—' }}</td>

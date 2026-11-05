@@ -9,6 +9,8 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuctionItemPublic, AuctionPublicView } from '@hockeyspare/contracts';
 import { Subscription, interval, switchMap } from 'rxjs';
 import { AuctionApiService } from '../../core/services/auction-api.service';
+import { TranslatePipe } from '../../core/i18n/t.pipe';
+import { I18nService } from '../../core/i18n/i18n.service';
 
 const POLL_MS = 15000;
 const TICK_MS = 1000;
@@ -23,12 +25,13 @@ interface StoredBidder {
 @Component({
   selector: 'app-tournament-auction',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslatePipe],
   templateUrl: './tournament-auction.html',
 })
 export class TournamentAuctionComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly api = inject(AuctionApiService);
+  private readonly i18n = inject(I18nService);
   private readonly fb = inject(NonNullableFormBuilder);
 
   private pollSub: Subscription | null = null;
@@ -83,7 +86,7 @@ export class TournamentAuctionComponent implements OnInit, OnDestroy {
         this.loading.set(false);
       },
       error: () => {
-        this.error.set('This tournament has no auction.');
+        this.error.set(this.i18n.t('This tournament has no auction.'));
         this.loading.set(false);
       },
     });
@@ -152,7 +155,7 @@ export class TournamentAuctionComponent implements OnInit, OnDestroy {
   timeLeft(item: AuctionItemPublic): string | null {
     if (!item.closesAt) return null;
     const diff = new Date(item.closesAt).getTime() - this.now();
-    if (diff <= 0) return 'Closing…';
+    if (diff <= 0) return this.i18n.t('Closing…');
     const d = Math.floor(diff / 86400000);
     const h = Math.floor((diff % 86400000) / 3600000);
     const m = Math.floor((diff % 3600000) / 60000);
@@ -197,7 +200,7 @@ export class TournamentAuctionComponent implements OnInit, OnDestroy {
         error: (err) => {
           this.submitting.set(false);
           this.bidError.set(
-            err?.error?.message || 'Could not place that bid.',
+            err?.error?.message || this.i18n.t('Could not place that bid.'),
           );
         },
       });

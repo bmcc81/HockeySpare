@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { InViewDirective } from '../../shared/directives/in-view.directive';
+import { TranslatePipe } from '../../core/i18n/t.pipe';
 
 type AudienceCard = {
   title: string;
@@ -35,7 +36,7 @@ type ManagementFeature = {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [PlayerHighlightsComponent, CommonModule, RouterLink, InViewDirective],
+  imports: [PlayerHighlightsComponent, CommonModule, RouterLink, InViewDirective, TranslatePipe],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })

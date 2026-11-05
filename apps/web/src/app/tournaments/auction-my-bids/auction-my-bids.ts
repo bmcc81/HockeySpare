@@ -3,16 +3,19 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MyBidsView } from '@hockeyspare/contracts';
 import { AuctionApiService } from '../../core/services/auction-api.service';
+import { TranslatePipe } from '../../core/i18n/t.pipe';
+import { I18nService } from '../../core/i18n/i18n.service';
 
 @Component({
   selector: 'app-auction-my-bids',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslatePipe],
   templateUrl: './auction-my-bids.html',
 })
 export class AuctionMyBidsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly api = inject(AuctionApiService);
+  private readonly i18n = inject(I18nService);
 
   tournamentId = this.route.snapshot.paramMap.get('id') ?? '';
   token = this.route.snapshot.queryParamMap.get('token') ?? '';
@@ -30,7 +33,7 @@ export class AuctionMyBidsComponent implements OnInit {
 
   ngOnInit(): void {
     if (!this.token) {
-      this.error.set('This link is missing its access token.');
+      this.error.set(this.i18n.t('This link is missing its access token.'));
       this.loading.set(false);
       return;
     }
@@ -50,7 +53,7 @@ export class AuctionMyBidsComponent implements OnInit {
         this.loading.set(false);
       },
       error: (err) => {
-        this.error.set(err?.error?.message || 'This link is invalid or expired.');
+        this.error.set(err?.error?.message || this.i18n.t('This link is invalid or expired.'));
         this.loading.set(false);
       },
     });
@@ -69,13 +72,13 @@ export class AuctionMyBidsComponent implements OnInit {
           this.load();
         } else {
           this.paymentIsError.set(true);
-          this.paymentMessage.set('Your payment has not completed yet.');
+          this.paymentMessage.set(this.i18n.t('Your payment has not completed yet.'));
         }
       },
       error: () => {
         this.verifying.set(false);
         this.paymentIsError.set(true);
-        this.paymentMessage.set('Could not confirm this payment.');
+        this.paymentMessage.set(this.i18n.t('Could not confirm this payment.'));
       },
     });
   }
@@ -89,7 +92,7 @@ export class AuctionMyBidsComponent implements OnInit {
       },
       error: (err) => {
         this.payRedirecting.set(false);
-        this.payError.set(err?.error?.message || 'Could not start checkout.');
+        this.payError.set(err?.error?.message || this.i18n.t('Could not start checkout.'));
       },
     });
   }

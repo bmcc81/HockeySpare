@@ -42,8 +42,59 @@ import {
 } from '@hockeyspare/contracts';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
 import { AuthStateService } from '../../auth/auth-state.service';
+import { I18nService } from '../../core/i18n/i18n.service';
 import { QrCodeComponent } from '../shared/qr-code/qr-code';
 import { TournamentManageAuctionComponent } from '../tournament-manage-auction/tournament-manage-auction';
+import { TranslatePipe, LocalDatePipe } from '../../core/i18n/t.pipe';
+
+/** Plain-language names for the audit log's action codes (translated when shown). */
+const AUDIT_ACTION_LABELS: Record<string, string> = {
+  ANNOUNCEMENT_DELETED: 'Announcement removed',
+  ANNOUNCEMENT_POSTED: 'Announcement posted',
+  API_KEY_CREATED: 'API key created',
+  API_KEY_REVOKED: 'API key revoked',
+  BRACKET_CREATED: 'Bracket created',
+  BRACKET_DELETED: 'Bracket removed',
+  CO_ORGANIZER_ADDED: 'Co-organizer added',
+  CO_ORGANIZER_REMOVED: 'Co-organizer removed',
+  FINAL_TEAMS_CLEARED: 'Final reset (semi-final changed)',
+  GAME_ADDED: 'Game added',
+  GAME_DELETED: 'Game deleted',
+  GAME_SCORE_UPDATED: 'Score updated',
+  GAME_TEAMS_SET: 'Teams set',
+  INFO_LISTING_ADDED: 'Listing added',
+  INFO_LISTING_REMOVED: 'Listing removed',
+  INFO_LISTING_UPDATED: 'Listing updated',
+  LOGO_UPLOADED: 'Logo uploaded',
+  LOST_FOUND_ITEM_ADDED: 'Lost & found item added',
+  LOST_FOUND_ITEM_REMOVED: 'Lost & found item removed',
+  LOST_FOUND_ITEM_UPDATED: 'Lost & found item updated',
+  MEDIA_ADDED: 'Photo added',
+  MEDIA_DELETED: 'Photo removed',
+  REFEREE_ADDED: 'Referee added',
+  REFEREE_ASSIGNED: 'Referee assigned',
+  REFEREE_REMOVED: 'Referee removed',
+  REFEREE_UNASSIGNED: 'Referee unassigned',
+  REGISTRATION_DELETED: 'Registration removed',
+  REGISTRATION_STATUS_CHANGED: 'Registration status changed',
+  RULEBOOK_UPLOADED: 'Rulebook uploaded',
+  SCORESHEET_SCANNED: 'Scoresheet scanned',
+  SPONSOR_ADDED: 'Sponsor added',
+  SPONSOR_DELETED: 'Sponsor removed',
+  SPONSOR_UPDATED: 'Sponsor updated',
+  TEAM_ADDED: 'Team added',
+  TEAM_DELETED: 'Team removed',
+  TEAM_UPDATED: 'Team updated',
+  TOURNAMENT_UPDATED: 'Tournament details updated',
+  VENUE_ADDED: 'Venue added',
+  VENUE_DELETED: 'Venue removed',
+  VENUE_UPDATED: 'Venue updated',
+  VOLUNTEER_SHIFT_ADDED: 'Volunteer shift added',
+  VOLUNTEER_SHIFT_REMOVED: 'Volunteer shift removed',
+  WEATHER_ALERT_POSTED: 'Weather alert posted',
+  WEBHOOK_ADDED: 'Webhook added',
+  WEBHOOK_REMOVED: 'Webhook removed',
+};
 
 @Component({
   selector: 'app-tournament-manage',
@@ -54,6 +105,8 @@ import { TournamentManageAuctionComponent } from '../tournament-manage-auction/t
     RouterLink,
     QrCodeComponent,
     TournamentManageAuctionComponent,
+    TranslatePipe,
+    LocalDatePipe,
   ],
   templateUrl: './tournament-manage.html',
 })
@@ -62,6 +115,7 @@ export class TournamentManageComponent implements OnInit {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly tournamentsApi = inject(TournamentsApiService);
   private readonly authState = inject(AuthStateService);
+  private readonly i18n = inject(I18nService);
 
   tournamentId = this.route.snapshot.paramMap.get('id') ?? '';
 
@@ -474,7 +528,7 @@ export class TournamentManageComponent implements OnInit {
         }
       },
       error: () => {
-        this.error.set('Could not load this tournament.');
+        this.error.set(this.i18n.t('Could not load this tournament.'));
         this.loading.set(false);
       },
     });
@@ -620,12 +674,12 @@ export class TournamentManageComponent implements OnInit {
 
         this.paymentSuccessMessage.set(
           status.payoutsEnabled
-            ? 'Stripe account connected. You can now collect registration payments.'
-            : 'Stripe onboarding is not finished yet. Connect again to continue.',
+            ? this.i18n.t('Stripe account connected. You can now collect registration payments.')
+            : this.i18n.t('Stripe onboarding is not finished yet. Connect again to continue.'),
         );
       },
       error: () => {
-        this.paymentError.set('Could not confirm Stripe connection status.');
+        this.paymentError.set(this.i18n.t('Could not confirm Stripe connection status.'));
       },
     });
   }
@@ -645,7 +699,7 @@ export class TournamentManageComponent implements OnInit {
       error: (err) => {
         this.connectingStripe.set(false);
         this.paymentError.set(
-          err?.error?.message || 'Could not start Stripe onboarding.',
+          err?.error?.message || this.i18n.t('Could not start Stripe onboarding.'),
         );
       },
     });
@@ -669,7 +723,7 @@ export class TournamentManageComponent implements OnInit {
         },
         error: (err) => {
           this.error.set(
-            err?.error?.message || 'Could not update this registration.',
+            err?.error?.message || this.i18n.t('Could not update this registration.'),
           );
           this.savingRegistrationId.set(null);
         },
@@ -688,7 +742,7 @@ export class TournamentManageComponent implements OnInit {
           this.loadRegistrations();
         },
         error: () => {
-          this.error.set('Could not remove this registration.');
+          this.error.set(this.i18n.t('Could not remove this registration.'));
           this.deletingRegistrationId.set(null);
         },
       });
@@ -732,12 +786,12 @@ export class TournamentManageComponent implements OnInit {
         next: (tournament) => {
           this.tournament.set(tournament);
           this.savingDetails.set(false);
-          this.detailsSuccess.set('Saved.');
+          this.detailsSuccess.set(this.i18n.t('Saved.'));
           this.hasSavedDetails.set(true);
         },
         error: (err) => {
           this.error.set(
-            err?.error?.message || 'Could not save tournament details.',
+            err?.error?.message || this.i18n.t('Could not save tournament details.'),
           );
           this.savingDetails.set(false);
         },
@@ -796,7 +850,7 @@ export class TournamentManageComponent implements OnInit {
     const value = this.gameForm.getRawValue();
 
     if (value.stage !== 'EVENT' && !value.awayTeamName.trim()) {
-      this.gameError.set('Enter both team names (or choose the Event stage).');
+      this.gameError.set(this.i18n.t('Enter both team names (or choose the Event stage).'));
       return;
     }
 
@@ -831,7 +885,7 @@ export class TournamentManageComponent implements OnInit {
       },
       error: (err) => {
         this.gameError.set(
-          err?.error?.message || 'Could not save this game.',
+          err?.error?.message || this.i18n.t('Could not save this game.'),
         );
         this.savingGame.set(false);
       },
@@ -848,7 +902,7 @@ export class TournamentManageComponent implements OnInit {
         this.load();
       },
       error: () => {
-        this.error.set('Could not delete this game.');
+        this.error.set(this.i18n.t('Could not delete this game.'));
         this.deletingGameId.set(null);
       },
     });
@@ -899,7 +953,7 @@ export class TournamentManageComponent implements OnInit {
         },
         error: (err) => {
           this.scoreError.set(
-            err?.error?.message || 'Could not update the score.',
+            err?.error?.message || this.i18n.t('Could not update the score.'),
           );
           this.savingScore.set(false);
         },
@@ -957,8 +1011,8 @@ export class TournamentManageComponent implements OnInit {
         this.sponsorError.set(
           err?.error?.message ||
             (editingId
-              ? 'Could not save this sponsor.'
-              : 'Could not add this sponsor.'),
+              ? this.i18n.t('Could not save this sponsor.')
+              : this.i18n.t('Could not add this sponsor.')),
         );
         this.savingSponsor.set(false);
       },
@@ -975,7 +1029,7 @@ export class TournamentManageComponent implements OnInit {
         this.load();
       },
       error: () => {
-        this.error.set('Could not remove this sponsor.');
+        this.error.set(this.i18n.t('Could not remove this sponsor.'));
         this.deletingSponsorId.set(null);
       },
     });
@@ -1040,7 +1094,7 @@ export class TournamentManageComponent implements OnInit {
         this.load();
       },
       error: (err) => {
-        this.teamError.set(err?.error?.message || 'Could not save this team.');
+        this.teamError.set(err?.error?.message || this.i18n.t('Could not save this team.'));
         this.savingTeam.set(false);
       },
     });
@@ -1057,7 +1111,7 @@ export class TournamentManageComponent implements OnInit {
       },
       error: (err) => {
         this.teamError.set(
-          err?.error?.message || 'Could not remove this team.',
+          err?.error?.message || this.i18n.t('Could not remove this team.'),
         );
         this.deletingTeamId.set(null);
       },
@@ -1077,7 +1131,7 @@ export class TournamentManageComponent implements OnInit {
         },
         error: (err) => {
           this.error.set(
-            err?.error?.message || 'Could not create a team from this registration.',
+            err?.error?.message || this.i18n.t('Could not create a team from this registration.'),
           );
           this.creatingTeamFromRegistrationId.set(null);
         },
@@ -1131,7 +1185,7 @@ export class TournamentManageComponent implements OnInit {
         },
         error: (err: any) => {
           this.playerError.set(
-            err?.error?.message || 'Could not add this player.',
+            err?.error?.message || this.i18n.t('Could not add this player.'),
           );
           this.savingPlayer.set(false);
         },
@@ -1151,7 +1205,7 @@ export class TournamentManageComponent implements OnInit {
         },
         error: (err) => {
           this.playerError.set(
-            err?.error?.message || 'Could not remove this player.',
+            err?.error?.message || this.i18n.t('Could not remove this player.'),
           );
           this.deletingPlayerId.set(null);
         },
@@ -1242,7 +1296,7 @@ export class TournamentManageComponent implements OnInit {
         },
         error: (err) => {
           this.statError.set(
-            err?.error?.message || 'Could not save this stat line.',
+            err?.error?.message || this.i18n.t('Could not save this stat line.'),
           );
           this.savingStatPlayerId.set(null);
         },
@@ -1291,7 +1345,7 @@ export class TournamentManageComponent implements OnInit {
   teamNameById(teamId: string): string {
     return (
       this.tournament()?.teams.find((team) => team.id === teamId)?.name ??
-      'Unknown team'
+      this.i18n.t('Unknown team')
     );
   }
 
@@ -1304,7 +1358,7 @@ export class TournamentManageComponent implements OnInit {
     const seedTeamIds = this.bracketSeedTeamIds();
 
     if (seedTeamIds.length < 2) {
-      this.bracketError.set('Select at least 2 teams to seed a bracket.');
+      this.bracketError.set(this.i18n.t('Select at least 2 teams to seed a bracket.'));
       return;
     }
 
@@ -1328,7 +1382,7 @@ export class TournamentManageComponent implements OnInit {
         },
         error: (err) => {
           this.bracketError.set(
-            err?.error?.message || 'Could not create this bracket.',
+            err?.error?.message || this.i18n.t('Could not create this bracket.'),
           );
           this.creatingBracket.set(false);
         },
@@ -1346,7 +1400,7 @@ export class TournamentManageComponent implements OnInit {
       },
       error: (err) => {
         this.bracketError.set(
-          err?.error?.message || 'Could not remove this bracket.',
+          err?.error?.message || this.i18n.t('Could not remove this bracket.'),
         );
         this.deletingBracketId.set(null);
       },
@@ -1372,10 +1426,10 @@ export class TournamentManageComponent implements OnInit {
   roundLabel(roundIndex: number, totalRounds: number): string {
     const remaining = totalRounds - roundIndex;
 
-    if (remaining === 1) return 'Final';
-    if (remaining === 2) return 'Semifinals';
-    if (remaining === 3) return 'Quarterfinals';
-    return `Round ${roundIndex + 1}`;
+    if (remaining === 1) return this.i18n.t('Final@@round');
+    if (remaining === 2) return this.i18n.t('Semifinals');
+    if (remaining === 3) return this.i18n.t('Quarterfinals');
+    return this.i18n.t('Round {n}', { n: roundIndex + 1 });
   }
 
   canScheduleMatch(match: TournamentBracketMatch): boolean {
@@ -1422,7 +1476,7 @@ export class TournamentManageComponent implements OnInit {
         },
         error: (err) => {
           this.scheduleMatchError.set(
-            err?.error?.message || 'Could not schedule this match.',
+            err?.error?.message || this.i18n.t('Could not schedule this match.'),
           );
           this.savingMatchSchedule.set(false);
         },
@@ -1461,7 +1515,7 @@ export class TournamentManageComponent implements OnInit {
         },
         error: (err) => {
           this.announcementError.set(
-            err?.error?.message || 'Could not post this announcement.',
+            err?.error?.message || this.i18n.t('Could not post this announcement.'),
           );
           this.savingAnnouncement.set(false);
         },
@@ -1480,7 +1534,7 @@ export class TournamentManageComponent implements OnInit {
           this.load();
         },
         error: () => {
-          this.announcementError.set('Could not remove this announcement.');
+          this.announcementError.set(this.i18n.t('Could not remove this announcement.'));
           this.deletingAnnouncementId.set(null);
         },
       });
@@ -1558,7 +1612,7 @@ export class TournamentManageComponent implements OnInit {
       },
       error: (err) => {
         this.venueError.set(
-          err?.error?.message || 'Could not save this venue.',
+          err?.error?.message || this.i18n.t('Could not save this venue.'),
         );
         this.savingVenue.set(false);
       },
@@ -1575,7 +1629,7 @@ export class TournamentManageComponent implements OnInit {
         this.load();
       },
       error: () => {
-        this.venueError.set('Could not remove this venue.');
+        this.venueError.set(this.i18n.t('Could not remove this venue.'));
         this.deletingVenueId.set(null);
       },
     });
@@ -1606,7 +1660,7 @@ export class TournamentManageComponent implements OnInit {
         },
         error: (err) => {
           this.coOrganizerError.set(
-            err?.error?.message || 'Could not add this co-organizer.',
+            err?.error?.message || this.i18n.t('Could not add this co-organizer.'),
           );
           this.addingCoOrganizer.set(false);
         },
@@ -1626,7 +1680,7 @@ export class TournamentManageComponent implements OnInit {
         },
         error: (err) => {
           this.coOrganizerError.set(
-            err?.error?.message || 'Could not remove this co-organizer.',
+            err?.error?.message || this.i18n.t('Could not remove this co-organizer.'),
           );
           this.removingCoOrganizerId.set(null);
         },
@@ -1646,12 +1700,18 @@ export class TournamentManageComponent implements OnInit {
     const user = entry.user;
 
     if (!user) {
-      return 'System';
+      return this.i18n.t('System');
     }
 
     const name = `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim();
 
-    return name || user.email || 'Unknown';
+    return name || user.email || this.i18n.t('Unknown');
+  }
+
+  /** The audit action as readable text in the current language. */
+  actionLabel(action: string): string {
+    const label = AUDIT_ACTION_LABELS[action];
+    return label ? this.i18n.t(label) : action;
   }
 
   /** The log narrowed by a search box: matches who, action or detail (e.g. "A3" or a name). */
@@ -1663,7 +1723,13 @@ export class TournamentManageComponent implements OnInit {
     }
 
     return this.auditLog().filter((entry) =>
-      [this.auditWho(entry), entry.user?.email ?? '', entry.action, entry.detail ?? '']
+      [
+        this.auditWho(entry),
+        entry.user?.email ?? '',
+        entry.action,
+        this.actionLabel(entry.action),
+        entry.detail ?? '',
+      ]
         .join(' ')
         .toLowerCase()
         .includes(query),
@@ -1779,7 +1845,7 @@ export class TournamentManageComponent implements OnInit {
       },
       error: (err) => {
         this.logoError.set(
-          err?.error?.message || 'Could not upload this logo.',
+          err?.error?.message || this.i18n.t('Could not upload this logo.'),
         );
         this.uploadingLogo.set(false);
         input.value = '';
@@ -1806,7 +1872,7 @@ export class TournamentManageComponent implements OnInit {
       },
       error: (err) => {
         this.rulebookError.set(
-          err?.error?.message || 'Could not upload the rulebook.',
+          err?.error?.message || this.i18n.t('Could not upload the rulebook.'),
         );
         this.uploadingRulebook.set(false);
         input.value = '';
@@ -1841,7 +1907,7 @@ export class TournamentManageComponent implements OnInit {
         },
         error: (err) => {
           this.mediaError.set(
-            err?.error?.message || 'Could not upload this photo.',
+            err?.error?.message || this.i18n.t('Could not upload this photo.'),
           );
           this.uploadingMedia.set(false);
           input.value = '';
@@ -1860,7 +1926,7 @@ export class TournamentManageComponent implements OnInit {
       },
       error: (err) => {
         this.mediaError.set(
-          err?.error?.message || 'Could not remove this photo.',
+          err?.error?.message || this.i18n.t('Could not remove this photo.'),
         );
         this.deletingMediaAssetId.set(null);
       },
@@ -1894,7 +1960,7 @@ export class TournamentManageComponent implements OnInit {
         },
         error: (err) => {
           this.apiKeyError.set(
-            err?.error?.message || 'Could not create this API key.',
+            err?.error?.message || this.i18n.t('Could not create this API key.'),
           );
           this.creatingApiKey.set(false);
         },
@@ -1917,7 +1983,7 @@ export class TournamentManageComponent implements OnInit {
       },
       error: (err) => {
         this.apiKeyError.set(
-          err?.error?.message || 'Could not revoke this API key.',
+          err?.error?.message || this.i18n.t('Could not revoke this API key.'),
         );
         this.revokingApiKeyId.set(null);
       },
@@ -1952,7 +2018,7 @@ export class TournamentManageComponent implements OnInit {
         },
         error: (err) => {
           this.webhookError.set(
-            err?.error?.message || 'Could not add this webhook.',
+            err?.error?.message || this.i18n.t('Could not add this webhook.'),
           );
           this.creatingWebhook.set(false);
         },
@@ -1970,7 +2036,7 @@ export class TournamentManageComponent implements OnInit {
       },
       error: (err) => {
         this.webhookError.set(
-          err?.error?.message || 'Could not remove this webhook.',
+          err?.error?.message || this.i18n.t('Could not remove this webhook.'),
         );
         this.deletingWebhookId.set(null);
       },
@@ -2005,7 +2071,7 @@ export class TournamentManageComponent implements OnInit {
         error: (err) => {
           this.scoresheetError.set({
             gameId: game.id,
-            message: err?.error?.message || 'Could not scan this scoresheet.',
+            message: err?.error?.message || this.i18n.t('Could not scan this scoresheet.'),
           });
           this.scanningScoresheetGameId.set(null);
           input.value = '';
@@ -2108,7 +2174,7 @@ export class TournamentManageComponent implements OnInit {
         },
         error: (err) => {
           this.refereeError.set(
-            err?.error?.message || 'Could not add this referee.',
+            err?.error?.message || this.i18n.t('Could not add this referee.'),
           );
           this.savingReferee.set(false);
         },
@@ -2126,7 +2192,7 @@ export class TournamentManageComponent implements OnInit {
       },
       error: (err) => {
         this.refereeError.set(
-          err?.error?.message || 'Could not remove this referee.',
+          err?.error?.message || this.i18n.t('Could not remove this referee.'),
         );
         this.deletingRefereeId.set(null);
       },
@@ -2170,7 +2236,7 @@ export class TournamentManageComponent implements OnInit {
         },
         error: (err) => {
           this.refereeError.set(
-            err?.error?.message || 'Could not assign this referee.',
+            err?.error?.message || this.i18n.t('Could not assign this referee.'),
           );
         },
       });
@@ -2185,7 +2251,7 @@ export class TournamentManageComponent implements OnInit {
         },
         error: (err) => {
           this.refereeError.set(
-            err?.error?.message || 'Could not remove this referee assignment.',
+            err?.error?.message || this.i18n.t('Could not remove this referee assignment.'),
           );
         },
       });
@@ -2228,7 +2294,7 @@ export class TournamentManageComponent implements OnInit {
         },
         error: (err) => {
           this.volunteerShiftError.set(
-            err?.error?.message || 'Could not add this volunteer shift.',
+            err?.error?.message || this.i18n.t('Could not add this volunteer shift.'),
           );
           this.savingVolunteerShift.set(false);
         },
@@ -2248,7 +2314,7 @@ export class TournamentManageComponent implements OnInit {
         },
         error: (err) => {
           this.volunteerShiftError.set(
-            err?.error?.message || 'Could not remove this volunteer shift.',
+            err?.error?.message || this.i18n.t('Could not remove this volunteer shift.'),
           );
           this.deletingVolunteerShiftId.set(null);
         },
@@ -2363,7 +2429,7 @@ export class TournamentManageComponent implements OnInit {
       },
       error: (err) => {
         this.infoListingError.set(
-          err?.error?.message || 'Could not save this listing.',
+          err?.error?.message || this.i18n.t('Could not save this listing.'),
         );
         this.savingInfoListing.set(false);
       },
@@ -2383,7 +2449,7 @@ export class TournamentManageComponent implements OnInit {
         },
         error: (err) => {
           this.infoListingError.set(
-            err?.error?.message || 'Could not remove this listing.',
+            err?.error?.message || this.i18n.t('Could not remove this listing.'),
           );
           this.deletingInfoListingId.set(null);
         },
@@ -2428,7 +2494,7 @@ export class TournamentManageComponent implements OnInit {
         },
         error: (err) => {
           this.lostFoundError.set(
-            err?.error?.message || 'Could not add this item.',
+            err?.error?.message || this.i18n.t('Could not add this item.'),
           );
           this.savingLostFoundItem.set(false);
         },
@@ -2450,7 +2516,7 @@ export class TournamentManageComponent implements OnInit {
         },
         error: (err) => {
           this.lostFoundError.set(
-            err?.error?.message || 'Could not update this item.',
+            err?.error?.message || this.i18n.t('Could not update this item.'),
           );
           this.updatingLostFoundItemId.set(null);
         },
@@ -2470,7 +2536,7 @@ export class TournamentManageComponent implements OnInit {
         },
         error: (err) => {
           this.lostFoundError.set(
-            err?.error?.message || 'Could not remove this item.',
+            err?.error?.message || this.i18n.t('Could not remove this item.'),
           );
           this.deletingLostFoundItemId.set(null);
         },

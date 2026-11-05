@@ -16,6 +16,8 @@ import { RouterLink } from '@angular/router';
 import { AuctionAdminView, AuctionItemAdmin } from '@hockeyspare/contracts';
 import { Subscription, interval, switchMap } from 'rxjs';
 import { AuctionApiService } from '../../core/services/auction-api.service';
+import { TranslatePipe, LocalDatePipe } from '../../core/i18n/t.pipe';
+import { I18nService } from '../../core/i18n/i18n.service';
 
 const POLL_MS = 20000;
 
@@ -31,13 +33,14 @@ function toLocalInput(iso: string | null | undefined): string {
 @Component({
   selector: 'app-tournament-manage-auction',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslatePipe, LocalDatePipe],
   templateUrl: './tournament-manage-auction.html',
 })
 export class TournamentManageAuctionComponent implements OnInit, OnDestroy {
   @Input({ required: true }) tournamentId!: string;
 
   private readonly api = inject(AuctionApiService);
+  private readonly i18n = inject(I18nService);
   private readonly fb = inject(NonNullableFormBuilder);
 
   private pollSub: Subscription | null = null;
@@ -158,7 +161,7 @@ export class TournamentManageAuctionComponent implements OnInit, OnDestroy {
   }
 
   closeAuction(): void {
-    if (!confirm('Close the whole auction and finalize every open item?')) return;
+    if (!confirm(this.i18n.t('Close the whole auction and finalize every open item?'))) return;
     this.busy.set(true);
     this.api.closeAuction(this.tournamentId).subscribe({
       next: (v) => {
@@ -303,7 +306,7 @@ export class TournamentManageAuctionComponent implements OnInit, OnDestroy {
   }
 
   voidBid(item: AuctionItemAdmin, bidId: string): void {
-    if (!confirm('Remove this bid?')) return;
+    if (!confirm(this.i18n.t('Remove this bid?'))) return;
     this.busy.set(true);
     this.api.voidBid(this.tournamentId, item.id, bidId).subscribe({
       next: (v) => {
@@ -322,7 +325,7 @@ export class TournamentManageAuctionComponent implements OnInit, OnDestroy {
     this.busy.set(false);
     const message =
       (err as { error?: { message?: string } })?.error?.message ??
-      'Something went wrong.';
+      this.i18n.t('Something went wrong.');
     this.error.set(message);
   }
 }

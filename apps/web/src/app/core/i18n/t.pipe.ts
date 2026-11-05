@@ -28,6 +28,7 @@ export class LocalDatePipe implements PipeTransform {
     'MMM d': 'd MMM',
     'MMM d, y': 'd MMM y',
     'MMM d, h:mm a': 'd MMM, HH:mm',
+    'MMM d, h:mm:ss a': 'd MMM, HH:mm:ss',
     'EEE, MMM d': 'EEE d MMM',
     'h:mm:ss a': 'HH:mm:ss',
   };

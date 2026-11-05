@@ -7,17 +7,20 @@ import {
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
+import { TranslatePipe } from '../../core/i18n/t.pipe';
+import { I18nService } from '../../core/i18n/i18n.service';
 
 @Component({
   selector: 'app-create-tournament',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslatePipe],
   templateUrl: './create-tournament.html',
 })
 export class CreateTournamentComponent {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly router = inject(Router);
   private readonly tournamentsApi = inject(TournamentsApiService);
+  private readonly i18n = inject(I18nService);
 
   saving = signal(false);
   error = signal<string | null>(null);
@@ -55,7 +58,7 @@ export class CreateTournamentComponent {
           this.router.navigate(['/tournaments', tournament.id, 'manage']);
         },
         error: () => {
-          this.error.set('Could not create tournament.');
+          this.error.set(this.i18n.t('Could not create tournament.'));
           this.saving.set(false);
         },
       });

@@ -7,6 +7,13 @@ import {
 import { PrismaService } from '../../prisma/prisma.service';
 import { isAppAdmin } from '../../common/is-app-admin';
 import { computeStandings } from './tournament-standings';
+import {
+  PlayoffGame,
+  checkFinalists,
+  finalFedBy,
+  finalTeamsStillValid,
+  semiFinalsFor,
+} from './tournament-finalists';
 import { CreateTournamentDto } from './dto/create-tournament.dto';
 import { UpdateTournamentDto } from './dto/update-tournament.dto';
 import { CreateTournamentGameDto } from './dto/create-tournament-game.dto';
@@ -273,9 +280,14 @@ export class TournamentsService {
       });
     }
 
+    // Tournaments you created and ones you co-organize: a scorekeeper added
+    // as a co-organizer needs to find the tournament without a direct link.
     return this.prisma.tournament.findMany({
       where: {
-        createdById: userId,
+        OR: [
+          { createdById: userId },
+          { coOrganizers: { some: { userId } } },
+        ],
       },
       include: this.tournamentInclude,
       orderBy: {
@@ -475,6 +487,16 @@ export class TournamentsService {
       }
     }
 
+    await this.assertPlayoffRules(game, dto, {
+      homeTeamId:
+        dto.homeTeamId !== undefined ? dto.homeTeamId || null : game.homeTeamId,
+      awayTeamId:
+        dto.awayTeamId !== undefined ? dto.awayTeamId || null : game.awayTeamId,
+      status: resultingStatus,
+      homeScore: resultingHomeScore,
+      awayScore: resultingAwayScore,
+    });
+
     const updatedGame = await this.prisma.tournamentGame.update({
       where: {
         id: gameId,
@@ -517,6 +539,45 @@ export class TournamentsService {
       await this.advanceBracketIfNeeded(updatedGame.id);
     }
 
+    // Trace who changed what: every score/status/team change is written to
+    // the tournament's activity log under the signed-in user.
+    const tag = updatedGame.gameNumber ? `${updatedGame.gameNumber}: ` : '';
+    const scoreText = (home: number | null, away: number | null) =>
+      `${home ?? '-'}-${away ?? '-'}`;
+
+    if (
+      game.homeScore !== updatedGame.homeScore ||
+      game.awayScore !== updatedGame.awayScore ||
+      game.status !== updatedGame.status
+    ) {
+      await this.logAudit(
+        tournamentId,
+        userId,
+        'GAME_SCORE_UPDATED',
+        `${tag}${updatedGame.homeTeamName} ${scoreText(updatedGame.homeScore, updatedGame.awayScore)} ${updatedGame.awayTeamName} (${updatedGame.status}); was ${scoreText(game.homeScore, game.awayScore)} ${game.status}`,
+      );
+    }
+
+    if (
+      game.homeTeamId !== updatedGame.homeTeamId ||
+      game.awayTeamId !== updatedGame.awayTeamId
+    ) {
+      await this.logAudit(
+        tournamentId,
+        userId,
+        'GAME_TEAMS_SET',
+        `${tag}${updatedGame.homeTeamName} vs ${updatedGame.awayTeamName}`,
+      );
+    }
+
+    if (
+      dto.status !== undefined ||
+      dto.homeScore !== undefined ||
+      dto.awayScore !== undefined
+    ) {
+      await this.reconcileFinalAfterSemiChange(userId, updatedGame);
+    }
+
     if (
       (dto.status !== undefined ||
         dto.homeScore !== undefined ||
@@ -529,6 +590,194 @@ export class TournamentsService {
     }
 
     return updatedGame;
+  }
+
+  private async divisionPlayoffs(
+    tournamentId: string,
+    division: string,
+  ): Promise<PlayoffGame[]> {
+    return this.prisma.tournamentGame.findMany({
+      where: { tournamentId, division, stage: 'PLAYOFF' },
+      select: {
+        id: true,
+        gameNumber: true,
+        startsAt: true,
+        status: true,
+        homeTeamId: true,
+        awayTeamId: true,
+        homeTeamName: true,
+        awayTeamName: true,
+        homeScore: true,
+        awayScore: true,
+      },
+    });
+  }
+
+  /**
+   * Only a semi-final winner can play the final. Enforced here (not just in
+   * the page) so no client can put a team that lost its semi into the final:
+   *  - a final's teams must be exactly the two semi-final winners;
+   *  - a final can't be started or scored without valid teams;
+   *  - once a final has started, a semi-final result can't be changed in a
+   *    way that alters who is playing in it.
+   * Divisions without a semi-finals + final shape are left alone.
+   */
+  private async assertPlayoffRules(
+    game: {
+      id: string;
+      tournamentId: string;
+      stage: string;
+      division: string | null;
+    },
+    dto: UpdateTournamentGameDto,
+    resulting: {
+      homeTeamId: string | null;
+      awayTeamId: string | null;
+      status: string;
+      homeScore: number | null;
+      awayScore: number | null;
+    },
+  ): Promise<void> {
+    if (game.stage !== 'PLAYOFF' || !game.division) {
+      return;
+    }
+
+    const touchesTeams =
+      dto.homeTeamId !== undefined || dto.awayTeamId !== undefined;
+    const touchesPlay =
+      dto.status !== undefined ||
+      dto.homeScore !== undefined ||
+      dto.awayScore !== undefined;
+
+    if (!touchesTeams && !touchesPlay) {
+      return;
+    }
+
+    const playoffs = await this.divisionPlayoffs(
+      game.tournamentId,
+      game.division,
+    );
+
+    const semis = semiFinalsFor(playoffs, game.id);
+
+    if (semis) {
+      const { homeTeamId, awayTeamId } = resulting;
+      const hasTeams = !!homeTeamId && !!awayTeamId;
+
+      if (touchesTeams && !hasTeams && (homeTeamId || awayTeamId)) {
+        throw new BadRequestException(
+          'Set both finalists, or clear both.',
+        );
+      }
+
+      if (hasTeams && (touchesTeams || resulting.status !== 'SCHEDULED')) {
+        const verdict = checkFinalists(semis, homeTeamId, awayTeamId);
+
+        if (!verdict.ok) {
+          throw new BadRequestException(verdict.message);
+        }
+      }
+
+      if (touchesPlay && resulting.status !== 'SCHEDULED' && !hasTeams) {
+        throw new BadRequestException(
+          "Set the final's teams before starting or scoring it.",
+        );
+      }
+    }
+
+    const fed = finalFedBy(playoffs, game.id);
+
+    if (
+      fed &&
+      touchesPlay &&
+      fed.final.status !== 'SCHEDULED' &&
+      fed.final.homeTeamId &&
+      fed.final.awayTeamId
+    ) {
+      const prospective = fed.semis.map((semi) =>
+        semi.id === game.id
+          ? {
+              ...semi,
+              status: resulting.status,
+              homeScore: resulting.homeScore,
+              awayScore: resulting.awayScore,
+            }
+          : semi,
+      ) as [PlayoffGame, PlayoffGame];
+
+      if (
+        !finalTeamsStillValid(
+          prospective,
+          fed.final.homeTeamId,
+          fed.final.awayTeamId,
+        )
+      ) {
+        const finalLabel = fed.final.gameNumber
+          ? `Final ${fed.final.gameNumber}`
+          : 'The final';
+        const semiLabel =
+          fed.semis.find((semi) => semi.id === game.id)?.gameNumber ??
+          'this semi-final';
+
+        throw new BadRequestException(
+          `${finalLabel} has already started, so this change can't alter who won ${semiLabel}.`,
+        );
+      }
+    }
+  }
+
+  /**
+   * After a semi-final result changes, a final that hasn't started and whose
+   * teams no longer match the semi-final winners is reset to its placeholders,
+   * so a team that lost (or an undecided semi) never stays in the final.
+   */
+  private async reconcileFinalAfterSemiChange(
+    userId: string,
+    semi: {
+      id: string;
+      tournamentId: string;
+      stage: string;
+      division: string | null;
+      gameNumber: string | null;
+    },
+  ): Promise<void> {
+    if (semi.stage !== 'PLAYOFF' || !semi.division) {
+      return;
+    }
+
+    const playoffs = await this.divisionPlayoffs(
+      semi.tournamentId,
+      semi.division,
+    );
+    const fed = finalFedBy(playoffs, semi.id);
+
+    if (
+      !fed ||
+      fed.final.status !== 'SCHEDULED' ||
+      (!fed.final.homeTeamId && !fed.final.awayTeamId) ||
+      finalTeamsStillValid(fed.semis, fed.final.homeTeamId, fed.final.awayTeamId)
+    ) {
+      return;
+    }
+
+    await this.prisma.tournamentGame.update({
+      where: { id: fed.final.id },
+      data: {
+        homeTeamId: null,
+        awayTeamId: null,
+        homeTeamName: `Finalist 1 (${semi.division})`,
+        awayTeamName: `Finalist 2 (${semi.division})`,
+        homeScore: null,
+        awayScore: null,
+      },
+    });
+
+    await this.logAudit(
+      semi.tournamentId,
+      userId,
+      'FINAL_TEAMS_CLEARED',
+      `${fed.final.gameNumber ?? 'Final'}: teams cleared because the result of ${semi.gameNumber ?? 'a semi-final'} changed`,
+    );
   }
 
   /**
@@ -2206,10 +2455,13 @@ export class TournamentsService {
     return this.prisma.tournamentAuditLogEntry.findMany({
       where: { tournamentId },
       include: {
-        user: { select: { id: true, firstName: true, lastName: true } },
+        user: {
+          select: { id: true, firstName: true, lastName: true, email: true },
+        },
       },
       orderBy: { createdAt: 'desc' },
-      take: 200,
+      // Every score change is logged, so keep a full tournament's worth.
+      take: 2000,
     });
   }
 

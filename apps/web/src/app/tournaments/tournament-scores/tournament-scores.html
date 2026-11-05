@@ -290,13 +290,17 @@
             </option>
           </select>
 
+          <div class="alert alert-danger py-2 small mb-2" *ngIf="finalistWarning(game) as warning">
+            {{ warning }}
+          </div>
+
           <div class="text-danger small mb-2" *ngIf="teamsError()">{{ teamsError() }}</div>
 
           <div class="d-flex gap-2">
             <button
               type="button"
               class="btn btn-primary action-btn"
-              [disabled]="savingTeams()"
+              [disabled]="savingTeams() || !!finalistWarning(game)"
               (click)="saveTeams(game)"
             >
               {{ savingTeams() ? 'Saving...' : 'Save teams' }}

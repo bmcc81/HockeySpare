@@ -1,9 +1,14 @@
+import { registerLocaleData } from '@angular/common';
+import localeFrCa from '@angular/common/locales/fr-CA';
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, isDevMode } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideServiceWorker } from '@angular/service-worker';
 import { authInterceptor } from './auth/auth.interceptor';
+
+// Needed so dates and times format in French when the language is switched.
+registerLocaleData(localeFrCa);
 
 export const appConfig: ApplicationConfig = {
   providers: [

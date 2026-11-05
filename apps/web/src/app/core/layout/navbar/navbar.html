@@ -13,7 +13,7 @@
       type="button"
       (click)="toggleMobile()"
       [attr.aria-expanded]="mobileOpen()"
-      aria-label="Toggle navigation"
+      [attr.aria-label]="'Toggle navigation' | t"
     >
       <span></span>
       <span></span>
@@ -29,7 +29,7 @@
           class="nav-link"
           (click)="closeAll()"
         >
-          Home
+          {{ 'Home' | t }}
         </a>
 
         <a
@@ -39,7 +39,7 @@
           class="nav-link"
           (click)="closeAll()"
         >
-          Requests
+          {{ 'Requests' | t }}
         </a>
 
         @if (authState.isLoggedIn()) {
@@ -49,7 +49,7 @@
           class="nav-link"
           (click)="closeAll()"
         >
-          Messages
+          {{ 'Messages' | t }}
         </a>
 
         <a
@@ -58,7 +58,7 @@
           class="nav-link"
           (click)="closeAll()"
         >
-          My League
+          {{ 'My League' | t }}
         </a>
 
         <a
@@ -67,7 +67,7 @@
           class="nav-link"
           (click)="closeAll()"
         >
-          My Team
+          {{ 'My Team' | t }}
         </a>
 
         <a
@@ -76,7 +76,7 @@
           class="nav-link"
           (click)="closeAll()"
         >
-          Tournaments
+          {{ 'Tournaments' | t }}
         </a>
 
         <a
@@ -85,7 +85,7 @@
           class="nav-link"
           (click)="closeAll()"
         >
-          My Bookings
+          {{ 'My Bookings' | t }}
         </a>
 
         <a
@@ -94,7 +94,7 @@
           class="nav-link"
           (click)="closeAll()"
         >
-          Incoming Bookings
+          {{ 'Incoming Bookings' | t }}
         </a>
 
         <div class="nav-dropdown">
@@ -104,7 +104,7 @@
             [class.active]="actionsOpen()"
             (click)="toggleActions()"
           >
-            Post
+            {{ 'Post' | t }}
             <span class="chevron" [class.open]="actionsOpen()"></span>
           </button>
 
@@ -115,7 +115,7 @@
               class="dropdown-link"
               (click)="closeAll()"
             >
-              + Team Request
+              {{ '+ Team Request' | t }}
             </a>
 
             <a
@@ -123,7 +123,7 @@
               class="dropdown-link"
               (click)="closeAll()"
             >
-              + Player Offer
+              {{ '+ Player Offer' | t }}
             </a>
 
             <a
@@ -131,7 +131,7 @@
               class="dropdown-link"
               (click)="closeAll()"
             >
-              + League
+              {{ '+ League' | t }}
             </a>
           </div>
           }
@@ -144,11 +144,13 @@
           class="nav-link"
           (click)="closeAll()"
         >
-          Help AI
+          {{ 'Help AI' | t }}
         </a>
       </div>
 
       <div class="nav-side">
+        <app-language-toggle></app-language-toggle>
+
         <div class="nav-dropdown">
           <button
             type="button"
@@ -156,7 +158,7 @@
             [class.active]="accountOpen()"
             (click)="toggleAccount()"
           >
-            @if (authState.isLoggedIn()) { {{ displayName() }} } @else { Sign In
+            @if (authState.isLoggedIn()) { {{ displayName() }} } @else { {{ 'Sign In' | t }}
             }
             <span class="chevron" [class.open]="accountOpen()"></span>
           </button>
@@ -165,7 +167,7 @@
           <div class="dropdown-panel dropdown-panel-right">
             @if (authState.isLoggedIn()) {
             <div class="dropdown-user">
-              Signed in as <strong>{{ displayName() }}</strong>
+              {{ 'Signed in as' | t }} <strong>{{ displayName() }}</strong>
             </div>
 
             @if (role()) {
@@ -179,7 +181,7 @@
               class="dropdown-link"
               (click)="closeAll()"
             >
-              Player Profile
+              {{ 'Player Profile' | t }}
             </a>
 
             <a
@@ -187,7 +189,7 @@
               class="dropdown-link"
               (click)="closeAll()"
             >
-              Team Profile
+              {{ 'Team Profile' | t }}
             </a>
 
             @if (authState.isAdmin()) {
@@ -196,7 +198,7 @@
               class="dropdown-link"
               (click)="closeAll()"
             >
-              All Teams
+              {{ 'All Teams' | t }}
             </a>
             }
 
@@ -205,11 +207,11 @@
               class="dropdown-link dropdown-button"
               (click)="logout()"
             >
-              Logout
+              {{ 'Logout' | t }}
             </button>
             } @else {
             <a routerLink="/login" class="dropdown-link" (click)="closeAll()">
-              Login
+              {{ 'Login' | t }}
             </a>
 
             <a
@@ -217,7 +219,7 @@
               class="dropdown-link"
               (click)="closeAll()"
             >
-              Register
+              {{ 'Register' | t }}
             </a>
             }
           </div>
@@ -226,11 +228,11 @@
 
         @if (authState.isLoggedIn()) {
         <a routerLink="/requests/team/new" class="cta" (click)="closeAll()">
-          Post Request
+          {{ 'Post Request' | t }}
         </a>
         } @else {
         <a routerLink="/register" class="cta" (click)="closeAll()">
-          Join Now
+          {{ 'Join Now' | t }}
         </a>
         }
       </div>

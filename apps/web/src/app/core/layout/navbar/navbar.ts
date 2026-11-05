@@ -13,13 +13,15 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthStateService } from '../../../auth/auth-state.service';
 import { TeamService } from '../../services/team';
+import { LanguageToggleComponent } from '../../i18n/language-toggle';
+import { TranslatePipe } from '../../i18n/t.pipe';
 
 type UserRole = 'PLAYER' | 'CAPTAIN' | 'GENERAL_MANAGER';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive, TranslatePipe, LanguageToggleComponent],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -10,6 +10,8 @@ import {
 } from '@hockeyspare/contracts';
 import { Subscription, interval } from 'rxjs';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
+import { I18nService } from '../../core/i18n/i18n.service';
+import { LocalDatePipe, TranslatePipe } from '../../core/i18n/t.pipe';
 
 const REFRESH_MS = 30000;
 const SAVE_DEBOUNCE_MS = 600;
@@ -26,12 +28,13 @@ type SaveState = 'saving' | 'saved' | 'error';
 @Component({
   selector: 'app-tournament-scores',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslatePipe, LocalDatePipe],
   templateUrl: './tournament-scores.html',
 })
 export class TournamentScoresComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly api = inject(TournamentsApiService);
+  private readonly i18n = inject(I18nService);
 
   private refreshSub: Subscription | null = null;
   private readonly saveTimers = new Map<string, ReturnType<typeof setTimeout>>();
@@ -92,7 +95,7 @@ export class TournamentScoresComponent implements OnInit, OnDestroy {
       },
       error: () => {
         if (initial) {
-          this.error.set('This tournament could not be loaded.');
+          this.error.set(this.i18n.t('This tournament could not be loaded.'));
         }
         this.loading.set(false);
       },
@@ -120,7 +123,7 @@ export class TournamentScoresComponent implements OnInit, OnDestroy {
       const [y, m, d] = key.split('-').map(Number);
       return {
         key,
-        label: new Date(y, m - 1, d).toLocaleDateString(undefined, {
+        label: new Date(y, m - 1, d).toLocaleDateString(this.i18n.locale(), {
           weekday: 'short',
           month: 'short',
           day: 'numeric',
@@ -250,7 +253,7 @@ export class TournamentScoresComponent implements OnInit, OnDestroy {
     if (game.stage === 'PLAYOFF' && v.home === v.away) {
       this.setError(
         game.id,
-        'Playoff games cannot end tied. Add the overtime or shootout winner’s goal first.',
+        this.i18n.t('Playoff games cannot end tied. Add the overtime or shootout winner’s goal first.'),
       );
       return;
     }
@@ -362,8 +365,9 @@ export class TournamentScoresComponent implements OnInit, OnDestroy {
           this.setError(
             game.id,
             err?.status === 403
-              ? 'You don’t have permission to change scores for this tournament.'
-              : err?.error?.message || 'Could not save. Check your connection and tap retry.',
+              ? this.i18n.t('You don’t have permission to change scores for this tournament.')
+              : err?.error?.message ||
+                this.i18n.t('Could not save. Check your connection and tap retry.'),
           );
         },
       });
@@ -459,7 +463,7 @@ export class TournamentScoresComponent implements OnInit, OnDestroy {
 
   private teamNameById(teamId: string): string {
     return (
-      (this.tournament()?.teams ?? []).find((t) => t.id === teamId)?.name ?? 'That team'
+      (this.tournament()?.teams ?? []).find((t) => t.id === teamId)?.name ?? this.i18n.t('That team')
     );
   }
 
@@ -476,7 +480,7 @@ export class TournamentScoresComponent implements OnInit, OnDestroy {
     }
 
     if (home === away) {
-      return 'Choose two different teams.';
+      return this.i18n.t('Choose two different teams.');
     }
 
     const winners = semis.map((s) => this.winnerId(s));
@@ -484,21 +488,29 @@ export class TournamentScoresComponent implements OnInit, OnDestroy {
     if (winners.some((w) => !w)) {
       const pending = semis
         .filter((_, i) => !winners[i])
-        .map((s) => s.gameNumber ?? 'the semi-final')
-        .join(' and ');
-      return `Finish ${pending} before setting the final's teams.`;
+        .map((s) => s.gameNumber ?? this.i18n.t('the semi-final'))
+        .join(` ${this.i18n.t('and')} `);
+      return this.i18n.t("Finish {games} before setting the final's teams.", { games: pending });
     }
 
     for (const teamId of [home, away]) {
       if (!winners.includes(teamId)) {
         const lost = semis.find((s) => s.homeTeamId === teamId || s.awayTeamId === teamId);
         const who = this.teamNameById(teamId);
-        return (
-          (lost
-            ? `${who} lost semi-final ${lost.gameNumber ?? ''}, so can't play in the final.`
-            : `${who} didn't win a semi-final, so can't play in the final.`) +
-          ` The finalists are ${this.teamNameById(winners[0])} and ${this.teamNameById(winners[1])}.`
-        );
+        const reason = lost
+          ? this.i18n.t("{team} lost semi-final {game}, so can't play in the final.", {
+              team: who,
+              game: lost.gameNumber ?? '',
+            })
+          : this.i18n.t("{team} didn't win a semi-final, so can't play in the final.", {
+              team: who,
+            });
+        const finalists = this.i18n.t('The finalists are {a} and {b}.', {
+          a: this.teamNameById(winners[0]),
+          b: this.teamNameById(winners[1]),
+        });
+
+        return `${reason} ${finalists}`;
       }
     }
 
@@ -531,11 +543,14 @@ export class TournamentScoresComponent implements OnInit, OnDestroy {
       const level = rows.filter((r) => (r.rank ?? 0) === rank);
 
       if (level.length > 1) {
-        const span = `places ${rank}\u2013${rank + level.length - 1}`;
+        const places = `${rank}\u2013${rank + level.length - 1}`;
         const names = level.map((r) => r.teamName).join(', ');
         const note = row.needsCommitteeDecision
-          ? `The ${span} are tied (${names}) \u2014 the committee must decide. Pick the team they chose.`
-          : `The ${span} are level so far (${names}).`;
+          ? this.i18n.t(
+              'Places {places} are tied ({names}) — the committee must decide. Pick the team they chose.',
+              { places, names },
+            )
+          : this.i18n.t('Places {places} are level so far ({names}).', { places, names });
 
         if (!notes.includes(note)) {
           notes.push(note);
@@ -561,7 +576,10 @@ export class TournamentScoresComponent implements OnInit, OnDestroy {
           const winner = this.winnerId(semis[slot]);
 
           if (!winner) {
-            const note = `Finish ${semis[slot].gameNumber ?? 'the semi-final'} first \u2014 the finalists are the semi-final winners.`;
+            const note = this.i18n.t(
+              'Finish {game} first — the finalists are the semi-final winners.',
+              { game: semis[slot].gameNumber ?? this.i18n.t('the semi-final') },
+            );
             if (!notes.includes(note)) notes.push(note);
           }
 
@@ -579,13 +597,13 @@ export class TournamentScoresComponent implements OnInit, OnDestroy {
     this.teamsDraft.set({ home, away });
 
     if (!roundRobinDone && !semis) {
-      notes.push("The round robin isn't finished, so this suggestion may change.");
+      notes.push(this.i18n.t("The round robin isn't finished, so this suggestion may change."));
     }
 
     if (home && away && notes.length === 0) {
-      notes.push('Suggested from the standings \u2014 check, then save.');
+      notes.push(this.i18n.t('Suggested from the standings — check, then save.'));
     } else if (!home || !away) {
-      notes.push('Pick the team(s) left blank.');
+      notes.push(this.i18n.t('Pick the team(s) left blank.'));
     }
 
     this.suggestionNote.set(notes.join(' '));
@@ -595,7 +613,7 @@ export class TournamentScoresComponent implements OnInit, OnDestroy {
     const { home, away } = this.teamsDraft();
 
     if (!home || !away || home === away) {
-      this.teamsError.set('Choose two different teams.');
+      this.teamsError.set(this.i18n.t('Choose two different teams.'));
       return;
     }
 
@@ -611,7 +629,7 @@ export class TournamentScoresComponent implements OnInit, OnDestroy {
           this.teamsPanelId.set(null);
         },
         error: (err) => {
-          this.teamsError.set(err?.error?.message || 'Could not save the teams.');
+          this.teamsError.set(err?.error?.message || this.i18n.t('Could not save the teams.'));
           this.savingTeams.set(false);
         },
       });

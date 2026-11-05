@@ -1,7 +1,7 @@
 <section class="container py-4" *ngIf="!loading(); else loadingTpl">
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="mb-0">My Tournaments</h1>
-    <a routerLink="/tournaments/new" class="btn btn-primary">New Tournament</a>
+    <h1 class="mb-0">{{ 'My Tournaments' | t }}</h1>
+    <a routerLink="/tournaments/new" class="btn btn-primary">{{ 'New Tournament' | t }}</a>
   </div>
 
   <div *ngIf="error()" class="alert alert-danger">{{ error() }}</div>
@@ -9,15 +9,15 @@
   <div class="card">
     <div class="card-body">
       <div *ngIf="tournaments().length === 0" class="text-secondary py-3">
-        You haven't created any tournaments yet.
+        {{ 'You haven\'t created any tournaments yet.' | t }}
       </div>
 
       <div class="table-responsive" *ngIf="tournaments().length > 0">
         <table class="table align-middle mb-0">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Games</th>
+              <th>{{ 'Name' | t }}</th>
+              <th>{{ 'Games' | t }}</th>
               <th></th>
             </tr>
           </thead>
@@ -33,13 +33,13 @@
                   [routerLink]="['/tournaments', tournament.id, 'manage']"
                   class="btn btn-sm btn-outline-secondary me-2"
                 >
-                  Manage
+                  {{ 'Manage' | t }}
                 </a>
                 <a
                   [routerLink]="['/tournaments', tournament.id]"
                   class="btn btn-sm btn-outline-primary"
                 >
-                  View public page
+                  {{ 'View public page' | t }}
                 </a>
               </td>
             </tr>
@@ -51,5 +51,5 @@
 </section>
 
 <ng-template #loadingTpl>
-  <div class="container py-5 text-center text-secondary">Loading...</div>
+  <div class="container py-5 text-center text-secondary">{{ 'Loading...' | t }}</div>
 </ng-template>

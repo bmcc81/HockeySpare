@@ -156,73 +156,73 @@
   <ng-container *ngIf="tournament() as t">
     <div class="board-header">
       <div class="board-title">{{ t.name }}</div>
-      <div class="board-clock">{{ now() | date: 'EEE, MMM d' }} &middot; {{ now() | date: 'h:mm:ss a' }}</div>
+      <div class="board-clock">{{ now() | ldate: 'EEE, MMM d' }} &middot; {{ now() | ldate: 'h:mm:ss a' }}</div>
     </div>
 
     <div class="weather-banner" *ngIf="weatherAlert() as alert">
-      &#9888; WEATHER ALERT: {{ alert }}
+      &#9888; {{ 'WEATHER ALERT:' | t }} {{ alert }}
     </div>
 
-    <div class="section-label">Live now</div>
+    <div class="section-label">{{ 'Live now' | t }}</div>
 
     <div class="live-grid" *ngIf="liveGames().length > 0; else noLive">
       <div class="live-card" *ngFor="let game of liveGames(); trackBy: trackByGameId">
-        <span class="live-pill">&#9679; LIVE</span>
+        <span class="live-pill">&#9679; {{ 'LIVE' | t }}</span>
         <div class="live-matchup">
           <div class="live-team">{{ game.homeTeamName }}</div>
           <div class="live-score">{{ game.homeScore ?? 0 }} - {{ game.awayScore ?? 0 }}</div>
           <div class="live-team text-end">{{ game.awayTeamName }}</div>
         </div>
-        <div class="live-meta">{{ game.arenaName || 'Arena TBD' }}</div>
+        <div class="live-meta">{{ game.arenaName || ('Arena TBD' | t) }}</div>
       </div>
     </div>
 
     <ng-template #noLive>
-      <div class="empty-state">No games are live right now.</div>
+      <div class="empty-state">{{ 'No games are live right now.' | t }}</div>
     </ng-template>
 
     <div class="two-col mt-3">
       <div>
-        <div class="section-label">Up next</div>
+        <div class="section-label">{{ 'Up next' | t }}</div>
         <table class="list-table" *ngIf="upcomingGames().length > 0; else noUpcoming">
           <thead>
             <tr>
-              <th>Matchup</th>
-              <th>Time</th>
-              <th>Arena</th>
+              <th>{{ 'Matchup' | t }}</th>
+              <th>{{ 'Time' | t }}</th>
+              <th>{{ 'Arena' | t }}</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let game of upcomingGames(); trackBy: trackByGameId">
-              <td>{{ game.homeTeamName }} vs {{ game.awayTeamName }}</td>
-              <td>{{ game.startsAt | date: 'shortTime' }}</td>
-              <td>{{ game.arenaName || 'TBD' }}</td>
+              <td>{{ game.homeTeamName }} {{ 'vs' | t }} {{ game.awayTeamName }}</td>
+              <td>{{ game.startsAt | ldate: 'shortTime' }}</td>
+              <td>{{ game.arenaName || ('TBD' | t) }}</td>
             </tr>
           </tbody>
         </table>
         <ng-template #noUpcoming>
-          <div class="empty-state">No upcoming games scheduled.</div>
+          <div class="empty-state">{{ 'No upcoming games scheduled.' | t }}</div>
         </ng-template>
       </div>
 
       <div>
-        <div class="section-label">Recent finals</div>
+        <div class="section-label">{{ 'Recent finals' | t }}</div>
         <table class="list-table" *ngIf="recentFinals().length > 0; else noFinals">
           <thead>
             <tr>
-              <th>Matchup</th>
-              <th>Final</th>
+              <th>{{ 'Matchup' | t }}</th>
+              <th>{{ 'Final@@scoreboard' | t }}</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let game of recentFinals(); trackBy: trackByGameId">
-              <td>{{ game.homeTeamName }} vs {{ game.awayTeamName }}</td>
+              <td>{{ game.homeTeamName }} {{ 'vs' | t }} {{ game.awayTeamName }}</td>
               <td class="score-final">{{ game.homeScore ?? 0 }} - {{ game.awayScore ?? 0 }}</td>
             </tr>
           </tbody>
         </table>
         <ng-template #noFinals>
-          <div class="empty-state">No games have finished yet.</div>
+          <div class="empty-state">{{ 'No games have finished yet.' | t }}</div>
         </ng-template>
       </div>
     </div>
@@ -230,5 +230,5 @@
 </ng-container>
 
 <ng-template #loadingTpl>
-  <div class="empty-state">Loading...</div>
+  <div class="empty-state">{{ 'Loading...' | t }}</div>
 </ng-template>

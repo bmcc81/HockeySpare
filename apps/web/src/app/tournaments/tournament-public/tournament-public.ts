@@ -28,6 +28,8 @@ import {
 import { Subscription, interval, switchMap } from 'rxjs';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
 import { AuctionApiService } from '../../core/services/auction-api.service';
+import { I18nService } from '../../core/i18n/i18n.service';
+import { LocalDatePipe, TranslatePipe } from '../../core/i18n/t.pipe';
 
 type TournamentTab =
   | 'schedule'
@@ -48,7 +50,14 @@ const BANNER_ROTATE_MS = 5000;
 @Component({
   selector: 'app-tournament-public',
   standalone: true,
-  imports: [PlayerHighlightsComponent, CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [
+    PlayerHighlightsComponent,
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    TranslatePipe,
+    LocalDatePipe,
+  ],
   templateUrl: './tournament-public.html',
 })
 export class TournamentPublicComponent implements OnInit, OnDestroy {
@@ -57,6 +66,7 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
   private readonly tournamentsApi = inject(TournamentsApiService);
   private readonly auctionApi = inject(AuctionApiService);
   private readonly sanitizer = inject(DomSanitizer);
+  private readonly i18n = inject(I18nService);
 
   auctionActive = signal(false);
 
@@ -121,7 +131,7 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
         this.jumpToFragmentGame();
       },
       error: () => {
-        this.error.set('This tournament could not be found.');
+        this.error.set(this.i18n.t('This tournament could not be found.'));
         this.loading.set(false);
       },
     });
@@ -212,10 +222,14 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
     const minutes = Math.floor((diffMs % 3600000) / 60000);
     const seconds = Math.floor((diffMs % 60000) / 1000);
 
+    const fr = this.i18n.lang() === 'fr';
+    const [d, h, m, sec] = fr ? ['j', 'h', 'min', 's'] : ['d', 'h', 'm', 's'];
+    const space = fr ? ' ' : '';
+
     this.countdownText.set(
       days > 0
-        ? `${days}d ${hours}h ${minutes}m`
-        : `${hours}h ${minutes}m ${seconds}s`,
+        ? `${days}${space}${d} ${hours}${space}${h} ${minutes}${space}${m}`
+        : `${hours}${space}${h} ${minutes}${space}${m} ${seconds}${space}${sec}`,
     );
   }
 
@@ -231,19 +245,21 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
           if (result.status === 'SUCCEEDED') {
             this.paymentMessageIsError.set(false);
             this.paymentMessage.set(
-              `Payment received for ${result.registration.teamName}. You're all set.`,
+              this.i18n.t("Payment received for {team}. You're all set.", {
+                team: result.registration.teamName,
+              }),
             );
           } else {
             this.paymentMessageIsError.set(true);
             this.paymentMessage.set(
-              'Your payment has not completed yet. It may still be processing.',
+              this.i18n.t('Your payment has not completed yet. It may still be processing.'),
             );
           }
         },
         error: () => {
           this.paymentVerifying.set(false);
           this.paymentMessageIsError.set(true);
-          this.paymentMessage.set('Could not confirm this payment.');
+          this.paymentMessage.set(this.i18n.t('Could not confirm this payment.'));
         },
       });
   }
@@ -362,7 +378,7 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
     const groups = new Map<string, TournamentGame[]>();
 
     for (const game of sorted) {
-      const day = new Date(game.startsAt).toLocaleDateString(undefined, {
+      const day = new Date(game.startsAt).toLocaleDateString(this.i18n.locale(), {
         weekday: 'long',
         month: 'long',
         day: 'numeric',
@@ -498,10 +514,10 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
   roundLabel(roundIndex: number, totalRounds: number): string {
     const remaining = totalRounds - roundIndex;
 
-    if (remaining === 1) return 'Final';
-    if (remaining === 2) return 'Semifinals';
-    if (remaining === 3) return 'Quarterfinals';
-    return `Round ${roundIndex + 1}`;
+    if (remaining === 1) return this.i18n.t('Final@@round');
+    if (remaining === 2) return this.i18n.t('Semifinals');
+    if (remaining === 3) return this.i18n.t('Quarterfinals');
+    return this.i18n.t('Round {n}', { n: roundIndex + 1 });
   }
 
   trackByBracketId(_index: number, bracket: TournamentBracket): string {
@@ -573,9 +589,9 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
   ];
 
   infoListingCategoryLabel(category: TournamentInfoListingCategory): string {
-    if (category === 'HOTEL') return 'Hotels';
-    if (category === 'MERCHANDISE') return 'Merchandise';
-    return 'Vendors';
+    if (category === 'HOTEL') return this.i18n.t('Hotels');
+    if (category === 'MERCHANDISE') return this.i18n.t('Merchandise');
+    return this.i18n.t('Vendors');
   }
 
   infoListingsByCategory(
@@ -648,7 +664,7 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           this.volunteerSignupError.set(
-            err?.error?.message || 'Could not sign up for this shift.',
+            err?.error?.message || this.i18n.t('Could not sign up for this shift.'),
           );
           this.submittingVolunteerSignup.set(false);
         },
@@ -741,7 +757,7 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           this.registrationError.set(
-            err?.error?.message || 'Could not submit your registration.',
+            err?.error?.message || this.i18n.t('Could not submit your registration.'),
           );
           this.submittingRegistration.set(false);
         },

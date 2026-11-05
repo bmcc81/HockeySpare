@@ -4,14 +4,14 @@
       <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
         <div class="auth-card">
           <div class="mb-4 text-center">
-            <h1 class="auth-title">Welcome back</h1>
-            <p class="auth-subtitle mb-0">Sign in to HockeySpare</p>
+            <h1 class="auth-title">{{ 'Welcome back' | t }}</h1>
+            <p class="auth-subtitle mb-0">{{ 'Sign in to HockeySpare' | t }}</p>
           </div>
 
           <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
             <div class="row g-3">
               <div class="col-12">
-                <label for="email" class="form-label">Email</label>
+                <label for="email" class="form-label">{{ 'Email' | t }}</label>
                 <input
                   id="email"
                   type="email"
@@ -25,30 +25,30 @@
                   *ngIf="form.controls.email.touched && form.controls.email.invalid"
                 >
                   <span *ngIf="form.controls.email.errors?.['required']">
-                    Email is required.
+                    {{ 'Email is required.' | t }}
                   </span>
                   <span *ngIf="form.controls.email.errors?.['email']">
-                    Enter a valid email address.
+                    {{ 'Enter a valid email address.' | t }}
                   </span>
                 </div>
               </div>
 
               <div class="col-12">
-                <label for="password" class="form-label">Password</label>
+                <label for="password" class="form-label">{{ 'Password' | t }}</label>
                 <input
                   id="password"
                   type="password"
                   formControlName="password"
                   class="form-control form-control-lg custom-input"
                   [class.is-invalid]="form.controls.password.touched && form.controls.password.invalid"
-                  placeholder="Enter your password"
+                  [placeholder]="'Enter your password' | t"
                 />
                 <div
                   class="invalid-feedback d-block"
                   *ngIf="form.controls.password.touched && form.controls.password.invalid"
                 >
                   <span *ngIf="form.controls.password.errors?.['required']">
-                    Password is required.
+                    {{ 'Password is required.' | t }}
                   </span>
                 </div>
               </div>
@@ -65,7 +65,7 @@
                   class="btn submit-btn"
                   [disabled]="loading"
                 >
-                  {{ loading ? 'Signing in...' : 'Sign in' }}
+                  {{ loading ? ('Signing in...' | t) : ('Sign in' | t) }}
                 </button>
               </div>
             </div>
@@ -73,8 +73,8 @@
 
           <div class="text-center mt-4 form-footer">
             <p class="mb-0">
-              Don’t have an account?
-              <a routerLink="/register">Create account</a>
+              {{ 'Don’t have an account?' | t }}
+              <a routerLink="/register">{{ 'Create account' | t }}</a>
             </p>
           </div>
         </div>

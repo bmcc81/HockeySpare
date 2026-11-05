@@ -98,7 +98,7 @@
 
   <ng-container *ngIf="tournament() as t">
     <div class="no-print d-flex justify-content-end">
-      <button type="button" class="btn btn-primary" (click)="print()">Print / Save as PDF</button>
+      <button type="button" class="btn btn-primary" (click)="print()">{{ 'Print / Save as PDF' | t }}</button>
     </div>
 
     <div class="program-header">
@@ -110,14 +110,14 @@
       />
       <div class="program-title">{{ t.name }}</div>
       <div *ngIf="t.startDate || t.endDate">
-        {{ t.startDate | date: 'mediumDate' : 'UTC' }}
-        <ng-container *ngIf="t.endDate"> &ndash; {{ t.endDate | date: 'mediumDate' : 'UTC' }}</ng-container>
+        {{ t.startDate | ldate: 'mediumDate' : 'UTC' }}
+        <ng-container *ngIf="t.endDate"> &ndash; {{ t.endDate | ldate: 'mediumDate' : 'UTC' }}</ng-container>
       </div>
       <p class="mt-2" *ngIf="t.description">{{ t.description }}</p>
     </div>
 
     <div class="program-section" *ngIf="t.venues.length > 0">
-      <h2>Venues</h2>
+      <h2>{{ 'Venues' | t }}</h2>
       <div *ngFor="let venue of t.venues" class="mb-2">
         <strong>{{ venue.name }}</strong>
         <span *ngIf="venue.address"> &mdash; {{ venue.address }}</span>
@@ -125,10 +125,10 @@
     </div>
 
     <div class="program-section">
-      <h2>Schedule</h2>
+      <h2>{{ 'Schedule' | t }}</h2>
 
       <div *ngIf="t.games.length === 0" class="text-secondary">
-        No games have been scheduled yet.
+        {{ 'No games have been scheduled yet.' | t }}
       </div>
 
       <ng-container *ngFor="let group of gamesByDay()">
@@ -136,22 +136,22 @@
         <table class="program-table">
           <thead>
             <tr>
-              <th>Time</th>
-              <th>Matchup</th>
-              <th>Arena</th>
-              <th>Refs</th>
+              <th>{{ 'Time' | t }}</th>
+              <th>{{ 'Matchup' | t }}</th>
+              <th>{{ 'Arena' | t }}</th>
+              <th>{{ 'Refs' | t }}</th>
               <th class="no-print">QR</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let game of group.games; trackBy: trackByGameId">
-              <td>{{ game.startsAt | date: 'shortTime' }}</td>
+              <td>{{ game.startsAt | ldate: 'shortTime' }}</td>
               <td>
                 <span class="text-secondary" *ngIf="game.gameNumber">{{ game.gameNumber }} &middot; </span>
                 <ng-container *ngIf="game.stage === 'EVENT'; else programMatchup">{{ game.homeTeamName }}</ng-container>
-                <ng-template #programMatchup>{{ game.homeTeamName }} vs {{ game.awayTeamName }}</ng-template>
+                <ng-template #programMatchup>{{ game.homeTeamName }} {{ 'vs' | t }} {{ game.awayTeamName }}</ng-template>
               </td>
-              <td>{{ game.arenaName || 'TBD' }}</td>
+              <td>{{ game.arenaName || ('TBD' | t) }}</td>
               <td>
                 <span *ngFor="let assignment of game.refereeAssignments; let last = last">
                   {{ assignment.referee.name }}{{ last ? '' : ', ' }}
@@ -167,7 +167,7 @@
     </div>
 
     <div class="program-section" *ngIf="t.teams.length > 0">
-      <h2>Teams</h2>
+      <h2>{{ 'Teams' | t }}</h2>
       <div class="team-grid">
         <div *ngFor="let team of t.teams; trackBy: trackByTeamId">
           <strong>{{ team.name }}</strong>
@@ -177,12 +177,12 @@
     </div>
 
     <div class="program-section" *ngIf="t.rules">
-      <h2>Rules</h2>
+      <h2>{{ 'Rules' | t }}</h2>
       <p style="white-space: pre-wrap">{{ t.rules }}</p>
     </div>
 
     <div class="program-section" *ngIf="t.sponsors.length > 0">
-      <h2>Thank you to our sponsors</h2>
+      <h2>{{ 'Thank you to our sponsors' | t }}</h2>
       <div class="sponsor-list">
         <img
           *ngFor="let sponsor of t.sponsors"
@@ -193,7 +193,7 @@
     </div>
 
     <div class="program-section" *ngIf="t.contactName || t.contactEmail || t.contactPhone">
-      <h2>Contact</h2>
+      <h2>{{ 'Contact' | t }}</h2>
       <p class="mb-1" *ngIf="t.contactName">{{ t.contactName }}</p>
       <p class="mb-1" *ngIf="t.contactEmail">{{ t.contactEmail }}</p>
       <p class="mb-1" *ngIf="t.contactPhone">{{ t.contactPhone }}</p>
@@ -202,5 +202,5 @@
 </ng-container>
 
 <ng-template #loadingTpl>
-  <div class="text-secondary">Loading...</div>
+  <div class="text-secondary">{{ 'Loading...' | t }}</div>
 </ng-template>

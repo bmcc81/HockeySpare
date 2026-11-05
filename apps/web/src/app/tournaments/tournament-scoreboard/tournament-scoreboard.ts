@@ -4,6 +4,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Tournament, TournamentGame } from '@hockeyspare/contracts';
 import { Subscription, interval, switchMap } from 'rxjs';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
+import { TranslatePipe, LocalDatePipe } from '../../core/i18n/t.pipe';
+import { I18nService } from '../../core/i18n/i18n.service';
 
 const POLL_INTERVAL_MS = 15000;
 const CLOCK_TICK_MS = 1000;
@@ -11,12 +13,13 @@ const CLOCK_TICK_MS = 1000;
 @Component({
   selector: 'app-tournament-scoreboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe, LocalDatePipe],
   templateUrl: './tournament-scoreboard.html',
 })
 export class TournamentScoreboardComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly tournamentsApi = inject(TournamentsApiService);
+  private readonly i18n = inject(I18nService);
 
   private pollSubscription: Subscription | null = null;
   private clockIntervalId: ReturnType<typeof setInterval> | null = null;
@@ -55,7 +58,7 @@ export class TournamentScoreboardComponent implements OnInit, OnDestroy {
         this.loading.set(false);
       },
       error: () => {
-        this.error.set('This tournament could not be found.');
+        this.error.set(this.i18n.t('This tournament could not be found.'));
         this.loading.set(false);
       },
     });

@@ -69,19 +69,18 @@
 
 <section class="container py-3" style="max-width: 720px">
   <a [routerLink]="['/tournaments', tournamentId, 'manage']" class="small d-inline-block mb-2">
-    &larr; Manage tournament
+    &larr; {{ 'Manage tournament' | t }}
   </a>
 
   <div *ngIf="error()" class="alert alert-danger">{{ error() }}</div>
-  <div *ngIf="loading()" class="text-secondary">Loading...</div>
+  <div *ngIf="loading()" class="text-secondary">{{ 'Loading...' | t }}</div>
 
   <ng-container *ngIf="tournament() as t">
-    <h1 class="h4 mb-0">Score entry</h1>
+    <h1 class="h4 mb-0">{{ 'Score entry' | t }}</h1>
     <p class="text-secondary small mb-2">{{ t.name }}</p>
 
     <div *ngIf="canEdit() === false" class="alert alert-warning py-2 small">
-      You can see the schedule here but can't change scores. Ask a tournament
-      organizer to add you as a co-organizer.
+      {{ "You can see the schedule here but can't change scores. Ask a tournament organizer to add you as a co-organizer." | t }}
     </div>
 
     <div class="scores-bar mb-3">
@@ -100,12 +99,12 @@
 
       <div class="d-flex gap-2">
         <select class="form-select" style="max-width: 9rem" (change)="setDivision($event)">
-          <option value="">All divisions</option>
+          <option value="">{{ 'All divisions' | t }}</option>
           <option *ngFor="let division of divisions()" [value]="division">{{ division }}</option>
         </select>
         <input
           class="form-control"
-          placeholder="Team, arena or game #"
+          [placeholder]="'Team, arena or game #' | t"
           [value]="search()"
           (input)="setSearch($event)"
         />
@@ -113,31 +112,31 @@
     </div>
 
     <div *ngIf="games().length === 0" class="text-secondary py-4 text-center">
-      No games match.
+      {{ 'No games match.' | t }}
     </div>
 
     <div class="card mb-3" *ngFor="let game of games(); trackBy: trackByGameId">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center small text-secondary mb-1">
-          <span>{{ game.startsAt | date: 'shortTime' }} &middot; {{ game.arenaName || 'Arena TBD' }}</span>
+          <span>{{ game.startsAt | ldate: 'shortTime' }} &middot; {{ game.arenaName || ('Arena TBD' | t) }}</span>
           <span class="d-flex align-items-center gap-1">
             <span *ngIf="game.gameNumber">{{ game.gameNumber }}</span>
             <span class="badge text-bg-light border" *ngIf="game.division">{{ game.division }}</span>
-            <span class="badge text-bg-info" *ngIf="game.stage === 'PLAYOFF'">Playoff</span>
-            <span class="badge text-bg-warning" *ngIf="game.stage === 'EXHIBITION'">Exhibition</span>
+            <span class="badge text-bg-info" *ngIf="game.stage === 'PLAYOFF'">{{ 'Playoff' | t }}</span>
+            <span class="badge text-bg-warning" *ngIf="game.stage === 'EXHIBITION'">{{ 'Exhibition' | t }}</span>
             <span
               class="badge"
               [class.text-bg-secondary]="status(game) === 'SCHEDULED'"
               [class.text-bg-danger]="status(game) === 'LIVE'"
               [class.text-bg-dark]="status(game) === 'FINAL'"
             >
-              {{ status(game) === 'SCHEDULED' ? 'Not started' : status(game) === 'LIVE' ? 'LIVE' : 'Final' }}
+              {{ status(game) === 'SCHEDULED' ? ('Not started' | t) : status(game) === 'LIVE' ? ('LIVE' | t) : ('Final' | t) }}
             </span>
           </span>
         </div>
 
         <div *ngIf="needsTeams(game)" class="alert alert-info py-2 small mt-2 mb-1">
-          Teams for this game aren't set yet.
+          {{ 'Teams for this game aren\'t set yet.' | t }}
         </div>
 
         <div class="team-row">
@@ -146,7 +145,7 @@
             <button
               type="button"
               class="btn btn-outline-secondary"
-              aria-label="Remove a goal from home"
+              [attr.aria-label]="'Remove a goal from home' | t"
               [disabled]="!canEdit() || status(game) === 'FINAL' || needsTeams(game)"
               (click)="bump(game, 'home', -1)"
             >
@@ -156,7 +155,7 @@
             <button
               type="button"
               class="btn btn-success"
-              aria-label="Add a goal for home"
+              [attr.aria-label]="'Add a goal for home' | t"
               [disabled]="!canEdit() || status(game) === 'FINAL' || needsTeams(game)"
               (click)="bump(game, 'home', 1)"
             >
@@ -171,7 +170,7 @@
             <button
               type="button"
               class="btn btn-outline-secondary"
-              aria-label="Remove a goal from visitor"
+              [attr.aria-label]="'Remove a goal from visitor' | t"
               [disabled]="!canEdit() || status(game) === 'FINAL' || needsTeams(game)"
               (click)="bump(game, 'away', -1)"
             >
@@ -181,7 +180,7 @@
             <button
               type="button"
               class="btn btn-success"
-              aria-label="Add a goal for visitor"
+              [attr.aria-label]="'Add a goal for visitor' | t"
               [disabled]="!canEdit() || status(game) === 'FINAL' || needsTeams(game)"
               (click)="bump(game, 'away', 1)"
             >
@@ -197,7 +196,7 @@
             *ngIf="needsTeams(game)"
             (click)="openTeams(game)"
           >
-            Set teams
+            {{ 'Set teams' | t }}
           </button>
 
           <button
@@ -206,7 +205,7 @@
             *ngIf="!needsTeams(game) && status(game) === 'SCHEDULED'"
             (click)="startGame(game)"
           >
-            Start game
+            {{ 'Start game' | t }}
           </button>
 
           <button
@@ -215,15 +214,15 @@
             *ngIf="!needsTeams(game) && status(game) === 'LIVE' && confirmFinalId() !== game.id"
             (click)="askFinal(game)"
           >
-            Final
+            {{ 'Final@@button' | t }}
           </button>
 
           <ng-container *ngIf="confirmFinalId() === game.id">
             <button type="button" class="btn btn-dark action-btn" (click)="confirmFinal(game)">
-              Confirm final: {{ score(game, 'home') }} &ndash; {{ score(game, 'away') }}
+              {{ 'Confirm final:' | t }} {{ score(game, 'home') }} &ndash; {{ score(game, 'away') }}
             </button>
             <button type="button" class="btn btn-outline-secondary action-btn" (click)="cancelFinal()">
-              Cancel
+              {{ 'Cancel' | t }}
             </button>
           </ng-container>
 
@@ -233,7 +232,7 @@
             *ngIf="status(game) === 'FINAL'"
             (click)="reopen(game)"
           >
-            Reopen
+            {{ 'Reopen' | t }}
           </button>
 
           <button
@@ -242,13 +241,13 @@
             *ngIf="needsTeams(game) === false && game.stage === 'PLAYOFF' && status(game) !== 'FINAL'"
             (click)="openTeams(game)"
           >
-            Change teams
+            {{ 'Change teams' | t }}
           </button>
         </div>
 
         <div class="small mt-2" *ngIf="saveState()[game.id] || saveError()[game.id]">
-          <span *ngIf="saveState()[game.id] === 'saving'" class="text-secondary">Saving...</span>
-          <span *ngIf="saveState()[game.id] === 'saved'" class="text-success">&check; Saved</span>
+          <span *ngIf="saveState()[game.id] === 'saving'" class="text-secondary">{{ 'Saving...' | t }}</span>
+          <span *ngIf="saveState()[game.id] === 'saved'" class="text-success">&check; {{ 'Saved' | t }}</span>
           <span *ngIf="saveError()[game.id]" class="text-danger">
             {{ saveError()[game.id] }}
             <button
@@ -257,18 +256,18 @@
               *ngIf="saveState()[game.id] === 'error'"
               (click)="retry(game)"
             >
-              Retry
+              {{ 'Retry' | t }}
             </button>
           </span>
         </div>
 
         <div class="border rounded p-2 mt-3" *ngIf="teamsPanelId() === game.id">
-          <div class="fw-semibold mb-2">Teams for this game</div>
+          <div class="fw-semibold mb-2">{{ 'Teams for this game' | t }}</div>
           <div class="small text-secondary mb-2" *ngIf="suggestionNote()">{{ suggestionNote() }}</div>
 
           <label class="form-label small mb-1">{{ game.homeTeamName }}</label>
           <select class="form-select mb-2" (change)="setTeam('home', $event)">
-            <option value="">Choose team...</option>
+            <option value="">{{ 'Choose team...' | t }}</option>
             <option
               *ngFor="let team of teamsFor(game)"
               [value]="team.id"
@@ -280,7 +279,7 @@
 
           <label class="form-label small mb-1">{{ game.awayTeamName }}</label>
           <select class="form-select mb-2" (change)="setTeam('away', $event)">
-            <option value="">Choose team...</option>
+            <option value="">{{ 'Choose team...' | t }}</option>
             <option
               *ngFor="let team of teamsFor(game)"
               [value]="team.id"
@@ -303,16 +302,16 @@
               [disabled]="savingTeams() || !!finalistWarning(game)"
               (click)="saveTeams(game)"
             >
-              {{ savingTeams() ? 'Saving...' : 'Save teams' }}
+              {{ savingTeams() ? ('Saving...' | t) : ('Save teams' | t) }}
             </button>
             <button type="button" class="btn btn-outline-secondary action-btn" (click)="closeTeams()">
-              Cancel
+              {{ 'Cancel' | t }}
             </button>
           </div>
         </div>
       </div>
     </div>
 
-    <p class="text-secondary small text-center">Updates automatically every 30 seconds.</p>
+    <p class="text-secondary small text-center">{{ 'Updates automatically every 30 seconds.' | t }}</p>
   </ng-container>
 </section>

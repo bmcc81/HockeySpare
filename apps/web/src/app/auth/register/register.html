@@ -4,36 +4,36 @@
       <div class="card bg-dark bg-opacity-75 border border-light border-opacity-10 shadow-lg rounded-4">
         <div class="card-body p-4 p-md-5">
           <div class="mb-4 text-center">
-            <h1 class="h2 fw-bold text-white mb-2">Create account</h1>
-            <p class="text-light opacity-75 mb-0">Join HockeySpare</p>
+            <h1 class="h2 fw-bold text-white mb-2">{{ 'Create account' | t }}</h1>
+            <p class="text-light opacity-75 mb-0">{{ 'Join HockeySpare' | t }}</p>
           </div>
 
           <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
             <div class="row g-3">
               <div class="col-12 col-md-6">
-                <label for="firstName" class="form-label text-white">First name</label>
+                <label for="firstName" class="form-label text-white">{{ 'First name' | t }}</label>
                 <input
                   id="firstName"
                   type="text"
                   formControlName="firstName"
                   class="form-control form-control-lg"
-                  placeholder="First name"
+                  [placeholder]="'First name' | t"
                 />
               </div>
 
               <div class="col-12 col-md-6">
-                <label for="lastName" class="form-label text-white">Last name</label>
+                <label for="lastName" class="form-label text-white">{{ 'Last name' | t }}</label>
                 <input
                   id="lastName"
                   type="text"
                   formControlName="lastName"
                   class="form-control form-control-lg"
-                  placeholder="Last name"
+                  [placeholder]="'Last name' | t"
                 />
               </div>
 
               <div class="col-12">
-                <label for="email" class="form-label text-white">Email</label>
+                <label for="email" class="form-label text-white">{{ 'Email' | t }}</label>
                 <input
                   id="email"
                   type="email"
@@ -46,37 +46,37 @@
                   class="invalid-feedback d-block"
                   *ngIf="form.controls.email.touched && form.controls.email.invalid"
                 >
-                  <span *ngIf="form.controls.email.errors?.['required']">Email is required.</span>
-                  <span *ngIf="form.controls.email.errors?.['email']">Enter a valid email address.</span>
+                  <span *ngIf="form.controls.email.errors?.['required']">{{ 'Email is required.' | t }}</span>
+                  <span *ngIf="form.controls.email.errors?.['email']">{{ 'Enter a valid email address.' | t }}</span>
                 </div>
               </div>
 
               <div class="col-12">
-                <label for="password" class="form-label text-white">Password</label>
+                <label for="password" class="form-label text-white">{{ 'Password' | t }}</label>
                 <input
                   id="password"
                   type="password"
                   formControlName="password"
                   class="form-control form-control-lg"
                   [class.is-invalid]="form.controls.password.touched && form.controls.password.invalid"
-                  placeholder="Enter your password"
+                  [placeholder]="'Enter your password' | t"
                 />
                 <div
                   class="invalid-feedback d-block"
                   *ngIf="form.controls.password.touched && form.controls.password.invalid"
                 >
-                  <span *ngIf="form.controls.password.errors?.['required']">Password is required.</span>
+                  <span *ngIf="form.controls.password.errors?.['required']">{{ 'Password is required.' | t }}</span>
                   <span *ngIf="form.controls.password.errors?.['minlength']">
-                    Password must be at least 8 characters.
+                    {{ 'Password must be at least 8 characters.' | t }}
                   </span>
                   <span *ngIf="form.controls.password.errors?.['maxlength']">
-                    Password must be 72 characters or fewer.
+                    {{ 'Password must be 72 characters or fewer.' | t }}
                   </span>
                 </div>
               </div>
 
               <div class="col-12">
-                <label for="confirmPassword" class="form-label text-white">Confirm password</label>
+                <label for="confirmPassword" class="form-label text-white">{{ 'Confirm password' | t }}</label>
                 <input
                   id="confirmPassword"
                   type="password"
@@ -86,7 +86,7 @@
                     form.controls.confirmPassword.touched &&
                     (form.controls.confirmPassword.invalid || form.hasError('passwordMismatch'))
                   "
-                  placeholder="Confirm your password"
+                  [placeholder]="'Confirm your password' | t"
                 />
                 <div
                   class="invalid-feedback d-block"
@@ -96,7 +96,7 @@
                   "
                 >
                   <span *ngIf="form.controls.confirmPassword.errors?.['required']">
-                    Please confirm your password.
+                    {{ 'Please confirm your password.' | t }}
                   </span>
                   <span
                     *ngIf="
@@ -104,7 +104,7 @@
                       form.hasError('passwordMismatch')
                     "
                   >
-                    Passwords do not match.
+                    {{ 'Passwords do not match.' | t }}
                   </span>
                 </div>
               </div>
@@ -121,7 +121,7 @@
                   class="btn btn-primary btn-lg rounded-3 fw-semibold"
                   [disabled]="loading"
                 >
-                  {{ loading ? 'Creating account...' : 'Register' }}
+                  {{ loading ? ('Creating account...' | t) : ('Register@@account' | t) }}
                 </button>
               </div>
             </div>
@@ -129,9 +129,9 @@
 
           <div class="text-center mt-4">
             <p class="mb-0 text-light opacity-75">
-              Already have an account?
+              {{ 'Already have an account?' | t }}
               <a routerLink="/login" class="link-light fw-semibold text-decoration-none">
-                Sign in
+                {{ 'Sign in' | t }}
               </a>
             </p>
           </div>

@@ -1,32 +1,30 @@
 <section
   class="highlights"
-  aria-label="Player highlights"
+  [attr.aria-label]="'Player highlights' | t"
   [attr.aria-busy]="loading()"
 >
   <header class="heading">
     <div>
-      <span class="eyebrow">Making an impact</span>
-      <h2>On the ice. On the board.</h2>
+      <span class="eyebrow">{{ 'Making an impact' | t }}</span>
+      <h2>{{ 'On the ice. On the board.' | t }}</h2>
     </div>
-    <span class="scope">{{ data()?.scopeLabel || 'Player highlights' }}</span>
+    <span class="scope">{{ data()?.scopeLabel || ('Player highlights' | t) }}</span>
   </header>
   <p *ngIf="loading() && !data()" role="status" class="state">
-    Loading player highlights…
+    {{ 'Loading player highlights…' | t }}
   </p>
   <div *ngIf="error()" role="alert" class="state">
-    {{ data() ? 'Could not refresh player highlights. Showing the last loaded
-    results.' : 'Player highlights could not be loaded.' }}
-    <button type="button" (click)="load(true)">Try again</button>
+    {{ data() ? ('Could not refresh player highlights. Showing the last loaded results.' | t) : ('Player highlights could not be loaded.' | t) }}
+    <button type="button" (click)="load(true)">{{ 'Try again' | t }}</button>
   </div>
   <ng-container *ngIf="data() as board">
     <div class="board-grid">
       <section class="weekly">
-        <span class="eyebrow">The weekly spotlight</span>
-        <h3>Players of the Week</h3>
-        <p class="description">Top scorers over the past seven days.</p>
+        <span class="eyebrow">{{ 'The weekly spotlight' | t }}</span>
+        <h3>{{ 'Players of the Week' | t }}</h3>
+        <p class="description">{{ 'Top scorers over the past seven days.' | t }}</p>
         <p class="date">
-          {{ board.weekStart | date:'MMM d' }} – {{ board.asOf | date:'MMM d, y'
-          }}
+          {{ board.weekStart | ldate:'MMM d' }} – {{ board.asOf | ldate:'MMM d, y' }}
         </p>
         <div class="stars">
           <article
@@ -37,7 +35,7 @@
               <img
                 *ngIf="player.photoUrl && !failedPhotos().has(player.photoUrl); else initialsAvatar"
                 [src]="player.photoUrl"
-                [alt]="player.displayName + ' portrait'"
+                [alt]="player.displayName"
                 width="400"
                 height="400"
                 loading="lazy"
@@ -54,54 +52,51 @@
             </div>
             <div class="player">
               <span class="star-label"
-                >{{ ['First star', 'Second star', 'Third star'][i] }}</span
+                >{{ ['First star', 'Second star', 'Third star'][i] | t }}</span
               >
               <h4>{{ player.displayName }}</h4>
               <p>{{ player.teamName }}</p>
               <small *ngIf="scope === 'home'"
                 >{{ player.competitionName }}</small
               ><small
-                >{{ player.goals }} goals · {{ player.assists }} assists · {{
-                player.gamesPlayed }} games</small
+                >{{ player.goals }} {{ 'goals' | t }} · {{ player.assists }} {{ 'assists' | t }} · {{
+                player.gamesPlayed }} {{ 'games' | t }}</small
               >
             </div>
             <div class="points">
-              <strong>{{ player.points }}</strong><span>PTS</span>
+              <strong>{{ player.points }}</strong><span>{{ 'PTS' | t }}</span>
             </div>
           </article>
         </div>
         <p *ngIf="!board.playersOfTheWeek.length" class="empty">
-          The next stars are still to come. Weekly highlights appear when
-          players score in completed games.
+          {{ 'The next stars are still to come. Weekly highlights appear when players score in completed games.' | t }}
         </p>
       </section>
       <section class="leaders">
         <div class="leader-heading">
           <div>
-            <span class="eyebrow">Leading the way</span>
-            <h3>Point Leaders</h3>
+            <span class="eyebrow">{{ 'Leading the way' | t }}</span>
+            <h3>{{ 'Point Leaders' | t }}</h3>
           </div>
           <span class="points-key">G + A = PTS</span>
         </div>
         <p class="description">
-          {{ scope === 'home' ? 'Public tournament results from the past 30
-          days.' : 'Recorded results across this competition.' }}
+          {{ scope === 'home' ? ('Public tournament results from the past 30 days.' | t) : ('Recorded results across this competition.' | t) }}
         </p>
         <div class="table-scroll" *ngIf="board.pointLeaders.length">
           <table>
             <caption class="visually-hidden">
-              Point leaders ranked by points, then goals. Equal totals share a
-              rank.
+              {{ 'Point leaders ranked by points, then goals. Equal totals share a rank.' | t }}
             </caption>
             <thead>
               <tr>
                 <th scope="col">#</th>
-                <th scope="col">Player</th>
-                <th scope="col"><abbr title="Games played">GP</abbr></th>
-                <th scope="col"><abbr title="Goals">G</abbr></th>
-                <th scope="col"><abbr title="Assists">A</abbr></th>
-                <th scope="col"><abbr title="Points">PTS</abbr></th>
-                <th scope="col"><abbr title="Penalty minutes">PIM</abbr></th>
+                <th scope="col">{{ 'Player' | t }}</th>
+                <th scope="col"><abbr [title]="'Games played' | t">{{ 'GP' | t }}</abbr></th>
+                <th scope="col"><abbr [title]="'Goals' | t">{{ 'G' | t }}</abbr></th>
+                <th scope="col"><abbr [title]="'Assists' | t">{{ 'A' | t }}</abbr></th>
+                <th scope="col"><abbr [title]="'Points' | t">{{ 'PTS' | t }}</abbr></th>
+                <th scope="col"><abbr [title]="'Penalty minutes' | t">{{ 'PIM' | t }}</abbr></th>
               </tr>
             </thead>
             <tbody>
@@ -137,17 +132,15 @@
           *ngIf="board.pointLeaders.length && !filteredLeaders().length"
           class="empty"
         >
-          No players match your search.
+          {{ 'No players match your search.' | t }}
         </p>
         <p *ngIf="!board.pointLeaders.length" class="empty">
-          No completed game stats yet. The leaderboard will appear as scores are
-          recorded and games are finalized.
+          {{ 'No completed game stats yet. The leaderboard will appear as scores are recorded and games are finalized.' | t }}
         </p>
       </section>
     </div>
     <p class="footnote">
-      Completed games only. Points = goals + assists. Ties are ordered by goals,
-      then name. Tournament rosters are ranked separately.
+      {{ 'Completed games only. Points = goals + assists. Ties are ordered by goals, then name. Tournament rosters are ranked separately.' | t }}
     </p>
   </ng-container>
 </section>

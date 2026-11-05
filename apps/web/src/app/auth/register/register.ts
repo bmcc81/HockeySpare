@@ -11,6 +11,8 @@ import {
 import { Router, RouterModule } from '@angular/router';
 import { finalize } from 'rxjs';
 import { AuthApi } from '../auth.api';
+import { I18nService } from '../../core/i18n/i18n.service';
+import { TranslatePipe } from '../../core/i18n/t.pipe';
 
 function passwordsMatchValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -28,13 +30,14 @@ function passwordsMatchValidator(): ValidatorFn {
 @Component({
   standalone: true,
   selector: 'app-register',
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, TranslatePipe],
   templateUrl: './register.html',
 })
 export class RegisterComponent {
   private fb = inject(FormBuilder);
   private api = inject(AuthApi);
   private router = inject(Router);
+  private i18n = inject(I18nService);
 
   loading = false;
   error = '';
@@ -63,7 +66,7 @@ export class RegisterComponent {
       this.form.markAllAsTouched();
 
       if (this.form.hasError('passwordMismatch')) {
-        this.error = 'Passwords do not match';
+        this.error = this.i18n.t('Passwords do not match');
       }
 
       return;
@@ -94,7 +97,7 @@ export class RegisterComponent {
           } else if (typeof message === 'string') {
             this.error = message;
           } else {
-            this.error = 'Registration failed';
+            this.error = this.i18n.t('Registration failed');
           }
         },
       });

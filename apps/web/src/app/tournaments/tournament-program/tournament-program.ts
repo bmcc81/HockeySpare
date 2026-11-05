@@ -4,16 +4,19 @@ import { ActivatedRoute } from '@angular/router';
 import { Tournament, TournamentGame, TournamentTeam } from '@hockeyspare/contracts';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
 import { QrCodeComponent } from '../shared/qr-code/qr-code';
+import { TranslatePipe, LocalDatePipe } from '../../core/i18n/t.pipe';
+import { I18nService } from '../../core/i18n/i18n.service';
 
 @Component({
   selector: 'app-tournament-program',
   standalone: true,
-  imports: [CommonModule, QrCodeComponent],
+  imports: [CommonModule, QrCodeComponent, TranslatePipe, LocalDatePipe],
   templateUrl: './tournament-program.html',
 })
 export class TournamentProgramComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly tournamentsApi = inject(TournamentsApiService);
+  private readonly i18n = inject(I18nService);
 
   tournamentId = this.route.snapshot.paramMap.get('id') ?? '';
 
@@ -28,7 +31,7 @@ export class TournamentProgramComponent implements OnInit {
         this.loading.set(false);
       },
       error: () => {
-        this.error.set('This tournament could not be found.');
+        this.error.set(this.i18n.t('This tournament could not be found.'));
         this.loading.set(false);
       },
     });
@@ -44,7 +47,7 @@ export class TournamentProgramComponent implements OnInit {
     const groups = new Map<string, TournamentGame[]>();
 
     for (const game of games) {
-      const day = new Date(game.startsAt).toLocaleDateString(undefined, {
+      const day = new Date(game.startsAt).toLocaleDateString(this.i18n.locale(), {
         weekday: 'long',
         month: 'long',
         day: 'numeric',

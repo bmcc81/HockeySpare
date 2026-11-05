@@ -5,22 +5,21 @@
         <div class="card-body">
           <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
             <div>
-              <h1 class="h4 mb-1">Ask HockeySpare Help</h1>
+              <h1 class="h4 mb-1">{{ 'Ask HockeySpare Help' | t }}</h1>
               <p class="text-muted mb-0">
-                Ask questions about teams, spare requests, availability, leagues,
-                and score sheets.
+                {{ 'Ask questions about teams, spare requests, availability, leagues, and score sheets.' | t }}
               </p>
             </div>
           </div>
 
           <div class="mb-3">
-            <label for="helpQuestion" class="form-label">Question</label>
+            <label for="helpQuestion" class="form-label">{{ 'Question' | t }}</label>
             <textarea
               id="helpQuestion"
               class="form-control"
               rows="3"
               [(ngModel)]="question"
-              placeholder="Example: How do I assign a captain?"
+              [placeholder]="'Example: How do I assign a captain?' | t"
             ></textarea>
           </div>
 
@@ -31,7 +30,7 @@
               (click)="useExample('How do I assign a captain?')"
               [disabled]="loading()"
             >
-              Assign a captain
+              {{ 'Assign a captain' | t }}
             </button>
 
             <button
@@ -40,7 +39,7 @@
               (click)="useExample('How do I notify spare players?')"
               [disabled]="loading()"
             >
-              Notify spares
+              {{ 'Notify spares' | t }}
             </button>
 
             <button
@@ -49,7 +48,7 @@
               (click)="useExample('How do I finalize a score sheet?')"
               [disabled]="loading()"
             >
-              Finalize score sheet
+              {{ 'Finalize score sheet' | t }}
             </button>
           </div>
 
@@ -59,7 +58,7 @@
             (click)="askHelp()"
             [disabled]="loading()"
           >
-            {{ loading() ? 'Asking...' : 'Ask AI' }}
+            {{ loading() ? ('Asking...' | t) : ('Ask AI' | t) }}
           </button>
 
           <div *ngIf="error()" class="alert alert-danger mt-3">
@@ -67,13 +66,13 @@
           </div>
 
           <div *ngIf="result()" class="mt-4">
-            <h2 class="h5">Answer</h2>
+            <h2 class="h5">{{ 'Answer' | t }}</h2>
 
             <div class="border rounded p-3 bg-light mb-3">
               <p class="mb-0">{{ result()?.answer }}</p>
             </div>
 
-            <h3 class="h6">Sources</h3>
+            <h3 class="h6">{{ 'Sources' | t }}</h3>
 
             <ul
               *ngIf="result()?.sources?.length; else noSources"
@@ -97,7 +96,7 @@
             </ul>
 
             <ng-template #noSources>
-              <p class="text-muted mb-0">No sources found.</p>
+              <p class="text-muted mb-0">{{ 'No sources found.' | t }}</p>
             </ng-template>
           </div>
         </div>

@@ -4,15 +4,15 @@
       <div class="col-12 col-md-10 col-lg-7 col-xl-6">
         <div class="request-card">
           <div class="text-center mb-4">
-            <h2 class="request-title">Create Team Request</h2>
+            <h2 class="request-title">{{ 'Create Team Request' | t }}</h2>
             <p class="request-subtitle mb-0">
-              Post a player need on HockeySpare
+              {{ 'Post a player need on HockeySpare' | t }}
             </p>
           </div>
 
           <form [formGroup]="form" (ngSubmit)="submit()" class="row g-3">
             <div class="col-12">
-              <label class="form-label" for="teamName">Team</label>
+              <label class="form-label" for="teamName">{{ 'Team' | t }}</label>
 
               <select
                 id="teamName"
@@ -20,7 +20,7 @@
                 formControlName="teamName"
                 [disabled]="teamsLoading()"
               >
-                <option value="" disabled>Select a team</option>
+                <option value="" disabled>{{ 'Select a team' | t }}</option>
 
                 <option *ngFor="let team of teams()" [value]="team.name">
                   {{ team.name }}
@@ -28,22 +28,22 @@
               </select>
 
               <div class="text-secondary small mt-2" *ngIf="teamsLoading()">
-                Loading teams...
+                {{ 'Loading teams...' | t }}
               </div>
 
               <div
                 class="invalid-feedback d-block"
                 *ngIf="form.controls.teamName.touched && form.controls.teamName.invalid"
               >
-                Team is required.
+                {{ 'Team is required.' | t }}
               </div>
 
               <div
                 class="text-secondary small mt-2"
                 *ngIf="!teamsLoading() && teams().length === 0"
               >
-                No teams found. Create your team first from the My Team screen.
-                <a routerLink="/my-team">Go to My Team</a>
+                {{ 'No teams found. Create your team first from the My Team screen.' | t }}
+                <a routerLink="/my-team">{{ 'Go to My Team' | t }}</a>
               </div>
 
               <div class="alert alert-warning mt-2 mb-0" *ngIf="teamsError()">
@@ -52,14 +52,14 @@
             </div>
 
             <div class="col-12 col-md-6">
-              <label for="position" class="form-label">Position Needed</label>
+              <label for="position" class="form-label">{{ 'Position Needed' | t }}</label>
 
               <select
                 id="position"
                 formControlName="position"
                 class="form-select custom-input"
               >
-                <option value="" disabled>Select position</option>
+                <option value="" disabled>{{ 'Select position' | t }}</option>
                 <option *ngFor="let p of positions" [value]="p">{{ p }}</option>
               </select>
 
@@ -67,19 +67,19 @@
                 class="invalid-feedback d-block"
                 *ngIf="form.controls.position.touched && form.controls.position.invalid"
               >
-                Position is required.
+                {{ 'Position is required.' | t }}
               </div>
             </div>
 
             <div class="col-12 col-md-6">
-              <label for="skillLevel" class="form-label">Skill Level</label>
+              <label for="skillLevel" class="form-label">{{ 'Skill Level' | t }}</label>
 
               <select
                 id="skillLevel"
                 formControlName="skillLevel"
                 class="form-select custom-input"
               >
-                <option value="" disabled>Select skill level</option>
+                <option value="" disabled>{{ 'Select skill level' | t }}</option>
                 <option *ngFor="let s of skillLevels" [value]="s">
                   {{ s }}
                 </option>
@@ -89,13 +89,13 @@
                 class="invalid-feedback d-block"
                 *ngIf="form.controls.skillLevel.touched && form.controls.skillLevel.invalid"
               >
-                Skill level is required.
+                {{ 'Skill level is required.' | t }}
               </div>
             </div>
 
             <div class="col-12 col-md-6">
               <label for="playersNeeded" class="form-label"
-                >Players Needed</label
+                >{{ 'Players Needed' | t }}</label
               >
 
               <input
@@ -111,12 +111,12 @@
                 class="invalid-feedback d-block"
                 *ngIf="form.controls.playersNeeded.touched && form.controls.playersNeeded.invalid"
               >
-                Enter a valid number of players.
+                {{ 'Enter a valid number of players.' | t }}
               </div>
             </div>
 
             <div class="col-12 col-md-6">
-              <label for="payAmount" class="form-label">Pay Amount</label>
+              <label for="payAmount" class="form-label">{{ 'Pay Amount' | t }}</label>
 
               <input
                 id="payAmount"
@@ -130,12 +130,12 @@
                 class="invalid-feedback d-block"
                 *ngIf="form.controls.payAmount.touched && form.controls.payAmount.invalid"
               >
-                Enter a valid pay amount.
+                {{ 'Enter a valid pay amount.' | t }}
               </div>
             </div>
 
             <div class="col-12 col-md-6">
-              <label for="date" class="form-label">Date</label>
+              <label for="date" class="form-label">{{ 'Date' | t }}</label>
 
               <input
                 id="date"
@@ -148,12 +148,12 @@
                 class="invalid-feedback d-block"
                 *ngIf="form.controls.date.touched && form.controls.date.invalid"
               >
-                Date is required.
+                {{ 'Date is required.' | t }}
               </div>
             </div>
 
             <div class="col-12">
-              <label class="form-label">Time</label>
+              <label class="form-label">{{ 'Time' | t }}</label>
 
               <div
                 class="timepicker-shell"
@@ -172,45 +172,45 @@
                 class="invalid-feedback d-block"
                 *ngIf="form.controls.time.touched && form.controls.time.invalid"
               >
-                Time is required.
+                {{ 'Time is required.' | t }}
               </div>
             </div>
 
             <div class="col-12">
-              <label for="arena" class="form-label">Arena</label>
+              <label for="arena" class="form-label">{{ 'Arena' | t }}</label>
 
               <input
                 id="arena"
                 type="text"
                 formControlName="arena"
                 class="form-control custom-input"
-                placeholder="Arena name"
+                [placeholder]="'Arena name' | t"
               />
 
               <div
                 class="invalid-feedback d-block"
                 *ngIf="form.controls.arena.touched && form.controls.arena.invalid"
               >
-                Arena is required.
+                {{ 'Arena is required.' | t }}
               </div>
             </div>
 
             <div class="col-12">
-              <label for="arenaAddress" class="form-label">Arena Address</label>
+              <label for="arenaAddress" class="form-label">{{ 'Arena Address' | t }}</label>
 
               <input
                 id="arenaAddress"
                 type="text"
                 formControlName="arenaAddress"
                 class="form-control custom-input"
-                placeholder="123 Main St, Vaudreuil-Dorion, QC"
+                [placeholder]="'123 Main St, Vaudreuil-Dorion, QC' | t"
               />
 
               <div
                 class="invalid-feedback d-block"
                 *ngIf="form.controls.arenaAddress.touched && form.controls.arenaAddress.invalid"
               >
-                Arena address must be 220 characters or less.
+                {{ 'Arena address must be 220 characters or less.' | t }}
               </div>
             </div>
 
@@ -218,7 +218,7 @@
               <div
                 class="d-flex justify-content-between align-items-center gap-2"
               >
-                <label for="notes" class="form-label mb-0">Notes</label>
+                <label for="notes" class="form-label mb-0">{{ 'Notes' | t }}</label>
 
                 <div class="d-flex flex-wrap gap-2">
                   <button
@@ -227,8 +227,7 @@
                     (click)="generateAiMessage()"
                     [disabled]="generatingAiMessage() || rewritingAiMessage()"
                   >
-                    {{ generatingAiMessage() ? 'Generating...' : 'Generate with
-                    AI' }}
+                    {{ generatingAiMessage() ? ('Generating...' | t) : ('Generate with AI' | t) }}
                   </button>
 
                   <button
@@ -237,7 +236,7 @@
                     (click)="rewriteAiMessage('en')"
                     [disabled]="generatingAiMessage() || rewritingAiMessage()"
                   >
-                    {{ rewritingAiMessage() ? 'Rewriting...' : 'Improve Message'
+                    {{ rewritingAiMessage() ? ('Rewriting...' | t) : ('Improve Message' | t)
                     }}
                   </button>
 
@@ -247,7 +246,7 @@
                     (click)="rewriteAiMessage('fr')"
                     [disabled]="generatingAiMessage() || rewritingAiMessage()"
                   >
-                    Translate to French
+                    {{ 'Translate to French' | t }}
                   </button>
                 </div>
               </div>
@@ -256,18 +255,18 @@
                 id="notes"
                 formControlName="notes"
                 class="form-control custom-input custom-textarea mt-2"
-                placeholder="Add game details, dressing room info, level, or anything players should know"
+                [placeholder]="'Add game details, dressing room info, level, or anything players should know' | t"
               ></textarea>
 
               <div class="text-secondary small mt-2" *ngIf="aiTitle">
-                Suggested title: {{ aiTitle }}
+                {{ 'Suggested title:' | t }} {{ aiTitle }}
               </div>
 
               <div
                 class="alert alert-warning mt-2 mb-0"
                 *ngIf="missingFields.length > 0"
               >
-                Missing info:
+                {{ 'Missing info:' | t }}
                 <span *ngFor="let field of missingFields; let last = last">
                   {{ field }}{{ last ? '' : ', ' }}
                 </span>
@@ -290,14 +289,14 @@
                 class="btn submit-btn w-100"
                 [disabled]="loading || form.invalid"
               >
-                {{ loading ? 'Creating Request...' : 'Create Team Request' }}
+                {{ loading ? ('Creating Request...' | t) : ('Create Team Request' | t) }}
               </button>
             </div>
           </form>
 
           <div class="text-center form-footer mt-4">
-            Looking to join a team instead?
-            <a routerLink="/requests/player/new">Post a player offer</a>
+            {{ 'Looking to join a team instead?' | t }}
+            <a routerLink="/requests/player/new">{{ 'Post a player offer' | t }}</a>
           </div>
         </div>
       </div>

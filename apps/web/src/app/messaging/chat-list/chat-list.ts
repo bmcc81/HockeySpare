@@ -3,16 +3,19 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MyTeamSummary } from '@hockeyspare/contracts';
 import { TeamService } from '../../core/services/team';
+import { TranslatePipe } from '../../core/i18n/t.pipe';
+import { I18nService } from '../../core/i18n/i18n.service';
 
 @Component({
   selector: 'app-chat-list',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslatePipe],
   templateUrl: './chat-list.html',
   styleUrl: './chat-list.scss',
 })
 export class ChatListComponent implements OnInit {
   private readonly teamService = inject(TeamService);
+  private readonly i18n = inject(I18nService);
 
   teams = signal<MyTeamSummary[]>([]);
   loading = signal(true);
@@ -32,7 +35,7 @@ export class ChatListComponent implements OnInit {
         this.loading.set(false);
       },
       error: () => {
-        this.error.set('Could not load your teams.');
+        this.error.set(this.i18n.t('Could not load your teams.'));
         this.loading.set(false);
       },
     });

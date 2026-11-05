@@ -1,9 +1,9 @@
 <section class="container py-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-      <h1 class="mb-1">My Bookings</h1>
+      <h1 class="mb-1">{{ 'My Bookings' | t }}</h1>
       <p class="text-secondary mb-0">
-        View your booked requests and update your message to the team.
+        {{ 'View your booked requests and update your message to the team.' | t }}
       </p>
     </div>
 
@@ -13,7 +13,7 @@
       (click)="load()"
       [disabled]="loading()"
     >
-      {{ loading() ? 'Refreshing...' : 'Refresh' }}
+      {{ loading() ? ('Refreshing...' | t) : ('Refresh' | t) }}
     </button>
   </div>
 
@@ -22,13 +22,13 @@
   <div *ngIf="error()" class="alert alert-danger">{{ error() }}</div>
 
   <div *ngIf="loading()" class="text-center text-secondary py-5">
-    Loading my bookings...
+    {{ 'Loading my bookings...' | t }}
   </div>
 
   <ng-container *ngIf="!loading()">
     <div *ngIf="bookings().length === 0" class="card">
       <div class="card-body text-center text-secondary py-5">
-        You have not booked any requests yet.
+        {{ 'You have not booked any requests yet.' | t }}
       </div>
     </div>
 
@@ -38,18 +38,18 @@
           <table class="table table-hover align-middle mb-0">
             <thead>
               <tr>
-                <th>Team</th>
-                <th>Arena</th>
-                <th>Date</th>
-                <th>Time</th>
+                <th>{{ 'Team' | t }}</th>
+                <th>{{ 'Arena' | t }}</th>
+                <th>{{ 'Date' | t }}</th>
+                <th>{{ 'Time' | t }}</th>
                 <th>
                   <span class="d-inline-flex align-items-center gap-1">
-                    My Message to Team
+                    {{ 'My Message to Team' | t }}
 
                     <span
                       class="info-icon"
                       tabindex="0"
-                      aria-label="This message is visible to the team owner in Incoming Bookings."
+                      [attr.aria-label]="'This message is visible to the team owner in Incoming Bookings.' | t"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -69,15 +69,14 @@
                       </svg>
 
                       <span class="info-tooltip">
-                        This message is visible to the team owner in Incoming
-                        Bookings.
+                        {{ 'This message is visible to the team owner in Incoming Bookings.' | t }}
                       </span>
                     </span>
                   </span>
                 </th>
-                <th>Team Response</th>
-                <th>Status</th>
-                <th class="text-end">Actions</th>
+                <th>{{ 'Team Response' | t }}</th>
+                <th>{{ 'Status' | t }}</th>
+                <th class="text-end">{{ 'Actions' | t }}</th>
               </tr>
             </thead>
 
@@ -89,8 +88,8 @@
                   </div>
 
                   <div class="text-secondary small">
-                    {{ booking.request.position }} • {{
-                    booking.request.skillLevel }}
+                    {{ booking.request.position | t }} • {{
+                    booking.request.skillLevel | t }}
                   </div>
                 </td>
 
@@ -98,7 +97,7 @@
 
                 <td>
                   <ng-container *ngIf="booking.request.date; else noDateTpl">
-                    {{ booking.request.date | date: 'mediumDate' }}
+                    {{ booking.request.date | ldate: 'mediumDate' }}
                   </ng-container>
 
                   <ng-template #noDateTpl>N/A</ng-template>
@@ -111,7 +110,7 @@
                     class="form-control form-control-sm"
                     rows="2"
                     maxlength="500"
-                    placeholder="Add or update your message to the team..."
+                    [placeholder]="'Add or update your message to the team...' | t"
                     [value]="messageDraftFor(booking)"
                     (input)="setMessageDraft(booking.id, $any($event.target).value)"
                   ></textarea>
@@ -122,8 +121,7 @@
                     (click)="saveMessage(booking)"
                     [disabled]="savingMessageId() === booking.id"
                   >
-                    {{ savingMessageId() === booking.id ? 'Saving...' : 'Save
-                    message' }}
+                    {{ savingMessageId() === booking.id ? ('Saving...' | t) : ('Save message' | t) }}
                   </button>
                 </td>
 
@@ -133,7 +131,7 @@
                   </span>
 
                   <ng-template #noResponseTpl>
-                    <span class="text-secondary">No response message yet</span>
+                    <span class="text-secondary">{{ 'No response message yet' | t }}</span>
                   </ng-template>
                 </td>
 
@@ -142,7 +140,7 @@
                     class="badge rounded-pill"
                     [ngClass]="statusClass(booking.status)"
                   >
-                    {{ booking.status }}
+                    {{ booking.status | t }}
                   </span>
                 </td>
 
@@ -156,8 +154,8 @@
                       booking.status !== 'PENDING'
                     "
                   >
-                    {{ cancellingId() === booking.id ? 'Cancelling...' :
-                    'Cancel' }}
+                    {{ cancellingId() === booking.id ? ('Cancelling...' | t) :
+                    ('Cancel' | t) }}
                   </button>
                 </td>
               </tr>

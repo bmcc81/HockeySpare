@@ -1,9 +1,9 @@
 <section class="container py-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-      <h1 class="mb-1">Incoming Bookings</h1>
+      <h1 class="mb-1">{{ 'Incoming Bookings' | t }}</h1>
       <p class="text-secondary mb-0">
-        Review players who booked your hockey requests.
+        {{ 'Review players who booked your hockey requests.' | t }}
       </p>
     </div>
 
@@ -13,7 +13,7 @@
       (click)="load()"
       [disabled]="loading()"
     >
-      {{ loading() ? 'Refreshing...' : 'Refresh' }}
+      {{ loading() ? ('Refreshing...' | t) : ('Refresh' | t) }}
     </button>
   </div>
 
@@ -23,32 +23,32 @@
     <div class="card-body">
       <div class="row g-3 align-items-end">
         <div class="col-12 col-md-4">
-          <label class="form-label">Search bookings</label>
+          <label class="form-label">{{ 'Search bookings' | t }}</label>
           <input
             class="form-control"
             type="search"
-            placeholder="Search player, email, team, arena..."
+            [placeholder]="'Search player, email, team, arena...' | t"
             [value]="searchTerm()"
             (input)="setSearchTerm($any($event.target).value)"
           />
         </div>
 
         <div class="col-12 col-md-3">
-          <label class="form-label">Status</label>
+          <label class="form-label">{{ 'Status' | t }}</label>
           <select
             class="form-select"
             [value]="statusFilter()"
             (change)="setStatusFilter($any($event.target).value)"
           >
-            <option value="ALL">All statuses</option>
-            <option value="PENDING">Pending</option>
-            <option value="CONFIRMED">Confirmed</option>
-            <option value="DECLINED">Declined</option>
+            <option value="ALL">{{ 'All statuses' | t }}</option>
+            <option value="PENDING">{{ 'Pending' | t }}</option>
+            <option value="CONFIRMED">{{ 'Confirmed' | t }}</option>
+            <option value="DECLINED">{{ 'Declined' | t }}</option>
           </select>
         </div>
 
         <div class="col-12 col-md-3">
-          <label class="form-label">Game date</label>
+          <label class="form-label">{{ 'Game date' | t }}</label>
           <input
             class="form-control"
             type="date"
@@ -63,43 +63,43 @@
             type="button"
             (click)="clearFilters()"
           >
-            Clear
+            {{ 'Clear' | t }}
           </button>
         </div>
       </div>
 
       <div class="d-flex flex-wrap gap-2 mt-3">
         <span class="badge rounded-pill text-bg-secondary">
-          Total: {{ bookings().length }}
+          {{ 'Total:' | t }} {{ bookings().length }}
         </span>
 
         <span class="badge rounded-pill text-bg-warning">
-          Pending: {{ pendingCount() }}
+          {{ 'Pending:' | t }} {{ pendingCount() }}
         </span>
 
         <span class="badge rounded-pill text-bg-success">
-          Confirmed: {{ confirmedCount() }}
+          {{ 'Confirmed:' | t }} {{ confirmedCount() }}
         </span>
 
         <span class="badge rounded-pill text-bg-danger">
-          Declined: {{ declinedCount() }}
+          {{ 'Declined:' | t }} {{ declinedCount() }}
         </span>
 
         <span class="badge rounded-pill text-bg-dark">
-          Showing: {{ filteredBookings().length }}
+          {{ 'Showing:' | t }} {{ filteredBookings().length }}
         </span>
       </div>
     </div>
   </div>
 
   <div *ngIf="loading()" class="text-center text-secondary py-5">
-    Loading incoming bookings...
+    {{ 'Loading incoming bookings...' | t }}
   </div>
 
   <ng-container *ngIf="!loading()">
     <div *ngIf="bookings().length === 0" class="card">
       <div class="card-body text-center text-secondary py-5">
-        No incoming bookings yet.
+        {{ 'No incoming bookings yet.' | t }}
       </div>
     </div>
 
@@ -108,7 +108,7 @@
       class="card"
     >
       <div class="card-body text-center text-secondary py-5">
-        No bookings match your filters.
+        {{ 'No bookings match your filters.' | t }}
       </div>
     </div>
 
@@ -118,16 +118,16 @@
           <table class="table table-hover align-middle mb-0">
             <thead>
               <tr>
-                <th>Player</th>
-                <th>Email</th>
-                <th>Team</th>
-                <th>Arena</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Player Message</th>
-                <th>Response Message</th>
-                <th>Status</th>
-                <th class="text-end">Actions</th>
+                <th>{{ 'Player' | t }}</th>
+                <th>{{ 'Email' | t }}</th>
+                <th>{{ 'Team' | t }}</th>
+                <th>{{ 'Arena' | t }}</th>
+                <th>{{ 'Date' | t }}</th>
+                <th>{{ 'Time' | t }}</th>
+                <th>{{ 'Player Message' | t }}</th>
+                <th>{{ 'Response Message' | t }}</th>
+                <th>{{ 'Status' | t }}</th>
+                <th class="text-end">{{ 'Actions' | t }}</th>
               </tr>
             </thead>
 
@@ -154,7 +154,7 @@
 
                 <td>
                   <ng-container *ngIf="booking.request.date; else noDateTpl">
-                    {{ booking.request.date | date: 'mediumDate' }}
+                    {{ booking.request.date | ldate: 'mediumDate' }}
                   </ng-container>
 
                   <ng-template #noDateTpl>N/A</ng-template>
@@ -168,7 +168,7 @@
                   </span>
 
                   <ng-template #noMessageTpl>
-                    <span class="text-secondary">No message</span>
+                    <span class="text-secondary">{{ 'No message' | t }}</span>
                   </ng-template>
                 </td>
 
@@ -177,12 +177,12 @@
                     class="form-control form-control-sm"
                     rows="2"
                     maxlength="500"
-                    placeholder="Add message to player..."
+                    [placeholder]="'Add message to player...' | t"
                     [value]="responseMessageFor(booking)"
                     (input)="setResponseMessage(booking.id, $any($event.target).value)"
                   ></textarea>
 
-                  <div class="form-text">Sent when you confirm or decline.</div>
+                  <div class="form-text">{{ 'Sent when you confirm or decline.' | t }}</div>
                 </td>
 
                 <td>
@@ -194,7 +194,7 @@
                       'text-bg-danger': booking.status === 'DECLINED'
                     }"
                   >
-                    {{ booking.status }}
+                    {{ booking.status | t }}
                   </span>
                 </td>
 
@@ -208,10 +208,10 @@
                     >
                       {{
                         actionLoadingId() === booking.id
-                          ? 'Saving...'
+                          ? ('Saving...' | t)
                           : booking.status === 'CONFIRMED'
-                            ? 'Confirmed'
-                            : 'Confirm'
+                            ? ('Confirmed' | t)
+                            : ('Confirm' | t)
                       }}
                     </button>
 
@@ -223,10 +223,10 @@
                     >
                       {{
                         actionLoadingId() === booking.id
-                          ? 'Saving...'
+                          ? ('Saving...' | t)
                           : booking.status === 'DECLINED'
-                            ? 'Declined'
-                            : 'Decline'
+                            ? ('Declined' | t)
+                            : ('Decline' | t)
                       }}
                     </button>
                   </div>

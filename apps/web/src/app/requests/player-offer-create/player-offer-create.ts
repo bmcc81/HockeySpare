@@ -5,11 +5,12 @@ import { Position, SkillLevel } from '@hockeyspare/contracts';
 import { Router } from '@angular/router';
 import { NgbTimepickerModule, NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
 import { RequestApiService } from '../../core/services/request-api';
+import { TranslatePipe } from '../../core/i18n/t.pipe';
 
 @Component({
   selector: 'app-player-offer-create',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgbTimepickerModule],
+  imports: [CommonModule, ReactiveFormsModule, NgbTimepickerModule, TranslatePipe],
   templateUrl: './player-offer-create.html',
   styleUrl: './player-offer-create.scss',
 })

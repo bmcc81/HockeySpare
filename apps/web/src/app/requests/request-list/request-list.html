@@ -1,9 +1,9 @@
 <section class="page">
   <div class="header">
-    <h1>Requests</h1>
+    <h1>{{ 'Requests' | t }}</h1>
     <div class="actions">
-      <a class="btn btn-primary" [routerLink]="['/requests/team/new']">+ Team Request</a>
-      <a class="btn btn-primary" [routerLink]="['/requests/player/new']">+ Player Offer</a>
+      <a class="btn btn-primary" [routerLink]="['/requests/team/new']">{{ '+ Team Request' | t }}</a>
+      <a class="btn btn-primary" [routerLink]="['/requests/player/new']">{{ '+ Player Offer' | t }}</a>
     </div>
   </div>
 
@@ -11,30 +11,30 @@
     <input
       class="input"
       type="text"
-      placeholder="Search arena, address, time, notes, pay..."
+      [placeholder]="'Search arena, address, time, notes, pay...' | t"
       [formControl]="searchCtrl"
     />
 
     <select class="select" [formControl]="typeCtrl">
-      <option *ngFor="let o of typeOptions" [ngValue]="o.value">{{ o.label }}</option>
+      <option *ngFor="let o of typeOptions" [ngValue]="o.value">{{ o.label | t }}</option>
     </select>
 
     <select class="select" [formControl]="positionCtrl">
-      <option *ngFor="let o of positionOptions" [ngValue]="o.value">{{ o.label }}</option>
+      <option *ngFor="let o of positionOptions" [ngValue]="o.value">{{ o.label | t }}</option>
     </select>
 
     <select class="select" [formControl]="skillCtrl">
-      <option *ngFor="let o of skillOptions" [ngValue]="o.value">{{ o.label }}</option>
+      <option *ngFor="let o of skillOptions" [ngValue]="o.value">{{ o.label | t }}</option>
     </select>
 
-    <button class="btn btn-outline" type="button" (click)="clearFilters()">Clear</button>
+    <button class="btn btn-outline" type="button" (click)="clearFilters()">{{ 'Clear' | t }}</button>
   </div>
 
   <div class="list" *ngIf="vm$ | async as vm">
 
-    <h2 class="section-title" [appInView]="40">Team Requests</h2>
+    <h2 class="section-title" [appInView]="40">{{ 'Team Requests' | t }}</h2>
 
-    <p class="muted" *ngIf="vm.requests.length === 0">No requests match your filters.</p>
+    <p class="muted" *ngIf="vm.requests.length === 0">{{ 'No requests match your filters.' | t }}</p>
 
     <article
       class="card"
@@ -47,34 +47,34 @@
           <div class="title">
             <div class="title-row">
               <span class="pill">
-                {{ req.position === 'GOALIE' ? 'Team needs goalie' : 'Team needs player' }}
+                {{ req.position === 'GOALIE' ? ('Team needs goalie' | t) : ('Team needs player' | t) }}
               </span>
 
               <span class="status-pill" [ngClass]="'status-' + req.status.toLowerCase()">
-                {{ req.status | titlecase }}
+                {{ req.status | titlecase | t }}
               </span>
             </div>
 
-            <h3>{{ req.position | titlecase }} • {{ req.skillLevel | titlecase }}</h3>
+            <h3>{{ req.position | titlecase | t }} • {{ req.skillLevel | titlecase | t }}</h3>
           </div>
 
           <div class="pay">
-            <span class="pay-label">Pay</span>
+            <span class="pay-label">{{ 'Pay' | t }}</span>
             <span class="pay-amt">
-              {{ req.payAmount === 0 ? 'Free' : '$' + req.payAmount }}
+              {{ req.payAmount === 0 ? ('Free' | t) : '$' + req.payAmount }}
             </span>
           </div>
         </div>
 
         <div class="meta">
-          <div><strong>Team Name:</strong> {{ req.teamName || 'N/A' }}</div>
-          <div><strong>Skill Level:</strong> {{ req.skillLevel | titlecase }}</div>
-          <div><strong>Date:</strong> {{ req.date | date:'EEE, MMM d, y' }}</div>
-          <div><strong>Time:</strong> {{ req.time }}</div>
-          <div *ngIf="req.notes"><strong>Notes:</strong> {{ req.notes }}</div>
+          <div><strong>{{ 'Team Name:' | t }}</strong> {{ req.teamName || 'N/A' }}</div>
+          <div><strong>{{ 'Skill Level:' | t }}</strong> {{ req.skillLevel | titlecase | t }}</div>
+          <div><strong>{{ 'Date:' | t }}</strong> {{ req.date | ldate:'EEE, MMM d, y' }}</div>
+          <div><strong>{{ 'Time:' | t }}</strong> {{ req.time }}</div>
+          <div *ngIf="req.notes"><strong>{{ 'Notes:' | t }}</strong> {{ req.notes }}</div>
 
           <div class="arena">
-            <div><strong>Arena:</strong> {{ req.arena }}</div>
+            <div><strong>{{ 'Arena:' | t }}</strong> {{ req.arena }}</div>
 
             <a
               *ngIf="req.arenaAddress as addr"
@@ -91,9 +91,9 @@
       </div>
     </article>
 
-    <h2 class="section-title" style="margin-top: 18px;" [appInView]="40">Player Offers</h2>
+    <h2 class="section-title" style="margin-top: 18px;" [appInView]="40">{{ 'Player Offers' | t }}</h2>
 
-    <p class="muted" *ngIf="vm.playerOffers.length === 0">No player offers match your filters.</p>
+    <p class="muted" *ngIf="vm.playerOffers.length === 0">{{ 'No player offers match your filters.' | t }}</p>
 
     <article
       class="card"
@@ -105,33 +105,33 @@
         <div class="card-top">
           <div class="title">
             <div class="title-row">
-              <span class="pill">Player offer</span>
+              <span class="pill">{{ 'Player offer' | t }}</span>
 
               <span class="status-pill" [ngClass]="'status-' + offer.status.toLowerCase()">
-                {{ offer.status | titlecase }}
+                {{ offer.status | titlecase | t }}
               </span>
             </div>
 
-            <h3>{{ offer.position | titlecase }} • {{ offer.skillLevel | titlecase }}</h3>
+            <h3>{{ offer.position | titlecase | t }} • {{ offer.skillLevel | titlecase | t }}</h3>
           </div>
 
           <div class="pay">
-            <span class="pay-label">Pay</span>
+            <span class="pay-label">{{ 'Pay' | t }}</span>
             <span class="pay-amt">
-              {{ offer.payAmount === 0 ? 'Free' : '$' + offer.payAmount }}
+              {{ offer.payAmount === 0 ? ('Free' | t) : '$' + offer.payAmount }}
             </span>
           </div>
         </div>
 
         <div class="meta">
-          <div><strong>Player Name:</strong> {{ offer.playerName }}</div>
-          <div><strong>Skill Level:</strong> {{ offer.skillLevel | titlecase }}</div>
-          <div><strong>Date:</strong> {{ offer.date | date:'EEE, MMM d, y' }}</div>
-          <div><strong>Time:</strong> {{ offer.time }}</div>
-          <div *ngIf="offer.notes"><strong>Notes:</strong> {{ offer.notes }}</div>
+          <div><strong>{{ 'Player Name:' | t }}</strong> {{ offer.playerName }}</div>
+          <div><strong>{{ 'Skill Level:' | t }}</strong> {{ offer.skillLevel | titlecase | t }}</div>
+          <div><strong>{{ 'Date:' | t }}</strong> {{ offer.date | ldate:'EEE, MMM d, y' }}</div>
+          <div><strong>{{ 'Time:' | t }}</strong> {{ offer.time }}</div>
+          <div *ngIf="offer.notes"><strong>{{ 'Notes:' | t }}</strong> {{ offer.notes }}</div>
 
           <div class="arena">
-            <div><strong>Arena:</strong> {{ offer.arena }}</div>
+            <div><strong>{{ 'Arena:' | t }}</strong> {{ offer.arena }}</div>
 
             <a
               *ngIf="offer.arenaAddress as addr"

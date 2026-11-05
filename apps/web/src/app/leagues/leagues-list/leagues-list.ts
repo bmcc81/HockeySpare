@@ -3,16 +3,19 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { LeagueDto } from '@hockeyspare/contracts';
 import { LeaguesApiService } from '../../core/services/leagues-api.service';
+import { TranslatePipe } from '../../core/i18n/t.pipe';
+import { I18nService } from '../../core/i18n/i18n.service';
 
 @Component({
   selector: 'app-leagues-list',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslatePipe],
   templateUrl: './leagues-list.html',
   styleUrl: './leagues-list.scss',
 })
 export class LeaguesListComponent {
   private readonly leaguesApi = inject(LeaguesApiService);
+  private readonly i18n = inject(I18nService);
 
   leagues = signal<LeagueDto[]>([]);
   loading = signal(false);
@@ -64,7 +67,7 @@ export class LeaguesListComponent {
         this.loading.set(false);
       },
       error: () => {
-        this.error.set('Could not load leagues.');
+        this.error.set(this.i18n.t('Could not load leagues.'));
         this.loading.set(false);
       },
     });

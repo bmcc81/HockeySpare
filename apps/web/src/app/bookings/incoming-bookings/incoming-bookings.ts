@@ -6,18 +6,21 @@ import {
   BookingsApiService,
   IncomingBooking,
 } from '../../core/services/bookings-api';
+import { TranslatePipe, LocalDatePipe } from '../../core/i18n/t.pipe';
+import { I18nService } from '../../core/i18n/i18n.service';
 
 type BookingStatusFilter = 'ALL' | BookingStatus;
 
 @Component({
   selector: 'app-incoming-bookings',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe, LocalDatePipe],
   templateUrl: './incoming-bookings.html',
   styleUrl: './incoming-bookings.scss',
 })
 export class IncomingBookingsComponent implements OnInit {
   private readonly bookingsApi = inject(BookingsApiService);
+  private readonly i18n = inject(I18nService);
 
   bookings = signal<IncomingBooking[]>([]);
   loading = signal(false);
@@ -108,8 +111,7 @@ export class IncomingBookingsComponent implements OnInit {
           this.bookings.set([]);
           this.error.set(
             err?.error?.message ||
-              err?.message ||
-              'Failed to load incoming bookings.',
+              err?.message || this.i18n.t('Failed to load incoming bookings.'),
           );
         },
       });
@@ -167,7 +169,7 @@ export class IncomingBookingsComponent implements OnInit {
           console.error('Confirm booking failed:', err);
 
           this.error.set(
-            err?.error?.message || err?.message || 'Failed to confirm booking.',
+            err?.error?.message || err?.message || this.i18n.t('Failed to confirm booking.'),
           );
         },
       });
@@ -196,7 +198,7 @@ export class IncomingBookingsComponent implements OnInit {
           console.error('Decline booking failed:', err);
 
           this.error.set(
-            err?.error?.message || err?.message || 'Failed to decline booking.',
+            err?.error?.message || err?.message || this.i18n.t('Failed to decline booking.'),
           );
         },
       });

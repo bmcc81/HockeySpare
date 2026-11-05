@@ -1,34 +1,34 @@
-<a routerLink="/requests">← Back to Marketplace</a>
+<a routerLink="/requests">{{ '← Back to Marketplace' | t }}</a>
 
 <div *ngIf="request$ | async as req; else loading" class="card">
   <div
     class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3"
   >
     <div>
-      <h2 class="mb-1">Request #{{ req.id }}</h2>
+      <h2 class="mb-1">{{ 'Request #' | t }}{{ req.id }}</h2>
 
       <div class="d-flex gap-2 flex-wrap">
-        <span class="badge text-bg-secondary">{{ req.type }}</span>
-        <span class="badge text-bg-primary">{{ req.status }}</span>
+        <span class="badge text-bg-secondary">{{ req.type | t }}</span>
+        <span class="badge text-bg-primary">{{ req.status | t }}</span>
       </div>
     </div>
 
     <div class="booking-panel">
       <div class="mb-2">
-        <label class="form-label">Message to team</label>
+        <label class="form-label">{{ 'Message to team' | t }}</label>
 
         <textarea
           class="form-control"
           rows="3"
           maxlength="500"
-          placeholder="Add a message for the team..."
+          [placeholder]="'Add a message for the team...' | t"
           [value]="bookingMessage()"
           (input)="setBookingMessage($any($event.target).value)"
           [disabled]="bookingLoading() || req.status !== 'OPEN'"
         ></textarea>
 
         <div class="form-text">
-          This message will appear under Player Message for the team owner.
+          {{ 'This message will appear under Player Message for the team owner.' | t }}
         </div>
       </div>
 
@@ -40,10 +40,10 @@
       >
         {{
           bookingLoading()
-            ? 'Sending...'
+            ? ('Sending...' | t)
             : req.status === 'OPEN'
-              ? 'Book this request'
-              : 'Not available'
+              ? ('Book this request' | t)
+              : ('Not available' | t)
         }}
       </button>
     </div>
@@ -57,38 +57,38 @@
     {{ error() }}
   </div>
 
-  <p><strong>Type:</strong> {{ req.type }}</p>
-  <p><strong>Status:</strong> {{ req.status }}</p>
-  <p><strong>Position:</strong> {{ req.position }}</p>
-  <p><strong>Skill:</strong> {{ req.skillLevel }}</p>
+  <p><strong>{{ 'Type:' | t }}</strong> {{ req.type | t }}</p>
+  <p><strong>{{ 'Status:' | t }}</strong> {{ req.status | t }}</p>
+  <p><strong>{{ 'Position:' | t }}</strong> {{ req.position | t }}</p>
+  <p><strong>{{ 'Skill:' | t }}</strong> {{ req.skillLevel | t }}</p>
 
   <p>
-    <strong>Pay:</strong>
-    {{ req.payAmount === 0 ? 'Free' : '$' + req.payAmount }}
+    <strong>{{ 'Pay:' | t }}</strong>
+    {{ req.payAmount === 0 ? ('Free' | t) : '$' + req.payAmount }}
   </p>
 
   <p>
-    <strong>{{ nameLabel(req) }}:</strong>
+    <strong>{{ nameLabel(req) | t }}:</strong>
     {{ nameValue(req) }}
   </p>
 
-  <p><strong>Arena:</strong> {{ req.arena }}</p>
+  <p><strong>{{ 'Arena:' | t }}</strong> {{ req.arena }}</p>
 
   <p *ngIf="req.arenaAddress">
-    <strong>Address:</strong> {{ req.arenaAddress }}
+    <strong>{{ 'Address:' | t }}</strong> {{ req.arenaAddress }}
   </p>
 
   <p *ngIf="req.date">
-    <strong>Date:</strong> {{ req.date | date: 'mediumDate' }}
+    <strong>{{ 'Date:' | t }}</strong> {{ req.date | ldate: 'mediumDate' }}
   </p>
 
-  <p><strong>Time:</strong> {{ req.time }}</p>
+  <p><strong>{{ 'Time:' | t }}</strong> {{ req.time }}</p>
 
   <p *ngIf="req.notes">
-    <strong>Notes:</strong> {{ req.notes }}
+    <strong>{{ 'Notes:' | t }}</strong> {{ req.notes }}
   </p>
 </div>
 
 <ng-template #loading>
-  <p>Loading request...</p>
+  <p>{{ 'Loading request...' | t }}</p>
 </ng-template>

@@ -1,20 +1,20 @@
 <section class="league-page">
   <div class="page-header">
     <div>
-      <p class="eyebrow">League Manager</p>
-      <h1>My Leagues</h1>
+      <p class="eyebrow">{{ 'League Manager' | t }}</p>
+      <h1>{{ 'My Leagues' | t }}</h1>
       <p class="subtitle">
-        Create leagues, manage teams, and organize your hockey season.
+        {{ 'Create leagues, manage teams, and organize your hockey season.' | t }}
       </p>
     </div>
 
     <a routerLink="/leagues/new" class="btn btn-primary">
-      Create League
+      {{ 'Create League' | t }}
     </a>
   </div>
 
   <div *ngIf="loading()" class="state-card">
-    Loading leagues...
+    {{ 'Loading leagues...' | t }}
   </div>
 
   <div *ngIf="error()" class="alert alert-danger">
@@ -24,26 +24,26 @@
   <div *ngIf="!loading() && leagues().length > 0" class="filters-card">
     <div class="row g-2 align-items-end">
       <div class="col-12 col-md-6">
-        <label class="form-label" for="leagueSearch">Search leagues</label>
+        <label class="form-label" for="leagueSearch">{{ 'Search leagues' | t }}</label>
         <input
           id="leagueSearch"
           type="text"
           class="form-control"
-          placeholder="Search by league name or season"
+          [placeholder]="'Search by league name or season' | t"
           [value]="leagueSearch()"
           (input)="setLeagueSearch($event)"
         />
       </div>
 
       <div class="col-12 col-md-4">
-        <label class="form-label" for="seasonFilter">Season</label>
+        <label class="form-label" for="seasonFilter">{{ 'Season' | t }}</label>
         <select
           id="seasonFilter"
           class="form-select"
           [value]="seasonFilter()"
           (change)="setSeasonFilter($event)"
         >
-          <option value="">All seasons</option>
+          <option value="">{{ 'All seasons' | t }}</option>
           <option *ngFor="let season of seasons()" [value]="season">
             {{ season }}
           </option>
@@ -56,21 +56,21 @@
           class="btn btn-outline-secondary w-100"
           (click)="clearFilters()"
         >
-          Clear
+          {{ 'Clear' | t }}
         </button>
       </div>
     </div>
 
     <div class="text-secondary mt-3">
-      Showing {{ filteredLeagues().length }} of {{ leagues().length }} leagues
+      {{ 'Showing' | t }} {{ filteredLeagues().length }} {{ 'of' | t }} {{ leagues().length }} {{ 'leagues' | t }}
     </div>
   </div>
 
   <div *ngIf="!loading() && leagues().length === 0" class="state-card">
-    <h2>No leagues yet</h2>
-    <p>Create your first league to start adding teams.</p>
+    <h2>{{ 'No leagues yet' | t }}</h2>
+    <p>{{ 'Create your first league to start adding teams.' | t }}</p>
     <a routerLink="/leagues/new" class="btn btn-primary">
-      Create League
+      {{ 'Create League' | t }}
     </a>
   </div>
 
@@ -78,10 +78,10 @@
     *ngIf="!loading() && leagues().length > 0 && filteredLeagues().length === 0"
     class="state-card"
   >
-    <h2>No leagues match your filters</h2>
-    <p>Try changing the search or season filter.</p>
+    <h2>{{ 'No leagues match your filters' | t }}</h2>
+    <p>{{ 'Try changing the search or season filter.' | t }}</p>
     <button type="button" class="btn btn-outline-secondary" (click)="clearFilters()">
-      Clear Filters
+      {{ 'Clear Filters' | t }}
     </button>
   </div>
 
@@ -97,12 +97,12 @@
       <div>
         <h2>{{ league.name }}</h2>
         <p *ngIf="league.season">{{ league.season }}</p>
-        <p *ngIf="!league.season">No season set</p>
+        <p *ngIf="!league.season">{{ 'No season set' | t }}</p>
       </div>
 
       <div class="meta">
-        <span>{{ league.teams?.length ?? 0 }} teams</span>
-        <span>{{ league.members?.length ?? 0 }} members</span>
+        <span>{{ league.teams?.length ?? 0 }} {{ 'teams' | t }}</span>
+        <span>{{ league.members?.length ?? 0 }} {{ 'members' | t }}</span>
       </div>
     </a>
   </div>

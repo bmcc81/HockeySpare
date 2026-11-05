@@ -20,6 +20,8 @@ import {
 } from '@hockeyspare/contracts';
 import { LeaguesApiService } from '../../core/services/leagues-api.service';
 import { AuthStateService } from '../../auth/auth-state.service';
+import { TranslatePipe, LocalDatePipe } from '../../core/i18n/t.pipe';
+import { I18nService } from '../../core/i18n/i18n.service';
 
 type ParsedRosterRow = AddLeagueTeamMemberInput & {
   raw: string;
@@ -124,13 +126,14 @@ function parseRosterText(text: string): ParsedRosterRow[] {
 @Component({
   selector: 'app-league-detail',
   standalone: true,
-  imports: [PlayerHighlightsComponent, CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [PlayerHighlightsComponent, CommonModule, ReactiveFormsModule, RouterLink, TranslatePipe, LocalDatePipe],
   providers: [DatePipe],
   templateUrl: './league-detail.html',
   styleUrl: './league-detail.scss',
 })
 export class LeagueDetailComponent {
   private readonly route = inject(ActivatedRoute);
+  private readonly i18n = inject(I18nService);
   private readonly router = inject(Router);
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly leaguesApi = inject(LeaguesApiService);
@@ -269,7 +272,7 @@ export class LeagueDetailComponent {
 
   manageTeam(team: TeamDto): void {
     if (!this.canManageTeam(team)) {
-      this.error.set('You do not have permission to manage this team.');
+      this.error.set(this.i18n.t('You do not have permission to manage this team.'));
       return;
     }
 
@@ -388,7 +391,7 @@ export class LeagueDetailComponent {
         opponent: opponentName,
         opponentTeamId: (game as any).opponentTeamId ?? null,
         opponentTeamName,
-        teamName: this.teamNameById().get(game.teamId) ?? 'Unknown team',
+        teamName: this.teamNameById().get(game.teamId) ?? this.i18n.t('Unknown team'),
       };
     }),
   );
@@ -437,7 +440,7 @@ export class LeagueDetailComponent {
 
   load(): void {
     if (!this.leagueId) {
-      this.error.set('Missing league ID.');
+      this.error.set(this.i18n.t('Missing league ID.'));
       return;
     }
 
@@ -461,7 +464,7 @@ export class LeagueDetailComponent {
         this.loading.set(false);
       },
       error: () => {
-        this.error.set('Could not load league.');
+        this.error.set(this.i18n.t('Could not load league.'));
         this.loading.set(false);
       },
     });
@@ -481,7 +484,7 @@ export class LeagueDetailComponent {
         this.standingsLoading.set(false);
       },
       error: () => {
-        this.standingsError.set('Could not load standings.');
+        this.standingsError.set(this.i18n.t('Could not load standings.'));
         this.standingsLoading.set(false);
       },
     });
@@ -489,7 +492,7 @@ export class LeagueDetailComponent {
 
   addTeam(): void {
     if (!this.canManageLeague()) {
-      this.teamError.set('Only a league manager can add teams.');
+      this.teamError.set(this.i18n.t('Only a league manager can add teams.'));
       return;
     }
 
@@ -524,7 +527,7 @@ export class LeagueDetailComponent {
           this.savingTeam.set(false);
         },
         error: () => {
-          this.teamError.set('Could not add team.');
+          this.teamError.set(this.i18n.t('Could not add team.'));
           this.savingTeam.set(false);
         },
       });
@@ -532,7 +535,7 @@ export class LeagueDetailComponent {
 
   addArena(): void {
     if (!this.canManageLeague()) {
-      this.arenaError.set('Only a league manager can manage arenas.');
+      this.arenaError.set(this.i18n.t('Only a league manager can manage arenas.'));
       return;
     }
 
@@ -567,11 +570,11 @@ export class LeagueDetailComponent {
             address: '',
           });
 
-          this.arenaSuccess.set(`Arena added: ${arena.name}`);
+          this.arenaSuccess.set(this.i18n.t('Arena added: {name}', { name: arena.name }));
           this.savingArena.set(false);
         },
         error: (err) => {
-          this.arenaError.set(err?.error?.message || 'Could not add arena.');
+          this.arenaError.set(err?.error?.message || this.i18n.t('Could not add arena.'));
           this.savingArena.set(false);
         },
       });
@@ -580,12 +583,11 @@ export class LeagueDetailComponent {
   deleteArena(arena: LeagueArenaDto): void {
     if (!this.canManageLeague()) {
       this.arenaSuccess.set(null);
-      this.arenaError.set('Only a league manager can delete arenas.');
+      this.arenaError.set(this.i18n.t('Only a league manager can delete arenas.'));
       return;
     }
 
-    const confirmed = window.confirm(
-      `Delete "${arena.name}" from this league? Existing games will keep their arena text, but this saved arena and address will be removed.`,
+    const confirmed = window.confirm(this.i18n.t('Delete "{name}" from this league? Existing games will keep their arena text, but this saved arena and address will be removed.', { name: arena.name }),
     );
 
     if (!confirmed) {
@@ -606,11 +608,11 @@ export class LeagueDetailComponent {
           this.gameForm.controls.arena.setValue('');
         }
 
-        this.arenaSuccess.set(`Arena deleted: ${arena.name}`);
+        this.arenaSuccess.set(this.i18n.t('Arena deleted: {name}', { name: arena.name }));
         this.deletingArenaId.set(null);
       },
       error: (err) => {
-        this.arenaError.set(err?.error?.message || 'Could not delete arena.');
+        this.arenaError.set(err?.error?.message || this.i18n.t('Could not delete arena.'));
         this.deletingArenaId.set(null);
       },
     });
@@ -659,7 +661,7 @@ export class LeagueDetailComponent {
   addGame(): void {
     if (!this.canManageSelectedGameTeam()) {
       this.gameSuccess.set(null);
-      this.gameError.set('You can only add games for teams you manage.');
+      this.gameError.set(this.i18n.t('You can only add games for teams you manage.'));
       return;
     }
 
@@ -704,13 +706,13 @@ export class LeagueDetailComponent {
           this.gameForm.markAsUntouched();
 
           this.gameError.set(null);
-          this.gameSuccess.set(`Game added: ${game.title}`);
+          this.gameSuccess.set(this.i18n.t('Game added: {title}', { title: game.title }));
 
           this.savingGame.set(false);
         },
         error: (err) => {
           this.gameSuccess.set(null);
-          this.gameError.set(err?.error?.message || 'Could not add game.');
+          this.gameError.set(err?.error?.message || this.i18n.t('Could not add game.'));
           this.savingGame.set(false);
         },
       });
@@ -719,12 +721,11 @@ export class LeagueDetailComponent {
   deleteGame(game: TeamGameDto): void {
     if (!this.canDeleteGame(game)) {
       this.gameSuccess.set(null);
-      this.gameError.set('You can only delete games for teams you manage.');
+      this.gameError.set(this.i18n.t('You can only delete games for teams you manage.'));
       return;
     }
 
-    const confirmed = window.confirm(
-      `Delete "${game.title}" at ${this.getFormattedDate(game.startsAt)} from the schedule?`,
+    const confirmed = window.confirm(this.i18n.t('Delete "{title}" at {value} from the schedule?', { title: game.title, value: this.getFormattedDate(game.startsAt) }),
     );
 
     if (!confirmed) {
@@ -741,13 +742,12 @@ export class LeagueDetailComponent {
           games.filter((existingGame) => existingGame.id !== game.id),
         );
 
-        this.gameSuccess.set(
-          `Game deleted: ${game.title} (${this.getFormattedDate(game.startsAt)})`,
+        this.gameSuccess.set(this.i18n.t('Game deleted: {title} ({value})', { title: game.title, value: this.getFormattedDate(game.startsAt) }),
         );
         this.deletingGameId.set(null);
       },
       error: (err) => {
-        this.gameError.set(err?.error?.message || 'Could not delete game.');
+        this.gameError.set(err?.error?.message || this.i18n.t('Could not delete game.'));
         this.deletingGameId.set(null);
       },
     });
@@ -782,12 +782,12 @@ export class LeagueDetailComponent {
     const teamId = this.memberTeamId();
 
     if (!teamId) {
-      this.memberError.set('Select a team first.');
+      this.memberError.set(this.i18n.t('Select a team first.'));
       return;
     }
 
     if (!this.canManageTeamById(teamId)) {
-      this.memberError.set('You can only add players to teams you manage.');
+      this.memberError.set(this.i18n.t('You can only add players to teams you manage.'));
       return;
     }
 
@@ -828,8 +828,7 @@ export class LeagueDetailComponent {
             ),
           );
 
-          this.memberSuccess.set(
-            `Invite sent to ${member.email ?? member.displayName}.`,
+          this.memberSuccess.set(this.i18n.t('Invite sent to {value}.', { value: member.email ?? member.displayName }),
           );
           this.savingMember.set(false);
 
@@ -845,7 +844,7 @@ export class LeagueDetailComponent {
         },
         error: (err) => {
           this.memberError.set(
-            err?.error?.message || 'Could not invite player to this team.',
+            err?.error?.message || this.i18n.t('Could not invite player to this team.'),
           );
           this.savingMember.set(false);
         },
@@ -882,7 +881,7 @@ export class LeagueDetailComponent {
     const teamId = this.rosterImportTeamId();
 
     if (!teamId) {
-      this.rosterImportError.set('Select a team first.');
+      this.rosterImportError.set(this.i18n.t('Select a team first.'));
       return;
     }
 
@@ -946,7 +945,7 @@ export class LeagueDetailComponent {
         },
         error: (err) => {
           this.rosterImportError.set(
-            err?.error?.message || 'Could not import roster for this team.',
+            err?.error?.message || this.i18n.t('Could not import roster for this team.'),
           );
           this.savingRosterImport.set(false);
         },
@@ -969,7 +968,7 @@ export class LeagueDetailComponent {
 
     if (!this.canManageTeam(team)) {
       this.roleSuccess.set(null);
-      this.roleError.set('You do not have permission to update roles.');
+      this.roleError.set(this.i18n.t('You do not have permission to update roles.'));
       select.value = member.role ?? 'PLAYER';
       return;
     }
@@ -1005,14 +1004,13 @@ export class LeagueDetailComponent {
             ),
           );
 
-          this.roleSuccess.set(
-            `${member.displayName} is now ${this.roleLabel(updatedMember.role ?? 'PLAYER')}.`,
+          this.roleSuccess.set(this.i18n.t('{displayName} is now {value}.', { displayName: member.displayName, value: this.roleLabel(updatedMember.role ?? 'PLAYER') }),
           );
           this.savingRoleMemberId.set(null);
         },
         error: (err) => {
           this.roleError.set(
-            err?.error?.message || 'Could not update player role.',
+            err?.error?.message || this.i18n.t('Could not update player role.'),
           );
           this.savingRoleMemberId.set(null);
           select.value = member.role ?? 'PLAYER';
@@ -1023,11 +1021,11 @@ export class LeagueDetailComponent {
   roleLabel(role: TeamRole | undefined | null): string {
     switch (role) {
       case 'GENERAL_MANAGER':
-        return 'General Manager';
+        return this.i18n.t('General Manager');
       case 'CAPTAIN':
-        return 'Captain';
+        return this.i18n.t('Captain');
       default:
-        return 'Player';
+        return this.i18n.t('Player');
     }
   }
 

@@ -12,8 +12,11 @@ import { I18nService } from './i18n.service';
 export class TranslatePipe implements PipeTransform {
   private readonly i18n = inject(I18nService);
 
-  transform(key: string, params?: Record<string, string | number | null | undefined>): string {
-    return this.i18n.t(key, params);
+  transform(
+    key: string | null | undefined,
+    params?: Record<string, string | number | null | undefined>,
+  ): string {
+    return key ? this.i18n.t(key, params) : '';
   }
 }
 
@@ -30,6 +33,8 @@ export class LocalDatePipe implements PipeTransform {
     'MMM d, h:mm a': 'd MMM, HH:mm',
     'MMM d, h:mm:ss a': 'd MMM, HH:mm:ss',
     'EEE, MMM d': 'EEE d MMM',
+    'EEE, MMM d, y': 'EEE d MMM y',
+    'EEE, MMM d, y, h:mm a': 'EEE d MMM y, HH:mm',
     'h:mm:ss a': 'HH:mm:ss',
   };
 

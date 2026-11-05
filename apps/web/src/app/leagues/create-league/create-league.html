@@ -1,36 +1,36 @@
 <section class="league-form-page">
-  <a routerLink="/leagues" class="back-link">← Back to leagues</a>
+  <a routerLink="/leagues" class="back-link">{{ '← Back to leagues' | t }}</a>
 
   <div class="form-card">
-    <p class="eyebrow">New League</p>
-    <h1>Create a League</h1>
+    <p class="eyebrow">{{ 'New League' | t }}</p>
+    <h1>{{ 'Create a League' | t }}</h1>
     <p class="subtitle">
-      Set up the league first. You can add teams after it is created.
+      {{ 'Set up the league first. You can add teams after it is created.' | t }}
     </p>
 
     <div *ngIf="error()" class="alert alert-danger">{{ error() }}</div>
 
     <form [formGroup]="form" (ngSubmit)="submit()">
       <div class="mb-3">
-        <label class="form-label" for="name">League name</label>
+        <label class="form-label" for="name">{{ 'League name' | t }}</label>
         <input
           id="name"
           type="text"
           class="form-control"
           formControlName="name"
-          placeholder="Vaudreuil Hockey League"
+          [placeholder]="'Vaudreuil Hockey League' | t"
         />
 
         <div
           class="form-error"
           *ngIf="form.controls.name.touched && form.controls.name.invalid"
         >
-          League name is required.
+          {{ 'League name is required.' | t }}
         </div>
       </div>
 
       <div class="mb-4">
-        <label class="form-label" for="season">Season</label>
+        <label class="form-label" for="season">{{ 'Season' | t }}</label>
         <input
           id="season"
           type="text"
@@ -44,11 +44,11 @@
         class="form-error"
         *ngIf="form.controls.season.touched && form.controls.season.invalid"
       >
-        Season is required and must use the format 2026-2027.
+        {{ 'Season is required and must use the format 2026-2027.' | t }}
       </div>
 
       <button type="submit" class="btn btn-primary" [disabled]="form.invalid || saving()">
-        {{ saving() ? 'Creating...' : 'Create League' }}
+        {{ saving() ? ('Creating...' | t) : ('Create League' | t) }}
       </button>
     </form>
   </div>

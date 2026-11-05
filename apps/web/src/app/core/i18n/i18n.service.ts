@@ -29,6 +29,24 @@ function browserLang(): Lang {
  * (`{{ 'Standings' | t }}`) and any string without a French entry simply
  * shows in English instead of breaking.
  */
+/** Lower-case, underscore-free form used to match enum-style values ("TEAM_NEEDS_PLAYER", "Goalie", "goalie"). */
+const normalize = (s: string): string => s.toLowerCase().replace(/_/g, ' ').replace(/\s+/g, ' ').trim();
+
+const FR_BY_NORMALIZED = new Map<string, string>();
+for (const [key, value] of Object.entries(FR)) {
+  const n = normalize(key);
+  if (!FR_BY_NORMALIZED.has(n)) FR_BY_NORMALIZED.set(n, value);
+}
+
+/** Give a looked-up translation the same capitalisation style as the key it was found for. */
+function matchCase(key: string, value: string): string {
+  if (/[A-Z]/.test(key) && key === key.toUpperCase()) return value.toUpperCase();
+  if (key === key.toLowerCase()) return value.toLowerCase();
+  // "Goalie" -> "Gardien": a capitalised key gets a capitalised translation.
+  if (/^[A-Z][a-z]/.test(key)) return value.charAt(0).toUpperCase() + value.slice(1);
+  return value;
+}
+
 @Injectable({ providedIn: 'root' })
 export class I18nService {
   readonly lang = signal<Lang>(readStoredLang() ?? browserLang());
@@ -62,7 +80,14 @@ export class I18nService {
    */
   t(key: string, params?: Record<string, string | number | null | undefined>): string {
     const english = key.includes('@@') ? key.slice(0, key.indexOf('@@')) : key;
-    const template = this.lang() === 'fr' ? (FR[key] ?? english) : english;
+    let template = english;
+
+    if (this.lang() === 'fr') {
+      const exact = FR[key];
+      const loose = exact === undefined ? FR_BY_NORMALIZED.get(normalize(english)) : undefined;
+      template = exact ?? (loose !== undefined ? matchCase(english, loose) : english);
+    }
+
 
     if (!params) {
       return template;

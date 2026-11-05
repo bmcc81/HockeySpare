@@ -15,6 +15,8 @@ import { RequestApiService } from '../../core/services/request-api';
 import { LeaguesApiService } from '../../core/services/leagues-api.service';
 import { TeamService } from '../../core/services/team';
 import { AiMessageService } from '../../core/services/ai-message.service';
+import { TranslatePipe } from '../../core/i18n/t.pipe';
+import { I18nService } from '../../core/i18n/i18n.service';
 
 type TeamOption = {
   id: string;
@@ -25,12 +27,13 @@ type TeamOption = {
 @Component({
   selector: 'app-team-request-create',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgbTimepickerModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, NgbTimepickerModule, RouterLink, TranslatePipe],
   templateUrl: './team-request-create.html',
   styleUrl: './team-request-create.scss',
 })
 export class TeamRequestCreateComponent implements OnInit {
   private fb = inject(FormBuilder);
+  private readonly i18n = inject(I18nService);
   private aiMessageService = inject(AiMessageService);
   private requestApi = inject(RequestApiService);
   private leaguesApi = inject(LeaguesApiService);
@@ -132,7 +135,7 @@ export class TeamRequestCreateComponent implements OnInit {
       },
       error: () => {
         this.teams.set([]);
-        this.teamsError.set('Could not load your teams.');
+        this.teamsError.set(this.i18n.t('Could not load your teams.'));
         this.teamsLoading.set(false);
       },
     });
@@ -169,7 +172,7 @@ export class TeamRequestCreateComponent implements OnInit {
       },
       error: (err) => {
         this.loading = false;
-        this.error = err?.error?.message || 'Failed to create team request.';
+        this.error = err?.error?.message || this.i18n.t('Failed to create team request.');
       },
       complete: () => {
         this.loading = false;
@@ -207,7 +210,7 @@ export class TeamRequestCreateComponent implements OnInit {
     if (missingFields.length > 0) {
       this.missingFields = missingFields;
       this.aiError =
-        'Please fill in the missing fields before generating a message.';
+        this.i18n.t('Please fill in the missing fields before generating a message.');
       this.form.markAllAsTouched();
       return;
     }
@@ -243,7 +246,7 @@ export class TeamRequestCreateComponent implements OnInit {
           this.generatingAiMessage.set(false);
         },
         error: () => {
-          this.aiError = 'Could not generate a message.';
+          this.aiError = this.i18n.t('Could not generate a message.');
           this.generatingAiMessage.set(false);
         },
       });
@@ -277,7 +280,7 @@ export class TeamRequestCreateComponent implements OnInit {
     const currentMessage = this.form.controls.notes.value?.trim();
 
     if (!currentMessage) {
-      this.aiError = 'Add or generate a message first.';
+      this.aiError = this.i18n.t('Add or generate a message first.');
       return;
     }
 
@@ -299,7 +302,7 @@ export class TeamRequestCreateComponent implements OnInit {
           this.rewritingAiMessage.set(false);
         },
         error: () => {
-          this.aiError = 'Could not rewrite the message.';
+          this.aiError = this.i18n.t('Could not rewrite the message.');
           this.rewritingAiMessage.set(false);
         },
       });

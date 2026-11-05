@@ -5,7 +5,7 @@ import {
   ChangeDetectorRef,
   signal,
 } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import {
@@ -19,16 +19,19 @@ import {
   PaymentsStatus,
 } from '@hockeyspare/contracts';
 import { TeamService } from '../../core/services/team';
+import { TranslatePipe, LocalDatePipe } from '../../core/i18n/t.pipe';
+import { I18nService } from '../../core/i18n/i18n.service';
 
 @Component({
   selector: 'app-my-team',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, DatePipe],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, LocalDatePipe],
   templateUrl: './my-team.html',
   styleUrl: './my-team.scss',
 })
 export class MyTeamComponent implements OnInit {
   private fb = inject(FormBuilder);
+  private readonly i18n = inject(I18nService);
   private route = inject(ActivatedRoute);
   private teamApi = inject(TeamService);
   private cdr = inject(ChangeDetectorRef);
@@ -525,7 +528,7 @@ export class MyTeamComponent implements OnInit {
         }
 
         console.error('Could not load team page:', err);
-        this.error = 'Could not load your team.';
+        this.error = this.i18n.t('Could not load your team.');
         this.loading = false;
         this.upcomingGames = [];
         this.cdr.detectChanges();
@@ -583,14 +586,14 @@ export class MyTeamComponent implements OnInit {
         this.paymentsStatus = status;
 
         this.paymentSuccessMessage = status.payoutsEnabled
-          ? 'Stripe account connected. You can now collect fee payments.'
-          : 'Stripe onboarding is not finished yet. Connect again to continue.';
+          ? this.i18n.t('Stripe account connected. You can now collect fee payments.')
+          : this.i18n.t('Stripe onboarding is not finished yet. Connect again to continue.');
 
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Failed to refresh Stripe status', err);
-        this.paymentError = 'Could not confirm Stripe connection status.';
+        this.paymentError = this.i18n.t('Could not confirm Stripe connection status.');
         this.cdr.detectChanges();
       },
     });
@@ -600,10 +603,10 @@ export class MyTeamComponent implements OnInit {
     this.teamApi.verifyFeeCheckout(sessionId).subscribe({
       next: (result) => {
         if (result.status === 'SUCCEEDED') {
-          this.paymentSuccessMessage = `Payment received for ${result.memberFee.member?.displayName ?? 'this player'}.`;
+          this.paymentSuccessMessage = this.i18n.t('Payment received for {value}.', { value: result.memberFee.member?.displayName ?? 'this player' });
         } else {
           this.paymentError =
-            'Payment has not completed yet. It may still be processing.';
+            this.i18n.t('Payment has not completed yet. It may still be processing.');
         }
 
         this.loadMyFees();
@@ -611,7 +614,7 @@ export class MyTeamComponent implements OnInit {
       },
       error: (err) => {
         console.error('Failed to verify payment', err);
-        this.paymentError = 'Could not confirm this payment.';
+        this.paymentError = this.i18n.t('Could not confirm this payment.');
         this.cdr.detectChanges();
       },
     });
@@ -632,7 +635,7 @@ export class MyTeamComponent implements OnInit {
       error: (err) => {
         this.connectingStripe = false;
         this.paymentError =
-          err?.error?.message || 'Could not start Stripe onboarding.';
+          err?.error?.message || this.i18n.t('Could not start Stripe onboarding.');
         this.cdr.detectChanges();
       },
     });
@@ -653,7 +656,7 @@ export class MyTeamComponent implements OnInit {
       error: (err) => {
         this.payingFeeId = null;
         this.paymentError =
-          err?.error?.message || 'Could not start checkout for this fee.';
+          err?.error?.message || this.i18n.t('Could not start checkout for this fee.');
         this.cdr.detectChanges();
       },
     });
@@ -690,7 +693,7 @@ export class MyTeamComponent implements OnInit {
         },
         error: (err) => {
           this.creatingTeam = false;
-          this.error = err?.error?.message || 'Could not create your team.';
+          this.error = err?.error?.message || this.i18n.t('Could not create your team.');
           this.cdr.detectChanges();
         },
       });
@@ -698,7 +701,7 @@ export class MyTeamComponent implements OnInit {
 
   saveTeamName() {
     if (!this.canManageTeam) {
-      this.error = 'You do not have permission to update this team.';
+      this.error = this.i18n.t('You do not have permission to update this team.');
       return;
     }
 
@@ -719,14 +722,14 @@ export class MyTeamComponent implements OnInit {
       .subscribe({
         next: () => this.reload(),
         error: () => {
-          this.error = 'Could not save team name.';
+          this.error = this.i18n.t('Could not save team name.');
         },
       });
   }
 
   addMember() {
     if (!this.canManageTeam) {
-      this.error = 'You do not have permission to add players.';
+      this.error = this.i18n.t('You do not have permission to add players.');
       return;
     }
 
@@ -766,21 +769,21 @@ export class MyTeamComponent implements OnInit {
           this.reload();
         },
         error: (err) => {
-          this.error = err?.error?.message || 'Could not add player.';
+          this.error = err?.error?.message || this.i18n.t('Could not add player.');
         },
       });
   }
 
   removeMember(memberId: string) {
     if (!this.canManageTeam) {
-      this.error = 'You do not have permission to remove players.';
+      this.error = this.i18n.t('You do not have permission to remove players.');
       return;
     }
 
     this.teamApi.removeMember(memberId, this.selectedTeamId).subscribe({
       next: () => this.reload(),
       error: () => {
-        this.error = 'Could not remove player.';
+        this.error = this.i18n.t('Could not remove player.');
       },
     });
   }
@@ -803,7 +806,7 @@ export class MyTeamComponent implements OnInit {
     if (!file) return;
 
     if (!this.canManageTeam) {
-      this.photoError.set('You do not have permission to update photos.');
+      this.photoError.set(this.i18n.t('You do not have permission to update photos.'));
       return;
     }
 
@@ -820,7 +823,7 @@ export class MyTeamComponent implements OnInit {
         error: (err) => {
           this.uploadingPhotoMemberId.set(null);
           this.photoError.set(
-            err?.error?.message || 'Could not upload photo.',
+            err?.error?.message || this.i18n.t('Could not upload photo.'),
           );
           this.cdr.detectChanges();
         },
@@ -842,7 +845,7 @@ export class MyTeamComponent implements OnInit {
       },
       error: (err) => {
         this.uploadingPhotoMemberId.set(null);
-        this.photoError.set(err?.error?.message || 'Could not remove photo.');
+        this.photoError.set(err?.error?.message || this.i18n.t('Could not remove photo.'));
         this.cdr.detectChanges();
       },
     });
@@ -851,12 +854,11 @@ export class MyTeamComponent implements OnInit {
   notifyGame(game: UpcomingGame): void {
     if (!this.canManageTeam) {
       this.notifySuccess = null;
-      this.error = 'You do not have permission to notify the team.';
+      this.error = this.i18n.t('You do not have permission to notify the team.');
       return;
     }
 
-    const confirmed = window.confirm(
-      `Send an availability email to each team member for "${game.title}"?`,
+    const confirmed = window.confirm(this.i18n.t('Send an availability email to each team member for "{title}"?', { title: game.title }),
     );
 
     if (!confirmed) {
@@ -877,15 +879,17 @@ export class MyTeamComponent implements OnInit {
         const skippedCount = result?.skippedAlreadyNotifiedCount ?? 0;
 
         this.notifySuccess =
-          `Team notified for ${game.title}. Emails sent: ${emailSentCount}. Texts sent: ${smsSentCount}.` +
-          (skippedCount > 0 ? ` Already notified: ${skippedCount}.` : '');
+          this.i18n.t('Team notified for {title}. Emails sent: {emailSentCount}. Texts sent: {smsSentCount}.', { title: game.title, emailSentCount: emailSentCount, smsSentCount: smsSentCount }) +
+          (skippedCount > 0
+            ? ` ${this.i18n.t('Already notified: {count}.', { count: skippedCount })}`
+            : '');
 
         this.reload();
       },
       error: (err) => {
         this.notifyingGameId = null;
         this.notifySuccess = null;
-        this.error = err?.error?.message || 'Could not send notifications.';
+        this.error = err?.error?.message || this.i18n.t('Could not send notifications.');
         this.cdr.detectChanges();
       },
     });
@@ -997,7 +1001,7 @@ export class MyTeamComponent implements OnInit {
       },
       error: () => {
         this.availabilitySavingGameId = null;
-        this.error = 'Could not update your game status.';
+        this.error = this.i18n.t('Could not update your game status.');
         this.cdr.detectChanges();
       },
     });
@@ -1055,11 +1059,11 @@ export class MyTeamComponent implements OnInit {
   availabilityComposerTitle(): string {
     switch (this.availabilityComposerStatus) {
       case 'UNAVAILABLE':
-        return 'Can’t make it';
+        return this.i18n.t('Can’t make it');
       case 'NEED_SPARE':
-        return 'Need a spare';
+        return this.i18n.t('Need a spare');
       default:
-        return 'Game response';
+        return this.i18n.t('Game response');
     }
   }
 
@@ -1085,14 +1089,14 @@ export class MyTeamComponent implements OnInit {
         if (spareNotification?.spareInviteCount > 0) {
           const smsPart =
             spareNotification.spareSmsSentCount > 0
-              ? ` Texts sent: ${spareNotification.spareSmsSentCount}.`
-              : ' SMS pending sender approval.';
+              ? ` ${this.i18n.t('Texts sent: {count}.', { count: spareNotification.spareSmsSentCount })}`
+              : ` ${this.i18n.t('SMS pending sender approval.')}`;
 
           this.notifySuccess =
-            `Spare request sent. Emails: ${spareNotification.spareEmailSentCount}.` +
+            this.i18n.t('Spare request sent. Emails: {spareEmailSentCount}.', { spareEmailSentCount: spareNotification.spareEmailSentCount }) +
             smsPart;
         } else if (spareNotification?.spareSkippedAlreadyNotifiedCount > 0) {
-          this.notifySuccess = `Spares were already notified for this game. Already notified: ${spareNotification.spareSkippedAlreadyNotifiedCount}.`;
+          this.notifySuccess = this.i18n.t('Spares were already notified for this game. Already notified: {spareSkippedAlreadyNotifiedCount}.', { spareSkippedAlreadyNotifiedCount: spareNotification.spareSkippedAlreadyNotifiedCount });
         }
 
         if (result?.marketplaceRequestCreated) {
@@ -1105,7 +1109,7 @@ export class MyTeamComponent implements OnInit {
       },
       error: () => {
         this.availabilitySavingGameId = null;
-        this.error = 'Could not update your game status.';
+        this.error = this.i18n.t('Could not update your game status.');
         this.cdr.detectChanges();
       },
     });
@@ -1158,7 +1162,7 @@ export class MyTeamComponent implements OnInit {
         error: () => {
           this.statsLoadingMemberId = null;
           this.statsSeasonHasRecord = null;
-          this.error = 'Could not load player stats.';
+          this.error = this.i18n.t('Could not load player stats.');
           this.cdr.detectChanges();
         },
       });
@@ -1198,7 +1202,7 @@ export class MyTeamComponent implements OnInit {
 
   saveMemberStats(memberId: string) {
     if (!this.canManageTeam) {
-      this.error = 'You do not have permission to update stats.';
+      this.error = this.i18n.t('You do not have permission to update stats.');
       return;
     }
 
@@ -1234,20 +1238,20 @@ export class MyTeamComponent implements OnInit {
         },
         error: () => {
           this.statsSavingMemberId = null;
-          this.error = 'Could not save player stats.';
+          this.error = this.i18n.t('Could not save player stats.');
           this.cdr.detectChanges();
         },
       });
   }
 
   statEditorPlayerName(): string {
-    if (!this.statEditorMemberId) return 'Player';
+    if (!this.statEditorMemberId) return this.i18n.t('Player');
 
     const player =
       this.regulars.find((p) => p.id === this.statEditorMemberId) ??
       this.spares.find((p) => p.id === this.statEditorMemberId);
 
-    return player?.displayName ?? 'Player';
+    return player?.displayName ?? this.i18n.t('Player');
   }
 
   loadMemberFeeIntoForm(memberId: string, season?: string) {
@@ -1291,7 +1295,7 @@ export class MyTeamComponent implements OnInit {
       error: () => {
         this.feesLoadingMemberId = null;
         this.feeSeasonHasRecord = null;
-        this.error = 'Could not load player fees.';
+        this.error = this.i18n.t('Could not load player fees.');
         this.cdr.detectChanges();
       },
     });
@@ -1327,7 +1331,7 @@ export class MyTeamComponent implements OnInit {
 
   saveMemberFee(memberId: string) {
     if (!this.canManageTeam) {
-      this.error = 'You do not have permission to update fees.';
+      this.error = this.i18n.t('You do not have permission to update fees.');
       return;
     }
 
@@ -1360,20 +1364,20 @@ export class MyTeamComponent implements OnInit {
         },
         error: () => {
           this.feesSavingMemberId = null;
-          this.error = 'Could not save player fees.';
+          this.error = this.i18n.t('Could not save player fees.');
           this.cdr.detectChanges();
         },
       });
   }
 
   feeEditorPlayerName(): string {
-    if (!this.feeEditorMemberId) return 'Player';
+    if (!this.feeEditorMemberId) return this.i18n.t('Player');
 
     const player =
       this.regulars.find((p) => p.id === this.feeEditorMemberId) ??
       this.spares.find((p) => p.id === this.feeEditorMemberId);
 
-    return player?.displayName ?? 'Player';
+    return player?.displayName ?? this.i18n.t('Player');
   }
 
   clearStatsFilters() {
@@ -1407,7 +1411,7 @@ export class MyTeamComponent implements OnInit {
         },
         error: (err) => {
           this.roleError.set(
-            err?.error?.message || 'Could not assign Captain.',
+            err?.error?.message || this.i18n.t('Could not assign Captain.'),
           );
           this.savingRoleMemberId.set(null);
           this.cdr.detectChanges();
@@ -1432,7 +1436,7 @@ export class MyTeamComponent implements OnInit {
         },
         error: (err) => {
           this.roleError.set(
-            err?.error?.message || 'Could not remove Captain role.',
+            err?.error?.message || this.i18n.t('Could not remove Captain role.'),
           );
           this.savingRoleMemberId.set(null);
           this.cdr.detectChanges();
@@ -1441,7 +1445,7 @@ export class MyTeamComponent implements OnInit {
   }
 
   gameOpponent(game: TeamGame): string {
-    return game.opponentTeam?.name ?? game.opponent ?? 'TBD';
+    return game.opponentTeam?.name ?? game.opponent ?? this.i18n.t('TBD');
   }
 
   gameArena(game: TeamGame): string {
@@ -1452,13 +1456,13 @@ export class MyTeamComponent implements OnInit {
       | undefined;
 
     if (!arena) {
-      return 'Arena TBD';
+      return this.i18n.t('Arena TBD');
     }
 
     if (typeof arena === 'string') {
       return arena;
     }
 
-    return arena.name ?? 'Arena TBD';
+    return arena.name ?? this.i18n.t('Arena TBD');
   }
 }

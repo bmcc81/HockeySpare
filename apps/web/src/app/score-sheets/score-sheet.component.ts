@@ -14,6 +14,8 @@ import {
   ScoreSheetPlayerLineDto,
 } from '@hockeyspare/contracts';
 import { ScoreSheetsApiService } from '../core/services/score-sheets-api.service';
+import { TranslatePipe, LocalDatePipe } from '../core/i18n/t.pipe';
+import { I18nService } from '../core/i18n/i18n.service';
 
 type ScoreSheetPlayerLineGroup = {
   teamId: string;
@@ -27,11 +29,12 @@ type ScoreSheetPlayerLineGroup = {
 @Component({
   selector: 'app-score-sheet',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, LocalDatePipe],
   templateUrl: './score-sheet.component.html',
 })
 export class ScoreSheetComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly i18n = inject(I18nService);
   private readonly fb = inject(FormBuilder);
   private readonly scoreSheetsApi = inject(ScoreSheetsApiService);
   private readonly location = inject(Location);
@@ -115,7 +118,7 @@ export class ScoreSheetComponent implements OnInit {
         (teamId === this.scoreSheet?.teamId
           ? this.scoreSheet.team.name
           : null) ??
-        'Unknown team';
+        this.i18n.t('Unknown team');
 
       const group = groups.get(teamId);
 
@@ -145,7 +148,7 @@ export class ScoreSheetComponent implements OnInit {
 
     if (!this.gameId) {
       this.loading.set(false);
-      this.error = 'Game id was not found.';
+      this.error = this.i18n.t('Game id was not found.');
       return;
     }
 
@@ -183,8 +186,7 @@ export class ScoreSheetComponent implements OnInit {
 
           this.error =
             err?.error?.message ||
-            err?.message ||
-            'Could not load this scoresheet. Make sure the API is running and you are a League GM or Timekeeper.';
+            err?.message || this.i18n.t('Could not load this scoresheet. Make sure the API is running and you are a League GM or Timekeeper.');
         },
       });
   }
@@ -215,8 +217,7 @@ export class ScoreSheetComponent implements OnInit {
 
           this.error =
             err?.error?.message ||
-            err?.message ||
-            'Could not create the scoresheet for this game.';
+            err?.message || this.i18n.t('Could not create the scoresheet for this game.');
         },
       });
   }
@@ -300,12 +301,12 @@ export class ScoreSheetComponent implements OnInit {
       .subscribe({
         next: (scoreSheet) => {
           this.saving = false;
-          this.success = 'Score saved.';
+          this.success = this.i18n.t('Score saved.');
           this.setScoreSheet(scoreSheet);
         },
         error: (err) => {
           this.saving = false;
-          this.error = err?.error?.message || 'Could not save the score.';
+          this.error = err?.error?.message || this.i18n.t('Could not save the score.');
         },
       });
   }
@@ -339,7 +340,7 @@ export class ScoreSheetComponent implements OnInit {
       .subscribe({
         next: (scoreSheet) => {
           this.saving = false;
-          this.success = `Stats saved for ${line.member.displayName}.`;
+          this.success = this.i18n.t('Stats saved for {displayName}.', { displayName: line.member.displayName });
           this.setScoreSheet(scoreSheet);
         },
         error: (err) => {
@@ -356,8 +357,7 @@ export class ScoreSheetComponent implements OnInit {
       return;
     }
 
-    const confirmed = window.confirm(
-      `Remove ${line.member.displayName} from this scoresheet?`,
+    const confirmed = window.confirm(this.i18n.t('Remove {displayName} from this scoresheet?', { displayName: line.member.displayName }),
     );
 
     if (!confirmed) {
@@ -373,7 +373,7 @@ export class ScoreSheetComponent implements OnInit {
       .subscribe({
         next: (scoreSheet) => {
           this.saving = false;
-          this.success = `${line.member.displayName} removed from scoresheet.`;
+          this.success = this.i18n.t('{displayName} removed from scoresheet.', { displayName: line.member.displayName });
           this.setScoreSheet(scoreSheet);
         },
         error: (err) => {
@@ -417,14 +417,13 @@ export class ScoreSheetComponent implements OnInit {
     if (this.linesForm.invalid || this.scoreForm.invalid) {
       this.linesForm.markAllAsTouched();
       this.scoreForm.markAllAsTouched();
-      this.error = 'Fix the scoresheet errors before finalizing.';
+      this.error = this.i18n.t('Fix the scoresheet errors before finalizing.');
       return;
     }
 
     this.syncScoreFromPeriods();
 
-    const confirmed = window.confirm(
-      'Finalize this scoresheet? This will save all player stats, update season stats, and lock the scoresheet.',
+    const confirmed = window.confirm(this.i18n.t('Finalize this scoresheet? This will save all player stats, update season stats, and lock the scoresheet.'),
     );
 
     if (!confirmed) {
@@ -462,13 +461,13 @@ export class ScoreSheetComponent implements OnInit {
       .subscribe({
         next: (scoreSheet) => {
           this.finalizing = false;
-          this.success = 'Scoresheet finalized. Player stats were updated.';
+          this.success = this.i18n.t('Scoresheet finalized. Player stats were updated.');
           this.setScoreSheet(scoreSheet);
         },
         error: (err) => {
           this.finalizing = false;
           this.error =
-            err?.error?.message || 'Could not finalize this scoresheet.';
+            err?.error?.message || this.i18n.t('Could not finalize this scoresheet.');
         },
       });
   }
@@ -477,7 +476,7 @@ export class ScoreSheetComponent implements OnInit {
     const game = this.scoreSheet?.game;
 
     if (!game) {
-      return 'Opponent';
+      return this.i18n.t('Opponent');
     }
 
     return game.opponentTeam?.name || game.opponent || 'Opponent';
@@ -487,7 +486,7 @@ export class ScoreSheetComponent implements OnInit {
     const user = this.scoreSheet?.finalizedBy;
 
     if (!user) {
-      return 'Unknown user';
+      return this.i18n.t('Unknown user');
     }
 
     const fullName = `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim();

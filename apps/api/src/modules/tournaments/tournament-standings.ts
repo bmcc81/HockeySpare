@@ -6,7 +6,9 @@
  *  - Two teams level on points: the head-to-head result in the round robin
  *    decides; if that doesn't separate them, the team that allowed the fewest
  *    goals in the round robin ranks higher.
- *  - Three or four teams level: the goals against *among those teams* decide.
+ *  - Three or four teams level: the total goals against in the round robin
+ *    (the GA column) decide. The organizers confirmed this on Nov 5, 2026:
+ *    it is the whole-round-robin total, not just the games among the tied teams.
  *  - Anything still level after that is decided by the earliest goal scored,
  *    then (four teams) a coin flip. The site doesn't record goal times, so
  *    those cases are flagged for the tournament committee instead of guessed.
@@ -118,10 +120,10 @@ function breakTie(tied: Row[], games: FinalGame[]): Row[][] {
     return [tied];
   }
 
-  const names = new Set(tied.map((row) => row.teamName));
-  const among = games.filter((g) => names.has(g.home) && names.has(g.away));
-
   if (tied.length === 2) {
+    const names = new Set(tied.map((row) => row.teamName));
+    const among = games.filter((g) => names.has(g.home) && names.has(g.away));
+
     const [a, b] = tied;
     let aWins = 0;
     let bWins = 0;
@@ -149,15 +151,8 @@ function breakTie(tied: Row[], games: FinalGame[]): Row[][] {
     return [[a, b]];
   }
 
-  // Three or more: goals against in the games played among these teams.
-  const goalsAgainstAmong = (row: Row): number =>
-    among.reduce((total, g) => {
-      if (g.home === row.teamName) return total + g.awayScore;
-      if (g.away === row.teamName) return total + g.homeScore;
-      return total;
-    }, 0);
-
-  return groupBy(tied, goalsAgainstAmong);
+  // Three or more: fewest total goals against in the round robin.
+  return groupBy(tied, (row) => row.goalsAgainst);
 }
 
 function compareDivision(a: string | null, b: string | null): number {

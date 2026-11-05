@@ -1,16 +1,16 @@
 <section class="league-page">
   <div class="page-header">
     <div>
-      <p class="eyebrow">Admin</p>
-      <h1>All Teams</h1>
+      <p class="eyebrow">{{ 'Admin' | t }}</p>
+      <h1>{{ 'All Teams' | t }}</h1>
       <p class="subtitle">
-        Browse and manage every team across all leagues.
+        {{ 'Browse and manage every team across all leagues.' | t }}
       </p>
     </div>
   </div>
 
   <div *ngIf="loading()" class="state-card">
-    Loading teams...
+    {{ 'Loading teams...' | t }}
   </div>
 
   <div *ngIf="error()" class="alert alert-danger">
@@ -20,12 +20,12 @@
   <div *ngIf="!loading() && teams().length > 0" class="filters-card">
     <div class="row g-2 align-items-end">
       <div class="col-12 col-md-6">
-        <label class="form-label" for="teamSearch">Search teams</label>
+        <label class="form-label" for="teamSearch">{{ 'Search teams' | t }}</label>
         <input
           id="teamSearch"
           type="text"
           class="form-control"
-          placeholder="Search by team name or league"
+          [placeholder]="'Search by team name or league' | t"
           [value]="search()"
           (input)="setSearch($event)"
         />
@@ -33,21 +33,21 @@
     </div>
 
     <div class="text-secondary mt-3">
-      Showing {{ filteredTeams().length }} of {{ teams().length }} teams
+      {{ 'Showing' | t }} {{ filteredTeams().length }} {{ 'of' | t }} {{ teams().length }} {{ 'teams' | t }}
     </div>
   </div>
 
   <div *ngIf="!loading() && teams().length === 0" class="state-card">
-    <h2>No teams yet</h2>
-    <p>Teams will appear here once leagues start adding them.</p>
+    <h2>{{ 'No teams yet' | t }}</h2>
+    <p>{{ 'Teams will appear here once leagues start adding them.' | t }}</p>
   </div>
 
   <div
     *ngIf="!loading() && teams().length > 0 && filteredTeams().length === 0"
     class="state-card"
   >
-    <h2>No teams match your search</h2>
-    <p>Try a different team or league name.</p>
+    <h2>{{ 'No teams match your search' | t }}</h2>
+    <p>{{ 'Try a different team or league name.' | t }}</p>
   </div>
 
   <div class="league-grid" *ngIf="!loading() && filteredTeams().length > 0">
@@ -59,11 +59,11 @@
       <div>
         <h2>{{ team.name }}</h2>
         <p *ngIf="team.league">{{ team.league.name }}</p>
-        <p *ngIf="!team.league">No league assigned</p>
+        <p *ngIf="!team.league">{{ 'No league assigned' | t }}</p>
       </div>
 
       <div class="meta">
-        <span>{{ team.memberCount }} members</span>
+        <span>{{ team.memberCount }} {{ 'members' | t }}</span>
       </div>
     </a>
   </div>

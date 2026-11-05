@@ -3,15 +3,18 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminTeamSummary } from '@hockeyspare/contracts';
 import { TeamService } from '../../core/services/team';
+import { TranslatePipe } from '../../core/i18n/t.pipe';
+import { I18nService } from '../../core/i18n/i18n.service';
 
 @Component({
   selector: 'app-all-teams',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './all-teams.html',
 })
 export class AllTeamsComponent implements OnInit {
   private readonly teamService = inject(TeamService);
+  private readonly i18n = inject(I18nService);
   private readonly router = inject(Router);
 
   teams = signal<AdminTeamSummary[]>([]);
@@ -48,7 +51,7 @@ export class AllTeamsComponent implements OnInit {
       },
       error: (err) => {
         this.error.set(
-          err?.error?.message || 'Could not load teams.',
+          err?.error?.message || this.i18n.t('Could not load teams.'),
         );
         this.loading.set(false);
       },

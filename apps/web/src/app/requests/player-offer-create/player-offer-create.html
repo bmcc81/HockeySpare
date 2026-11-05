@@ -4,43 +4,43 @@
       <div class="col-12 col-md-10 col-lg-7 col-xl-6">
         <div class="offer-card">
           <div class="text-center mb-4">
-            <h2 class="offer-title">Create Player Offer</h2>
-            <p class="offer-subtitle mb-0">Post your availability on HockeySpare</p>
+            <h2 class="offer-title">{{ 'Create Player Offer' | t }}</h2>
+            <p class="offer-subtitle mb-0">{{ 'Post your availability on HockeySpare' | t }}</p>
           </div>
 
           <form [formGroup]="form" (ngSubmit)="submit()" class="row g-3">
 
             <div class="mb-3">
-              <label class="form-label">Player name</label>
+              <label class="form-label">{{ 'Player name' | t }}</label>
               <input
                 type="text"
                 class="form-control"
                 formControlName="playerName"
-                placeholder="Enter player name"
+                [placeholder]="'Enter player name' | t"
               />
             </div>
             <div class="col-12 col-md-6">
-              <label for="position" class="form-label">Position</label>
+              <label for="position" class="form-label">{{ 'Position' | t }}</label>
               <select id="position" formControlName="position" class="form-select custom-input">
-                <option value="" disabled>Select position</option>
+                <option value="" disabled>{{ 'Select position' | t }}</option>
                 <option *ngFor="let p of positions" [value]="p">{{ p }}</option>
               </select>
             </div>
 
             <div class="col-12 col-md-6">
-              <label for="skillLevel" class="form-label">Skill level</label>
+              <label for="skillLevel" class="form-label">{{ 'Skill level' | t }}</label>
               <select
                 id="skillLevel"
                 formControlName="skillLevel"
                 class="form-select custom-input"
               >
-                <option value="" disabled>Select skill level</option>
+                <option value="" disabled>{{ 'Select skill level' | t }}</option>
                 <option *ngFor="let s of skillLevels" [value]="s">{{ s }}</option>
               </select>
             </div>
 
             <div class="col-12 col-md-6">
-              <label for="payAmount" class="form-label">Pay amount</label>
+              <label for="payAmount" class="form-label">{{ 'Pay amount' | t }}</label>
               <input
                 id="payAmount"
                 type="number"
@@ -51,7 +51,7 @@
             </div>
 
             <div class="col-12 col-md-6">
-              <label class="form-label">Time</label>
+              <label class="form-label">{{ 'Time' | t }}</label>
 
               <div
                 class="timepicker-shell"
@@ -67,7 +67,7 @@
               </div>
 
               <div class="mb-3">
-                <label for="date" class="form-label">Date</label>
+                <label for="date" class="form-label">{{ 'Date' | t }}</label>
                 <input
                   id="date"
                   type="date"
@@ -80,40 +80,40 @@
                 class="invalid-feedback d-block"
                 *ngIf="form.controls.time.touched && form.controls.time.invalid"
               >
-                <span *ngIf="form.controls.time.errors?.['required']">Time is required.</span>
+                <span *ngIf="form.controls.time.errors?.['required']">{{ 'Time is required.' | t }}</span>
               </div>
             </div>
 
             <div class="col-12">
-              <label for="arena" class="form-label">Arena</label>
+              <label for="arena" class="form-label">{{ 'Arena' | t }}</label>
               <input
                 id="arena"
                 type="text"
                 formControlName="arena"
                 class="form-control custom-input"
-                placeholder="Arena name"
+                [placeholder]="'Arena name' | t"
               />
             </div>
 
             <div class="col-12">
-              <label for="notes" class="form-label">Notes</label>
+              <label for="notes" class="form-label">{{ 'Notes' | t }}</label>
               <textarea
                 id="notes"
                 formControlName="notes"
                 class="form-control custom-input custom-textarea"
-                placeholder="Add details about your availability, level, or preferences"
+                [placeholder]="'Add details about your availability, level, or preferences' | t"
               ></textarea>
             </div>
 
             <div class="col-12 mt-4">
               <button type="submit" class="btn submit-btn w-100" [disabled]="form.invalid">
-                Create Offer
+                {{ 'Create Offer' | t }}
               </button>
             </div>
           </form>
 
           <div class="text-center form-footer mt-4">
-            Looking for team requests? <a routerLink="/requests">Browse requests</a>
+            {{ 'Looking for team requests?' | t }} <a routerLink="/requests">{{ 'Browse requests' | t }}</a>
           </div>
         </div>
       </div>

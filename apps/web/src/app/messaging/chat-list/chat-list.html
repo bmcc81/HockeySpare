@@ -1,12 +1,12 @@
 <section class="container py-4" style="max-width: 640px">
-  <h1 class="h3 mb-3">Messages</h1>
+  <h1 class="h3 mb-3">{{ 'Messages' | t }}</h1>
 
-  <div *ngIf="loading()" class="text-secondary">Loading your teams...</div>
+  <div *ngIf="loading()" class="text-secondary">{{ 'Loading your teams...' | t }}</div>
 
   <div *ngIf="error()" class="alert alert-danger">{{ error() }}</div>
 
   <div *ngIf="!loading() && !error() && teams().length === 0" class="empty">
-    You are not on any teams yet. Join or create a team to start chatting.
+    {{ 'You are not on any teams yet. Join or create a team to start chatting.' | t }}
   </div>
 
   <div class="list-group" *ngIf="!loading() && teams().length > 0">

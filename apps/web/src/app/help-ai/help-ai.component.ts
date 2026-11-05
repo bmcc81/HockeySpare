@@ -5,15 +5,18 @@ import {
   AiHelpService,
   AskHelpResponse,
 } from '../core/services/ai-help.service';
+import { TranslatePipe } from '../core/i18n/t.pipe';
+import { I18nService } from '../core/i18n/i18n.service';
 
 @Component({
   selector: 'app-help-ai',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslatePipe],
   templateUrl: './help-ai.component.html',
 })
 export class HelpAiComponent {
   private readonly aiHelpService = inject(AiHelpService);
+  private readonly i18n = inject(I18nService);
 
   question = '';
   loading = signal(false);
@@ -24,7 +27,7 @@ export class HelpAiComponent {
     const question = this.question.trim();
 
     if (!question) {
-      this.error.set('Please enter a question.');
+      this.error.set(this.i18n.t('Please enter a question.'));
       return;
     }
 
@@ -38,7 +41,7 @@ export class HelpAiComponent {
         this.loading.set(false);
       },
       error: () => {
-        this.error.set('Could not get a help answer. Please try again.');
+        this.error.set(this.i18n.t('Could not get a help answer. Please try again.'));
         this.loading.set(false);
       },
     });

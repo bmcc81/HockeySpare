@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { finalize, take, timeout } from 'rxjs';
 import { BookingApiService } from '../../core/services/bookings.service';
+import { TranslatePipe, LocalDatePipe } from '../../core/i18n/t.pipe';
+import { I18nService } from '../../core/i18n/i18n.service';
 
 type BookingStatus = 'PENDING' | 'CONFIRMED' | 'DECLINED' | 'CANCELLED';
 
@@ -34,12 +36,13 @@ type MyBooking = {
 @Component({
   selector: 'app-my-bookings',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe, LocalDatePipe],
   templateUrl: './my-bookings.html',
   styleUrl: './my-bookings.scss',
 })
 export class MyBookingsComponent implements OnInit {
   private readonly bookingsApi = inject(BookingApiService);
+  private readonly i18n = inject(I18nService);
 
   bookings = signal<MyBooking[]>([]);
   loading = signal(false);
@@ -83,7 +86,7 @@ export class MyBookingsComponent implements OnInit {
         },
         error: (err) => {
           console.error('Failed to load my bookings:', err);
-          this.error.set(err?.error?.message || 'Failed to load my bookings.');
+          this.error.set(err?.error?.message || this.i18n.t('Failed to load my bookings.'));
           this.bookings.set([]);
         },
       });
@@ -116,13 +119,13 @@ export class MyBookingsComponent implements OnInit {
       )
       .subscribe({
         next: () => {
-          this.success.set('Message updated.');
+          this.success.set(this.i18n.t('Message updated.'));
           this.load();
         },
         error: (err) => {
           console.error('Failed to update booking message:', err);
           this.error.set(
-            err?.error?.message || 'Failed to update booking message.',
+            err?.error?.message || this.i18n.t('Failed to update booking message.'),
           );
         },
       });
@@ -144,12 +147,12 @@ export class MyBookingsComponent implements OnInit {
       )
       .subscribe({
         next: () => {
-          this.success.set('Booking cancelled.');
+          this.success.set(this.i18n.t('Booking cancelled.'));
           this.load();
         },
         error: (err) => {
           console.error('Failed to cancel booking:', err);
-          this.error.set(err?.error?.message || 'Failed to cancel booking.');
+          this.error.set(err?.error?.message || this.i18n.t('Failed to cancel booking.'));
         },
       });
   }

@@ -7,11 +7,13 @@ import { filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { RequestApiService } from '../../core/services/request-api';
 import { BookingApiService } from '../../core/services/bookings.service';
 import { RequestType, SpareRequest } from '@hockeyspare/contracts';
+import { TranslatePipe, LocalDatePipe } from '../../core/i18n/t.pipe';
+import { I18nService } from '../../core/i18n/i18n.service';
 
 @Component({
   selector: 'app-request-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslatePipe, LocalDatePipe],
   templateUrl: './request-detail.html',
   styleUrl: './request-detail.scss',
 })
@@ -19,6 +21,8 @@ export class RequestDetailComponent {
   readonly RequestType = RequestType;
 
   private readonly route = inject(ActivatedRoute);
+
+  private readonly i18n = inject(I18nService);
   private readonly api = inject(RequestApiService);
   private readonly bookingsApi = inject(BookingApiService);
 
@@ -40,7 +44,7 @@ export class RequestDetailComponent {
 
   bookRequest(req: SpareRequest): void {
     if (req.status !== 'OPEN') {
-      this.error.set('This request is not open for booking.');
+      this.error.set(this.i18n.t('This request is not open for booking.'));
       this.success.set('');
       return;
     }
@@ -51,12 +55,12 @@ export class RequestDetailComponent {
 
     this.bookingsApi.createBooking(req.id, this.bookingMessage()).subscribe({
       next: () => {
-        this.success.set('Booking sent.');
+        this.success.set(this.i18n.t('Booking sent.'));
         this.bookingMessage.set('');
         this.bookingLoading.set(false);
       },
       error: (err) => {
-        this.error.set(err?.error?.message || 'Could not create booking.');
+        this.error.set(err?.error?.message || this.i18n.t('Could not create booking.'));
         this.success.set('');
         this.bookingLoading.set(false);
       },

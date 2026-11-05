@@ -10,38 +10,38 @@
 
         <p class="text-secondary mb-1">
           <ng-container *ngIf="canManageTeam; else playerSummary">
-            Manage your regular players, spares, and upcoming games.
+            {{ 'Manage your regular players, spares, and upcoming games.' | t }}
           </ng-container>
 
           <ng-template #playerSummary>
-            View your team, schedule, and upcoming games.
+            {{ 'View your team, schedule, and upcoming games.' | t }}
           </ng-template>
         </p>
 
         <p class="mb-0">
           <span class="badge rounded-pill text-bg-dark">
-            Role: {{ myRole || (isLeagueManagerView ? 'LEAGUE_MANAGER' : 'PLAYER') }}
+            {{ 'Role:' | t }} {{ myRole || (isLeagueManagerView ? 'LEAGUE_MANAGER' : 'PLAYER') }}
           </span>
         </p>
 
         <div *ngIf="selectedTeamId" class="alert alert-info mt-3 mb-0">
-          You are managing this team from the league page.
+          {{ 'You are managing this team from the league page.' | t }}
         </div>
       </div>
 
       <div class="stats d-flex gap-3 flex-wrap">
         <div class="stat-card">
-          <div class="stat-label">Regulars</div>
+          <div class="stat-label">{{ 'Regulars' | t }}</div>
           <div class="stat-value">{{ regulars.length }}</div>
         </div>
 
         <div class="stat-card">
-          <div class="stat-label">Spares</div>
+          <div class="stat-label">{{ 'Spares' | t }}</div>
           <div class="stat-value">{{ spares.length }}</div>
         </div>
 
         <div class="stat-card">
-          <div class="stat-label">Games</div>
+          <div class="stat-label">{{ 'Games' | t }}</div>
           <div class="stat-value">{{ upcomingGames.length }}</div>
         </div>
       </div>
@@ -51,7 +51,7 @@
       <div class="col-12 col-xl-4">
         <div class="card panel-card mb-4">
           <div class="card-body">
-            <h3 class="panel-title">Team Details</h3>
+            <h3 class="panel-title">{{ 'Team Details' | t }}</h3>
 
             <ng-container *ngIf="canManageTeam; else readOnlyTeamDetails">
               <form
@@ -61,14 +61,14 @@
               >
                 <div>
                   <label for="team-name" class="form-label">
-                    Edit Team name
+                    {{ 'Edit Team name' | t }}
                   </label>
 
                   <input
                     id="team-name"
                     class="form-control"
                     formControlName="name"
-                    placeholder="Edit team name"
+                    [placeholder]="'Edit team name' | t"
                   />
                 </div>
 
@@ -77,14 +77,14 @@
                   type="submit"
                   [disabled]="teamForm.invalid"
                 >
-                  Edit existing team name
+                  {{ 'Edit existing team name' | t }}
                 </button>
               </form>
             </ng-container>
 
             <ng-template #readOnlyTeamDetails>
               <div class="text-secondary">
-                Only captains and general managers can edit team details.
+                {{ 'Only captains and general managers can edit team details.' | t }}
               </div>
             </ng-template>
           </div>
@@ -92,7 +92,7 @@
 
         <div class="card panel-card mb-4" *ngIf="canManageTeam">
           <div class="card-body">
-            <h3 class="panel-title">Add Player</h3>
+            <h3 class="panel-title">{{ 'Add Player' | t }}</h3>
 
             <form
               [formGroup]="memberForm"
@@ -103,21 +103,21 @@
                 id="member-display-name"
                 class="form-control"
                 formControlName="displayName"
-                placeholder="Player name"
+                [placeholder]="'Player name' | t"
               />
 
               <input
                 id="member-email"
                 class="form-control"
                 formControlName="email"
-                placeholder="Email"
+                [placeholder]="'Email' | t"
               />
 
               <input
                 id="member-phone"
                 class="form-control"
                 formControlName="phone"
-                placeholder="Phone"
+                [placeholder]="'Phone' | t"
               />
 
               <select
@@ -125,9 +125,9 @@
                 class="form-select"
                 formControlName="position"
               >
-                <option value="FORWARD">Forward</option>
-                <option value="DEFENSE">Defense</option>
-                <option value="GOALIE">Goalie</option>
+                <option value="FORWARD">{{ 'Forward' | t }}</option>
+                <option value="DEFENSE">{{ 'Defense' | t }}</option>
+                <option value="GOALIE">{{ 'Goalie' | t }}</option>
               </select>
 
               <select
@@ -135,8 +135,8 @@
                 class="form-select"
                 formControlName="memberType"
               >
-                <option value="REGULAR">Regular</option>
-                <option value="SPARE">Spare</option>
+                <option value="REGULAR">{{ 'Regular' | t }}</option>
+                <option value="SPARE">{{ 'Spare' | t }}</option>
               </select>
 
               <label class="form-check">
@@ -146,7 +146,7 @@
                   type="checkbox"
                   formControlName="notifyByApp"
                 />
-                <span class="form-check-label">Notify in app</span>
+                <span class="form-check-label">{{ 'Notify in app' | t }}</span>
               </label>
 
               <label class="form-check">
@@ -156,7 +156,7 @@
                   type="checkbox"
                   formControlName="notifyByEmail"
                 />
-                <span class="form-check-label">Notify by email</span>
+                <span class="form-check-label">{{ 'Notify by email' | t }}</span>
               </label>
 
               <label class="form-check">
@@ -166,10 +166,10 @@
                   type="checkbox"
                   formControlName="notifyBySms"
                 />
-                <span class="form-check-label">Notify by text (requires phone)</span>
+                <span class="form-check-label">{{ 'Notify by text (requires phone)' | t }}</span>
               </label>
 
-              <button class="btn btn-primary" type="submit">Add player</button>
+              <button class="btn btn-primary" type="submit">{{ 'Add player' | t }}</button>
             </form>
           </div>
         </div>
@@ -187,10 +187,10 @@
         <div class="card panel-card mb-4">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
-              <h3 class="panel-title mb-0">Regular Players</h3>
+              <h3 class="panel-title mb-0">{{ 'Regular Players' | t }}</h3>
 
               <span>
-                Number of regular players:
+                {{ 'Number of regular players:' | t }}
                 <span class="badge rounded-pill text-bg-primary">
                   {{ regulars.length }}
                 </span>
@@ -201,9 +201,9 @@
               <table class="table align-middle mb-0">
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>Contact</th>
-                    <th>Position</th>
+                    <th>{{ 'Name' | t }}</th>
+                    <th>{{ 'Contact' | t }}</th>
+                    <th>{{ 'Position' | t }}</th>
                     <th *ngIf="canManageTeam"></th>
                   </tr>
                 </thead>
@@ -236,14 +236,14 @@
                               *ngIf="player.role === 'CAPTAIN'"
                               class="badge text-bg-primary mt-1"
                             >
-                              Captain
+                              {{ 'Captain' | t }}
                             </span>
 
                             <span
                               *ngIf="player.role === 'GENERAL_MANAGER'"
                               class="badge text-bg-dark mt-1"
                             >
-                              General Manager
+                              {{ 'General Manager' | t }}
                             </span>
 
                             <div
@@ -252,8 +252,7 @@
                             >
                               <label class="roster-photo-btn">
                                 {{ uploadingPhotoMemberId() === player.id ?
-                                'Uploading...' : (player.photoUrl ? 'Change
-                                photo' : 'Add photo') }}
+                                ('Uploading...' | t) : (player.photoUrl ? ('Change photo' | t) : ('Add photo' | t)) }}
                                 <input
                                   type="file"
                                   accept="image/*"
@@ -271,7 +270,7 @@
                                 [disabled]="uploadingPhotoMemberId() === player.id"
                                 (click)="removeMemberPhoto(player)"
                               >
-                                Remove
+                                {{ 'Remove' | t }}
                               </button>
                             </div>
                           </div>
@@ -282,7 +281,7 @@
                         {{ player.email || player.phone || 'No contact' }}
                       </td>
 
-                      <td>{{ player.position || 'N/A' }}</td>
+                      <td>{{ (player.position | t) || 'N/A' }}</td>
 
                       <td class="text-end" *ngIf="canManageTeam">
                         <div class="d-flex justify-content-end gap-2 flex-wrap">
@@ -294,7 +293,7 @@
                             (click)="makeCaptain(player)"
                           >
                             {{ savingRoleMemberId() === player.id ?
-                            'Updating...' : 'Make Captain' }}
+                            ('Updating...' | t) : ('Make Captain' | t) }}
                           </button>
 
                           <button
@@ -305,7 +304,7 @@
                             (click)="removeCaptain(player)"
                           >
                             {{ savingRoleMemberId() === player.id ?
-                            'Updating...' : 'Remove Captain' }}
+                            ('Updating...' | t) : ('Remove Captain' | t) }}
                           </button>
 
                           <button
@@ -313,7 +312,7 @@
                             type="button"
                             (click)="openStatEditor(player.id)"
                           >
-                            Stats
+                            {{ 'Stats' | t }}
                           </button>
 
                           <button
@@ -321,7 +320,7 @@
                             type="button"
                             (click)="openFeeEditor(player.id)"
                           >
-                            Fees
+                            {{ 'Fees' | t }}
                           </button>
 
                           <button
@@ -329,7 +328,7 @@
                             type="button"
                             (click)="removeMember(player.id)"
                           >
-                            Remove
+                            {{ 'Remove' | t }}
                           </button>
                         </div>
                       </td>
@@ -340,14 +339,14 @@
                     >
                       <td colspan="4" class="bg-transparent">
                         <div class="fw-semibold mb-2">
-                          Editing stats for {{ statEditorPlayerName() }}
+                          {{ 'Editing stats for' | t }} {{ statEditorPlayerName() }}
                         </div>
 
                         <div
                           *ngIf="statsLoadingMemberId === player.id"
                           class="text-secondary small mb-2"
                         >
-                          Loading existing stats...
+                          {{ 'Loading existing stats...' | t }}
                         </div>
 
                         <div
@@ -357,8 +356,7 @@
                           "
                           class="alert alert-info py-2 mb-2"
                         >
-                          Existing stats found for this season. Saving will
-                          update them.
+                          {{ 'Existing stats found for this season. Saving will update them.' | t }}
                         </div>
 
                         <div
@@ -368,8 +366,7 @@
                           "
                           class="alert alert-secondary py-2 mb-2"
                         >
-                          No stats found for this season yet. Saving will create
-                          a new record.
+                          {{ 'No stats found for this season yet. Saving will create a new record.' | t }}
                         </div>
 
                         <form
@@ -378,7 +375,7 @@
                           class="row g-2 align-items-end mt-1"
                         >
                           <div class="col-12 col-md-3">
-                            <label class="form-label">Season</label>
+                            <label class="form-label">{{ 'Season' | t }}</label>
                             <input
                               class="form-control"
                               formControlName="season"
@@ -387,7 +384,7 @@
                           </div>
 
                           <div class="col-6 col-md-2">
-                            <label class="form-label">GP</label>
+                            <label class="form-label">{{ 'GP' | t }}</label>
                             <input
                               class="form-control"
                               type="number"
@@ -414,7 +411,7 @@
                           </div>
 
                           <div class="col-6 col-md-2">
-                            <label class="form-label">PIM</label>
+                            <label class="form-label">{{ 'PIM' | t }}</label>
                             <input
                               class="form-control"
                               type="number"
@@ -437,7 +434,7 @@
                               type="submit"
                               [disabled]="statsSavingMemberId === player.id"
                             >
-                              Save
+                              {{ 'Save' | t }}
                             </button>
                           </div>
 
@@ -448,7 +445,7 @@
                               (click)="cancelStatEditor()"
                               [disabled]="statsSavingMemberId === player.id"
                             >
-                              Cancel
+                              {{ 'Cancel' | t }}
                             </button>
                           </div>
                         </form>
@@ -460,14 +457,14 @@
                     >
                       <td colspan="4" class="bg-transparent">
                         <div class="fw-semibold mb-2">
-                          Editing fees for {{ feeEditorPlayerName() }}
+                          {{ 'Editing fees for' | t }} {{ feeEditorPlayerName() }}
                         </div>
 
                         <div
                           *ngIf="feesLoadingMemberId === player.id"
                           class="text-secondary small mb-2"
                         >
-                          Loading existing fees...
+                          {{ 'Loading existing fees...' | t }}
                         </div>
 
                         <div
@@ -477,8 +474,7 @@
                           "
                           class="alert alert-info py-2 mb-2"
                         >
-                          Existing fee record found for this season. Saving
-                          will update it.
+                          {{ 'Existing fee record found for this season. Saving will update it.' | t }}
                         </div>
 
                         <div
@@ -488,8 +484,7 @@
                           "
                           class="alert alert-secondary py-2 mb-2"
                         >
-                          No fee record found for this season yet. Saving will
-                          create a new one.
+                          {{ 'No fee record found for this season yet. Saving will create a new one.' | t }}
                         </div>
 
                         <form
@@ -498,7 +493,7 @@
                           class="row g-2 align-items-end mt-1"
                         >
                           <div class="col-12 col-md-3">
-                            <label class="form-label">Season</label>
+                            <label class="form-label">{{ 'Season' | t }}</label>
                             <input
                               class="form-control"
                               formControlName="season"
@@ -507,7 +502,7 @@
                           </div>
 
                           <div class="col-6 col-md-2">
-                            <label class="form-label">Owed ($)</label>
+                            <label class="form-label">{{ 'Owed ($)' | t }}</label>
                             <input
                               class="form-control"
                               type="number"
@@ -516,7 +511,7 @@
                           </div>
 
                           <div class="col-6 col-md-2">
-                            <label class="form-label">Paid ($)</label>
+                            <label class="form-label">{{ 'Paid ($)' | t }}</label>
                             <input
                               class="form-control"
                               type="number"
@@ -525,11 +520,11 @@
                           </div>
 
                           <div class="col-12 col-md-3">
-                            <label class="form-label">Notes</label>
+                            <label class="form-label">{{ 'Notes' | t }}</label>
                             <input
                               class="form-control"
                               formControlName="notes"
-                              placeholder="Optional"
+                              [placeholder]="'Optional' | t"
                             />
                           </div>
 
@@ -539,7 +534,7 @@
                               type="submit"
                               [disabled]="feesSavingMemberId === player.id"
                             >
-                              Save
+                              {{ 'Save' | t }}
                             </button>
                           </div>
 
@@ -550,7 +545,7 @@
                               (click)="cancelFeeEditor()"
                               [disabled]="feesSavingMemberId === player.id"
                             >
-                              Cancel
+                              {{ 'Cancel' | t }}
                             </button>
                           </div>
                         </form>
@@ -563,7 +558,7 @@
                       [attr.colspan]="canManageTeam ? 4 : 3"
                       class="text-center text-secondary py-4"
                     >
-                      No regular players yet.
+                      {{ 'No regular players yet.' | t }}
                     </td>
                   </tr>
                 </tbody>
@@ -575,10 +570,10 @@
         <div class="card panel-card mb-4">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
-              <h3 class="panel-title mb-0">Spares</h3>
+              <h3 class="panel-title mb-0">{{ 'Spares' | t }}</h3>
 
               <span>
-                Number of spares:
+                {{ 'Number of spares:' | t }}
                 <span class="badge rounded-pill text-bg-info">
                   {{ spares.length }}
                 </span>
@@ -589,9 +584,9 @@
               <table class="table align-middle mb-0">
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>Contact</th>
-                    <th>Position</th>
+                    <th>{{ 'Name' | t }}</th>
+                    <th>{{ 'Contact' | t }}</th>
+                    <th>{{ 'Position' | t }}</th>
                     <th *ngIf="canManageTeam"></th>
                   </tr>
                 </thead>
@@ -624,14 +619,14 @@
                               *ngIf="player.role === 'CAPTAIN'"
                               class="badge text-bg-primary mt-1"
                             >
-                              Captain
+                              {{ 'Captain' | t }}
                             </span>
 
                             <span
                               *ngIf="player.role === 'GENERAL_MANAGER'"
                               class="badge text-bg-dark mt-1"
                             >
-                              General Manager
+                              {{ 'General Manager' | t }}
                             </span>
 
                             <div
@@ -640,8 +635,7 @@
                             >
                               <label class="roster-photo-btn">
                                 {{ uploadingPhotoMemberId() === player.id ?
-                                'Uploading...' : (player.photoUrl ? 'Change
-                                photo' : 'Add photo') }}
+                                ('Uploading...' | t) : (player.photoUrl ? ('Change photo' | t) : ('Add photo' | t)) }}
                                 <input
                                   type="file"
                                   accept="image/*"
@@ -659,7 +653,7 @@
                                 [disabled]="uploadingPhotoMemberId() === player.id"
                                 (click)="removeMemberPhoto(player)"
                               >
-                                Remove
+                                {{ 'Remove' | t }}
                               </button>
                             </div>
                           </div>
@@ -670,7 +664,7 @@
                         {{ player.email || player.phone || 'No contact' }}
                       </td>
 
-                      <td>{{ player.position || 'N/A' }}</td>
+                      <td>{{ (player.position | t) || 'N/A' }}</td>
 
                       <td class="text-end" *ngIf="canManageTeam">
                         <div class="d-flex justify-content-end gap-2 flex-wrap">
@@ -682,7 +676,7 @@
                             (click)="makeCaptain(player)"
                           >
                             {{ savingRoleMemberId() === player.id ?
-                            'Updating...' : 'Make Captain' }}
+                            ('Updating...' | t) : ('Make Captain' | t) }}
                           </button>
 
                           <button
@@ -693,7 +687,7 @@
                             (click)="removeCaptain(player)"
                           >
                             {{ savingRoleMemberId() === player.id ?
-                            'Updating...' : 'Remove Captain' }}
+                            ('Updating...' | t) : ('Remove Captain' | t) }}
                           </button>
 
                           <button
@@ -701,7 +695,7 @@
                             type="button"
                             (click)="openStatEditor(player.id)"
                           >
-                            Stats
+                            {{ 'Stats' | t }}
                           </button>
 
                           <button
@@ -709,7 +703,7 @@
                             type="button"
                             (click)="openFeeEditor(player.id)"
                           >
-                            Fees
+                            {{ 'Fees' | t }}
                           </button>
 
                           <button
@@ -717,7 +711,7 @@
                             type="button"
                             (click)="removeMember(player.id)"
                           >
-                            Remove
+                            {{ 'Remove' | t }}
                           </button>
                         </div>
                       </td>
@@ -728,14 +722,14 @@
                     >
                       <td colspan="4" class="bg-transparent">
                         <div class="fw-semibold mb-2">
-                          Editing stats for {{ statEditorPlayerName() }}
+                          {{ 'Editing stats for' | t }} {{ statEditorPlayerName() }}
                         </div>
 
                         <div
                           *ngIf="statsLoadingMemberId === player.id"
                           class="text-secondary small mb-2"
                         >
-                          Loading existing stats...
+                          {{ 'Loading existing stats...' | t }}
                         </div>
 
                         <div
@@ -745,8 +739,7 @@
                           "
                           class="alert alert-info py-2 mb-2"
                         >
-                          Existing stats found for this season. Saving will
-                          update them.
+                          {{ 'Existing stats found for this season. Saving will update them.' | t }}
                         </div>
 
                         <div
@@ -756,8 +749,7 @@
                           "
                           class="alert alert-secondary py-2 mb-2"
                         >
-                          No stats found for this season yet. Saving will create
-                          a new record.
+                          {{ 'No stats found for this season yet. Saving will create a new record.' | t }}
                         </div>
 
                         <form
@@ -766,7 +758,7 @@
                           class="row g-2 align-items-end mt-1"
                         >
                           <div class="col-12 col-md-3">
-                            <label class="form-label">Season</label>
+                            <label class="form-label">{{ 'Season' | t }}</label>
                             <input
                               class="form-control"
                               formControlName="season"
@@ -775,7 +767,7 @@
                           </div>
 
                           <div class="col-6 col-md-2">
-                            <label class="form-label">GP</label>
+                            <label class="form-label">{{ 'GP' | t }}</label>
                             <input
                               class="form-control"
                               type="number"
@@ -802,7 +794,7 @@
                           </div>
 
                           <div class="col-6 col-md-2">
-                            <label class="form-label">PIM</label>
+                            <label class="form-label">{{ 'PIM' | t }}</label>
                             <input
                               class="form-control"
                               type="number"
@@ -825,7 +817,7 @@
                               type="submit"
                               [disabled]="statsSavingMemberId === player.id"
                             >
-                              Save
+                              {{ 'Save' | t }}
                             </button>
                           </div>
 
@@ -836,7 +828,7 @@
                               (click)="cancelStatEditor()"
                               [disabled]="statsSavingMemberId === player.id"
                             >
-                              Cancel
+                              {{ 'Cancel' | t }}
                             </button>
                           </div>
                         </form>
@@ -848,14 +840,14 @@
                     >
                       <td colspan="4" class="bg-transparent">
                         <div class="fw-semibold mb-2">
-                          Editing fees for {{ feeEditorPlayerName() }}
+                          {{ 'Editing fees for' | t }} {{ feeEditorPlayerName() }}
                         </div>
 
                         <div
                           *ngIf="feesLoadingMemberId === player.id"
                           class="text-secondary small mb-2"
                         >
-                          Loading existing fees...
+                          {{ 'Loading existing fees...' | t }}
                         </div>
 
                         <div
@@ -865,8 +857,7 @@
                           "
                           class="alert alert-info py-2 mb-2"
                         >
-                          Existing fee record found for this season. Saving
-                          will update it.
+                          {{ 'Existing fee record found for this season. Saving will update it.' | t }}
                         </div>
 
                         <div
@@ -876,8 +867,7 @@
                           "
                           class="alert alert-secondary py-2 mb-2"
                         >
-                          No fee record found for this season yet. Saving will
-                          create a new one.
+                          {{ 'No fee record found for this season yet. Saving will create a new one.' | t }}
                         </div>
 
                         <form
@@ -886,7 +876,7 @@
                           class="row g-2 align-items-end mt-1"
                         >
                           <div class="col-12 col-md-3">
-                            <label class="form-label">Season</label>
+                            <label class="form-label">{{ 'Season' | t }}</label>
                             <input
                               class="form-control"
                               formControlName="season"
@@ -895,7 +885,7 @@
                           </div>
 
                           <div class="col-6 col-md-2">
-                            <label class="form-label">Owed ($)</label>
+                            <label class="form-label">{{ 'Owed ($)' | t }}</label>
                             <input
                               class="form-control"
                               type="number"
@@ -904,7 +894,7 @@
                           </div>
 
                           <div class="col-6 col-md-2">
-                            <label class="form-label">Paid ($)</label>
+                            <label class="form-label">{{ 'Paid ($)' | t }}</label>
                             <input
                               class="form-control"
                               type="number"
@@ -913,11 +903,11 @@
                           </div>
 
                           <div class="col-12 col-md-3">
-                            <label class="form-label">Notes</label>
+                            <label class="form-label">{{ 'Notes' | t }}</label>
                             <input
                               class="form-control"
                               formControlName="notes"
-                              placeholder="Optional"
+                              [placeholder]="'Optional' | t"
                             />
                           </div>
 
@@ -927,7 +917,7 @@
                               type="submit"
                               [disabled]="feesSavingMemberId === player.id"
                             >
-                              Save
+                              {{ 'Save' | t }}
                             </button>
                           </div>
 
@@ -938,7 +928,7 @@
                               (click)="cancelFeeEditor()"
                               [disabled]="feesSavingMemberId === player.id"
                             >
-                              Cancel
+                              {{ 'Cancel' | t }}
                             </button>
                           </div>
                         </form>
@@ -951,7 +941,7 @@
                       [attr.colspan]="canManageTeam ? 4 : 3"
                       class="text-center text-secondary py-4"
                     >
-                      No spares yet.
+                      {{ 'No spares yet.' | t }}
                     </td>
                   </tr>
                 </tbody>
@@ -963,10 +953,10 @@
         <div class="card panel-card mb-4">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
-              <h3 class="panel-title mb-0">Team Stats</h3>
+              <h3 class="panel-title mb-0">{{ 'Team Stats' | t }}</h3>
 
               <span>
-                Total Statistic Records:
+                {{ 'Total Statistic Records:' | t }}
                 <span class="badge rounded-pill text-bg-secondary">
                   {{ myStats.length }}
                 </span>
@@ -978,7 +968,7 @@
                 <input
                   class="form-control"
                   formControlName="season"
-                  placeholder="Filter by season"
+                  [placeholder]="'Filter by season' | t"
                 />
               </div>
 
@@ -986,7 +976,7 @@
                 <input
                   class="form-control"
                   formControlName="team"
-                  placeholder="Filter by team"
+                  [placeholder]="'Filter by team' | t"
                 />
               </div>
 
@@ -996,7 +986,7 @@
                   type="button"
                   (click)="clearStatsFilters()"
                 >
-                  Clear
+                  {{ 'Clear' | t }}
                 </button>
               </div>
             </form>
@@ -1013,7 +1003,7 @@
                         type="button"
                         (click)="setStatsSort('player')"
                       >
-                        Player {{ statsSortIcon('player') }}
+                        {{ 'Player' | t }} {{ statsSortIcon('player') }}
                       </button>
                     </th>
 
@@ -1023,7 +1013,7 @@
                         type="button"
                         (click)="setStatsSort('season')"
                       >
-                        Season {{ statsSortIcon('season') }}
+                        {{ 'Season' | t }} {{ statsSortIcon('season') }}
                       </button>
                     </th>
 
@@ -1033,7 +1023,7 @@
                         type="button"
                         (click)="setStatsSort('team')"
                       >
-                        Team {{ statsSortIcon('team') }}
+                        {{ 'Team' | t }} {{ statsSortIcon('team') }}
                       </button>
                     </th>
 
@@ -1043,7 +1033,7 @@
                         type="button"
                         (click)="setStatsSort('gamesPlayed')"
                       >
-                        GP {{ statsSortIcon('gamesPlayed') }}
+                        {{ 'GP' | t }} {{ statsSortIcon('gamesPlayed') }}
                       </button>
                     </th>
 
@@ -1073,7 +1063,7 @@
                         type="button"
                         (click)="setStatsSort('points')"
                       >
-                        PTS {{ statsSortIcon('points') }}
+                        {{ 'PTS' | t }} {{ statsSortIcon('points') }}
                       </button>
                     </th>
 
@@ -1083,7 +1073,7 @@
                         type="button"
                         (click)="setStatsSort('penaltyMins')"
                       >
-                        PIM {{ statsSortIcon('penaltyMins') }}
+                        {{ 'PIM' | t }} {{ statsSortIcon('penaltyMins') }}
                       </button>
                     </th>
 
@@ -1117,8 +1107,7 @@
 
             <ng-template #noStatsTpl>
               <div class="text-secondary">
-                {{ myStats.length ? 'No stats match your filters.' : 'No stats
-                recorded yet.' }}
+                {{ myStats.length ? ('No stats match your filters.' | t) : ('No stats recorded yet.' | t) }}
               </div>
             </ng-template>
           </div>
@@ -1127,7 +1116,7 @@
         <div class="card panel-card mb-4" *ngIf="canManageTeam">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
-              <h3 class="panel-title mb-0">Payments</h3>
+              <h3 class="panel-title mb-0">{{ 'Payments' | t }}</h3>
             </div>
 
             <div *ngIf="paymentError" class="alert alert-danger">
@@ -1139,7 +1128,7 @@
             </div>
 
             <div *ngIf="paymentsStatusLoading" class="text-secondary">
-              Loading payment settings...
+              {{ 'Loading payment settings...' | t }}
             </div>
 
             <ng-container *ngIf="!paymentsStatusLoading">
@@ -1147,10 +1136,9 @@
                 *ngIf="paymentsStatus?.connected && paymentsStatus?.payoutsEnabled"
                 class="d-flex align-items-center gap-2"
               >
-                <span class="badge rounded-pill text-bg-success">Connected</span>
+                <span class="badge rounded-pill text-bg-success">{{ 'Connected' | t }}</span>
                 <span class="text-secondary small">
-                  Fee payments go directly to this team's connected bank
-                  account.
+                  {{ 'Fee payments go directly to this team\'s connected bank account.' | t }}
                 </span>
               </div>
 
@@ -1158,8 +1146,7 @@
                 *ngIf="!(paymentsStatus?.connected && paymentsStatus?.payoutsEnabled)"
               >
                 <p class="text-secondary small mb-2">
-                  Connect a Stripe account so players can pay their team fees
-                  online, straight into your own bank account.
+                  {{ 'Connect a Stripe account so players can pay their team fees online, straight into your own bank account.' | t }}
                 </p>
 
                 <button
@@ -1184,11 +1171,11 @@
         <div class="card panel-card mb-4" *ngIf="canManageTeam">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
-              <h3 class="panel-title mb-0">Team Fees</h3>
+              <h3 class="panel-title mb-0">{{ 'Team Fees' | t }}</h3>
 
               <div class="d-flex align-items-center gap-3">
                 <span>
-                  Total Fee Records:
+                  {{ 'Total Fee Records:' | t }}
                   <span class="badge rounded-pill text-bg-secondary">
                     {{ myFees.length }}
                   </span>
@@ -1200,7 +1187,7 @@
                   [disabled]="!myFees.length"
                   (click)="exportFeesCsv()"
                 >
-                  Export CSV
+                  {{ 'Export CSV' | t }}
                 </button>
               </div>
             </div>
@@ -1210,7 +1197,7 @@
                 <input
                   class="form-control"
                   formControlName="season"
-                  placeholder="Filter by season"
+                  [placeholder]="'Filter by season' | t"
                 />
               </div>
 
@@ -1218,16 +1205,16 @@
                 <input
                   class="form-control"
                   formControlName="team"
-                  placeholder="Filter by team"
+                  [placeholder]="'Filter by team' | t"
                 />
               </div>
 
               <div class="col-12 col-md-3">
                 <select class="form-select" formControlName="status">
-                  <option value="">All statuses</option>
-                  <option value="Paid">Paid</option>
-                  <option value="Partial">Partial</option>
-                  <option value="Unpaid">Unpaid</option>
+                  <option value="">{{ 'All statuses' | t }}</option>
+                  <option value="Paid">{{ 'Paid' | t }}</option>
+                  <option value="Partial">{{ 'Partial' | t }}</option>
+                  <option value="Unpaid">{{ 'Unpaid' | t }}</option>
                 </select>
               </div>
 
@@ -1237,7 +1224,7 @@
                   type="button"
                   (click)="clearFeesFilters()"
                 >
-                  Clear
+                  {{ 'Clear' | t }}
                 </button>
               </div>
             </form>
@@ -1255,7 +1242,7 @@
                           type="button"
                           (click)="setFeesSort('player')"
                         >
-                          Player {{ feesSortIcon('player') }}
+                          {{ 'Player' | t }} {{ feesSortIcon('player') }}
                         </button>
                       </th>
 
@@ -1265,7 +1252,7 @@
                           type="button"
                           (click)="setFeesSort('season')"
                         >
-                          Season {{ feesSortIcon('season') }}
+                          {{ 'Season' | t }} {{ feesSortIcon('season') }}
                         </button>
                       </th>
 
@@ -1275,7 +1262,7 @@
                           type="button"
                           (click)="setFeesSort('team')"
                         >
-                          Team {{ feesSortIcon('team') }}
+                          {{ 'Team' | t }} {{ feesSortIcon('team') }}
                         </button>
                       </th>
 
@@ -1285,7 +1272,7 @@
                           type="button"
                           (click)="setFeesSort('amountOwed')"
                         >
-                          Owed {{ feesSortIcon('amountOwed') }}
+                          {{ 'Owed' | t }} {{ feesSortIcon('amountOwed') }}
                         </button>
                       </th>
 
@@ -1295,7 +1282,7 @@
                           type="button"
                           (click)="setFeesSort('amountPaid')"
                         >
-                          Paid {{ feesSortIcon('amountPaid') }}
+                          {{ 'Paid' | t }} {{ feesSortIcon('amountPaid') }}
                         </button>
                       </th>
 
@@ -1305,7 +1292,7 @@
                           type="button"
                           (click)="setFeesSort('balance')"
                         >
-                          Balance {{ feesSortIcon('balance') }}
+                          {{ 'Balance' | t }} {{ feesSortIcon('balance') }}
                         </button>
                       </th>
 
@@ -1315,7 +1302,7 @@
                           type="button"
                           (click)="setFeesSort('status')"
                         >
-                          Status {{ feesSortIcon('status') }}
+                          {{ 'Status' | t }} {{ feesSortIcon('status') }}
                         </button>
                       </th>
 
@@ -1338,7 +1325,7 @@
                           [class.text-bg-warning]="feeStatus(fee) === 'Partial'"
                           [class.text-bg-danger]="feeStatus(fee) === 'Unpaid'"
                         >
-                          {{ feeStatus(fee) }}
+                          {{ feeStatus(fee) | t }}
                         </span>
                       </td>
                       <td>
@@ -1364,8 +1351,7 @@
 
             <ng-template #noFeesTpl>
               <div class="text-secondary">
-                {{ myFees.length ? 'No fees match your filters.' : 'No fees
-                recorded yet.' }}
+                {{ myFees.length ? ('No fees match your filters.' | t) : ('No fees recorded yet.' | t) }}
               </div>
             </ng-template>
           </div>
@@ -1374,7 +1360,7 @@
         <div class="card panel-card">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
-              <h3 class="panel-title mb-0">Upcoming Games</h3>
+              <h3 class="panel-title mb-0">{{ 'Upcoming Games' | t }}</h3>
 
               <span class="badge rounded-pill text-bg-secondary">
                 {{ upcomingGames.length }}
@@ -1382,7 +1368,7 @@
             </div>
 
             <div *ngIf="upcomingGamesLoading" class="text-secondary mb-3">
-              Loading upcoming games...
+              {{ 'Loading upcoming games...' | t }}
             </div>
 
             <div *ngIf="upcomingGamesError" class="alert alert-warning">
@@ -1409,24 +1395,24 @@
                       <div class="game-title">{{ game.title }}</div>
 
                       <div class="game-meta">
-                        {{ game.startsAt | date: 'medium' }}
+                        {{ game.startsAt | ldate: 'medium' }}
                         <span *ngIf="game.arena"> • {{ gameArena(game) }}</span>
 
                         <span *ngIf="game.opponentTeam?.name || game.opponent">
-                          • vs {{ gameOpponent(game) }}
+                          {{ '• vs' | t }} {{ gameOpponent(game) }}
                         </span>
                       </div>
 
                       <div class="game-meta" *ngIf="game.leagueName">
-                        League: {{ game.leagueName }}
+                        {{ 'League:' | t }} {{ game.leagueName }}
                       </div>
 
                       <div class="game-meta" *ngIf="game.invites.length">
-                        {{ game.invites.length }} player(s) notified
+                        {{ game.invites.length }} {{ 'player(s) notified' | t }}
                       </div>
 
                       <div class="game-meta mt-1">
-                        Your status:
+                        {{ 'Your status:' | t }}
 
                         <ng-container
                           *ngIf="
@@ -1441,7 +1427,7 @@
                             [class.text-success]="statusLabel === 'Available'"
                             [class.text-warning]="statusLabel === 'Can’t make it'"
                           >
-                            {{ statusLabel }}
+                            {{ statusLabel | t }}
                           </strong>
                         </ng-container>
                       </div>
@@ -1450,7 +1436,7 @@
                         class="game-meta"
                         *ngIf="getMyAvailabilityNote(game)"
                       >
-                        Note: {{ getMyAvailabilityNote(game) }}
+                        {{ 'Note:' | t }} {{ getMyAvailabilityNote(game) }}
                       </div>
                     </div>
 
@@ -1461,7 +1447,7 @@
                         (click)="markAvailable(game.id)"
                         [disabled]="availabilitySavingGameId === game.id"
                       >
-                        Available
+                        {{ 'Available' | t }}
                       </button>
 
                       <button
@@ -1470,7 +1456,7 @@
                         (click)="markUnavailable(game.id)"
                         [disabled]="availabilitySavingGameId === game.id"
                       >
-                        Can’t make it
+                        {{ 'Can’t make it' | t }}
                       </button>
 
                       <button
@@ -1479,7 +1465,7 @@
                         (click)="requestSpare(game.id)"
                         [disabled]="availabilitySavingGameId === game.id"
                       >
-                        Need spare
+                        {{ 'Need spare' | t }}
                       </button>
 
                       <button
@@ -1489,8 +1475,7 @@
                         (click)="notifyGame(game)"
                         [disabled]="notifyingGameId === game.id"
                       >
-                        {{ notifyingGameId === game.id ? 'Sending...' : 'Notify
-                        Team' }}
+                        {{ notifyingGameId === game.id ? ('Sending...' | t) : ('Notify Team' | t) }}
                       </button>
                     </div>
                   </div>
@@ -1506,14 +1491,14 @@
                     </div>
 
                     <div class="mb-2 text-secondary small">
-                      Add a note for your captain or general manager.
+                      {{ 'Add a note for your captain or general manager.' | t }}
                     </div>
 
                     <textarea
                       class="form-control"
                       rows="3"
                       formControlName="note"
-                      placeholder="Add a note (optional)"
+                      [placeholder]="'Add a note (optional)' | t"
                     ></textarea>
 
                     <div class="d-flex gap-2 mt-3">
@@ -1522,7 +1507,7 @@
                         type="submit"
                         [disabled]="availabilitySavingGameId === game.id"
                       >
-                        Save response
+                        {{ 'Save response' | t }}
                       </button>
 
                       <button
@@ -1531,7 +1516,7 @@
                         (click)="cancelAvailabilityComposer()"
                         [disabled]="availabilitySavingGameId === game.id"
                       >
-                        Cancel
+                        {{ 'Cancel' | t }}
                       </button>
                     </div>
                   </form>
@@ -1543,15 +1528,15 @@
                 >
                   <div class="d-flex flex-wrap gap-2 mb-2">
                     <span class="badge text-bg-success">
-                      Available: {{ availabilityCount(game, 'AVAILABLE') }}
+                      {{ 'Available:' | t }} {{ availabilityCount(game, 'AVAILABLE') }}
                     </span>
 
                     <span class="badge text-bg-warning">
-                      Unavailable: {{ availabilityCount(game, 'UNAVAILABLE') }}
+                      {{ 'Unavailable:' | t }} {{ availabilityCount(game, 'UNAVAILABLE') }}
                     </span>
 
                     <span class="badge text-bg-danger">
-                      Need spare: {{ availabilityCount(game, 'NEED_SPARE') }}
+                      {{ 'Need spare:' | t }} {{ availabilityCount(game, 'NEED_SPARE') }}
                     </span>
                   </div>
 
@@ -1566,7 +1551,7 @@
                         class="badge ms-2"
                         [ngClass]="availabilityBadgeClass(response.status)"
                       >
-                        {{ availabilityLabel(response.status) }}
+                        {{ availabilityLabel(response.status) | t }}
                       </span>
 
                       <div *ngIf="response.note" class="text-secondary mt-1">
@@ -1582,7 +1567,7 @@
               *ngIf="!upcomingGamesLoading && !upcomingGames.length"
               class="text-secondary"
             >
-              No games scheduled yet.
+              {{ 'No games scheduled yet.' | t }}
             </div>
           </div>
         </div>
@@ -1594,10 +1579,10 @@
 <ng-template #createTeamTpl>
   <div class="card panel-card">
     <div class="card-body">
-      <h2 class="panel-title">Create your team</h2>
+      <h2 class="panel-title">{{ 'Create your team' | t }}</h2>
 
       <p class="text-secondary">
-        Set up your team before adding players, spares, and league games.
+        {{ 'Set up your team before adding players, spares, and league games.' | t }}
       </p>
 
       <form
@@ -1606,20 +1591,20 @@
         class="d-grid gap-3"
       >
         <div>
-          <label for="create-team-name" class="form-label">Team name</label>
+          <label for="create-team-name" class="form-label">{{ 'Team name' | t }}</label>
 
           <input
             id="create-team-name"
             class="form-control"
             formControlName="name"
-            placeholder="Enter team name"
+            [placeholder]="'Enter team name' | t"
           />
 
           <div
             class="invalid-feedback d-block"
             *ngIf="teamForm.controls.name.touched && teamForm.controls.name.invalid"
           >
-            Team name is required.
+            {{ 'Team name is required.' | t }}
           </div>
         </div>
 
@@ -1628,7 +1613,7 @@
           type="submit"
           [disabled]="teamForm.invalid || creatingTeam"
         >
-          {{ creatingTeam ? 'Creating...' : 'Create Team' }}
+          {{ creatingTeam ? ('Creating...' | t) : ('Create Team' | t) }}
         </button>
       </form>
     </div>
@@ -1637,6 +1622,6 @@
 
 <ng-template #loadingTpl>
   <section class="container py-5 text-center text-secondary">
-    Loading team page...
+    {{ 'Loading team page...' | t }}
   </section>
 </ng-template>

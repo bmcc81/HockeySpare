@@ -3,16 +3,19 @@ import { Component, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { LeaguesApiService } from '../../core/services/leagues-api.service';
+import { TranslatePipe } from '../../core/i18n/t.pipe';
+import { I18nService } from '../../core/i18n/i18n.service';
 
 @Component({
   selector: 'app-create-league',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslatePipe],
   templateUrl: './create-league.html',
   styleUrl: './create-league.scss',
 })
 export class CreateLeagueComponent {
   private readonly fb = inject(NonNullableFormBuilder);
+  private readonly i18n = inject(I18nService);
   private readonly router = inject(Router);
   private readonly leaguesApi = inject(LeaguesApiService);
 
@@ -48,7 +51,7 @@ export class CreateLeagueComponent {
           this.router.navigate(['/leagues', league.id]);
         },
         error: () => {
-          this.error.set('Could not create league.');
+          this.error.set(this.i18n.t('Could not create league.'));
           this.saving.set(false);
         },
       });

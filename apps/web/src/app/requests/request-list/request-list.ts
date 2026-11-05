@@ -9,11 +9,12 @@ import { RequestApiService } from '../../core/services/request-api';
 import { InViewDirective } from '../../shared/directives/in-view.directive';
 
 import { PlayerNeedsTeamRequest, PlayerOffer, Position, RequestType, SkillLevel, SpareRequest, TeamNeedsPlayerRequest } from '@hockeyspare/contracts';
+import { TranslatePipe, LocalDatePipe } from '../../core/i18n/t.pipe';
 
 @Component({
   selector: 'app-request-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule, InViewDirective],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, InViewDirective, TranslatePipe, LocalDatePipe],
   templateUrl: './request-list.html',
   styleUrls: ['./request-list.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

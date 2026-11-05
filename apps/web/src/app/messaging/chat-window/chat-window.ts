@@ -19,18 +19,21 @@ import { Subscription, interval, startWith, switchMap } from 'rxjs';
 import { TeamMessage } from '@hockeyspare/contracts';
 import { TeamService } from '../../core/services/team';
 import { AuthStateService } from '../../auth/auth-state.service';
+import { TranslatePipe, LocalDatePipe } from '../../core/i18n/t.pipe';
+import { I18nService } from '../../core/i18n/i18n.service';
 
 const POLL_INTERVAL_MS = 10000;
 
 @Component({
   selector: 'app-chat-window',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslatePipe, LocalDatePipe],
   templateUrl: './chat-window.html',
   styleUrl: './chat-window.scss',
 })
 export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked {
   private readonly route = inject(ActivatedRoute);
+  private readonly i18n = inject(I18nService);
   private readonly teamService = inject(TeamService);
   private readonly authState = inject(AuthStateService);
   private readonly fb = inject(NonNullableFormBuilder);
@@ -57,7 +60,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
 
     if (!this.teamId) {
       this.loading.set(false);
-      this.error.set('Team id was not found.');
+      this.error.set(this.i18n.t('Team id was not found.'));
       return;
     }
 
@@ -80,7 +83,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
     this.teamService.listMyTeams().subscribe({
       next: (teams) => {
         const team = teams.find((t) => t.id === this.teamId);
-        this.teamName.set(team?.name ?? 'Team Chat');
+        this.teamName.set(team?.name ?? this.i18n.t('Team Chat'));
       },
     });
   }
@@ -134,7 +137,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
         this.shouldScroll = true;
       },
       error: () => {
-        this.error.set('Could not send message.');
+        this.error.set(this.i18n.t('Could not send message.'));
         this.sending.set(false);
       },
     });

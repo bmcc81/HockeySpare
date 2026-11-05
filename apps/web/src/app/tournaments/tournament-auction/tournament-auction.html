@@ -9,15 +9,15 @@
           </p>
         </div>
         <a class="btn btn-outline-secondary btn-sm" [routerLink]="['/tournaments', tournamentId]">
-          Back to tournament
+          {{ 'Back to tournament' | t }}
         </a>
       </div>
 
       <div class="alert alert-secondary" *ngIf="view()?.auction?.status === 'DRAFT'">
-        This auction has not opened yet. Check back soon.
+        {{ 'This auction has not opened yet. Check back soon.' | t }}
       </div>
       <div class="alert alert-warning" *ngIf="view()?.auction?.status === 'CLOSED'">
-        This auction has closed. Winning bids are shown below.
+        {{ 'This auction has closed. Winning bids are shown below.' | t }}
       </div>
 
       <!-- Open items -->
@@ -34,7 +34,7 @@
             <div class="card-body d-flex flex-column">
               <h2 class="h5 mb-1">{{ item.name }}</h2>
               <p class="small text-muted mb-2" *ngIf="item.donorName">
-                Donated by {{ item.donorName }}
+                {{ 'Donated by' | t }} {{ item.donorName }}
               </p>
               <p class="small mb-2" *ngIf="item.description">{{ item.description }}</p>
 
@@ -44,14 +44,14 @@
                     {{ item.currentBidCents / 100 | currency }}
                   </span>
                   <span class="small text-muted">
-                    {{ item.bidCount }} bid{{ item.bidCount === 1 ? '' : 's' }}
+                    {{ item.bidCount }} {{ (item.bidCount === 1 ? 'bid' : 'bids') | t }}
                   </span>
                 </div>
                 <div class="small text-muted mb-1" *ngIf="item.leaderName">
-                  Leading: {{ item.leaderName }}
+                  {{ 'Leading:' | t }} {{ item.leaderName }}
                 </div>
                 <div class="small mb-1" *ngIf="item.fairMarketValueCents">
-                  Value: {{ item.fairMarketValueCents / 100 | currency }}
+                  {{ 'Value:' | t }} {{ item.fairMarketValueCents / 100 | currency }}
                 </div>
                 <div class="small text-danger mb-2" *ngIf="timeLeft(item) as tl">{{ tl }}</div>
 
@@ -62,12 +62,12 @@
                   [class.alert-warning]="r.itemId === item.id && !r.leading && !r.wonViaBuyNow"
                   [hidden]="r.itemId !== item.id"
                 >
-                  <ng-container *ngIf="r.wonViaBuyNow">You bought this now! </ng-container>
-                  <ng-container *ngIf="!r.wonViaBuyNow && r.leading">You're the top bidder. </ng-container>
+                  <ng-container *ngIf="r.wonViaBuyNow">{{ 'You bought this now!' | t }} </ng-container>
+                  <ng-container *ngIf="!r.wonViaBuyNow && r.leading">{{ 'You\'re the top bidder.' | t }} </ng-container>
                   <ng-container *ngIf="!r.wonViaBuyNow && !r.leading">
-                    Your max was placed but someone is still ahead.
+                    {{ 'Your max was placed but someone is still ahead.' | t }}
                   </ng-container>
-                  <a [href]="r.claimUrl">Track your bids</a>
+                  <a [href]="r.claimUrl">{{ 'Track your bids' | t }}</a>
                 </div>
 
                 <div class="d-grid gap-2" *ngIf="auctionOpen()">
@@ -76,7 +76,7 @@
                     class="btn btn-primary btn-sm"
                     (click)="toggleBid(item)"
                   >
-                    {{ openBidItemId() === item.id ? 'Cancel' : 'Place bid' }}
+                    {{ openBidItemId() === item.id ? ('Cancel' | t) : ('Place bid' | t) }}
                   </button>
                   <button
                     type="button"
@@ -84,7 +84,7 @@
                     *ngIf="item.buyNowCents"
                     (click)="buyNow(item)"
                   >
-                    Buy now {{ item.buyNowCents / 100 | currency }}
+                    {{ 'Buy now' | t }} {{ item.buyNowCents / 100 | currency }}
                   </button>
                 </div>
 
@@ -95,19 +95,19 @@
                   class="mt-2 border-top pt-2"
                 >
                   <div class="mb-2">
-                    <label class="form-label small mb-0">Your name</label>
+                    <label class="form-label small mb-0">{{ 'Your name' | t }}</label>
                     <input class="form-control form-control-sm" formControlName="bidderName" />
                   </div>
                   <div class="mb-2">
-                    <label class="form-label small mb-0">Email</label>
+                    <label class="form-label small mb-0">{{ 'Email' | t }}</label>
                     <input class="form-control form-control-sm" type="email" formControlName="bidderEmail" />
                   </div>
                   <div class="mb-2">
-                    <label class="form-label small mb-0">Phone (optional)</label>
+                    <label class="form-label small mb-0">{{ 'Phone (optional)' | t }}</label>
                     <input class="form-control form-control-sm" formControlName="bidderPhone" />
                   </div>
                   <div class="mb-2">
-                    <label class="form-label small mb-0">Your maximum bid ($)</label>
+                    <label class="form-label small mb-0">{{ 'Your maximum bid ($)' | t }}</label>
                     <input
                       class="form-control form-control-sm"
                       type="number"
@@ -117,7 +117,7 @@
                     />
                     <div class="btn-group btn-group-sm mt-1" role="group">
                       <button type="button" class="btn btn-outline-secondary" (click)="quickBid(item, 0)">
-                        Min
+                        {{ 'Min' | t }}
                       </button>
                       <button type="button" class="btn btn-outline-secondary" (click)="quickBid(item, 1)">
                         +1
@@ -127,13 +127,12 @@
                       </button>
                     </div>
                     <p class="form-text mb-0">
-                      Minimum {{ item.minNextBidCents / 100 | currency }}. We bid up to your
-                      max only as needed.
+                      {{ 'Minimum' | t }} {{ item.minNextBidCents / 100 | currency }}{{ '. We bid up to your max only as needed.' | t }}
                     </p>
                   </div>
                   <div class="text-danger small mb-2" *ngIf="bidError()">{{ bidError() }}</div>
                   <button class="btn btn-primary btn-sm w-100" type="submit" [disabled]="submitting()">
-                    {{ submitting() ? 'Placing…' : 'Confirm bid' }}
+                    {{ submitting() ? ('Placing…' | t) : ('Confirm bid' | t) }}
                   </button>
                 </form>
               </div>
@@ -143,26 +142,26 @@
       </div>
 
       <p class="text-muted" *ngIf="openItems().length === 0 && closedItems().length === 0">
-        No auction items yet.
+        {{ 'No auction items yet.' | t }}
       </p>
 
       <!-- Closed / results -->
       <div *ngIf="closedItems().length > 0" class="mt-4">
-        <h2 class="h5">Closed items</h2>
+        <h2 class="h5">{{ 'Closed items' | t }}</h2>
         <div class="table-responsive">
           <table class="table table-sm align-middle">
             <thead>
               <tr>
-                <th>Item</th>
-                <th class="text-end">Final bid</th>
-                <th>Winner</th>
+                <th>{{ 'Item' | t }}</th>
+                <th class="text-end">{{ 'Final bid' | t }}</th>
+                <th>{{ 'Winner' | t }}</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let item of closedItems(); trackBy: trackById">
                 <td>{{ item.name }}</td>
                 <td class="text-end">
-                  {{ item.bidCount > 0 ? (item.currentBidCents / 100 | currency) : 'No bids' }}
+                  {{ item.bidCount > 0 ? (item.currentBidCents / 100 | currency) : ('No bids' | t) }}
                 </td>
                 <td>{{ item.leaderName || '—' }}</td>
               </tr>
@@ -174,7 +173,7 @@
   </ng-container>
 
   <ng-template #loadingTpl>
-    <p class="text-muted">Loading auction…</p>
+    <p class="text-muted">{{ 'Loading auction…' | t }}</p>
   </ng-template>
   <ng-template #errorTpl>
     <div class="alert alert-danger">{{ error() }}</div>

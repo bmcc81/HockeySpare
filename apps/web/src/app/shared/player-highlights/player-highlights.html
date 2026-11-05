@@ -8,7 +8,7 @@
       <span class="eyebrow">{{ 'Making an impact' | t }}</span>
       <h2>{{ 'On the ice. On the board.' | t }}</h2>
     </div>
-    <span class="scope">{{ data()?.scopeLabel || ('Player highlights' | t) }}</span>
+    <span class="scope">{{ (data()?.scopeLabel || 'Player highlights') | t }}</span>
   </header>
   <p *ngIf="loading() && !data()" role="status" class="state">
     {{ 'Loading player highlights…' | t }}

@@ -1,5 +1,5 @@
 <section class="container py-4" *ngIf="!loading(); else loadingTpl">
-  <a routerLink="/tournaments" class="d-inline-block mb-3">← Back to tournaments</a>
+  <a routerLink="/tournaments" class="d-inline-block mb-3">{{ '← Back to tournaments' | t }}</a>
 
   <div *ngIf="error()" class="alert alert-danger">{{ error() }}</div>
 
@@ -9,7 +9,7 @@
     >
       <div>
         <h1 class="mb-1">{{ t.name }}</h1>
-        <p class="text-secondary mb-0">Manage schedule and rules.</p>
+        <p class="text-secondary mb-0">{{ 'Manage schedule and rules.' | t }}</p>
       </div>
 
       <div class="d-flex flex-wrap gap-2">
@@ -17,44 +17,44 @@
           [routerLink]="['/tournaments', tournamentId]"
           class="btn btn-outline-primary"
         >
-          View public page
+          {{ 'View public page' | t }}
         </a>
         <a
           [routerLink]="['/tournaments', tournamentId, 'scores']"
           class="btn btn-primary"
         >
-          Score entry
+          {{ 'Score entry' | t }}
         </a>
         <a
           [routerLink]="['/tournaments', tournamentId, 'scoreboard']"
           target="_blank"
           class="btn btn-outline-secondary"
         >
-          TV scoreboard
+          {{ 'TV scoreboard' | t }}
         </a>
         <a
           [routerLink]="['/tournaments', tournamentId, 'program']"
           target="_blank"
           class="btn btn-outline-secondary"
         >
-          Printable program
+          {{ 'Printable program' | t }}
         </a>
       </div>
     </div>
 
     <div *ngIf="!isOwner" class="alert alert-warning">
-      You are not the creator of this tournament, so you cannot make changes.
+      {{ 'You are not the creator of this tournament, so you cannot make changes.' | t }}
     </div>
 
     <div class="alert alert-info">
-      Share this link publicly: <strong>{{ publicUrl }}</strong>
+      {{ 'Share this link publicly:' | t }} <strong>{{ publicUrl }}</strong>
     </div>
 
     <div class="row g-4">
       <div class="col-12 col-xl-5">
         <div class="card mb-4">
           <div class="card-body">
-            <h2 class="h5">Details &amp; Rules</h2>
+            <h2 class="h5">{{ 'Details & Rules' | t }}</h2>
 
             <div *ngIf="detailsSuccess()" class="alert alert-success py-2">
               {{ detailsSuccess() }}
@@ -66,12 +66,12 @@
               *ngIf="isOwner"
             >
               <div class="mb-3">
-                <label class="form-label">Name</label>
+                <label class="form-label">{{ 'Name' | t }}</label>
                 <input class="form-control" formControlName="name" />
               </div>
 
               <div class="mb-3">
-                <label class="form-label">Description</label>
+                <label class="form-label">{{ 'Description' | t }}</label>
                 <textarea
                   class="form-control"
                   formControlName="description"
@@ -81,7 +81,7 @@
 
               <div class="row g-2 mb-3">
                 <div class="col-6">
-                  <label class="form-label">Start date</label>
+                  <label class="form-label">{{ 'Start date' | t }}</label>
                   <input
                     type="date"
                     class="form-control"
@@ -90,7 +90,7 @@
                 </div>
 
                 <div class="col-6">
-                  <label class="form-label">End date</label>
+                  <label class="form-label">{{ 'End date' | t }}</label>
                   <input
                     type="date"
                     class="form-control"
@@ -101,19 +101,19 @@
 
               <div class="row g-2 mb-3">
                 <div class="col-6">
-                  <label class="form-label">Registration</label>
+                  <label class="form-label">{{ 'Registration' | t }}</label>
                   <select
                     class="form-select"
                     formControlName="registrationMode"
                   >
-                    <option value="OPEN">Open</option>
-                    <option value="WAITLIST">Waitlist</option>
-                    <option value="CLOSED">Closed</option>
+                    <option value="OPEN">{{ 'Open' | t }}</option>
+                    <option value="WAITLIST">{{ 'Waitlist' | t }}</option>
+                    <option value="CLOSED">{{ 'Closed' | t }}</option>
                   </select>
                 </div>
 
                 <div class="col-6">
-                  <label class="form-label">Registration deadline</label>
+                  <label class="form-label">{{ 'Registration deadline' | t }}</label>
                   <input
                     type="datetime-local"
                     class="form-control"
@@ -123,7 +123,7 @@
               </div>
 
               <div class="mb-3">
-                <label class="form-label">Registration fee ($)</label>
+                <label class="form-label">{{ 'Registration fee ($)' | t }}</label>
                 <input
                   type="number"
                   min="0"
@@ -132,13 +132,12 @@
                   formControlName="registrationFeeDollars"
                 />
                 <div class="form-text">
-                  Leave at 0 for free registration. Requires Stripe to be
-                  connected below before teams will be asked to pay.
+                  {{ 'Leave at 0 for free registration. Requires Stripe to be connected below before teams will be asked to pay.' | t }}
                 </div>
               </div>
 
               <div class="mb-3">
-                <label class="form-label">Rules</label>
+                <label class="form-label">{{ 'Rules' | t }}</label>
                 <textarea
                   class="form-control"
                   formControlName="rules"
@@ -149,22 +148,22 @@
               <hr />
 
               <div class="mb-2 text-secondary small text-uppercase fw-semibold">
-                Public contact info
+                {{ 'Public contact info' | t }}
               </div>
 
               <div class="row g-2 mb-3">
                 <div class="col-12 col-md-4">
-                  <label class="form-label">Contact name</label>
+                  <label class="form-label">{{ 'Contact name' | t }}</label>
                   <input class="form-control" formControlName="contactName" />
                 </div>
 
                 <div class="col-12 col-md-4">
-                  <label class="form-label">Contact email</label>
+                  <label class="form-label">{{ 'Contact email' | t }}</label>
                   <input class="form-control" formControlName="contactEmail" />
                 </div>
 
                 <div class="col-12 col-md-4">
-                  <label class="form-label">Contact phone</label>
+                  <label class="form-label">{{ 'Contact phone' | t }}</label>
                   <input class="form-control" formControlName="contactPhone" />
                 </div>
               </div>
@@ -174,7 +173,7 @@
                 class="btn btn-primary btn-sm"
                 [disabled]="detailsForm.invalid || savingDetails()"
               >
-                {{ savingDetails() ? 'Saving...' : (hasSavedDetails() ? 'Update' : 'Save') }}
+                {{ savingDetails() ? ('Saving...' | t) : (hasSavedDetails() ? ('Update' | t) : ('Save' | t)) }}
               </button>
             </form>
           </div>
@@ -182,7 +181,7 @@
 
         <div class="card mb-4" *ngIf="isOwner">
           <div class="card-body">
-            <h2 class="h5">Payments</h2>
+            <h2 class="h5">{{ 'Payments' | t }}</h2>
 
             <div *ngIf="paymentError()" class="alert alert-danger py-2">
               {{ paymentError() }}
@@ -193,7 +192,7 @@
             </div>
 
             <div *ngIf="paymentsStatusLoading()" class="text-secondary">
-              Loading payment settings...
+              {{ 'Loading payment settings...' | t }}
             </div>
 
             <ng-container *ngIf="!paymentsStatusLoading()">
@@ -201,10 +200,9 @@
                 *ngIf="paymentsStatus()?.connected && paymentsStatus()?.payoutsEnabled"
                 class="d-flex align-items-center gap-2"
               >
-                <span class="badge rounded-pill text-bg-success">Connected</span>
+                <span class="badge rounded-pill text-bg-success">{{ 'Connected' | t }}</span>
                 <span class="text-secondary small">
-                  Registration fees go directly to your connected bank
-                  account.
+                  {{ 'Registration fees go directly to your connected bank account.' | t }}
                 </span>
               </div>
 
@@ -212,9 +210,7 @@
                 *ngIf="!(paymentsStatus()?.connected && paymentsStatus()?.payoutsEnabled)"
               >
                 <p class="text-secondary small mb-2">
-                  Connect a Stripe account so teams can pay their
-                  registration fee online, straight into your own bank
-                  account.
+                  {{ 'Connect a Stripe account so teams can pay their registration fee online, straight into your own bank account.' | t }}
                 </p>
 
                 <button
@@ -225,10 +221,10 @@
                 >
                   {{
                     connectingStripe()
-                      ? 'Redirecting...'
+                      ? ('Redirecting...' | t)
                       : paymentsStatus()?.connected
-                        ? 'Finish connecting Stripe'
-                        : 'Connect Stripe'
+                        ? ('Finish connecting Stripe' | t)
+                        : ('Connect Stripe' | t)
                   }}
                 </button>
               </div>
@@ -238,22 +234,21 @@
 
         <div class="card mb-4" *ngIf="isOwner">
           <div class="card-body">
-            <h2 class="h5">Media &amp; Branding</h2>
+            <h2 class="h5">{{ 'Media & Branding' | t }}</h2>
 
             <div
               class="alert alert-warning py-2"
               *ngIf="fileStorageStatus() && !fileStorageStatus()!.configured"
             >
-              File storage isn't configured on the server yet, so uploads
-              won't work until it is.
+              {{ 'File storage isn\'t configured on the server yet, so uploads won\'t work until it is.' | t }}
             </div>
 
             <div class="mb-3">
-              <label class="form-label">Tournament logo</label>
+              <label class="form-label">{{ 'Tournament logo' | t }}</label>
               <div class="d-flex align-items-center gap-2 mb-2" *ngIf="t.logoUrl">
                 <img
                   [src]="t.logoUrl"
-                  alt="Tournament logo"
+                  [alt]="'Tournament logo' | t"
                   style="height: 48px; width: 48px; object-fit: contain"
                 />
               </div>
@@ -269,14 +264,14 @@
                 [disabled]="uploadingLogo()"
                 (change)="onLogoFileSelected($event)"
               />
-              <div class="form-text" *ngIf="uploadingLogo()">Uploading...</div>
+              <div class="form-text" *ngIf="uploadingLogo()">{{ 'Uploading...' | t }}</div>
             </div>
 
             <div class="mb-3">
-              <label class="form-label">Rulebook PDF</label>
+              <label class="form-label">{{ 'Rulebook PDF' | t }}</label>
               <div class="mb-2" *ngIf="t.rulebookUrl">
                 <a [href]="t.rulebookUrl" target="_blank" rel="noopener noreferrer">
-                  Current rulebook PDF
+                  {{ 'Current rulebook PDF' | t }}
                 </a>
               </div>
 
@@ -291,11 +286,11 @@
                 [disabled]="uploadingRulebook()"
                 (change)="onRulebookFileSelected($event)"
               />
-              <div class="form-text" *ngIf="uploadingRulebook()">Uploading...</div>
+              <div class="form-text" *ngIf="uploadingRulebook()">{{ 'Uploading...' | t }}</div>
             </div>
 
             <div>
-              <label class="form-label">Media gallery ({{ t.mediaAssets.length }})</label>
+              <label class="form-label">{{ 'Media gallery (' | t }}{{ t.mediaAssets.length }})</label>
 
               <div *ngIf="mediaError()" class="alert alert-danger py-2">
                 {{ mediaError() }}
@@ -306,7 +301,7 @@
                   <input
                     type="text"
                     class="form-control form-control-sm"
-                    placeholder="Caption (optional)"
+                    [placeholder]="'Caption (optional)' | t"
                     [value]="mediaCaptionDraft()"
                     (input)="updateMediaCaptionDraft($event)"
                   />
@@ -321,7 +316,7 @@
                   />
                 </div>
               </div>
-              <div class="form-text mb-2" *ngIf="uploadingMedia()">Uploading...</div>
+              <div class="form-text mb-2" *ngIf="uploadingMedia()">{{ 'Uploading...' | t }}</div>
 
               <div class="row g-2" *ngIf="t.mediaAssets.length > 0">
                 <div
@@ -344,7 +339,7 @@
                       [disabled]="deletingMediaAssetId() === asset.id"
                       (click)="deleteMediaAsset(asset.id)"
                     >
-                      {{ deletingMediaAssetId() === asset.id ? '...' : 'Remove' }}
+                      {{ deletingMediaAssetId() === asset.id ? '...' : ('Remove' | t) }}
                     </button>
                   </div>
                 </div>
@@ -358,7 +353,7 @@
         <div class="card mb-4" *ngIf="isOwner">
           <div class="card-body">
             <h2 class="h5">
-              {{ editingGameId() ? 'Edit game' : 'Add game to schedule' }}
+              {{ editingGameId() ? ('Edit game' | t) : ('Add game to schedule' | t) }}
             </h2>
 
             <div *ngIf="gameError()" class="alert alert-danger py-2">
@@ -371,9 +366,9 @@
               class="row g-2 align-items-end"
             >
               <div class="col-12 col-md-3">
-                <label class="form-label">Home team</label>
+                <label class="form-label">{{ 'Home team' | t }}</label>
                 <select class="form-select mb-1" formControlName="homeTeamId">
-                  <option value="">External / type below</option>
+                  <option value="">{{ 'External / type below' | t }}</option>
                   <option
                     *ngFor="let team of t.teams; trackBy: trackByTeamId"
                     [value]="team.id"
@@ -385,14 +380,14 @@
                   *ngIf="!gameForm.controls.homeTeamId.value"
                   class="form-control"
                   formControlName="homeTeamName"
-                  placeholder="Opponent name"
+                  [placeholder]="'Opponent name' | t"
                 />
               </div>
 
               <div class="col-12 col-md-3">
-                <label class="form-label">Away team</label>
+                <label class="form-label">{{ 'Away team' | t }}</label>
                 <select class="form-select mb-1" formControlName="awayTeamId">
-                  <option value="">External / type below</option>
+                  <option value="">{{ 'External / type below' | t }}</option>
                   <option
                     *ngFor="let team of t.teams; trackBy: trackByTeamId"
                     [value]="team.id"
@@ -404,12 +399,12 @@
                   *ngIf="!gameForm.controls.awayTeamId.value"
                   class="form-control"
                   formControlName="awayTeamName"
-                  placeholder="Opponent name"
+                  [placeholder]="'Opponent name' | t"
                 />
               </div>
 
               <div class="col-12 col-md-3">
-                <label class="form-label">Start time</label>
+                <label class="form-label">{{ 'Start time' | t }}</label>
                 <input
                   type="datetime-local"
                   class="form-control"
@@ -418,49 +413,49 @@
               </div>
 
               <div class="col-12 col-md-3">
-                <label class="form-label">Arena</label>
+                <label class="form-label">{{ 'Arena' | t }}</label>
                 <input class="form-control" formControlName="arenaName" />
               </div>
 
               <div class="col-6 col-md-2">
-                <label class="form-label">Game #</label>
+                <label class="form-label">{{ 'Game #' | t }}</label>
                 <input
                   class="form-control"
                   formControlName="gameNumber"
-                  placeholder="e.g. A1"
+                  [placeholder]="'e.g. A1' | t"
                 />
               </div>
 
               <div class="col-6 col-md-2">
-                <label class="form-label">Division</label>
+                <label class="form-label">{{ 'Division' | t }}</label>
                 <input
                   class="form-control"
                   formControlName="division"
-                  placeholder="e.g. 35B"
+                  [placeholder]="'e.g. 35B' | t"
                 />
               </div>
 
               <div class="col-12 col-md-3">
-                <label class="form-label">Type</label>
+                <label class="form-label">{{ 'Type' | t }}</label>
                 <select class="form-select" formControlName="stage">
-                  <option value="ROUND_ROBIN">Round robin (counts in standings)</option>
-                  <option value="PLAYOFF">Playoff</option>
-                  <option value="EXHIBITION">Exhibition</option>
-                  <option value="EVENT">Event (ceremony, no teams)</option>
+                  <option value="ROUND_ROBIN">{{ 'Round robin (counts in standings)' | t }}</option>
+                  <option value="PLAYOFF">{{ 'Playoff' | t }}</option>
+                  <option value="EXHIBITION">{{ 'Exhibition' | t }}</option>
+                  <option value="EVENT">{{ 'Event (ceremony, no teams)' | t }}</option>
                 </select>
               </div>
 
               <div class="col-12 col-md-6">
-                <label class="form-label">Notes</label>
+                <label class="form-label">{{ 'Notes' | t }}</label>
                 <input class="form-control" formControlName="notes" />
               </div>
 
               <div class="col-12 col-md-6">
-                <label class="form-label">Livestream URL</label>
+                <label class="form-label">{{ 'Livestream URL' | t }}</label>
                 <input
                   class="form-control"
                   formControlName="livestreamUrl"
-                  placeholder="Optional - YouTube/Twitch link"
+                  [placeholder]="'Optional - YouTube/Twitch link' | t"
                 />
               </div>
 
@@ -470,8 +465,7 @@
                   class="btn btn-primary btn-sm"
                   [disabled]="gameForm.invalid || savingGame()"
                 >
-                  {{ savingGame() ? 'Saving...' : (editingGameId() ? 'Save
-                  changes' : 'Add game') }}
+                  {{ savingGame() ? ('Saving...' | t) : (editingGameId() ? ('Save changes' | t) : ('Add game' | t)) }}
                 </button>
 
                 <button
@@ -480,7 +474,7 @@
                   class="btn btn-outline-secondary btn-sm"
                   (click)="cancelGameEdit()"
                 >
-                  Cancel
+                  {{ 'Cancel' | t }}
                 </button>
               </div>
             </form>
@@ -489,20 +483,20 @@
 
         <div class="card">
           <div class="card-body">
-            <h2 class="h5">Schedule ({{ t.games.length }})</h2>
+            <h2 class="h5">{{ 'Schedule (' | t }}{{ t.games.length }})</h2>
 
             <div *ngIf="t.games.length === 0" class="text-secondary py-3">
-              No games scheduled yet.
+              {{ 'No games scheduled yet.' | t }}
             </div>
 
             <div class="table-responsive" *ngIf="t.games.length > 0">
               <table class="table align-middle mb-0">
                 <thead>
                   <tr>
-                    <th>Matchup</th>
-                    <th>Time</th>
-                    <th>Arena</th>
-                    <th>Score</th>
+                    <th>{{ 'Matchup' | t }}</th>
+                    <th>{{ 'Time' | t }}</th>
+                    <th>{{ 'Arena' | t }}</th>
+                    <th>{{ 'Score' | t }}</th>
                     <th *ngIf="isOwner"></th>
                   </tr>
                 </thead>
@@ -513,15 +507,15 @@
                       <td>
                         <span class="badge text-bg-secondary me-1" *ngIf="game.gameNumber">{{ game.gameNumber }}</span>
                         <ng-container *ngIf="game.stage === 'EVENT'; else manageMatchup">{{ game.homeTeamName }}</ng-container>
-                        <ng-template #manageMatchup>{{ game.homeTeamName }} vs {{ game.awayTeamName }}</ng-template>
-                        <span class="badge text-bg-warning ms-1" *ngIf="game.stage === 'EXHIBITION'">Exhibition</span>
-                        <span class="badge text-bg-info ms-1" *ngIf="game.stage === 'PLAYOFF'">Playoff</span>
+                        <ng-template #manageMatchup>{{ game.homeTeamName }} {{ 'vs' | t }} {{ game.awayTeamName }}</ng-template>
+                        <span class="badge text-bg-warning ms-1" *ngIf="game.stage === 'EXHIBITION'">{{ 'Exhibition' | t }}</span>
+                        <span class="badge text-bg-info ms-1" *ngIf="game.stage === 'PLAYOFF'">{{ 'Playoff' | t }}</span>
                       </td>
-                      <td>{{ game.startsAt | date: 'short' }}</td>
+                      <td>{{ game.startsAt | ldate: 'short' }}</td>
                       <td>{{ game.arenaName || 'TBD' }}</td>
                       <td>
                         <ng-container *ngIf="game.status === 'SCHEDULED'">
-                          <span class="text-secondary">Not started</span>
+                          <span class="text-secondary">{{ 'Not started' | t }}</span>
                         </ng-container>
                         <ng-container *ngIf="game.status !== 'SCHEDULED'">
                           {{ game.homeScore ?? 0 }} - {{ game.awayScore ?? 0 }}
@@ -530,7 +524,7 @@
                             [class.text-bg-danger]="game.status === 'LIVE'"
                             [class.text-bg-secondary]="game.status === 'FINAL'"
                           >
-                            {{ game.status === 'LIVE' ? 'LIVE' : 'Final' }}
+                            {{ game.status === 'LIVE' ? ('LIVE' | t) : ('Final' | t) }}
                           </span>
                         </ng-container>
                       </td>
@@ -540,7 +534,7 @@
                           type="button"
                           (click)="openScoreEditor(game)"
                         >
-                          Score
+                          {{ 'Score' | t }}
                         </button>
 
                         <button
@@ -549,19 +543,19 @@
                           type="button"
                           (click)="openStatEditor(game)"
                         >
-                          Stats
+                          {{ 'Stats' | t }}
                         </button>
 
                         <span
                           class="d-inline-block me-2"
                           *ngIf="scoresheetOcrStatus()?.configured"
-                          title="Scan a photo of the paper scoresheet to pre-fill the score and stats"
+                          [title]="'Scan a photo of the paper scoresheet to pre-fill the score and stats' | t"
                         >
                           <label
                             class="btn btn-sm btn-outline-primary mb-0"
                             [class.disabled]="scanningScoresheetGameId() === game.id"
                           >
-                            {{ scanningScoresheetGameId() === game.id ? 'Scanning...' : 'Scan scoresheet' }}
+                            {{ scanningScoresheetGameId() === game.id ? ('Scanning...' | t) : ('Scan scoresheet' | t) }}
                             <input
                               type="file"
                               accept="image/png,image/jpeg,image/webp"
@@ -579,14 +573,14 @@
                           rel="noopener noreferrer"
                           class="btn btn-sm btn-outline-secondary me-2"
                         >
-                          Photo
+                          {{ 'Photo' | t }}
                         </a>
 
                         <button
                           class="btn btn-sm btn-outline-secondary me-2"
                           type="button"
                           [disabled]="referees().length === 0"
-                          [title]="referees().length === 0 ? 'Add referees to the roster first' : ''"
+                          [title]="referees().length === 0 ? ('Add referees to the roster first' | t) : ''"
                           (click)="toggleAssignReferee(game.id)"
                         >
                           Refs{{ game.refereeAssignments && game.refereeAssignments.length > 0 ? ' (' + game.refereeAssignments.length + ')' : '' }}
@@ -597,7 +591,7 @@
                           type="button"
                           (click)="toggleGameQr(game.id)"
                         >
-                          QR
+                          {{ 'QR' | t }}
                         </button>
 
                         <button
@@ -605,7 +599,7 @@
                           type="button"
                           (click)="openEditGame(game)"
                         >
-                          Edit
+                          {{ 'Edit' | t }}
                         </button>
 
                         <button
@@ -614,8 +608,8 @@
                           [disabled]="deletingGameId() === game.id"
                           (click)="deleteGame(game.id)"
                         >
-                          {{ deletingGameId() === game.id ? 'Removing...' :
-                          'Remove' }}
+                          {{ deletingGameId() === game.id ? ('Removing...' | t) :
+                          ('Remove' | t) }}
                         </button>
                       </td>
                     </tr>
@@ -636,23 +630,23 @@
                               type="button"
                               class="btn-close btn-close-white btn-sm ms-1"
                               style="font-size: 0.6rem"
-                              aria-label="Remove"
+                              [attr.aria-label]="'Remove' | t"
                               (click)="unassignReferee(game.id, assignment.id)"
                             ></button>
                           </span>
                           <span class="text-secondary small" *ngIf="!game.refereeAssignments || game.refereeAssignments.length === 0">
-                            No referees assigned yet.
+                            {{ 'No referees assigned yet.' | t }}
                           </span>
                         </div>
 
                         <div class="d-flex gap-2 align-items-end">
                           <div>
-                            <label class="form-label small">Add a referee</label>
+                            <label class="form-label small">{{ 'Add a referee' | t }}</label>
                             <select
                               class="form-select form-select-sm"
                               (change)="updateSelectedRefereeToAssign(game.id, $event)"
                             >
-                              <option value="">Select...</option>
+                              <option value="">{{ 'Select...' | t }}</option>
                               <option
                                 *ngFor="let referee of referees(); trackBy: trackByRefereeId"
                                 [value]="referee.id"
@@ -667,7 +661,7 @@
                             class="btn btn-sm btn-primary"
                             (click)="assignReferee(game.id)"
                           >
-                            Assign
+                            {{ 'Assign' | t }}
                           </button>
 
                           <button
@@ -675,7 +669,7 @@
                             class="btn btn-sm btn-outline-secondary"
                             (click)="toggleAssignReferee(game.id)"
                           >
-                            Close
+                            {{ 'Close' | t }}
                           </button>
                         </div>
                       </td>
@@ -687,7 +681,7 @@
                           <app-qr-code [value]="gameQrValue(game.id)" [size]="120" />
                           <div class="small">
                             <div class="text-secondary">
-                              Scan to jump straight to this game on the public schedule.
+                              {{ 'Scan to jump straight to this game on the public schedule.' | t }}
                             </div>
                             <a [href]="gameQrValue(game.id)" target="_blank" rel="noopener">
                               {{ gameQrValue(game.id) }}
@@ -710,22 +704,20 @@
                         <div class="alert alert-info py-2 mb-0">
                           <div class="d-flex justify-content-between align-items-start gap-2">
                             <div>
-                              <strong>Scoresheet scanned</strong>
+                              <strong>{{ 'Scoresheet scanned' | t }}</strong>
                               <span class="badge text-bg-secondary ms-1">
-                                {{ ex.extraction.confidence }} confidence
+                                {{ ex.extraction.confidence }} {{ 'confidence' | t }}
                               </span>
                               <div class="small mt-1">
-                                Score and stats below were pre-filled from the photo — review
-                                before saving.
+                                {{ 'Score and stats below were pre-filled from the photo — review before saving.' | t }}
                               </div>
                               <div class="small text-secondary mt-1" *ngIf="ex.extraction.notes">
-                                AI note: {{ ex.extraction.notes }}
+                                {{ 'AI note:' | t }} {{ ex.extraction.notes }}
                               </div>
                               <div class="small text-danger mt-1" *ngIf="ex.unmatchedPlayers.length > 0">
-                                Could not match to the roster (check spelling or add them as
-                                players first):
+                                {{ 'Could not match to the roster (check spelling or add them as players first):' | t }}
                                 <span *ngFor="let p of ex.unmatchedPlayers; let last = last">
-                                  {{ p.name }} ({{ p.goals }}G {{ p.assists }}A {{ p.penaltyMinutes }}PIM){{ last ? '' : ', ' }}
+                                  {{ p.name }} ({{ p.goals }}G {{ p.assists }}A {{ p.penaltyMinutes }}{{ 'PIM)' | t }}{{ last ? '' : ', ' }}
                                 </span>
                               </div>
                             </div>
@@ -733,7 +725,7 @@
                             <button
                               type="button"
                               class="btn-close"
-                              aria-label="Dismiss"
+                              [attr.aria-label]="'Dismiss' | t"
                               (click)="dismissExtraction()"
                             ></button>
                           </div>
@@ -753,7 +745,7 @@
                           class="row g-2 align-items-end"
                         >
                           <div class="col-6 col-md-2">
-                            <label class="form-label">Home score</label>
+                            <label class="form-label">{{ 'Home score' | t }}</label>
                             <input
                               class="form-control"
                               type="number"
@@ -762,7 +754,7 @@
                           </div>
 
                           <div class="col-6 col-md-2">
-                            <label class="form-label">Away score</label>
+                            <label class="form-label">{{ 'Away score' | t }}</label>
                             <input
                               class="form-control"
                               type="number"
@@ -771,11 +763,11 @@
                           </div>
 
                           <div class="col-12 col-md-3">
-                            <label class="form-label">Status</label>
+                            <label class="form-label">{{ 'Status' | t }}</label>
                             <select class="form-select" formControlName="status">
-                              <option value="LIVE">Live</option>
-                              <option value="FINAL">Final</option>
-                              <option value="SCHEDULED">Not started</option>
+                              <option value="LIVE">{{ 'Live' | t }}</option>
+                              <option value="FINAL">{{ 'Final' | t }}</option>
+                              <option value="SCHEDULED">{{ 'Not started' | t }}</option>
                             </select>
                           </div>
 
@@ -785,7 +777,7 @@
                               type="submit"
                               [disabled]="savingScore()"
                             >
-                              {{ savingScore() ? 'Saving...' : 'Save' }}
+                              {{ savingScore() ? ('Saving...' | t) : ('Save' | t) }}
                             </button>
                           </div>
 
@@ -796,7 +788,7 @@
                               (click)="cancelScoreEdit()"
                               [disabled]="savingScore()"
                             >
-                              Cancel
+                              {{ 'Cancel' | t }}
                             </button>
                           </div>
                         </form>
@@ -813,11 +805,11 @@
                           <table class="table table-sm align-middle mb-0">
                             <thead>
                               <tr>
-                                <th>Player</th>
-                                <th>Team</th>
+                                <th>{{ 'Player' | t }}</th>
+                                <th>{{ 'Team' | t }}</th>
                                 <th style="width: 80px">G</th>
                                 <th style="width: 80px">A</th>
-                                <th style="width: 80px">PIM</th>
+                                <th style="width: 80px">{{ 'PIM' | t }}</th>
                                 <th style="width: 80px">+/-</th>
                                 <th></th>
                               </tr>
@@ -870,7 +862,7 @@
                                     [disabled]="savingStatPlayerId() === player.id"
                                     (click)="saveGamePlayerStat(game.id, player.id)"
                                   >
-                                    {{ savingStatPlayerId() === player.id ? '...' : 'Save' }}
+                                    {{ savingStatPlayerId() === player.id ? '...' : ('Save' | t) }}
                                   </button>
                                 </td>
                               </tr>
@@ -890,22 +882,22 @@
 
     <div class="card mt-4" *ngIf="isOwner">
       <div class="card-body">
-        <h2 class="h5">Registrations ({{ registrations().length }})</h2>
+        <h2 class="h5">{{ 'Registrations (' | t }}{{ registrations().length }})</h2>
 
         <div *ngIf="registrations().length === 0" class="text-secondary py-3">
-          No teams have registered yet.
+          {{ 'No teams have registered yet.' | t }}
         </div>
 
         <div class="table-responsive" *ngIf="registrations().length > 0">
           <table class="table align-middle mb-0">
             <thead>
               <tr>
-                <th>Team</th>
-                <th>Division</th>
-                <th>Contact</th>
-                <th>Notes</th>
-                <th>Status</th>
-                <th>Fee</th>
+                <th>{{ 'Team' | t }}</th>
+                <th>{{ 'Division' | t }}</th>
+                <th>{{ 'Contact' | t }}</th>
+                <th>{{ 'Notes' | t }}</th>
+                <th>{{ 'Status' | t }}</th>
+                <th>{{ 'Fee' | t }}</th>
                 <th></th>
               </tr>
             </thead>
@@ -934,7 +926,7 @@
                     [class.text-bg-success]="registration.status === 'CONFIRMED'"
                     [class.text-bg-warning]="registration.status === 'WAITLISTED'"
                   >
-                    {{ registration.status === 'CONFIRMED' ? 'Confirmed' : 'Waitlisted' }}
+                    {{ registration.status === 'CONFIRMED' ? ('Confirmed' | t) : ('Waitlisted' | t) }}
                   </span>
                 </td>
                 <td>
@@ -944,7 +936,7 @@
                     [class.text-bg-success]="registration.paid"
                     [class.text-bg-danger]="!registration.paid"
                   >
-                    {{ registration.paid ? 'Paid' : 'Unpaid' }}
+                    {{ registration.paid ? ('Paid' | t) : ('Unpaid' | t) }}
                   </span>
                   <span
                     *ngIf="!tournament()?.registrationFeeCents"
@@ -962,14 +954,14 @@
                       [disabled]="creatingTeamFromRegistrationId() === registration.id"
                       (click)="createTeamFromRegistration(registration.id)"
                     >
-                      {{ creatingTeamFromRegistrationId() === registration.id ? '...' : 'Create team' }}
+                      {{ creatingTeamFromRegistrationId() === registration.id ? '...' : ('Create team' | t) }}
                     </button>
 
                     <span
                       *ngIf="registrationHasTeam(registration.id)"
                       class="badge rounded-pill text-bg-secondary align-self-center"
                     >
-                      Team created
+                      {{ 'Team created' | t }}
                     </span>
 
                     <button
@@ -979,7 +971,7 @@
                       [disabled]="savingRegistrationId() === registration.id"
                       (click)="setRegistrationStatus(registration.id, 'CONFIRMED')"
                     >
-                      {{ savingRegistrationId() === registration.id ? '...' : 'Confirm' }}
+                      {{ savingRegistrationId() === registration.id ? '...' : ('Confirm' | t) }}
                     </button>
 
                     <button
@@ -989,7 +981,7 @@
                       [disabled]="savingRegistrationId() === registration.id"
                       (click)="setRegistrationStatus(registration.id, 'WAITLISTED')"
                     >
-                      {{ savingRegistrationId() === registration.id ? '...' : 'Waitlist' }}
+                      {{ savingRegistrationId() === registration.id ? '...' : ('Waitlist' | t) }}
                     </button>
 
                     <button
@@ -999,7 +991,7 @@
                       (click)="deleteRegistration(registration.id)"
                     >
                       {{ deletingRegistrationId() === registration.id ?
-                      'Removing...' : 'Remove' }}
+                      ('Removing...' | t) : ('Remove' | t) }}
                     </button>
                   </div>
                 </td>
@@ -1012,7 +1004,7 @@
 
     <div class="card mt-4" *ngIf="isOwner">
       <div class="card-body">
-        <h2 class="h5">Teams ({{ t.teams.length }})</h2>
+        <h2 class="h5">{{ 'Teams (' | t }}{{ t.teams.length }})</h2>
 
         <div *ngIf="teamError()" class="alert alert-danger py-2">
           {{ teamError() }}
@@ -1024,34 +1016,34 @@
           class="row g-2 align-items-end mb-3"
         >
           <div class="col-12 col-md-3">
-            <label class="form-label">Team name</label>
+            <label class="form-label">{{ 'Team name' | t }}</label>
             <input class="form-control" formControlName="name" />
           </div>
 
           <div class="col-12 col-md-2">
-            <label class="form-label">Division</label>
+            <label class="form-label">{{ 'Division' | t }}</label>
             <input
               class="form-control"
               formControlName="division"
-              placeholder="Optional"
+              [placeholder]="'Optional' | t"
             />
           </div>
 
           <div class="col-12 col-md-3">
-            <label class="form-label">Coach</label>
+            <label class="form-label">{{ 'Coach' | t }}</label>
             <input
               class="form-control"
               formControlName="coachName"
-              placeholder="Optional"
+              [placeholder]="'Optional' | t"
             />
           </div>
 
           <div class="col-12 col-md-3">
-            <label class="form-label">Logo URL</label>
+            <label class="form-label">{{ 'Logo URL' | t }}</label>
             <input
               class="form-control"
               formControlName="logoUrl"
-              placeholder="Optional"
+              [placeholder]="'Optional' | t"
             />
           </div>
 
@@ -1061,7 +1053,7 @@
               class="btn btn-primary btn-sm w-100"
               [disabled]="teamForm.invalid || savingTeam()"
             >
-              {{ savingTeam() ? '...' : (editingTeamId() ? 'Save' : 'Add') }}
+              {{ savingTeam() ? '...' : (editingTeamId() ? ('Save' | t) : ('Add' | t)) }}
             </button>
           </div>
 
@@ -1071,14 +1063,13 @@
               class="btn btn-outline-secondary btn-sm"
               (click)="cancelTeamEdit()"
             >
-              Cancel edit
+              {{ 'Cancel edit' | t }}
             </button>
           </div>
         </form>
 
         <div *ngIf="t.teams.length === 0" class="text-secondary py-2">
-          No teams yet. Add one above, or create one from a registration
-          below.
+          {{ 'No teams yet. Add one above, or create one from a registration below.' | t }}
         </div>
 
         <div class="d-flex flex-column gap-2" *ngIf="t.teams.length > 0">
@@ -1095,10 +1086,10 @@
                   {{ team.division }}
                 </span>
                 <span class="text-secondary small ms-2" *ngIf="team.coachName">
-                  Coach: {{ team.coachName }}
+                  {{ 'Coach:' | t }} {{ team.coachName }}
                 </span>
                 <span class="text-secondary small ms-2">
-                  {{ team.players.length }} player(s)
+                  {{ team.players.length }} {{ 'player(s)' | t }}
                 </span>
               </div>
 
@@ -1108,7 +1099,7 @@
                   class="btn btn-sm btn-outline-secondary"
                   (click)="openRoster(team.id)"
                 >
-                  {{ rosterTeamId() === team.id ? 'Hide roster' : 'Roster' }}
+                  {{ rosterTeamId() === team.id ? ('Hide roster' | t) : ('Roster' | t) }}
                 </button>
 
                 <button
@@ -1116,7 +1107,7 @@
                   class="btn btn-sm btn-outline-secondary"
                   (click)="openEditTeam(team)"
                 >
-                  Edit
+                  {{ 'Edit' | t }}
                 </button>
 
                 <button
@@ -1125,7 +1116,7 @@
                   [disabled]="deletingTeamId() === team.id"
                   (click)="deleteTeam(team.id)"
                 >
-                  {{ deletingTeamId() === team.id ? '...' : 'Remove' }}
+                  {{ deletingTeamId() === team.id ? '...' : ('Remove' | t) }}
                 </button>
               </div>
             </div>
@@ -1139,8 +1130,8 @@
                 <table class="table table-sm align-middle mb-2">
                   <thead>
                     <tr>
-                      <th>Player</th>
-                      <th>Position</th>
+                      <th>{{ 'Player' | t }}</th>
+                      <th>{{ 'Position' | t }}</th>
                       <th>#</th>
                       <th></th>
                     </tr>
@@ -1160,7 +1151,7 @@
                           [disabled]="deletingPlayerId() === player.id"
                           (click)="removeTeamPlayer(team.id, player.id)"
                         >
-                          {{ deletingPlayerId() === player.id ? '...' : 'Remove' }}
+                          {{ deletingPlayerId() === player.id ? '...' : ('Remove' | t) }}
                         </button>
                       </td>
                     </tr>
@@ -1174,22 +1165,22 @@
                 class="row g-2 align-items-end"
               >
                 <div class="col-12 col-md-4">
-                  <label class="form-label">Player name</label>
+                  <label class="form-label">{{ 'Player name' | t }}</label>
                   <input class="form-control" formControlName="displayName" />
                 </div>
 
                 <div class="col-6 col-md-3">
-                  <label class="form-label">Position</label>
+                  <label class="form-label">{{ 'Position' | t }}</label>
                   <select class="form-select" formControlName="position">
                     <option value="">—</option>
-                    <option value="FORWARD">Forward</option>
-                    <option value="DEFENSE">Defense</option>
-                    <option value="GOALIE">Goalie</option>
+                    <option value="FORWARD">{{ 'Forward' | t }}</option>
+                    <option value="DEFENSE">{{ 'Defense' | t }}</option>
+                    <option value="GOALIE">{{ 'Goalie' | t }}</option>
                   </select>
                 </div>
 
                 <div class="col-6 col-md-2">
-                  <label class="form-label">Jersey #</label>
+                  <label class="form-label">{{ 'Jersey #' | t }}</label>
                   <input
                     type="number"
                     class="form-control"
@@ -1203,7 +1194,7 @@
                     class="btn btn-primary btn-sm w-100"
                     [disabled]="playerForm.invalid || savingPlayer()"
                   >
-                    {{ savingPlayer() ? 'Adding...' : 'Add player' }}
+                    {{ savingPlayer() ? ('Adding...' | t) : ('Add player' | t) }}
                   </button>
                 </div>
               </form>
@@ -1216,7 +1207,7 @@
     <div class="card mt-4" *ngIf="isOwner">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-          <h2 class="h5 mb-0">Playoff Brackets ({{ t.brackets.length }})</h2>
+          <h2 class="h5 mb-0">{{ 'Playoff Brackets (' | t }}{{ t.brackets.length }})</h2>
 
           <button
             type="button"
@@ -1224,7 +1215,7 @@
             *ngIf="!showBracketBuilder()"
             (click)="openBracketBuilder()"
           >
-            New bracket
+            {{ 'New bracket' | t }}
           </button>
         </div>
 
@@ -1235,23 +1226,23 @@
         <div class="border rounded p-3 mt-3" *ngIf="showBracketBuilder()">
           <form [formGroup]="bracketForm" (ngSubmit)="createBracket()" class="row g-2 align-items-end">
             <div class="col-12 col-md-4">
-              <label class="form-label">Bracket name</label>
+              <label class="form-label">{{ 'Bracket name' | t }}</label>
               <input class="form-control" formControlName="name" />
             </div>
 
             <div class="col-12 col-md-4">
-              <label class="form-label">Division</label>
+              <label class="form-label">{{ 'Division' | t }}</label>
               <input
                 class="form-control"
                 formControlName="division"
-                placeholder="Optional"
+                [placeholder]="'Optional' | t"
               />
             </div>
           </form>
 
           <div class="mt-3">
             <label class="form-label">
-              Seed teams, in order (click to add, top = #1 seed)
+              {{ 'Seed teams, in order (click to add, top = #1 seed)' | t }}
             </label>
 
             <div class="d-flex flex-wrap gap-2 mb-2" *ngIf="t.teams.length > 0">
@@ -1268,7 +1259,7 @@
             </div>
 
             <div class="text-secondary py-1" *ngIf="t.teams.length === 0">
-              Add teams first before creating a bracket.
+              {{ 'Add teams first before creating a bracket.' | t }}
             </div>
 
             <ol class="mt-2" *ngIf="bracketSeedTeamIds().length > 0">
@@ -1304,7 +1295,7 @@
               [disabled]="creatingBracket()"
               (click)="createBracket()"
             >
-              {{ creatingBracket() ? 'Creating...' : 'Create bracket' }}
+              {{ creatingBracket() ? ('Creating...' | t) : ('Create bracket' | t) }}
             </button>
 
             <button
@@ -1312,13 +1303,13 @@
               class="btn btn-outline-secondary btn-sm"
               (click)="cancelBracketBuilder()"
             >
-              Cancel
+              {{ 'Cancel' | t }}
             </button>
           </div>
         </div>
 
         <div class="text-secondary py-2" *ngIf="t.brackets.length === 0 && !showBracketBuilder()">
-          No brackets yet.
+          {{ 'No brackets yet.' | t }}
         </div>
 
         <div
@@ -1339,7 +1330,7 @@
               [disabled]="deletingBracketId() === bracket.id"
               (click)="deleteBracket(bracket.id)"
             >
-              {{ deletingBracketId() === bracket.id ? '...' : 'Remove bracket' }}
+              {{ deletingBracketId() === bracket.id ? '...' : ('Remove bracket' | t) }}
             </button>
           </div>
 
@@ -1370,10 +1361,10 @@
                   <span *ngIf="match.game">{{ match.game.awayScore ?? '' }}</span>
                 </div>
 
-                <div class="text-secondary mt-1" *ngIf="match.isBye">Bye</div>
+                <div class="text-secondary mt-1" *ngIf="match.isBye">{{ 'Bye' | t }}</div>
 
                 <div class="mt-1" *ngIf="match.game">
-                  Status: {{ match.game.status }}
+                  {{ 'Status:' | t }} {{ match.game.status }}
                 </div>
 
                 <button
@@ -1382,7 +1373,7 @@
                   *ngIf="canScheduleMatch(match) && !isSchedulingMatch(match)"
                   (click)="openScheduleMatch(match)"
                 >
-                  Schedule game
+                  {{ 'Schedule game' | t }}
                 </button>
 
                 <form
@@ -1403,7 +1394,7 @@
                   <input
                     class="form-control form-control-sm"
                     formControlName="arenaName"
-                    placeholder="Arena (optional)"
+                    [placeholder]="'Arena (optional)' | t"
                   />
 
                   <div class="d-flex gap-1">
@@ -1412,14 +1403,14 @@
                       class="btn btn-sm btn-primary"
                       [disabled]="matchScheduleForm.invalid || savingMatchSchedule()"
                     >
-                      {{ savingMatchSchedule() ? '...' : 'Save' }}
+                      {{ savingMatchSchedule() ? '...' : ('Save' | t) }}
                     </button>
                     <button
                       type="button"
                       class="btn btn-sm btn-outline-secondary"
                       (click)="cancelScheduleMatch()"
                     >
-                      Cancel
+                      {{ 'Cancel' | t }}
                     </button>
                   </div>
                 </form>
@@ -1432,7 +1423,7 @@
 
     <div class="card mt-4" *ngIf="isOwner">
       <div class="card-body">
-        <h2 class="h5">Sponsors ({{ t.sponsors.length }})</h2>
+        <h2 class="h5">{{ 'Sponsors (' | t }}{{ t.sponsors.length }})</h2>
 
         <div *ngIf="sponsorError()" class="alert alert-danger py-2">
           {{ sponsorError() }}
@@ -1444,35 +1435,35 @@
           class="row g-2 align-items-end mb-3"
         >
           <div class="col-12 col-md-3">
-            <label class="form-label">Sponsor name</label>
+            <label class="form-label">{{ 'Sponsor name' | t }}</label>
             <input class="form-control" formControlName="name" />
           </div>
 
           <div class="col-12 col-md-4">
-            <label class="form-label">Logo URL</label>
+            <label class="form-label">{{ 'Logo URL' | t }}</label>
             <input
               class="form-control"
               formControlName="logoUrl"
-              placeholder="https://... (optional)"
+              [placeholder]="'https://... (optional)' | t"
             />
           </div>
 
           <div class="col-12 col-md-3">
-            <label class="form-label">Website URL</label>
+            <label class="form-label">{{ 'Website URL' | t }}</label>
             <input
               class="form-control"
               formControlName="linkUrl"
-              placeholder="https://... (optional)"
+              [placeholder]="'https://... (optional)' | t"
             />
           </div>
 
           <div class="col-12 col-md-2">
-            <label class="form-label">Tier</label>
+            <label class="form-label">{{ 'Tier' | t }}</label>
             <select class="form-select" formControlName="tier">
-              <option value="">None</option>
-              <option value="GOLD">Gold</option>
-              <option value="SILVER">Silver</option>
-              <option value="BRONZE">Bronze</option>
+              <option value="">{{ 'None' | t }}</option>
+              <option value="GOLD">{{ 'Gold' | t }}</option>
+              <option value="SILVER">{{ 'Silver' | t }}</option>
+              <option value="BRONZE">{{ 'Bronze' | t }}</option>
             </select>
           </div>
 
@@ -1482,7 +1473,7 @@
               class="btn btn-primary btn-sm w-100"
               [disabled]="sponsorForm.invalid || savingSponsor()"
             >
-              {{ savingSponsor() ? '...' : (editingSponsorId() ? 'Save' : 'Add') }}
+              {{ savingSponsor() ? '...' : (editingSponsorId() ? ('Save' | t) : ('Add' | t)) }}
             </button>
           </div>
 
@@ -1492,23 +1483,23 @@
               class="btn btn-outline-secondary btn-sm"
               (click)="cancelSponsorEdit()"
             >
-              Cancel edit
+              {{ 'Cancel edit' | t }}
             </button>
           </div>
         </form>
 
         <div *ngIf="t.sponsors.length === 0" class="text-secondary py-2">
-          No sponsors added yet.
+          {{ 'No sponsors added yet.' | t }}
         </div>
 
         <div class="table-responsive" *ngIf="t.sponsors.length > 0">
           <table class="table align-middle mb-0">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Tier</th>
-                <th>Logo URL</th>
-                <th>Website</th>
+                <th>{{ 'Name' | t }}</th>
+                <th>{{ 'Tier' | t }}</th>
+                <th>{{ 'Logo URL' | t }}</th>
+                <th>{{ 'Website' | t }}</th>
                 <th></th>
               </tr>
             </thead>
@@ -1531,7 +1522,7 @@
                     type="button"
                     (click)="openEditSponsor(sponsor)"
                   >
-                    Edit
+                    {{ 'Edit' | t }}
                   </button>
                   <button
                     class="btn btn-sm btn-outline-danger"
@@ -1539,8 +1530,8 @@
                     [disabled]="deletingSponsorId() === sponsor.id"
                     (click)="deleteSponsor(sponsor.id)"
                   >
-                    {{ deletingSponsorId() === sponsor.id ? 'Removing...' :
-                    'Remove' }}
+                    {{ deletingSponsorId() === sponsor.id ? ('Removing...' | t) :
+                    ('Remove' | t) }}
                   </button>
                 </td>
               </tr>
@@ -1552,7 +1543,7 @@
 
     <div class="card mt-4" *ngIf="isOwner">
       <div class="card-body">
-        <h2 class="h5">Announcements ({{ t.announcements.length }})</h2>
+        <h2 class="h5">{{ 'Announcements (' | t }}{{ t.announcements.length }})</h2>
 
         <div *ngIf="announcementError()" class="alert alert-danger py-2">
           {{ announcementError() }}
@@ -1564,15 +1555,15 @@
           class="d-flex gap-2 align-items-start mb-3"
         >
           <select class="form-select form-select-sm" style="max-width: 140px" formControlName="type">
-            <option value="GENERAL">General</option>
-            <option value="WEATHER">Weather alert</option>
+            <option value="GENERAL">{{ 'General' | t }}</option>
+            <option value="WEATHER">{{ 'Weather alert' | t }}</option>
           </select>
 
           <textarea
             class="form-control"
             formControlName="body"
             rows="2"
-            placeholder="Post an update for everyone viewing this tournament..."
+            [placeholder]="'Post an update for everyone viewing this tournament...' | t"
           ></textarea>
 
           <button
@@ -1580,12 +1571,12 @@
             class="btn btn-primary btn-sm"
             [disabled]="announcementForm.invalid || savingAnnouncement()"
           >
-            {{ savingAnnouncement() ? '...' : 'Post' }}
+            {{ savingAnnouncement() ? '...' : ('Post' | t) }}
           </button>
         </form>
 
         <div *ngIf="t.announcements.length === 0" class="text-secondary py-2">
-          No announcements yet.
+          {{ 'No announcements yet.' | t }}
         </div>
 
         <div class="d-flex flex-column gap-2">
@@ -1595,10 +1586,10 @@
             *ngFor="let announcement of t.announcements; trackBy: trackByAnnouncementId"
           >
             <div>
-              <span class="badge text-bg-danger mb-1" *ngIf="announcement.type === 'WEATHER'">Weather alert</span>
+              <span class="badge text-bg-danger mb-1" *ngIf="announcement.type === 'WEATHER'">{{ 'Weather alert' | t }}</span>
               <div>{{ announcement.body }}</div>
               <div class="text-secondary small">
-                {{ announcement.createdAt | date: 'medium' }}
+                {{ announcement.createdAt | ldate: 'medium' }}
               </div>
             </div>
 
@@ -1608,7 +1599,7 @@
               [disabled]="deletingAnnouncementId() === announcement.id"
               (click)="deleteAnnouncement(announcement.id)"
             >
-              {{ deletingAnnouncementId() === announcement.id ? '...' : 'Remove' }}
+              {{ deletingAnnouncementId() === announcement.id ? '...' : ('Remove' | t) }}
             </button>
           </div>
         </div>
@@ -1618,7 +1609,7 @@
     <div class="card mt-4" *ngIf="isOwner">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-          <h2 class="h5 mb-0">Venues ({{ t.venues.length }})</h2>
+          <h2 class="h5 mb-0">{{ 'Venues (' | t }}{{ t.venues.length }})</h2>
 
           <button
             type="button"
@@ -1626,7 +1617,7 @@
             *ngIf="!showVenueForm()"
             (click)="openAddVenue()"
           >
-            Add venue
+            {{ 'Add venue' | t }}
           </button>
         </div>
 
@@ -1641,31 +1632,31 @@
           *ngIf="showVenueForm()"
         >
           <div class="col-12 col-md-6">
-            <label class="form-label">Venue / arena name</label>
+            <label class="form-label">{{ 'Venue / arena name' | t }}</label>
             <input class="form-control" formControlName="name" />
           </div>
 
           <div class="col-12 col-md-6">
-            <label class="form-label">Address</label>
+            <label class="form-label">{{ 'Address' | t }}</label>
             <input
               class="form-control"
               formControlName="address"
-              placeholder="Optional - powers the embedded map"
+              [placeholder]="'Optional - powers the embedded map' | t"
             />
           </div>
 
           <div class="col-12 col-md-4">
-            <label class="form-label">Parking</label>
+            <label class="form-label">{{ 'Parking' | t }}</label>
             <textarea class="form-control" formControlName="parkingInfo" rows="2"></textarea>
           </div>
 
           <div class="col-12 col-md-4">
-            <label class="form-label">Dressing rooms</label>
+            <label class="form-label">{{ 'Dressing rooms' | t }}</label>
             <textarea class="form-control" formControlName="dressingRoomInfo" rows="2"></textarea>
           </div>
 
           <div class="col-12 col-md-4">
-            <label class="form-label">Concessions</label>
+            <label class="form-label">{{ 'Concessions' | t }}</label>
             <textarea class="form-control" formControlName="concessionsInfo" rows="2"></textarea>
           </div>
 
@@ -1675,7 +1666,7 @@
               class="btn btn-primary btn-sm"
               [disabled]="venueForm.invalid || savingVenue()"
             >
-              {{ savingVenue() ? 'Saving...' : (editingVenueId() ? 'Save' : 'Add venue') }}
+              {{ savingVenue() ? ('Saving...' | t) : (editingVenueId() ? ('Save' | t) : ('Add venue' | t)) }}
             </button>
 
             <button
@@ -1683,7 +1674,7 @@
               class="btn btn-outline-secondary btn-sm"
               (click)="cancelVenueEdit()"
             >
-              Cancel
+              {{ 'Cancel' | t }}
             </button>
           </div>
         </form>
@@ -1704,7 +1695,7 @@
                 class="btn btn-sm btn-outline-secondary"
                 (click)="openEditVenue(venue)"
               >
-                Edit
+                {{ 'Edit' | t }}
               </button>
               <button
                 type="button"
@@ -1712,7 +1703,7 @@
                 [disabled]="deletingVenueId() === venue.id"
                 (click)="deleteVenue(venue.id)"
               >
-                {{ deletingVenueId() === venue.id ? '...' : 'Remove' }}
+                {{ deletingVenueId() === venue.id ? '...' : ('Remove' | t) }}
               </button>
             </div>
           </div>
@@ -1722,7 +1713,7 @@
 
     <div class="card mt-4" *ngIf="isOwner">
       <div class="card-body">
-        <h2 class="h5">Referees ({{ referees().length }})</h2>
+        <h2 class="h5">{{ 'Referees (' | t }}{{ referees().length }})</h2>
 
         <div *ngIf="refereeError()" class="alert alert-danger py-2">
           {{ refereeError() }}
@@ -1734,16 +1725,16 @@
           class="row g-2 mb-3"
         >
           <div class="col-12 col-md-4">
-            <label class="form-label">Name</label>
+            <label class="form-label">{{ 'Name' | t }}</label>
             <input class="form-control" formControlName="name" />
           </div>
           <div class="col-12 col-md-4">
-            <label class="form-label">Email</label>
-            <input class="form-control" formControlName="email" placeholder="Optional" />
+            <label class="form-label">{{ 'Email' | t }}</label>
+            <input class="form-control" formControlName="email" [placeholder]="'Optional' | t" />
           </div>
           <div class="col-12 col-md-3">
-            <label class="form-label">Phone</label>
-            <input class="form-control" formControlName="phone" placeholder="Optional" />
+            <label class="form-label">{{ 'Phone' | t }}</label>
+            <input class="form-control" formControlName="phone" [placeholder]="'Optional' | t" />
           </div>
           <div class="col-12 col-md-1 d-flex align-items-end">
             <button
@@ -1751,13 +1742,13 @@
               class="btn btn-primary btn-sm w-100"
               [disabled]="refereeForm.invalid || savingReferee()"
             >
-              {{ savingReferee() ? '...' : 'Add' }}
+              {{ savingReferee() ? '...' : ('Add' | t) }}
             </button>
           </div>
         </form>
 
         <div *ngIf="referees().length === 0" class="text-secondary py-2">
-          No referees added yet.
+          {{ 'No referees added yet.' | t }}
         </div>
 
         <div class="d-flex flex-column gap-2">
@@ -1778,7 +1769,7 @@
               [disabled]="deletingRefereeId() === referee.id"
               (click)="deleteReferee(referee.id)"
             >
-              {{ deletingRefereeId() === referee.id ? '...' : 'Remove' }}
+              {{ deletingRefereeId() === referee.id ? '...' : ('Remove' | t) }}
             </button>
           </div>
         </div>
@@ -1787,7 +1778,7 @@
 
     <div class="card mt-4" *ngIf="isOwner">
       <div class="card-body">
-        <h2 class="h5">Volunteer shifts ({{ t.volunteerShifts.length }})</h2>
+        <h2 class="h5">{{ 'Volunteer shifts (' | t }}{{ t.volunteerShifts.length }})</h2>
 
         <div *ngIf="volunteerShiftError()" class="alert alert-danger py-2">
           {{ volunteerShiftError() }}
@@ -1799,24 +1790,24 @@
           class="row g-2 mb-3"
         >
           <div class="col-12 col-md-3">
-            <label class="form-label">Role</label>
-            <input class="form-control" formControlName="role" placeholder="e.g. Scorekeeper" />
+            <label class="form-label">{{ 'Role' | t }}</label>
+            <input class="form-control" formControlName="role" [placeholder]="'e.g. Scorekeeper' | t" />
           </div>
           <div class="col-12 col-md-3">
-            <label class="form-label">Location</label>
-            <input class="form-control" formControlName="location" placeholder="Optional" />
+            <label class="form-label">{{ 'Location' | t }}</label>
+            <input class="form-control" formControlName="location" [placeholder]="'Optional' | t" />
           </div>
           <div class="col-6 col-md-2">
-            <label class="form-label">Starts</label>
+            <label class="form-label">{{ 'Starts' | t }}</label>
             <input type="datetime-local" class="form-control" formControlName="startsAt" />
           </div>
           <div class="col-6 col-md-2">
-            <label class="form-label">Ends</label>
+            <label class="form-label">{{ 'Ends' | t }}</label>
             <input type="datetime-local" class="form-control" formControlName="endsAt" />
           </div>
           <div class="col-6 col-md-1">
-            <label class="form-label">Capacity</label>
-            <input type="number" min="1" class="form-control" formControlName="capacity" placeholder="Optional" />
+            <label class="form-label">{{ 'Capacity' | t }}</label>
+            <input type="number" min="1" class="form-control" formControlName="capacity" [placeholder]="'Optional' | t" />
           </div>
           <div class="col-6 col-md-1 d-flex align-items-end">
             <button
@@ -1824,17 +1815,17 @@
               class="btn btn-primary btn-sm w-100"
               [disabled]="volunteerShiftForm.invalid || savingVolunteerShift()"
             >
-              {{ savingVolunteerShift() ? '...' : 'Add' }}
+              {{ savingVolunteerShift() ? '...' : ('Add' | t) }}
             </button>
           </div>
           <div class="col-12">
-            <label class="form-label">Description</label>
-            <input class="form-control" formControlName="description" placeholder="Optional" />
+            <label class="form-label">{{ 'Description' | t }}</label>
+            <input class="form-control" formControlName="description" [placeholder]="'Optional' | t" />
           </div>
         </form>
 
         <div *ngIf="t.volunteerShifts.length === 0" class="text-secondary py-2">
-          No volunteer shifts added yet.
+          {{ 'No volunteer shifts added yet.' | t }}
         </div>
 
         <div class="d-flex flex-column gap-2">
@@ -1847,13 +1838,13 @@
                 <strong>{{ shift.role }}</strong>
                 <span class="text-secondary small" *ngIf="shift.location"> &middot; {{ shift.location }}</span>
                 <div class="text-secondary small">
-                  {{ shift.startsAt | date: 'medium' }} - {{ shift.endsAt | date: 'shortTime' }}
+                  {{ shift.startsAt | ldate: 'medium' }} - {{ shift.endsAt | ldate: 'shortTime' }}
                 </div>
                 <div class="text-secondary small" *ngIf="shift.capacity">
-                  {{ shift._count?.signups ?? 0 }} / {{ shift.capacity }} signed up
+                  {{ shift._count?.signups ?? 0 }} / {{ shift.capacity }} {{ 'signed up' | t }}
                 </div>
                 <div class="text-secondary small" *ngIf="!shift.capacity">
-                  {{ shift._count?.signups ?? 0 }} signed up
+                  {{ shift._count?.signups ?? 0 }} {{ 'signed up' | t }}
                 </div>
               </div>
 
@@ -1863,7 +1854,7 @@
                   class="btn btn-sm btn-outline-secondary"
                   (click)="toggleViewSignups(shift.id)"
                 >
-                  {{ viewingSignupsShiftId() === shift.id ? 'Hide' : 'View' }} signups
+                  {{ viewingSignupsShiftId() === shift.id ? ('Hide' | t) : ('View' | t) }} {{ 'signups' | t }}
                 </button>
                 <button
                   type="button"
@@ -1871,14 +1862,14 @@
                   [disabled]="deletingVolunteerShiftId() === shift.id"
                   (click)="deleteVolunteerShift(shift.id)"
                 >
-                  {{ deletingVolunteerShiftId() === shift.id ? '...' : 'Remove' }}
+                  {{ deletingVolunteerShiftId() === shift.id ? '...' : ('Remove' | t) }}
                 </button>
               </div>
             </div>
 
             <div class="mt-2 ps-2 border-start" *ngIf="viewingSignupsShiftId() === shift.id">
               <div class="text-secondary small" *ngIf="shiftSignups().length === 0">
-                No signups yet.
+                {{ 'No signups yet.' | t }}
               </div>
               <div *ngFor="let signup of shiftSignups(); trackBy: trackByVolunteerSignupId" class="small">
                 {{ signup.name }} &middot; {{ signup.email }}<span *ngIf="signup.phone"> &middot; {{ signup.phone }}</span>
@@ -1892,7 +1883,7 @@
     <div class="card mt-4" *ngIf="isOwner">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-          <h2 class="h5 mb-0">Hotels, merch &amp; vendors ({{ t.infoListings.length }})</h2>
+          <h2 class="h5 mb-0">{{ 'Hotels, merch & vendors (' | t }}{{ t.infoListings.length }})</h2>
 
           <button
             type="button"
@@ -1900,7 +1891,7 @@
             *ngIf="!showInfoListingForm()"
             (click)="openAddInfoListing()"
           >
-            Add listing
+            {{ 'Add listing' | t }}
           </button>
         </div>
 
@@ -1915,23 +1906,23 @@
           *ngIf="showInfoListingForm()"
         >
           <div class="col-12 col-md-3">
-            <label class="form-label">Category</label>
+            <label class="form-label">{{ 'Category' | t }}</label>
             <select class="form-select" formControlName="category">
-              <option value="HOTEL">Hotel</option>
-              <option value="MERCHANDISE">Merchandise</option>
-              <option value="VENDOR">Vendor</option>
+              <option value="HOTEL">{{ 'Hotel' | t }}</option>
+              <option value="MERCHANDISE">{{ 'Merchandise' | t }}</option>
+              <option value="VENDOR">{{ 'Vendor' | t }}</option>
             </select>
           </div>
           <div class="col-12 col-md-4">
-            <label class="form-label">Title</label>
+            <label class="form-label">{{ 'Title' | t }}</label>
             <input class="form-control" formControlName="title" />
           </div>
           <div class="col-12 col-md-5">
-            <label class="form-label">Link</label>
-            <input class="form-control" formControlName="url" placeholder="Optional" />
+            <label class="form-label">{{ 'Link' | t }}</label>
+            <input class="form-control" formControlName="url" [placeholder]="'Optional' | t" />
           </div>
           <div class="col-12">
-            <label class="form-label">Description</label>
+            <label class="form-label">{{ 'Description' | t }}</label>
             <textarea class="form-control" formControlName="description" rows="2"></textarea>
           </div>
 
@@ -1941,7 +1932,7 @@
               class="btn btn-primary btn-sm"
               [disabled]="infoListingForm.invalid || savingInfoListing()"
             >
-              {{ savingInfoListing() ? 'Saving...' : (editingInfoListingId() ? 'Save' : 'Add listing') }}
+              {{ savingInfoListing() ? ('Saving...' | t) : (editingInfoListingId() ? ('Save' | t) : ('Add listing' | t)) }}
             </button>
 
             <button
@@ -1949,7 +1940,7 @@
               class="btn btn-outline-secondary btn-sm"
               (click)="cancelInfoListingEdit()"
             >
-              Cancel
+              {{ 'Cancel' | t }}
             </button>
           </div>
         </form>
@@ -1974,7 +1965,7 @@
                 class="btn btn-sm btn-outline-secondary"
                 (click)="openEditInfoListing(listing)"
               >
-                Edit
+                {{ 'Edit' | t }}
               </button>
               <button
                 type="button"
@@ -1982,7 +1973,7 @@
                 [disabled]="deletingInfoListingId() === listing.id"
                 (click)="deleteInfoListing(listing.id)"
               >
-                {{ deletingInfoListingId() === listing.id ? '...' : 'Remove' }}
+                {{ deletingInfoListingId() === listing.id ? '...' : ('Remove' | t) }}
               </button>
             </div>
           </div>
@@ -1992,7 +1983,7 @@
 
     <div class="card mt-4" *ngIf="isOwner">
       <div class="card-body">
-        <h2 class="h5">Lost &amp; found ({{ t.lostFoundItems.length }})</h2>
+        <h2 class="h5">{{ 'Lost & found (' | t }}{{ t.lostFoundItems.length }})</h2>
 
         <div *ngIf="lostFoundError()" class="alert alert-danger py-2">
           {{ lostFoundError() }}
@@ -2004,12 +1995,12 @@
           class="row g-2 mb-3"
         >
           <div class="col-12 col-md-6">
-            <label class="form-label">Description</label>
-            <input class="form-control" formControlName="description" placeholder="e.g. Black CCM gloves, size L" />
+            <label class="form-label">{{ 'Description' | t }}</label>
+            <input class="form-control" formControlName="description" [placeholder]="'e.g. Black CCM gloves, size L' | t" />
           </div>
           <div class="col-12 col-md-5">
-            <label class="form-label">Contact info</label>
-            <input class="form-control" formControlName="contactInfo" placeholder="Optional" />
+            <label class="form-label">{{ 'Contact info' | t }}</label>
+            <input class="form-control" formControlName="contactInfo" [placeholder]="'Optional' | t" />
           </div>
           <div class="col-12 col-md-1 d-flex align-items-end">
             <button
@@ -2017,13 +2008,13 @@
               class="btn btn-primary btn-sm w-100"
               [disabled]="lostFoundForm.invalid || savingLostFoundItem()"
             >
-              {{ savingLostFoundItem() ? '...' : 'Add' }}
+              {{ savingLostFoundItem() ? '...' : ('Add' | t) }}
             </button>
           </div>
         </form>
 
         <div *ngIf="t.lostFoundItems.length === 0" class="text-secondary py-2">
-          No lost &amp; found items yet.
+          {{ 'No lost & found items yet.' | t }}
         </div>
 
         <div class="d-flex flex-column gap-2">
@@ -2033,7 +2024,7 @@
           >
             <div>
               <span class="badge" [class.text-bg-success]="item.status === 'CLAIMED'" [class.text-bg-warning]="item.status === 'UNCLAIMED'">
-                {{ item.status === 'CLAIMED' ? 'Claimed' : 'Unclaimed' }}
+                {{ item.status === 'CLAIMED' ? ('Claimed' | t) : ('Unclaimed' | t) }}
               </span>
               <div>{{ item.description }}</div>
               <div class="text-secondary small" *ngIf="item.contactInfo">{{ item.contactInfo }}</div>
@@ -2054,7 +2045,7 @@
                 [disabled]="deletingLostFoundItemId() === item.id"
                 (click)="deleteLostFoundItem(item.id)"
               >
-                {{ deletingLostFoundItemId() === item.id ? '...' : 'Remove' }}
+                {{ deletingLostFoundItemId() === item.id ? '...' : ('Remove' | t) }}
               </button>
             </div>
           </div>
@@ -2064,10 +2055,9 @@
 
     <div class="card mt-4" *ngIf="isOwner">
       <div class="card-body">
-        <h2 class="h5">Reports &amp; exports</h2>
+        <h2 class="h5">{{ 'Reports & exports' | t }}</h2>
         <p class="text-secondary small">
-          Download a CSV snapshot of the current data. Files open directly in
-          Excel/Sheets.
+          {{ 'Download a CSV snapshot of the current data. Files open directly in Excel/Sheets.' | t }}
         </p>
 
         <div class="d-flex flex-wrap gap-2">
@@ -2077,7 +2067,7 @@
             [disabled]="registrations().length === 0"
             (click)="exportRegistrationsCsv()"
           >
-            Export registrations CSV
+            {{ 'Export registrations CSV' | t }}
           </button>
 
           <button
@@ -2086,7 +2076,7 @@
             [disabled]="t.teams.length === 0"
             (click)="exportTeamsCsv()"
           >
-            Export teams CSV
+            {{ 'Export teams CSV' | t }}
           </button>
 
           <button
@@ -2095,7 +2085,7 @@
             [disabled]="payments().length === 0"
             (click)="exportPaymentsCsv()"
           >
-            Export payments CSV
+            {{ 'Export payments CSV' | t }}
           </button>
         </div>
       </div>
@@ -2103,10 +2093,9 @@
 
     <div class="card mt-4" *ngIf="isPrimaryOwner">
       <div class="card-body">
-        <h2 class="h5">Co-organizers ({{ coOrganizers().length }})</h2>
+        <h2 class="h5">{{ 'Co-organizers (' | t }}{{ coOrganizers().length }})</h2>
         <p class="text-secondary small">
-          Co-organizers can manage every part of this tournament except
-          inviting/removing other co-organizers.
+          {{ 'Co-organizers can manage every part of this tournament except inviting/removing other co-organizers.' | t }}
         </p>
 
         <div *ngIf="coOrganizerError()" class="alert alert-danger py-2">
@@ -2119,7 +2108,7 @@
           class="row g-2 align-items-end mb-3"
         >
           <div class="col-12 col-md-6">
-            <label class="form-label">Their HockeySpare account email</label>
+            <label class="form-label">{{ 'Their HockeySpare account email' | t }}</label>
             <input class="form-control" formControlName="email" />
           </div>
 
@@ -2129,13 +2118,13 @@
               class="btn btn-primary btn-sm w-100"
               [disabled]="coOrganizerForm.invalid || addingCoOrganizer()"
             >
-              {{ addingCoOrganizer() ? '...' : 'Add' }}
+              {{ addingCoOrganizer() ? '...' : ('Add' | t) }}
             </button>
           </div>
         </form>
 
         <div *ngIf="coOrganizers().length === 0" class="text-secondary py-2">
-          No co-organizers yet.
+          {{ 'No co-organizers yet.' | t }}
         </div>
 
         <div class="d-flex flex-column gap-2">
@@ -2154,7 +2143,7 @@
               [disabled]="removingCoOrganizerId() === co.id"
               (click)="removeCoOrganizer(co.id)"
             >
-              {{ removingCoOrganizerId() === co.id ? '...' : 'Remove' }}
+              {{ removingCoOrganizerId() === co.id ? '...' : ('Remove' | t) }}
             </button>
           </div>
         </div>
@@ -2164,61 +2153,61 @@
     <div class="card mt-4" *ngIf="isOwner">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center">
-          <h2 class="h5 mb-0">Audit log</h2>
+          <h2 class="h5 mb-0">{{ 'Audit log' | t }}</h2>
 
           <button
             type="button"
             class="btn btn-sm btn-outline-secondary"
             (click)="toggleAuditLog()"
           >
-            {{ showAuditLog() ? 'Hide' : 'Show' }}
+            {{ showAuditLog() ? ('Hide' | t) : ('Show' | t) }}
           </button>
         </div>
 
         <div class="mt-3" *ngIf="showAuditLog()">
-          <div *ngIf="loadingAuditLog()" class="text-secondary">Loading...</div>
+          <div *ngIf="loadingAuditLog()" class="text-secondary">{{ 'Loading...' | t }}</div>
 
           <div
             *ngIf="!loadingAuditLog() && auditLog().length === 0"
             class="text-secondary"
           >
-            No changes recorded yet.
+            {{ 'No changes recorded yet.' | t }}
           </div>
 
           <input
             *ngIf="!loadingAuditLog() && auditLog().length > 0"
             class="form-control form-control-sm mb-2"
             style="max-width: 360px"
-            placeholder="Filter by game (e.g. A3), person or action..."
+            [placeholder]="'Filter by game (e.g. A3), person or action...' | t"
             [value]="auditFilter()"
             (input)="setAuditFilter($event)"
           />
 
           <div class="text-secondary small mb-2" *ngIf="!loadingAuditLog() && auditLog().length > 0 && filteredAuditLog().length === 0">
-            Nothing matches that filter.
+            {{ 'Nothing matches that filter.' | t }}
           </div>
 
           <div class="table-responsive" *ngIf="!loadingAuditLog() && filteredAuditLog().length > 0">
             <table class="table table-sm align-middle mb-0">
               <thead>
                 <tr>
-                  <th>When</th>
-                  <th>Who</th>
-                  <th>Action</th>
-                  <th>Detail</th>
+                  <th>{{ 'When' | t }}</th>
+                  <th>{{ 'Who' | t }}</th>
+                  <th>{{ 'Action' | t }}</th>
+                  <th>{{ 'Detail' | t }}</th>
                 </tr>
               </thead>
 
               <tbody>
                 <tr *ngFor="let entry of filteredAuditLog(); trackBy: trackByAuditLogId">
-                  <td class="text-nowrap">{{ entry.createdAt | date: 'MMM d, h:mm:ss a' }}</td>
+                  <td class="text-nowrap">{{ entry.createdAt | ldate: 'MMM d, h:mm:ss a' }}</td>
                   <td>
                     {{ auditWho(entry) }}
                     <div class="text-secondary small" *ngIf="entry.user?.email && auditWho(entry) !== entry.user?.email">
                       {{ entry.user?.email }}
                     </div>
                   </td>
-                  <td>{{ entry.action }}</td>
+                  <td>{{ actionLabel(entry.action) }}</td>
                   <td>{{ entry.detail || '—' }}</td>
                 </tr>
               </tbody>
@@ -2230,12 +2219,10 @@
 
     <div class="card mt-4" *ngIf="isOwner">
       <div class="card-body">
-        <h2 class="h5">API access</h2>
+        <h2 class="h5">{{ 'API access' | t }}</h2>
         <p class="text-secondary small">
-          Documented, key-authenticated read access for third-party or AI
-          tools: <code>GET /api/v1/tournaments/{{ tournamentId }}</code>
-          (plus <code>/standings</code> and <code>/leaders</code>), sending
-          your key as <code>Authorization: Bearer &lt;key&gt;</code>.
+          {{ 'Documented, key-authenticated read access for third-party or AI tools:' | t }} <code>GET /api/v1/tournaments/{{ tournamentId }}</code>
+          {{ '(plus' | t }} <code>/standings</code> {{ 'and' | t }} <code>/leaders</code>{{ '), sending your key as' | t }} <code>Authorization: Bearer &lt;key&gt;</code>.
         </p>
 
         <div *ngIf="apiKeyError()" class="alert alert-danger py-2">
@@ -2243,7 +2230,7 @@
         </div>
 
         <div class="alert alert-success py-2" *ngIf="justCreatedApiKey() as created">
-          <strong>Copy this key now</strong> — it won't be shown again.
+          <strong>{{ 'Copy this key now' | t }}</strong> {{ '— it won\'t be shown again.' | t }}
           <div class="mt-1">
             <code style="user-select: all">{{ created.key }}</code>
           </div>
@@ -2255,11 +2242,11 @@
           class="row g-2 align-items-end mb-3"
         >
           <div class="col-12 col-md-6">
-            <label class="form-label">Key label</label>
+            <label class="form-label">{{ 'Key label' | t }}</label>
             <input
               class="form-control"
               formControlName="label"
-              placeholder="e.g. Scoreboard app"
+              [placeholder]="'e.g. Scoreboard app' | t"
             />
           </div>
 
@@ -2269,23 +2256,23 @@
               class="btn btn-primary btn-sm w-100"
               [disabled]="apiKeyForm.invalid || creatingApiKey()"
             >
-              {{ creatingApiKey() ? '...' : 'Generate key' }}
+              {{ creatingApiKey() ? '...' : ('Generate key' | t) }}
             </button>
           </div>
         </form>
 
         <div *ngIf="apiKeys().length === 0" class="text-secondary py-2">
-          No API keys yet.
+          {{ 'No API keys yet.' | t }}
         </div>
 
         <div class="table-responsive" *ngIf="apiKeys().length > 0">
           <table class="table table-sm align-middle mb-0">
             <thead>
               <tr>
-                <th>Label</th>
-                <th>Key</th>
-                <th>Status</th>
-                <th>Last used</th>
+                <th>{{ 'Label' | t }}</th>
+                <th>{{ 'Key' | t }}</th>
+                <th>{{ 'Status' | t }}</th>
+                <th>{{ 'Last used' | t }}</th>
                 <th></th>
               </tr>
             </thead>
@@ -2296,10 +2283,10 @@
                 <td><code>{{ apiKey.keyPrefix }}…</code></td>
                 <td>
                   <span class="badge" [class.text-bg-secondary]="apiKey.revokedAt" [class.text-bg-success]="!apiKey.revokedAt">
-                    {{ apiKey.revokedAt ? 'Revoked' : 'Active' }}
+                    {{ apiKey.revokedAt ? ('Revoked' | t) : ('Active' | t) }}
                   </span>
                 </td>
-                <td>{{ apiKey.lastUsedAt ? (apiKey.lastUsedAt | date: 'short') : 'Never' }}</td>
+                <td>{{ apiKey.lastUsedAt ? (apiKey.lastUsedAt | ldate: 'short') : ('Never' | t) }}</td>
                 <td class="text-end">
                   <button
                     class="btn btn-sm btn-outline-danger"
@@ -2308,7 +2295,7 @@
                     [disabled]="revokingApiKeyId() === apiKey.id"
                     (click)="revokeApiKey(apiKey.id)"
                   >
-                    {{ revokingApiKeyId() === apiKey.id ? '...' : 'Revoke' }}
+                    {{ revokingApiKeyId() === apiKey.id ? '...' : ('Revoke' | t) }}
                   </button>
                 </td>
               </tr>
@@ -2318,12 +2305,10 @@
 
         <hr />
 
-        <h3 class="h6">Webhooks</h3>
+        <h3 class="h6">{{ 'Webhooks' | t }}</h3>
         <p class="text-secondary small">
-          Fires a signed <code>POST</code> to your URL whenever a game goes
-          live or is finalized. Verify it with an HMAC-SHA256 of the raw
-          request body using your webhook's secret, compared against the
-          <code>X-HockeySpare-Signature: sha256=&lt;hex&gt;</code> header.
+          {{ 'Fires a signed' | t }} <code>POST</code> {{ 'to your URL whenever a game goes live or is finalized. Verify it with an HMAC-SHA256 of the raw request body using your webhook\'s secret, compared against the' | t }}
+          <code>X-HockeySpare-Signature: sha256=&lt;hex&gt;</code> {{ 'header.' | t }}
         </p>
 
         <div *ngIf="webhookError()" class="alert alert-danger py-2">
@@ -2336,20 +2321,20 @@
           class="row g-2 align-items-end mb-3"
         >
           <div class="col-12 col-md-6">
-            <label class="form-label">Webhook URL</label>
+            <label class="form-label">{{ 'Webhook URL' | t }}</label>
             <input
               class="form-control"
               formControlName="url"
-              placeholder="https://your-app.example.com/webhook"
+              [placeholder]="'https://your-app.example.com/webhook' | t"
             />
           </div>
 
           <div class="col-12 col-md-4">
-            <label class="form-label">Secret</label>
+            <label class="form-label">{{ 'Secret' | t }}</label>
             <input
               class="form-control"
               formControlName="secret"
-              placeholder="Optional - auto-generated if blank"
+              [placeholder]="'Optional - auto-generated if blank' | t"
             />
           </div>
 
@@ -2359,13 +2344,13 @@
               class="btn btn-primary btn-sm w-100"
               [disabled]="webhookForm.invalid || creatingWebhook()"
             >
-              {{ creatingWebhook() ? '...' : 'Add' }}
+              {{ creatingWebhook() ? '...' : ('Add' | t) }}
             </button>
           </div>
         </form>
 
         <div *ngIf="webhooks().length === 0" class="text-secondary py-2">
-          No webhooks yet.
+          {{ 'No webhooks yet.' | t }}
         </div>
 
         <div class="d-flex flex-column gap-2">
@@ -2376,7 +2361,7 @@
             <div class="text-truncate">
               <div class="text-truncate">{{ webhook.url }}</div>
               <div class="text-secondary small">
-                Secret: <code>{{ webhook.secret }}</code>
+                {{ 'Secret:' | t }} <code>{{ webhook.secret }}</code>
               </div>
             </div>
 
@@ -2386,7 +2371,7 @@
               [disabled]="deletingWebhookId() === webhook.id"
               (click)="deleteWebhook(webhook.id)"
             >
-              {{ deletingWebhookId() === webhook.id ? '...' : 'Remove' }}
+              {{ deletingWebhookId() === webhook.id ? '...' : ('Remove' | t) }}
             </button>
           </div>
         </div>
@@ -2398,5 +2383,5 @@
 </section>
 
 <ng-template #loadingTpl>
-  <div class="container py-5 text-center text-secondary">Loading...</div>
+  <div class="container py-5 text-center text-secondary">{{ 'Loading...' | t }}</div>
 </ng-template>

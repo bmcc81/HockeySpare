@@ -125,9 +125,8 @@ describe('computeStandings', () => {
     expect(rows.every((r) => !r.needsCommitteeDecision)).toBe(true);
   });
 
-  it('breaks a three-way tie by goals against among the tied teams', () => {
-    // A, B and C each end on 4 pts (each beat D). Among themselves:
-    // A beat B 1-0, B beat C 2-0, C beat A 3-0 -> GA: A 3, B 1, C 2.
+  it('breaks a three-way tie by total goals against in the round robin', () => {
+    // A, B and C each end on 4 pts (each beat D). Total GA: A 3, B 1, C 2.
     const rows = computeStandings(teamsOf('D', 'A', 'B', 'C', 'D'), [
       game('A', 'B', 1, 0),
       game('B', 'C', 2, 0),
@@ -142,7 +141,42 @@ describe('computeStandings', () => {
     expect(rows.every((r) => !r.needsCommitteeDecision)).toBe(true);
   });
 
-  it('flags a three-way circular tie that goals against among them cannot separate', () => {
+  it('uses the whole round robin for a three-way tie, not just the games among the tied teams', () => {
+    // Among themselves A beat B 1-0, B beat C 2-0, C beat A 3-0, which on its
+    // own would rank B, C, A (GA 1, 2, 3). But B let in 8 goals against D, so
+    // by total goals against (A 3, B 9, C 2) the order is C, A, B.
+    const rows = computeStandings(teamsOf('D', 'A', 'B', 'C', 'D'), [
+      game('A', 'B', 1, 0),
+      game('B', 'C', 2, 0),
+      game('C', 'A', 3, 0),
+      game('A', 'D', 1, 0),
+      game('B', 'D', 9, 8),
+      game('C', 'D', 1, 0),
+    ]);
+
+    expect(rows.slice(0, 3).map((r) => r.points)).toEqual([4, 4, 4]);
+    expect(order(rows)).toEqual(['C', 'A', 'B', 'D']);
+    expect(rows.map((r) => r.rank)).toEqual([1, 2, 3, 4]);
+  });
+
+  it('breaks a four-way tie by total goals against as well', () => {
+    // Everyone beats the next team once and loses once (a ring), so all four
+    // have 2 pts; total goals against then orders them.
+    const rows = computeStandings(teamsOf('D', 'A', 'B', 'C', 'D'), [
+      game('A', 'B', 1, 0),
+      game('B', 'C', 3, 2),
+      game('C', 'D', 1, 0),
+      game('D', 'A', 4, 3),
+    ]);
+
+    // GA: A 0+4=4, B 1+2=3, C 3+0=3, D 1+3=4 -> B and C level (rule can't split), A and D level.
+    expect(rows.map((r) => r.points)).toEqual([2, 2, 2, 2]);
+    expect(rows.map((r) => r.rank)).toEqual([1, 1, 3, 3]);
+    expect(order(rows)).toEqual(['B', 'C', 'A', 'D']);
+    expect(rows.every((r) => r.needsCommitteeDecision)).toBe(true);
+  });
+
+  it('flags a three-way circular tie that total goals against cannot separate', () => {
     const rows = computeStandings(teamsOf('D', 'A', 'B', 'C'), [
       game('A', 'B', 1, 0),
       game('B', 'C', 1, 0),

@@ -334,9 +334,12 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
 
   /** The filtered schedule, grouped under one heading per calendar day. */
   gamesByDay(): { day: string; games: TournamentGame[] }[] {
+    // At the same start time an event (e.g. the opening ceremony) comes
+    // first, so "faceoff just before the final" reads in that order.
     const sorted = [...this.filteredGames()].sort(
       (a, b) =>
-        new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime(),
+        new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime() ||
+        Number(b.stage === 'EVENT') - Number(a.stage === 'EVENT'),
     );
 
     const groups = new Map<string, TournamentGame[]>();

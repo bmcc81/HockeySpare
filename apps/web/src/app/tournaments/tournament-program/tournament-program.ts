@@ -36,7 +36,9 @@ export class TournamentProgramComponent implements OnInit {
 
   gamesByDay(): { day: string; games: TournamentGame[] }[] {
     const games = [...(this.tournament()?.games ?? [])].sort(
-      (a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime(),
+      (a, b) =>
+        new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime() ||
+        Number(b.stage === 'EVENT') - Number(a.stage === 'EVENT'),
     );
 
     const groups = new Map<string, TournamentGame[]>();

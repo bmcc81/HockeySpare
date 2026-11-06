@@ -181,17 +181,17 @@ model User {
 
   finalizedScoreSheets GameScoreSheet[]
 
-  createdTeams       Team[]         @relation("CreatedTeams")
-  teamMemberships    TeamMember[]   @relation("UserTeamMemberships")
-  leagueMemberships  LeagueMember[]
-  playerStats        PlayerStat[]
-  memberFees         MemberFee[]
-  createdTournaments Tournament[]   @relation("CreatedTournaments")
-  teamMessages       TeamMessage[]
-  payments           Payment[]
-  coOrganizedTournaments   TournamentCoOrganizer[]
+  createdTeams              Team[]                    @relation("CreatedTeams")
+  teamMemberships           TeamMember[]              @relation("UserTeamMemberships")
+  leagueMemberships         LeagueMember[]
+  playerStats               PlayerStat[]
+  memberFees                MemberFee[]
+  createdTournaments        Tournament[]              @relation("CreatedTournaments")
+  teamMessages              TeamMessage[]
+  payments                  Payment[]
+  coOrganizedTournaments    TournamentCoOrganizer[]
   tournamentAuditLogEntries TournamentAuditLogEntry[]
-  auctionBidderProfiles    TournamentAuctionBidder[]
+  auctionBidderProfiles     TournamentAuctionBidder[]
 }
 
 model League {
@@ -253,17 +253,17 @@ model Team {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  stripeAccountId       String?  @unique
-  stripePayoutsEnabled  Boolean  @default(false)
-  stripeOnboardingUrl   String?
+  stripeAccountId      String? @unique
+  stripePayoutsEnabled Boolean @default(false)
+  stripeOnboardingUrl  String?
 
   scoreSheets GameScoreSheet[]
 
-  createdBy     User?        @relation("CreatedTeams", fields: [createdById], references: [id], onDelete: SetNull)
-  league        League?      @relation(fields: [leagueId], references: [id], onDelete: SetNull)
+  createdBy     User?         @relation("CreatedTeams", fields: [createdById], references: [id], onDelete: SetNull)
+  league        League?       @relation(fields: [leagueId], references: [id], onDelete: SetNull)
   members       TeamMember[]
-  games         TeamGame[]   @relation("TeamGameTeam")
-  opponentGames TeamGame[]   @relation("TeamGameOpponentTeam")
+  games         TeamGame[]    @relation("TeamGameTeam")
+  opponentGames TeamGame[]    @relation("TeamGameOpponentTeam")
   playerStats   PlayerStat[]
   memberFees    MemberFee[]
   messages      TeamMessage[]
@@ -341,17 +341,17 @@ model PlayerStat {
 }
 
 model MemberFee {
-  id          String   @id @default(cuid())
-  memberId    String
-  userId      String?
-  teamId      String
-  leagueId    String?
-  season      String
-  amountOwed  Int      @default(0)
-  amountPaid  Int      @default(0)
-  notes       String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(cuid())
+  memberId   String
+  userId     String?
+  teamId     String
+  leagueId   String?
+  season     String
+  amountOwed Int      @default(0)
+  amountPaid Int      @default(0)
+  notes      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   member   TeamMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
   user     User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
@@ -499,10 +499,10 @@ model GameScoreSheet {
   teamScore     Int @default(0)
   opponentScore Int @default(0)
 
-  teamPeriod1Score     Int @default(0)
-  teamPeriod2Score     Int @default(0)
-  teamPeriod3Score     Int @default(0)
-  teamOvertimeScore    Int @default(0)
+  teamPeriod1Score  Int @default(0)
+  teamPeriod2Score  Int @default(0)
+  teamPeriod3Score  Int @default(0)
+  teamOvertimeScore Int @default(0)
 
   opponentPeriod1Score  Int @default(0)
   opponentPeriod2Score  Int @default(0)
@@ -565,44 +565,45 @@ enum TournamentGameStatus {
 }
 
 model Tournament {
-  id                    String                      @id @default(cuid())
-  name                  String
-  description           String?
-  rules                 String?
-  startDate             DateTime?
-  endDate               DateTime?
-  leagueId              String?
-  createdById           String
-  registrationMode      TournamentRegistrationMode  @default(OPEN)
-  registrationDeadline  DateTime?
-  registrationFeeCents  Int?
-  stripeAccountId       String?                     @unique
-  stripePayoutsEnabled  Boolean                     @default(false)
-  contactName           String?
-  contactEmail          String?
-  contactPhone          String?
-  logoUrl               String?
-  rulebookUrl           String?
-  createdAt             DateTime                    @default(now())
-  updatedAt             DateTime                    @updatedAt
+  id                   String                     @id @default(cuid())
+  name                 String
+  description          String?
+  rules                String?
+  startDate            DateTime?
+  endDate              DateTime?
+  leagueId             String?
+  createdById          String
+  registrationMode     TournamentRegistrationMode @default(OPEN)
+  registrationDeadline DateTime?
+  registrationFeeCents Int?
+  stripeAccountId      String?                    @unique
+  stripePayoutsEnabled Boolean                    @default(false)
+  contactName          String?
+  contactEmail         String?
+  contactPhone         String?
+  logoUrl              String?
+  rulebookUrl          String?
+  createdAt            DateTime                   @default(now())
+  updatedAt            DateTime                   @updatedAt
 
-  league        League?                  @relation(fields: [leagueId], references: [id], onDelete: SetNull)
-  createdBy     User                     @relation("CreatedTournaments", fields: [createdById], references: [id], onDelete: Cascade)
-  games         TournamentGame[]
-  registrations TournamentRegistration[]
-  sponsors      TournamentSponsor[]
-  payments      TournamentPayment[]
-  teams         TournamentTeam[]
-  brackets      TournamentBracket[]
-  announcements TournamentAnnouncement[]
-  venues        TournamentVenue[]
-  coOrganizers  TournamentCoOrganizer[]
+  league          League?                    @relation(fields: [leagueId], references: [id], onDelete: SetNull)
+  createdBy       User                       @relation("CreatedTournaments", fields: [createdById], references: [id], onDelete: Cascade)
+  games           TournamentGame[]
+  registrations   TournamentRegistration[]
+  sponsors        TournamentSponsor[]
+  payments        TournamentPayment[]
+  teams           TournamentTeam[]
+  brackets        TournamentBracket[]
+  announcements   TournamentAnnouncement[]
+  venues          TournamentVenue[]
+  coOrganizers    TournamentCoOrganizer[]
   auditLogEntries TournamentAuditLogEntry[]
-  mediaAssets   TournamentMediaAsset[]
-  apiKeys       TournamentApiKey[]
-  webhooks      TournamentWebhook[]
+  mediaAssets     TournamentMediaAsset[]
+  apiKeys         TournamentApiKey[]
+  webhooks        TournamentWebhook[]
   referees        TournamentReferee[]
   volunteerShifts TournamentVolunteerShift[]
+  teamFollows     TournamentTeamFollow[]
   infoListings    TournamentInfoListing[]
   lostFoundItems  TournamentLostFoundItem[]
   auction         TournamentAuction?
@@ -696,15 +697,15 @@ enum TournamentAnnouncementType {
 }
 
 model TournamentVenue {
-  id                 String   @id @default(cuid())
-  tournamentId       String
-  name               String
-  address            String?
-  parkingInfo        String?
-  dressingRoomInfo   String?
-  concessionsInfo    String?
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  id               String   @id @default(cuid())
+  tournamentId     String
+  name             String
+  address          String?
+  parkingInfo      String?
+  dressingRoomInfo String?
+  concessionsInfo  String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
 
@@ -719,18 +720,18 @@ model TournamentReferee {
   phone        String?
   createdAt    DateTime @default(now())
 
-  tournament  Tournament               @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  tournament  Tournament              @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   assignments TournamentGameReferee[]
 
   @@index([tournamentId])
 }
 
 model TournamentGameReferee {
-  id         String   @id @default(cuid())
-  gameId     String
-  refereeId  String
-  role       String?
-  createdAt  DateTime @default(now())
+  id        String   @id @default(cuid())
+  gameId    String
+  refereeId String
+  role      String?
+  createdAt DateTime @default(now())
 
   game    TournamentGame    @relation(fields: [gameId], references: [id], onDelete: Cascade)
   referee TournamentReferee @relation(fields: [refereeId], references: [id], onDelete: Cascade)
@@ -771,14 +772,14 @@ model TournamentVolunteerSignup {
 }
 
 model TournamentInfoListing {
-  id           String                       @id @default(cuid())
+  id           String                        @id @default(cuid())
   tournamentId String
   category     TournamentInfoListingCategory
   title        String
   description  String?
   url          String?
   imageUrl     String?
-  createdAt    DateTime                     @default(now())
+  createdAt    DateTime                      @default(now())
 
   tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
 
@@ -792,13 +793,13 @@ enum TournamentInfoListingCategory {
 }
 
 model TournamentLostFoundItem {
-  id           String                  @id @default(cuid())
+  id           String                    @id @default(cuid())
   tournamentId String
   description  String
   imageUrl     String?
   contactInfo  String?
   status       TournamentLostFoundStatus @default(UNCLAIMED)
-  createdAt    DateTime                @default(now())
+  createdAt    DateTime                  @default(now())
 
   tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
 
@@ -818,31 +819,31 @@ enum TournamentGameStage {
 }
 
 model TournamentGame {
-  id           String               @id @default(cuid())
-  tournamentId String
-  homeTeamName String
-  awayTeamName String
-  homeTeamId   String?
-  awayTeamId   String?
-  gameNumber   String?
-  division     String?
-  stage        TournamentGameStage  @default(ROUND_ROBIN)
-  startsAt     DateTime
-  arenaName    String?
-  notes        String?
-  homeScore    Int?
-  awayScore    Int?
-  status       TournamentGameStatus @default(SCHEDULED)
+  id                 String               @id @default(cuid())
+  tournamentId       String
+  homeTeamName       String
+  awayTeamName       String
+  homeTeamId         String?
+  awayTeamId         String?
+  gameNumber         String?
+  division           String?
+  stage              TournamentGameStage  @default(ROUND_ROBIN)
+  startsAt           DateTime
+  arenaName          String?
+  notes              String?
+  homeScore          Int?
+  awayScore          Int?
+  status             TournamentGameStatus @default(SCHEDULED)
   scoresheetPhotoUrl String?
-  livestreamUrl String?
-  createdAt    DateTime             @default(now())
-  updatedAt    DateTime             @updatedAt
+  livestreamUrl      String?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
 
-  tournament Tournament             @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
-  homeTeam   TournamentTeam?        @relation("TournamentGameHomeTeam", fields: [homeTeamId], references: [id], onDelete: SetNull)
-  awayTeam   TournamentTeam?        @relation("TournamentGameAwayTeam", fields: [awayTeamId], references: [id], onDelete: SetNull)
-  playerStats TournamentGamePlayerStat[]
-  bracketMatch TournamentBracketMatch?
+  tournament         Tournament                 @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  homeTeam           TournamentTeam?            @relation("TournamentGameHomeTeam", fields: [homeTeamId], references: [id], onDelete: SetNull)
+  awayTeam           TournamentTeam?            @relation("TournamentGameAwayTeam", fields: [awayTeamId], references: [id], onDelete: SetNull)
+  playerStats        TournamentGamePlayerStat[]
+  bracketMatch       TournamentBracketMatch?
   refereeAssignments TournamentGameReferee[]
 
   @@index([tournamentId, startsAt])
@@ -851,7 +852,7 @@ model TournamentGame {
 }
 
 model TournamentRegistration {
-  id           String                        @id @default(cuid())
+  id           String                       @id @default(cuid())
   tournamentId String
   teamName     String
   division     String?
@@ -860,7 +861,7 @@ model TournamentRegistration {
   contactPhone String?
   notes        String?
   status       TournamentRegistrationStatus @default(CONFIRMED)
-  createdAt    DateTime                      @default(now())
+  createdAt    DateTime                     @default(now())
 
   tournament Tournament          @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   payments   TournamentPayment[]
@@ -880,14 +881,15 @@ model TournamentTeam {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  tournament   Tournament              @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
-  registration TournamentRegistration? @relation(fields: [registrationId], references: [id], onDelete: SetNull)
-  players      TournamentTeamPlayer[]
-  homeGames    TournamentGame[]        @relation("TournamentGameHomeTeam")
-  awayGames    TournamentGame[]        @relation("TournamentGameAwayTeam")
+  tournament            Tournament               @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  registration          TournamentRegistration?  @relation(fields: [registrationId], references: [id], onDelete: SetNull)
+  players               TournamentTeamPlayer[]
+  homeGames             TournamentGame[]         @relation("TournamentGameHomeTeam")
+  awayGames             TournamentGame[]         @relation("TournamentGameAwayTeam")
   bracketMatchesAsTeam1 TournamentBracketMatch[] @relation("BracketMatchTeam1")
   bracketMatchesAsTeam2 TournamentBracketMatch[] @relation("BracketMatchTeam2")
   bracketMatchesWon     TournamentBracketMatch[] @relation("BracketMatchWinner")
+  follows               TournamentTeamFollow[]
 
   @@index([tournamentId])
 }
@@ -937,12 +939,12 @@ model TournamentBracketMatch {
 
 model TournamentTeamPlayer {
   photoUrl     String?
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   teamId       String
   displayName  String
   position     Position?
   jerseyNumber Int?
-  createdAt    DateTime @default(now())
+  createdAt    DateTime  @default(now())
 
   team  TournamentTeam             @relation(fields: [teamId], references: [id], onDelete: Cascade)
   stats TournamentGamePlayerStat[]
@@ -1000,13 +1002,13 @@ enum TournamentRegistrationStatus {
 }
 
 model TournamentSponsor {
-  id           String              @id @default(cuid())
+  id           String                 @id @default(cuid())
   tournamentId String
   name         String
   logoUrl      String?
   linkUrl      String?
   tier         TournamentSponsorTier?
-  createdAt    DateTime            @default(now())
+  createdAt    DateTime               @default(now())
 
   tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
 
@@ -1083,17 +1085,17 @@ model TournamentAuctionItem {
 }
 
 model TournamentAuctionBidder {
-  id         String    @id @default(cuid())
+  id         String   @id @default(cuid())
   auctionId  String
   name       String
   email      String
   phone      String?
   userId     String?
-  claimToken String    @unique
-  createdAt  DateTime  @default(now())
+  claimToken String   @unique
+  createdAt  DateTime @default(now())
 
-  auction  TournamentAuction         @relation(fields: [auctionId], references: [id], onDelete: Cascade)
-  user     User?                     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  auction  TournamentAuction          @relation(fields: [auctionId], references: [id], onDelete: Cascade)
+  user     User?                      @relation(fields: [userId], references: [id], onDelete: SetNull)
   bids     TournamentAuctionBid[]
   payments TournamentAuctionPayment[]
 
@@ -1134,4 +1136,41 @@ model TournamentAuctionPayment {
 
   @@index([auctionId])
   @@index([bidderId])
+}
+
+/// Someone who asked for email reminders before a team's tournament games.
+/// No account is needed; the email is confirmed by a link before anything is sent.
+model TournamentTeamFollow {
+  id                 String    @id @default(cuid())
+  tournamentId       String
+  teamId             String
+  email              String
+  /// "en" or "fr": the language their emails are written in.
+  lang               String    @default("en")
+  /// Secret used in the confirm / unsubscribe links.
+  token              String    @unique
+  confirmedAt        DateTime?
+  unsubscribedAt     DateTime?
+  confirmationSentAt DateTime?
+  createdAt          DateTime  @default(now())
+
+  tournament Tournament               @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  team       TournamentTeam           @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  reminders  TournamentGameReminder[]
+
+  @@unique([teamId, email])
+  @@index([tournamentId])
+}
+
+/// One reminder email sent for one game start time (a rescheduled game gets a new one).
+model TournamentGameReminder {
+  id       String   @id @default(cuid())
+  followId String
+  gameId   String
+  startsAt DateTime
+  sentAt   DateTime @default(now())
+
+  follow TournamentTeamFollow @relation(fields: [followId], references: [id], onDelete: Cascade)
+
+  @@unique([followId, gameId, startsAt])
 }

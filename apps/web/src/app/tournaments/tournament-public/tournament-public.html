@@ -39,6 +39,16 @@
       />
     </a>
 
+    <div
+      class="alert d-flex justify-content-between align-items-start gap-2"
+      *ngIf="followMessage() as notice"
+      [class.alert-success]="notice.ok"
+      [class.alert-warning]="!notice.ok"
+    >
+      <span>{{ notice.text | t }}</span>
+      <button type="button" class="btn-close" [attr.aria-label]="'Close' | t" (click)="followMessage.set(null)"></button>
+    </div>
+
     <div class="alert alert-danger d-flex flex-column gap-1 mb-3" *ngIf="weatherAlerts().length > 0">
       <div
         *ngFor="let announcement of weatherAlerts().slice(0, 3); trackBy: trackByAnnouncementId"

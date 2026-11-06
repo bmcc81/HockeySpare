@@ -23,7 +23,7 @@ Legend: [x] done · [ ] to do · (needs X) = blocked on a decision or input
 ## 2. Retention: tournament visitors become regular users
 - [x] "Short a player next week?" call-to-action on tournament pages (see above).
 - [x] Add a team's tournament schedule to Google Calendar / Apple / Outlook (live feed, per-team and per-game links).
-- [ ] "Follow this team" with optional email reminders before games.
+- [x] "Follow this team": email reminders ~3 hours before each of a team's games (confirmed by a link, unsubscribe in every email, EN/FR). **Needs the mail server settings below on the Pi before it can send.**
 - [ ] After the final: thank-you email to everyone who signed up (results, link, "set up your regular team").
 - [ ] One-tap "Use this roster for my team" from a tournament team.
 - [ ] "Available to spare" toggle on a player profile, especially goalies.
@@ -39,3 +39,17 @@ Legend: [x] done · [ ] to do · (needs X) = blocked on a decision or input
 - [ ] Volunteer day-by-arena grid and printable sheet.
 - [ ] Scorekeeper-only role (scores only, not full co-organizer access).
 - [ ] Fix the one-click deploy (GitHub's checkout step no longer supports the 32-bit ARM Pi).
+
+## Setup needed on the Pi: outgoing email
+Production has no `MAIL_*` settings, so no email (booking notices, reminders, confirmations) can be delivered; the app logs "Email NOT delivered" instead. Add to `/opt/hockeyspare/apps/api/.env`, then `sudo systemctl restart hockeyspare-api`:
+
+```
+MAIL_HOST=smtp.your-provider.com
+MAIL_PORT=587
+MAIL_SECURE=false          # true only for port 465
+MAIL_USER=...
+MAIL_PASS=...
+MAIL_FROM="HockeySpare <reminders@your-domain>"
+```
+
+Use a transactional email service (Brevo, Mailgun, Resend, SendGrid, Amazon SES) or your domain's SMTP, and set up SPF/DKIM for the sending domain so messages don't land in spam. Optional: `PUBLIC_BASE_URL` (defaults to the production site URL), `TOURNAMENT_TIME_ZONE` (defaults to America/Toronto), `REMINDERS_DISABLED=true` to switch the reminder job off.

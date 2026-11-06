@@ -6,6 +6,7 @@ import { FileStorageModule } from '../file-storage/file-storage.module';
 import { AiModule } from '../../ai/ai.module';
 import { TournamentsController } from './tournaments.controller';
 import { TournamentsPublicApiController } from './tournaments-public-api.controller';
+import { TournamentShareController } from './tournament-share.controller';
 import { TournamentsService } from './tournaments.service';
 import { ApiKeyGuard } from './api-key.guard';
 
@@ -17,7 +18,11 @@ import { ApiKeyGuard } from './api-key.guard';
     FileStorageModule,
     AiModule,
   ],
-  controllers: [TournamentsController, TournamentsPublicApiController],
+  controllers: [
+    TournamentsController,
+    TournamentsPublicApiController,
+    TournamentShareController,
+  ],
   providers: [TournamentsService, ApiKeyGuard],
   exports: [TournamentsService],
 })

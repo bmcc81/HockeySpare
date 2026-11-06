@@ -204,6 +204,20 @@
     </div>
 
     <div *ngIf="activeTab() === 'schedule'">
+      <div class="mb-3" *ngIf="t.teams.length > 0">
+        <label class="form-label small text-secondary">{{ 'Add my team to my calendar' | t }}</label>
+        <select class="form-select form-select-sm" style="max-width: 260px" (change)="setCalendarTeam($event)">
+          <option value="">{{ 'Choose your team...' | t }}</option>
+          <option *ngFor="let team of t.teams; trackBy: trackByTeamId" [value]="team.id">{{ team.name }}</option>
+        </select>
+        <app-team-calendar-links
+          *ngIf="calendarTeamId() as calendarTeam"
+          class="d-block mt-2"
+          [tournamentId]="tournamentId"
+          [teamId]="calendarTeam"
+        ></app-team-calendar-links>
+      </div>
+
       <div *ngIf="filteredGames().length === 0 && t.games.length === 0" class="text-secondary">
         {{ 'No games have been scheduled yet. Check back soon.' | t }}
       </div>
@@ -416,6 +430,12 @@
               {{ 'Coach:' | t }} {{ team.coachName }}
             </p>
 
+            <app-team-calendar-links
+              class="d-block mb-3"
+              [tournamentId]="tournamentId"
+              [teamId]="team.id"
+            ></app-team-calendar-links>
+
             <h3 class="h6">{{ 'Roster' | t }}</h3>
             <div *ngIf="team.players.length === 0" class="text-secondary small mb-3">
               {{ 'No roster posted yet.' | t }}
@@ -452,11 +472,20 @@
                   <tr *ngFor="let game of teamGames(team.id); trackBy: trackByGameId">
                     <td>{{ game.homeTeamName }} {{ 'vs' | t }} {{ game.awayTeamName }}</td>
                     <td>{{ game.startsAt | ldate: 'short' }}</td>
-                    <td>
+                    <td class="text-nowrap">
                       <ng-container *ngIf="game.status === 'SCHEDULED'">—</ng-container>
                       <ng-container *ngIf="game.status !== 'SCHEDULED'">
                         {{ game.homeScore ?? 0 }} - {{ game.awayScore ?? 0 }}
                       </ng-container>
+                    </td>
+                    <td class="text-end text-nowrap">
+                      <a
+                        class="small"
+                        [href]="gameCalendarLink(game)"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        [title]="'Add this game to Google Calendar' | t"
+                      >{{ '+ Calendar' | t }}</a>
                     </td>
                   </tr>
                 </tbody>

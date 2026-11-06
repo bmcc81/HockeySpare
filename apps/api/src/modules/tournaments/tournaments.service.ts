@@ -297,6 +297,73 @@ export class TournamentsService {
     });
   }
 
+  /**
+   * Games for a calendar feed: the whole tournament, one division, or one team
+   * (matched by team id, or by name for teams entered as free text). Events such
+   * as the opening ceremony are left out of team feeds.
+   */
+  async getCalendarData(tournamentId: string, teamId?: string, division?: string) {
+    const tournament = await this.prisma.tournament.findUnique({
+      where: { id: tournamentId },
+      select: {
+        id: true,
+        name: true,
+        venues: { select: { name: true, address: true } },
+        teams: { select: { id: true, name: true } },
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException('Tournament not found');
+    }
+
+    const team = teamId ? tournament.teams.find((t) => t.id === teamId) : undefined;
+
+    if (teamId && !team) {
+      throw new NotFoundException('Team not found');
+    }
+
+    const games = await this.prisma.tournamentGame.findMany({
+      where: {
+        tournamentId,
+        ...(division ? { division } : {}),
+        ...(team
+          ? {
+              stage: { not: 'EVENT' },
+              OR: [
+                { homeTeamId: team.id },
+                { awayTeamId: team.id },
+                { homeTeamName: team.name },
+                { awayTeamName: team.name },
+              ],
+            }
+          : {}),
+      },
+      orderBy: { startsAt: 'asc' },
+      select: {
+        id: true,
+        gameNumber: true,
+        division: true,
+        stage: true,
+        startsAt: true,
+        arenaName: true,
+        homeTeamName: true,
+        awayTeamName: true,
+        status: true,
+        homeScore: true,
+        awayScore: true,
+        updatedAt: true,
+      },
+    });
+
+    return {
+      tournament: { id: tournament.id, name: tournament.name },
+      team: team ?? null,
+      venues: tournament.venues,
+      games,
+    };
+  }
+
   /** Just what a link preview needs: public fields only. Null when there is no such tournament. */
   async getShareInfo(tournamentId: string): Promise<ShareInfo | null> {
     return this.prisma.tournament.findUnique({

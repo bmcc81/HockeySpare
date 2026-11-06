@@ -60,6 +60,10 @@ export class TournamentProgramComponent implements OnInit {
     return Array.from(groups.entries()).map(([day, games]) => ({ day, games }));
   }
 
+  tournamentQrValue(): string {
+    return `${window.location.origin}/tournaments/${this.tournamentId}`;
+  }
+
   gameQrValue(gameId: string): string {
     return `${window.location.origin}/tournaments/${this.tournamentId}#game-${gameId}`;
   }

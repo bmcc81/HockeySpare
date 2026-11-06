@@ -226,6 +226,14 @@
         </ng-template>
       </div>
     </div>
+
+    <div class="mt-3 d-flex align-items-center gap-3 qr-strip">
+      <app-qr-code [value]="tournamentQrValue()" [size]="88" />
+      <div>
+        <div class="fw-bold">{{ 'Scan for live scores, standings and schedule' | t }}</div>
+        <div class="small" style="opacity: 0.8">{{ 'Need a spare for your team? HockeySpare can help.' | t }}</div>
+      </div>
+    </div>
   </ng-container>
 </ng-container>
 

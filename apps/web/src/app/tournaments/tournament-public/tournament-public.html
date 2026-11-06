@@ -938,7 +938,21 @@
       </ng-container>
     </div>
 
-    <div class="d-flex gap-3 mt-5 pt-3 border-top small text-secondary">
+    <div class="card border-primary-subtle bg-body-tertiary mt-5">
+      <div class="card-body">
+        <h2 class="h5">{{ 'Playing hockey beyond this tournament?' | t }}</h2>
+        <p class="text-secondary mb-3">
+          {{ 'HockeySpare helps teams find spares and goalies, and helps organizers run leagues and tournaments with live scores and standings.' | t }}
+        </p>
+        <div class="d-flex flex-wrap gap-2">
+          <a routerLink="/requests/team/new" class="btn btn-primary">{{ 'Short a player? Post a spare request' | t }}</a>
+          <a routerLink="/requests" class="btn btn-outline-primary">{{ 'Want to spare? See open games' | t }}</a>
+          <a routerLink="/tournaments/new" class="btn btn-outline-secondary">{{ 'Run your own league or tournament' | t }}</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex gap-3 mt-4 pt-3 border-top small text-secondary">
       <a [routerLink]="['/tournaments', t.id, 'scoreboard']" target="_blank">{{ 'Arena TV scoreboard' | t }}</a>
       <a [routerLink]="['/tournaments', t.id, 'program']" target="_blank">{{ 'Printable program' | t }}</a>
     </div>

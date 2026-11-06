@@ -8,9 +8,11 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { finalize } from 'rxjs';
 import { AuthApi } from '../auth.api';
+import { AuthStateService } from '../auth-state.service';
+import { safeReturnUrl } from '../return-url';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { TranslatePipe } from '../../core/i18n/t.pipe';
 
@@ -37,6 +39,8 @@ export class RegisterComponent {
   private fb = inject(FormBuilder);
   private api = inject(AuthApi);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private authState = inject(AuthStateService);
   private i18n = inject(I18nService);
 
   loading = false;
@@ -85,9 +89,17 @@ export class RegisterComponent {
       })
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
-        next: (res) => {
-          localStorage.setItem('accessToken', res.accessToken);
-          this.router.navigateByUrl('/login');
+        next: () => {
+          // Sign the new account straight in, so there is no second login step.
+          this.api.login({ email: email.trim().toLowerCase(), password }).subscribe({
+            next: (session) => {
+              this.authState.setSession(session);
+              this.router.navigateByUrl(
+                safeReturnUrl(this.route.snapshot.queryParamMap.get('returnUrl'), '/requests'),
+              );
+            },
+            error: () => this.router.navigateByUrl('/login'),
+          });
         },
         error: (err) => {
           const message = err?.error?.message;

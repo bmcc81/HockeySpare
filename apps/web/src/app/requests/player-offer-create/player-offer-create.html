@@ -23,7 +23,7 @@
               <label for="position" class="form-label">{{ 'Position' | t }}</label>
               <select id="position" formControlName="position" class="form-select custom-input">
                 <option value="" disabled>{{ 'Select position' | t }}</option>
-                <option *ngFor="let p of positions" [value]="p">{{ p }}</option>
+                <option *ngFor="let p of positions" [value]="p">{{ p | t }}</option>
               </select>
             </div>
 
@@ -35,7 +35,7 @@
                 class="form-select custom-input"
               >
                 <option value="" disabled>{{ 'Select skill level' | t }}</option>
-                <option *ngFor="let s of skillLevels" [value]="s">{{ s }}</option>
+                <option *ngFor="let s of skillLevels" [value]="s">{{ s | t }}</option>
               </select>
             </div>
 

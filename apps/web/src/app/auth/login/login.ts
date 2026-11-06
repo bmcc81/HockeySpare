@@ -1,7 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { safeReturnUrl } from '../return-url';
 import { AuthApi } from '../auth.api';
 import { AuthStateService } from '../auth-state.service';
 import { I18nService } from '../../core/i18n/i18n.service';
@@ -19,6 +20,7 @@ export class LoginComponent {
   private api = inject(AuthApi);
   private authState = inject(AuthStateService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private i18n = inject(I18nService);
 
   loading = false;
@@ -46,7 +48,9 @@ export class LoginComponent {
     }).subscribe({
       next: (res) => {
         this.authState.setSession(res);
-        this.router.navigateByUrl('/requests');
+        this.router.navigateByUrl(
+          safeReturnUrl(this.route.snapshot.queryParamMap.get('returnUrl'), '/requests'),
+        );
       },
       error: (err) => {
         this.error =

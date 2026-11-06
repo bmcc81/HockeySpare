@@ -20,7 +20,7 @@
 
         <p class="mb-0">
           <span class="badge rounded-pill text-bg-dark">
-            {{ 'Role:' | t }} {{ myRole || (isLeagueManagerView ? 'LEAGUE_MANAGER' : 'PLAYER') }}
+            {{ 'Role:' | t }} {{ (myRole || (isLeagueManagerView ? 'LEAGUE_MANAGER' : 'PLAYER')) | t }}
           </span>
         </p>
 

@@ -13,7 +13,11 @@ Legend: [x] done · [ ] to do · (needs X) = blocked on a decision or input
 - [ ] Per-tournament share preview (name + dates in the link card). Link crawlers don't run JavaScript, so this needs a small server-side route for crawlers (nginx → API).
 - [ ] Terms/privacy: add a contact email (needs the address to publish) and have both reviewed by a lawyer.
 - [ ] Home page: replace the sample spare requests with real screenshots from the Pierrefonds tournament.
-- [ ] Test a brand-new account end to end on a phone (sign up → create team → post a spare request) and fix friction.
+- [x] Test a brand-new account end to end on a phone (sign up → create team → post a spare request). Found and fixed:
+  - **"Create player offer" and "Create team request" crashed for everyone** (two copies of Angular installed; fixed by pinning one version).
+  - After registering, people landed on the login page and had to sign in again; now they are signed in straight away.
+  - Sign-in dropped the page you were trying to reach; it now returns you to it.
+  - Home page gave spare-seekers only a small text link; added "Need a spare?" / "Offer to play" buttons.
 - [ ] Welcome email after sign-up (what to do first).
 
 ## 2. Retention: tournament visitors become regular users

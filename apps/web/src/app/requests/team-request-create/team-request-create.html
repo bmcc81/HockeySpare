@@ -60,7 +60,7 @@
                 class="form-select custom-input"
               >
                 <option value="" disabled>{{ 'Select position' | t }}</option>
-                <option *ngFor="let p of positions" [value]="p">{{ p }}</option>
+                <option *ngFor="let p of positions" [value]="p">{{ p | t }}</option>
               </select>
 
               <div
@@ -81,7 +81,7 @@
               >
                 <option value="" disabled>{{ 'Select skill level' | t }}</option>
                 <option *ngFor="let s of skillLevels" [value]="s">
-                  {{ s }}
+                  {{ s | t }}
                 </option>
               </select>
 

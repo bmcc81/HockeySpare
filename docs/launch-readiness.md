@@ -22,6 +22,7 @@ Legend: [x] done · [ ] to do · (needs X) = blocked on a decision or input
 
 ## 2. Retention: tournament visitors become regular users
 - [x] "Short a player next week?" call-to-action on tournament pages (see above).
+- [x] Add a team's tournament schedule to Google Calendar / Apple / Outlook (live feed, per-team and per-game links).
 - [ ] "Follow this team" with optional email reminders before games.
 - [ ] After the final: thank-you email to everyone who signed up (results, link, "set up your regular team").
 - [ ] One-tap "Use this roster for my team" from a tournament team.

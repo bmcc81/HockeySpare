@@ -30,6 +30,8 @@ import { TournamentsApiService } from '../../core/services/tournaments-api.servi
 import { AuctionApiService } from '../../core/services/auction-api.service';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { LocalDatePipe, TranslatePipe } from '../../core/i18n/t.pipe';
+import { TeamCalendarLinksComponent } from '../shared/team-calendar-links/team-calendar-links';
+import { googleGameLink } from '../shared/calendar-links';
 
 type TournamentTab =
   | 'schedule'
@@ -57,6 +59,7 @@ const BANNER_ROTATE_MS = 5000;
     RouterLink,
     TranslatePipe,
     LocalDatePipe,
+    TeamCalendarLinksComponent,
   ],
   templateUrl: './tournament-public.html',
 })
@@ -99,6 +102,7 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
   paymentMessageIsError = signal(false);
 
   countdownText = signal<string | null>(null);
+  calendarTeamId = signal<string | null>(null);
   searchQuery = signal('');
   bannerIndex = signal(0);
   highlightedGameId = signal<string | null>(null);
@@ -363,6 +367,15 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
       division,
       rows,
     }));
+  }
+
+  setCalendarTeam(event: Event): void {
+    this.calendarTeamId.set((event.target as HTMLSelectElement).value || null);
+  }
+
+  gameCalendarLink(game: TournamentGame): string {
+    const t = this.tournament();
+    return googleGameLink(game, t?.name ?? '', this.tournamentId, t?.venues ?? [], window.location.origin);
   }
 
   /** The filtered schedule, grouped under one heading per calendar day. */

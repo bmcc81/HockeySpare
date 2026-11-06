@@ -1359,4 +1359,12 @@ export const FR: Record<string, string> = {
   "Scan for live scores, standings and schedule": "Numérisez pour les pointages, classements et calendrier en direct",
   "Need a spare for your team?": "Il vous faut un substitut pour votre équipe ?",
   "Offer to play as a spare": "Offrez-vous comme substitut",
+  "Add my team to my calendar": "Ajouter mon équipe à mon calendrier",
+  "Choose your team...": "Choisissez votre équipe...",
+  "Add to Google Calendar": "Ajouter à Google Agenda",
+  "Apple / Outlook": "Apple / Outlook",
+  "Download .ics": "Télécharger (.ics)",
+  "Your calendar updates by itself if the schedule changes (Google can take up to a day to refresh).": "Votre calendrier se met à jour tout seul si le calendrier change (Google peut prendre jusqu’à une journée pour actualiser).",
+  "+ Calendar": "+ Agenda",
+  "Add this game to Google Calendar": "Ajouter ce match à Google Agenda",
 };

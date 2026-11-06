@@ -36,6 +36,7 @@ import { CreateTournamentApiKeyDto } from './dto/create-tournament-api-key.dto';
 import { CreateTournamentWebhookDto } from './dto/create-tournament-webhook.dto';
 import { CreateTournamentRefereeDto } from './dto/create-tournament-referee.dto';
 import { AssignTournamentGameRefereeDto } from './dto/assign-tournament-game-referee.dto';
+import type { ShareInfo } from './tournament-share';
 import { CreateTournamentVolunteerShiftDto } from './dto/create-tournament-volunteer-shift.dto';
 import { CreateTournamentVolunteerSignupDto } from './dto/create-tournament-volunteer-signup.dto';
 import { CreateTournamentInfoListingDto } from './dto/create-tournament-info-listing.dto';
@@ -292,6 +293,22 @@ export class TournamentsService {
       include: this.tournamentInclude,
       orderBy: {
         createdAt: 'desc',
+      },
+    });
+  }
+
+  /** Just what a link preview needs: public fields only. Null when there is no such tournament. */
+  async getShareInfo(tournamentId: string): Promise<ShareInfo | null> {
+    return this.prisma.tournament.findUnique({
+      where: { id: tournamentId },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        startDate: true,
+        endDate: true,
+        logoUrl: true,
+        venues: { select: { name: true }, orderBy: { name: 'asc' } },
       },
     });
   }

@@ -1357,4 +1357,6 @@ export const FR: Record<string, string> = {
   "Scan with your phone": "Numérisez avec votre téléphone",
   "Need a spare for your team? HockeySpare can help.": "Il vous faut un substitut pour votre équipe ? HockeySpare peut vous aider.",
   "Scan for live scores, standings and schedule": "Numérisez pour les pointages, classements et calendrier en direct",
+  "Need a spare for your team?": "Il vous faut un substitut pour votre équipe ?",
+  "Offer to play as a spare": "Offrez-vous comme substitut",
 };

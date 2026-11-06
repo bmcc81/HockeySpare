@@ -34,6 +34,16 @@
     },
     "shell-quote": "1.8.4",
     "handlebars": "4.7.9",
-    "tar": "7.5.22"
+    "tar": "7.5.22",
+    "@angular/core": "21.2.20",
+    "@angular/common": "21.2.20",
+    "@angular/compiler": "21.2.20",
+    "@angular/forms": "21.2.20",
+    "@angular/localize": "21.2.20",
+    "@angular/platform-browser": "21.2.20",
+    "@angular/platform-browser-dynamic": "21.2.20",
+    "@angular/router": "21.2.20",
+    "@angular/animations": "21.2.20",
+    "@angular/service-worker": "21.2.20"
   }
 }

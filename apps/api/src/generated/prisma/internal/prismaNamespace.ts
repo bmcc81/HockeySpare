@@ -432,7 +432,9 @@ export const ModelName = {
   TournamentAuctionItem: 'TournamentAuctionItem',
   TournamentAuctionBidder: 'TournamentAuctionBidder',
   TournamentAuctionBid: 'TournamentAuctionBid',
-  TournamentAuctionPayment: 'TournamentAuctionPayment'
+  TournamentAuctionPayment: 'TournamentAuctionPayment',
+  TournamentTeamFollow: 'TournamentTeamFollow',
+  TournamentGameReminder: 'TournamentGameReminder'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -448,7 +450,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "request" | "requestResponse" | "playerOffer" | "user" | "league" | "leagueArena" | "leagueMember" | "team" | "teamMessage" | "teamMember" | "playerStat" | "memberFee" | "payment" | "teamGame" | "teamGameInvite" | "teamGameAvailability" | "notification" | "booking" | "gameScoreSheet" | "gameScoreSheetPlayer" | "helpArticle" | "tournament" | "tournamentMediaAsset" | "tournamentApiKey" | "tournamentWebhook" | "tournamentCoOrganizer" | "tournamentAuditLogEntry" | "tournamentAnnouncement" | "tournamentVenue" | "tournamentReferee" | "tournamentGameReferee" | "tournamentVolunteerShift" | "tournamentVolunteerSignup" | "tournamentInfoListing" | "tournamentLostFoundItem" | "tournamentGame" | "tournamentRegistration" | "tournamentTeam" | "tournamentBracket" | "tournamentBracketMatch" | "tournamentTeamPlayer" | "tournamentGamePlayerStat" | "tournamentPayment" | "tournamentSponsor" | "tournamentAuction" | "tournamentAuctionItem" | "tournamentAuctionBidder" | "tournamentAuctionBid" | "tournamentAuctionPayment"
+    modelProps: "request" | "requestResponse" | "playerOffer" | "user" | "league" | "leagueArena" | "leagueMember" | "team" | "teamMessage" | "teamMember" | "playerStat" | "memberFee" | "payment" | "teamGame" | "teamGameInvite" | "teamGameAvailability" | "notification" | "booking" | "gameScoreSheet" | "gameScoreSheetPlayer" | "helpArticle" | "tournament" | "tournamentMediaAsset" | "tournamentApiKey" | "tournamentWebhook" | "tournamentCoOrganizer" | "tournamentAuditLogEntry" | "tournamentAnnouncement" | "tournamentVenue" | "tournamentReferee" | "tournamentGameReferee" | "tournamentVolunteerShift" | "tournamentVolunteerSignup" | "tournamentInfoListing" | "tournamentLostFoundItem" | "tournamentGame" | "tournamentRegistration" | "tournamentTeam" | "tournamentBracket" | "tournamentBracketMatch" | "tournamentTeamPlayer" | "tournamentGamePlayerStat" | "tournamentPayment" | "tournamentSponsor" | "tournamentAuction" | "tournamentAuctionItem" | "tournamentAuctionBidder" | "tournamentAuctionBid" | "tournamentAuctionPayment" | "tournamentTeamFollow" | "tournamentGameReminder"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -4078,6 +4080,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TournamentTeamFollow: {
+      payload: Prisma.$TournamentTeamFollowPayload<ExtArgs>
+      fields: Prisma.TournamentTeamFollowFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TournamentTeamFollowFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamFollowPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TournamentTeamFollowFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamFollowPayload>
+        }
+        findFirst: {
+          args: Prisma.TournamentTeamFollowFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamFollowPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TournamentTeamFollowFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamFollowPayload>
+        }
+        findMany: {
+          args: Prisma.TournamentTeamFollowFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamFollowPayload>[]
+        }
+        create: {
+          args: Prisma.TournamentTeamFollowCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamFollowPayload>
+        }
+        createMany: {
+          args: Prisma.TournamentTeamFollowCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TournamentTeamFollowCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamFollowPayload>[]
+        }
+        delete: {
+          args: Prisma.TournamentTeamFollowDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamFollowPayload>
+        }
+        update: {
+          args: Prisma.TournamentTeamFollowUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamFollowPayload>
+        }
+        deleteMany: {
+          args: Prisma.TournamentTeamFollowDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TournamentTeamFollowUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TournamentTeamFollowUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamFollowPayload>[]
+        }
+        upsert: {
+          args: Prisma.TournamentTeamFollowUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentTeamFollowPayload>
+        }
+        aggregate: {
+          args: Prisma.TournamentTeamFollowAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTournamentTeamFollow>
+        }
+        groupBy: {
+          args: Prisma.TournamentTeamFollowGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TournamentTeamFollowGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TournamentTeamFollowCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TournamentTeamFollowCountAggregateOutputType> | number
+        }
+      }
+    }
+    TournamentGameReminder: {
+      payload: Prisma.$TournamentGameReminderPayload<ExtArgs>
+      fields: Prisma.TournamentGameReminderFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TournamentGameReminderFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentGameReminderPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TournamentGameReminderFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentGameReminderPayload>
+        }
+        findFirst: {
+          args: Prisma.TournamentGameReminderFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentGameReminderPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TournamentGameReminderFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentGameReminderPayload>
+        }
+        findMany: {
+          args: Prisma.TournamentGameReminderFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentGameReminderPayload>[]
+        }
+        create: {
+          args: Prisma.TournamentGameReminderCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentGameReminderPayload>
+        }
+        createMany: {
+          args: Prisma.TournamentGameReminderCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TournamentGameReminderCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentGameReminderPayload>[]
+        }
+        delete: {
+          args: Prisma.TournamentGameReminderDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentGameReminderPayload>
+        }
+        update: {
+          args: Prisma.TournamentGameReminderUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentGameReminderPayload>
+        }
+        deleteMany: {
+          args: Prisma.TournamentGameReminderDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TournamentGameReminderUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TournamentGameReminderUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentGameReminderPayload>[]
+        }
+        upsert: {
+          args: Prisma.TournamentGameReminderUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentGameReminderPayload>
+        }
+        aggregate: {
+          args: Prisma.TournamentGameReminderAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTournamentGameReminder>
+        }
+        groupBy: {
+          args: Prisma.TournamentGameReminderGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TournamentGameReminderGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TournamentGameReminderCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TournamentGameReminderCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -4865,6 +5015,33 @@ export const TournamentAuctionPaymentScalarFieldEnum = {
 export type TournamentAuctionPaymentScalarFieldEnum = (typeof TournamentAuctionPaymentScalarFieldEnum)[keyof typeof TournamentAuctionPaymentScalarFieldEnum]
 
 
+export const TournamentTeamFollowScalarFieldEnum = {
+  id: 'id',
+  tournamentId: 'tournamentId',
+  teamId: 'teamId',
+  email: 'email',
+  lang: 'lang',
+  token: 'token',
+  confirmedAt: 'confirmedAt',
+  unsubscribedAt: 'unsubscribedAt',
+  confirmationSentAt: 'confirmationSentAt',
+  createdAt: 'createdAt'
+} as const
+
+export type TournamentTeamFollowScalarFieldEnum = (typeof TournamentTeamFollowScalarFieldEnum)[keyof typeof TournamentTeamFollowScalarFieldEnum]
+
+
+export const TournamentGameReminderScalarFieldEnum = {
+  id: 'id',
+  followId: 'followId',
+  gameId: 'gameId',
+  startsAt: 'startsAt',
+  sentAt: 'sentAt'
+} as const
+
+export type TournamentGameReminderScalarFieldEnum = (typeof TournamentGameReminderScalarFieldEnum)[keyof typeof TournamentGameReminderScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -5482,6 +5659,8 @@ export type GlobalOmitConfig = {
   tournamentAuctionBidder?: Prisma.TournamentAuctionBidderOmit
   tournamentAuctionBid?: Prisma.TournamentAuctionBidOmit
   tournamentAuctionPayment?: Prisma.TournamentAuctionPaymentOmit
+  tournamentTeamFollow?: Prisma.TournamentTeamFollowOmit
+  tournamentGameReminder?: Prisma.TournamentGameReminderOmit
 }
 
 /* Types for Logging */

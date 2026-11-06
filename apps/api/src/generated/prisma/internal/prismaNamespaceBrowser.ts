@@ -99,7 +99,9 @@ export const ModelName = {
   TournamentAuctionItem: 'TournamentAuctionItem',
   TournamentAuctionBidder: 'TournamentAuctionBidder',
   TournamentAuctionBid: 'TournamentAuctionBid',
-  TournamentAuctionPayment: 'TournamentAuctionPayment'
+  TournamentAuctionPayment: 'TournamentAuctionPayment',
+  TournamentTeamFollow: 'TournamentTeamFollow',
+  TournamentGameReminder: 'TournamentGameReminder'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -864,6 +866,33 @@ export const TournamentAuctionPaymentScalarFieldEnum = {
 } as const
 
 export type TournamentAuctionPaymentScalarFieldEnum = (typeof TournamentAuctionPaymentScalarFieldEnum)[keyof typeof TournamentAuctionPaymentScalarFieldEnum]
+
+
+export const TournamentTeamFollowScalarFieldEnum = {
+  id: 'id',
+  tournamentId: 'tournamentId',
+  teamId: 'teamId',
+  email: 'email',
+  lang: 'lang',
+  token: 'token',
+  confirmedAt: 'confirmedAt',
+  unsubscribedAt: 'unsubscribedAt',
+  confirmationSentAt: 'confirmationSentAt',
+  createdAt: 'createdAt'
+} as const
+
+export type TournamentTeamFollowScalarFieldEnum = (typeof TournamentTeamFollowScalarFieldEnum)[keyof typeof TournamentTeamFollowScalarFieldEnum]
+
+
+export const TournamentGameReminderScalarFieldEnum = {
+  id: 'id',
+  followId: 'followId',
+  gameId: 'gameId',
+  startsAt: 'startsAt',
+  sentAt: 'sentAt'
+} as const
+
+export type TournamentGameReminderScalarFieldEnum = (typeof TournamentGameReminderScalarFieldEnum)[keyof typeof TournamentGameReminderScalarFieldEnum]
 
 
 export const SortOrder = {

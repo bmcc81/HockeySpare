@@ -103,6 +103,7 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
 
   countdownText = signal<string | null>(null);
   calendarTeamId = signal<string | null>(null);
+  followMessage = signal<{ text: string; ok: boolean } | null>(null);
   searchQuery = signal('');
   bannerIndex = signal(0);
   highlightedGameId = signal<string | null>(null);
@@ -128,6 +129,15 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit(): void {
+    const follow = this.route.snapshot.queryParamMap.get('follow');
+    if (follow === 'confirmed') {
+      this.followMessage.set({ text: "You're all set! We'll email you before this team's games.", ok: true });
+    } else if (follow === 'unsubscribed') {
+      this.followMessage.set({ text: "You've been unsubscribed. You won't get more reminders.", ok: true });
+    } else if (follow === 'invalid') {
+      this.followMessage.set({ text: 'That link is not valid any more.', ok: false });
+    }
+
     this.tournamentsApi.getPublic(this.tournamentId).subscribe({
       next: (tournament) => {
         this.tournament.set(tournament);

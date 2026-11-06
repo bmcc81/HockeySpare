@@ -262,3 +262,14 @@ export type TournamentAuctionBid = Prisma.TournamentAuctionBidModel
  * 
  */
 export type TournamentAuctionPayment = Prisma.TournamentAuctionPaymentModel
+/**
+ * Model TournamentTeamFollow
+ * Someone who asked for email reminders before a team's tournament games.
+ * No account is needed; the email is confirmed by a link before anything is sent.
+ */
+export type TournamentTeamFollow = Prisma.TournamentTeamFollowModel
+/**
+ * Model TournamentGameReminder
+ * One reminder email sent for one game start time (a rescheduled game gets a new one).
+ */
+export type TournamentGameReminder = Prisma.TournamentGameReminderModel

@@ -1,21 +1,43 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class EmailService {
+  private readonly logger = new Logger(EmailService.name);
   private readonly transporter: nodemailer.Transporter;
 
+  /** False when MAIL_HOST is not set: messages are only logged, never delivered. */
+  readonly isConfigured: boolean;
+
   constructor(private readonly config: ConfigService) {
-    this.transporter = nodemailer.createTransport({
-      host: this.config.get<string>('MAIL_HOST'),
-      port: Number(this.config.get<string>('MAIL_PORT') ?? 587),
-      secure: this.config.get<string>('MAIL_SECURE') === 'true',
-      auth: {
-        user: this.config.get<string>('MAIL_USER'),
-        pass: this.config.get<string>('MAIL_PASS'),
-      },
-    });
+    this.isConfigured = !!this.config.get<string>('MAIL_HOST');
+
+    if (this.isConfigured) {
+      this.transporter = nodemailer.createTransport({
+        host: this.config.get<string>('MAIL_HOST'),
+        port: Number(this.config.get<string>('MAIL_PORT') ?? 587),
+        secure: this.config.get<string>('MAIL_SECURE') === 'true',
+        auth: {
+          user: this.config.get<string>('MAIL_USER'),
+          pass: this.config.get<string>('MAIL_PASS'),
+        },
+      });
+      return;
+    }
+
+    // No mail server configured: don't try localhost:587 and fail on every send.
+    // Build the message, log that it was not delivered, and carry on.
+    this.logger.warn('MAIL_HOST is not set: emails are logged, not delivered.');
+    this.transporter = nodemailer.createTransport({ jsonTransport: true });
+    const buildOnly = this.transporter.sendMail.bind(this.transporter);
+    this.transporter.sendMail = (async (message: nodemailer.SendMailOptions) => {
+      const info = await buildOnly(message);
+      this.logger.warn(
+        `Email NOT delivered (no MAIL_HOST): to=${String(message.to)} subject="${String(message.subject)}"`,
+      );
+      return info;
+    }) as typeof this.transporter.sendMail;
   }
 
   async sendMail(args: {
@@ -23,6 +45,7 @@ export class EmailService {
     subject: string;
     text: string;
     html?: string;
+    headers?: Record<string, string>;
   }): Promise<void> {
     await this.transporter.sendMail({
       from: this.getMailFrom(),
@@ -30,6 +53,7 @@ export class EmailService {
       subject: args.subject,
       text: args.text,
       html: args.html,
+      headers: args.headers,
     });
   }
 
@@ -300,7 +324,7 @@ export class EmailService {
     });
   }
 
-  private getAppUrl(): string {
+  getAppUrl(): string {
     const nodeEnv = this.config.get<string>('NODE_ENV');
 
     const defaultAppUrl =

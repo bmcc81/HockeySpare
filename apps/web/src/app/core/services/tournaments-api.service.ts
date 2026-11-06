@@ -80,6 +80,19 @@ export class TournamentsApiService {
     return this.http.get<Tournament[]>('/api/tournaments/mine');
   }
 
+  /** Ask for email reminders before a team's games. No account needed; the address is confirmed by a link. */
+  followTeam(
+    tournamentId: string,
+    teamId: string,
+    email: string,
+    lang: 'en' | 'fr',
+  ): Observable<{ status: 'confirmation_sent' | 'already_following' | 'confirmation_recently_sent' | 'email_failed'; emailConfigured: boolean }> {
+    return this.http.post<{ status: 'confirmation_sent' | 'already_following' | 'confirmation_recently_sent' | 'email_failed'; emailConfigured: boolean }>(
+      `/api/tournaments/${encodeURIComponent(tournamentId)}/teams/${encodeURIComponent(teamId)}/follow`,
+      { email, lang },
+    );
+  }
+
   getPublic(id: string): Observable<Tournament> {
     return this.http.get<Tournament>(`/api/tournaments/${id}`);
   }

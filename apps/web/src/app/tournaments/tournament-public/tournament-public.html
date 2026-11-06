@@ -54,7 +54,7 @@
         *ngFor="let announcement of weatherAlerts().slice(0, 3); trackBy: trackByAnnouncementId"
       >
         <strong>&#9888; {{ 'Weather alert' | t }} &middot; {{ announcement.createdAt | ldate: 'MMM d, h:mm a' }}:</strong>
-        {{ announcement.body }}
+        <span style="white-space: pre-line">{{ announcement.body }}</span>
       </div>
     </div>
 
@@ -63,7 +63,7 @@
         *ngFor="let announcement of generalAnnouncements().slice(0, 3); trackBy: trackByAnnouncementId"
       >
         <strong>{{ announcement.createdAt | ldate: 'MMM d' }}:</strong>
-        {{ announcement.body }}
+        <span style="white-space: pre-line">{{ announcement.body }}</span>
       </div>
     </div>
 

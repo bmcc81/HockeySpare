@@ -114,6 +114,14 @@
         <ng-container *ngIf="t.endDate"> &ndash; {{ t.endDate | ldate: 'mediumDate' : 'UTC' }}</ng-container>
       </div>
       <p class="mt-2" *ngIf="t.description">{{ t.description }}</p>
+      <div class="d-flex align-items-center justify-content-center gap-3 mt-3">
+        <app-qr-code [value]="tournamentQrValue()" [size]="96" />
+        <div class="text-start small">
+          <strong>{{ 'Live scores, standings and schedule' | t }}</strong><br />
+          {{ 'Scan with your phone' | t }}<br />
+          <span class="text-secondary">{{ 'Need a spare for your team? HockeySpare can help.' | t }}</span>
+        </div>
+      </div>
     </div>
 
     <div class="program-section" *ngIf="t.venues.length > 0">

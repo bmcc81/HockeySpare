@@ -5,6 +5,7 @@ import { Tournament, TournamentGame } from '@hockeyspare/contracts';
 import { Subscription, interval, switchMap } from 'rxjs';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
 import { TranslatePipe, LocalDatePipe } from '../../core/i18n/t.pipe';
+import { QrCodeComponent } from '../shared/qr-code/qr-code';
 import { I18nService } from '../../core/i18n/i18n.service';
 
 const POLL_INTERVAL_MS = 15000;
@@ -13,7 +14,7 @@ const CLOCK_TICK_MS = 1000;
 @Component({
   selector: 'app-tournament-scoreboard',
   standalone: true,
-  imports: [CommonModule, TranslatePipe, LocalDatePipe],
+  imports: [CommonModule, TranslatePipe, LocalDatePipe, QrCodeComponent],
   templateUrl: './tournament-scoreboard.html',
 })
 export class TournamentScoreboardComponent implements OnInit, OnDestroy {
@@ -94,6 +95,10 @@ export class TournamentScoreboardComponent implements OnInit, OnDestroy {
       (a) => a.type === 'WEATHER',
     );
     return alert?.body ?? null;
+  }
+
+  tournamentQrValue(): string {
+    return `${window.location.origin}/tournaments/${this.tournamentId}`;
   }
 
   trackByGameId(_index: number, game: TournamentGame): string {

@@ -231,6 +231,12 @@ export const routes: Routes = [
   },
 
   {
+    path: 'terms',
+    loadComponent: () =>
+      import('./legal/terms/terms').then((m) => m.TermsComponent),
+  },
+
+  {
     path: 'privacy',
     loadComponent: () =>
       import('./legal/privacy-policy/privacy-policy').then(

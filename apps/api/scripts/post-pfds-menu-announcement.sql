@@ -10,13 +10,13 @@ DELETE FROM "TournamentAnnouncement" WHERE id = 'ann_pfds2026_menu';
 INSERT INTO "TournamentAnnouncement" (id, "tournamentId", body, type, "createdAt") VALUES (
   'ann_pfds2026_menu',
   'cmspgfwhd0006g3yqolfrjj9j',
-  E'Food menu / Menu des repas (Île Bizard unless noted / sauf indication)\n'
-  E'Mon / Lun: PFDS: Pizza · Île Bizard: Porky tacos (2) with fries / Tacos de porc (2) avec frites\n'
-  E'Tue / Mar: Burger with fries / Hamburger avec frites\n'
-  E'Wed / Mer: 2 toasted hot dogs with fries / 2 hot-dogs grillés avec frites\n'
-  E'Thu / Jeu: Pulled pork sandwich, Mexican style, with fries / Sandwich au porc effiloché à la mexicaine avec frites\n'
-  E'Fri / Ven: Chicken quesadilla with fries / Quesadilla au poulet avec frites\n'
-  E'Sat / Sam: Barbacoa tacos (2) with fries / Tacos barbacoa (2) avec frites\n'
+  E'Food menu / Menu des repas (Île Bizard unless noted / sauf indication)\n' ||
+  E'Mon / Lun: PFDS: Pizza · Île Bizard: Porky tacos (2) with fries / Tacos de porc (2) avec frites\n' ||
+  E'Tue / Mar: Burger with fries / Hamburger avec frites\n' ||
+  E'Wed / Mer: 2 toasted hot dogs with fries / 2 hot-dogs grillés avec frites\n' ||
+  E'Thu / Jeu: Pulled pork sandwich, Mexican style, with fries / Sandwich au porc effiloché à la mexicaine avec frites\n' ||
+  E'Fri / Ven: Chicken quesadilla with fries / Quesadilla au poulet avec frites\n' ||
+  E'Sat / Sam: Barbacoa tacos (2) with fries / Tacos barbacoa (2) avec frites\n' ||
   E'Sun / Dim: Pizza and leftovers! with fries / Pizza et restes ! avec frites',
   'GENERAL',
   now()

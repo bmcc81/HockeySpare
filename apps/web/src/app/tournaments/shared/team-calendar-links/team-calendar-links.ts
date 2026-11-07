@@ -142,6 +142,6 @@ export class TeamCalendarLinksComponent {
 
   /** Angular treats webcal: as unsafe by default; this is our own feed URL. */
   get webcal(): SafeUrl {
-    return this.sanitizer.bypassSecurityTrustUrl(webcalUrl(this.feed));
+    return this.sanitizer.bypassSecurityTrustUrl(webcalUrl(this.feed, navigator.userAgent));
   }
 }

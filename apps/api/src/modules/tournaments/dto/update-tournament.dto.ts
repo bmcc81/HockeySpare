@@ -1,4 +1,5 @@
 import {
+  IsBoolean,
   IsDateString,
   IsEmail,
   IsEnum,
@@ -15,6 +16,11 @@ export class UpdateTournamentDto {
   @IsString()
   @MaxLength(120)
   name?: string;
+
+  /** False hides the Volunteer tab from the public (organizers can still preview). */
+  @IsOptional()
+  @IsBoolean()
+  volunteersOpen?: boolean;
 
   @IsOptional()
   @IsString()

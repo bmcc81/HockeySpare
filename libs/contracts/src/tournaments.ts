@@ -244,6 +244,8 @@ export interface Tournament {
   contactPhone?: string | null;
   logoUrl?: string | null;
   rulebookUrl?: string | null;
+  /** False while volunteer sign-up is hidden from the public (organizer preview). */
+  volunteersOpen?: boolean;
   games: TournamentGame[];
   sponsors: TournamentSponsor[];
   teams: TournamentTeam[];
@@ -283,7 +285,9 @@ export interface CreateTournamentInput {
   contactPhone?: string | null;
 }
 
-export type UpdateTournamentInput = Partial<CreateTournamentInput>;
+export type UpdateTournamentInput = Partial<CreateTournamentInput> & {
+  volunteersOpen?: boolean;
+};
 
 export interface CreateTournamentGameInput {
   homeTeamName: string;
@@ -516,6 +520,8 @@ export interface TournamentVolunteerShift {
   capacity?: number | null;
   createdAt: string;
   _count?: { signups: number };
+  /** Only present in the organizer view. */
+  signups?: TournamentVolunteerSignup[];
 }
 
 export interface CreateTournamentVolunteerShiftInput {
@@ -527,11 +533,28 @@ export interface CreateTournamentVolunteerShiftInput {
   capacity?: number | null;
 }
 
+export type UpdateTournamentVolunteerShiftInput = {
+  role?: string;
+  description?: string;
+  startsAt?: string;
+  endsAt?: string;
+  location?: string;
+  /** null removes the limit. */
+  capacity?: number | null;
+};
+
+/** An organizer putting someone on a shift; the email is optional. */
+export interface AddTournamentVolunteerInput {
+  name: string;
+  email?: string | null;
+  phone?: string | null;
+}
+
 export interface TournamentVolunteerSignup {
   id: string;
   shiftId: string;
   name: string;
-  email: string;
+  email?: string | null;
   phone?: string | null;
   createdAt: string;
 }

@@ -472,6 +472,7 @@ export const TournamentScalarFieldEnum = {
   contactPhone: 'contactPhone',
   logoUrl: 'logoUrl',
   rulebookUrl: 'rulebookUrl',
+  volunteersOpen: 'volunteersOpen',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

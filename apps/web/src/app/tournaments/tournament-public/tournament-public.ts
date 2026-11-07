@@ -1,6 +1,6 @@
 import { PlayerHighlightsComponent } from '../../shared/player-highlights/player-highlights';
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import {
   NonNullableFormBuilder,
   ReactiveFormsModule,
@@ -32,6 +32,8 @@ import { I18nService } from '../../core/i18n/i18n.service';
 import { LocalDatePipe, TranslatePipe } from '../../core/i18n/t.pipe';
 import { TeamCalendarLinksComponent } from '../shared/team-calendar-links/team-calendar-links';
 import { googleGameLink } from '../shared/calendar-links';
+import { groupVolunteerShifts } from '../shared/volunteer-groups';
+import { AuthStateService } from '../../auth/auth-state.service';
 
 type TournamentTab =
   | 'schedule'
@@ -70,6 +72,7 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
   private readonly auctionApi = inject(AuctionApiService);
   private readonly sanitizer = inject(DomSanitizer);
   private readonly i18n = inject(I18nService);
+  private readonly authState = inject(AuthStateService);
 
   auctionActive = signal(false);
 
@@ -122,6 +125,23 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
   volunteerSignupError = signal<string | null>(null);
   volunteerSignupSuccessShiftId = signal<string | null>(null);
 
+  /**
+   * Set when sign-up is still closed to the public and the signed-in viewer is
+   * an organizer: the shifts they are previewing. Null for everyone else.
+   */
+  volunteerPreviewShifts = signal<TournamentVolunteerShift[] | null>(null);
+
+  volunteerPreview = computed(() => this.volunteerPreviewShifts() !== null);
+
+  /** The shifts to show: the organizer preview, or what the public may see. */
+  volunteerShifts = computed(
+    () => this.volunteerPreviewShifts() ?? this.tournament()?.volunteerShifts ?? [],
+  );
+
+  volunteerGroups = computed(() =>
+    groupVolunteerShifts(this.volunteerShifts(), this.i18n.locale()),
+  );
+
   volunteerSignupForm = this.fb.group({
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
@@ -142,6 +162,7 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
       next: (tournament) => {
         this.tournament.set(tournament);
         this.loading.set(false);
+        this.loadVolunteerPreview();
         this.jumpToFragmentGame();
       },
       error: () => {
@@ -639,6 +660,20 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
     return item.id;
   }
 
+  /** Organizers see the volunteer shifts while sign-up is still closed to the public. */
+  private loadVolunteerPreview(): void {
+    if (this.tournament()?.volunteersOpen !== false || !this.authState.isLoggedIn()) {
+      return;
+    }
+
+    // Anyone who is not an organizer of this tournament gets a 403, which just
+    // means there is no preview for them.
+    this.tournamentsApi.listVolunteerShifts(this.tournamentId).subscribe({
+      next: (shifts) => this.volunteerPreviewShifts.set(shifts),
+      error: () => this.volunteerPreviewShifts.set(null),
+    });
+  }
+
   spotsRemaining(shift: TournamentVolunteerShift): number | null {
     if (shift.capacity == null) {
       return null;
@@ -670,19 +705,28 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
     this.submittingVolunteerSignup.set(true);
     this.volunteerSignupError.set(null);
 
-    this.tournamentsApi
-      .signUpForVolunteerShift(this.tournamentId, shiftId, {
-        name: value.name.trim(),
-        email: value.email.trim(),
-        phone: value.phone.trim() || null,
-      })
-      .subscribe({
+    const input = {
+      name: value.name.trim(),
+      email: value.email.trim(),
+      phone: value.phone.trim() || null,
+    };
+
+    // While previewing, sign-up is still closed to the public, so organizers
+    // add the name through their own endpoint (same form, same result).
+    const request = this.volunteerPreview()
+      ? this.tournamentsApi.addVolunteerToShift(this.tournamentId, shiftId, input)
+      : this.tournamentsApi.signUpForVolunteerShift(this.tournamentId, shiftId, input);
+
+    request.subscribe({
         next: () => {
           this.submittingVolunteerSignup.set(false);
           this.signingUpShiftId.set(null);
           this.volunteerSignupSuccessShiftId.set(shiftId);
           this.tournamentsApi.getPublic(this.tournamentId).subscribe({
-            next: (tournament) => this.tournament.set(tournament),
+            next: (tournament) => {
+              this.tournament.set(tournament);
+              this.loadVolunteerPreview();
+            },
           });
         },
         error: (err) => {

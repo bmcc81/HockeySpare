@@ -36,14 +36,13 @@ import {
   TournamentTeam,
   TournamentTeamPlayer,
   TournamentVenue,
-  TournamentVolunteerShift,
-  TournamentVolunteerSignup,
   TournamentWebhook,
 } from '@hockeyspare/contracts';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
 import { AuthStateService } from '../../auth/auth-state.service';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { QrCodeComponent } from '../shared/qr-code/qr-code';
+import { VolunteerManagerComponent } from '../shared/volunteer-manager/volunteer-manager';
 import { TournamentManageAuctionComponent } from '../tournament-manage-auction/tournament-manage-auction';
 import { TranslatePipe, LocalDatePipe } from '../../core/i18n/t.pipe';
 
@@ -89,8 +88,11 @@ const AUDIT_ACTION_LABELS: Record<string, string> = {
   VENUE_ADDED: 'Venue added',
   VENUE_DELETED: 'Venue removed',
   VENUE_UPDATED: 'Venue updated',
+  VOLUNTEER_ADDED: 'Volunteer added',
+  VOLUNTEER_REMOVED: 'Volunteer removed',
   VOLUNTEER_SHIFT_ADDED: 'Volunteer shift added',
   VOLUNTEER_SHIFT_REMOVED: 'Volunteer shift removed',
+  VOLUNTEER_SHIFT_UPDATED: 'Volunteer shift updated',
   WEATHER_ALERT_POSTED: 'Weather alert posted',
   WEBHOOK_ADDED: 'Webhook added',
   WEBHOOK_REMOVED: 'Webhook removed',
@@ -105,6 +107,7 @@ const AUDIT_ACTION_LABELS: Record<string, string> = {
     RouterLink,
     QrCodeComponent,
     TournamentManageAuctionComponent,
+    VolunteerManagerComponent,
     TranslatePipe,
     LocalDatePipe,
   ],
@@ -243,13 +246,6 @@ export class TournamentManageComponent implements OnInit {
   assigningRefereeGameId = signal<string | null>(null);
   selectedRefereeToAssign = signal<Record<string, string>>({});
 
-  savingVolunteerShift = signal(false);
-  volunteerShiftError = signal<string | null>(null);
-  deletingVolunteerShiftId = signal<string | null>(null);
-  viewingSignupsShiftId = signal<string | null>(null);
-  shiftSignups = signal<TournamentVolunteerSignup[]>([]);
-  loadingSignups = signal(false);
-
   showInfoListingForm = signal(false);
   savingInfoListing = signal(false);
   infoListingError = signal<string | null>(null);
@@ -317,15 +313,6 @@ export class TournamentManageComponent implements OnInit {
     name: ['', Validators.required],
     email: [''],
     phone: [''],
-  });
-
-  volunteerShiftForm = this.fb.group({
-    role: ['', Validators.required],
-    description: [''],
-    startsAt: ['', Validators.required],
-    endsAt: ['', Validators.required],
-    location: [''],
-    capacity: [''],
   });
 
   infoListingForm = this.fb.group({
@@ -2257,105 +2244,10 @@ export class TournamentManageComponent implements OnInit {
       });
   }
 
-  // --- Volunteer shifts ---
+  // --- Volunteers (the shifts themselves live in the volunteer manager) ---
 
-  saveVolunteerShift(): void {
-    if (this.volunteerShiftForm.invalid || this.savingVolunteerShift()) {
-      this.volunteerShiftForm.markAllAsTouched();
-      return;
-    }
-
-    const value = this.volunteerShiftForm.getRawValue();
-
-    this.savingVolunteerShift.set(true);
-    this.volunteerShiftError.set(null);
-
-    this.tournamentsApi
-      .createVolunteerShift(this.tournamentId, {
-        role: value.role.trim(),
-        description: value.description.trim() || null,
-        startsAt: new Date(value.startsAt).toISOString(),
-        endsAt: new Date(value.endsAt).toISOString(),
-        location: value.location.trim() || null,
-        capacity: value.capacity ? Number(value.capacity) : null,
-      })
-      .subscribe({
-        next: () => {
-          this.savingVolunteerShift.set(false);
-          this.volunteerShiftForm.reset({
-            role: '',
-            description: '',
-            startsAt: '',
-            endsAt: '',
-            location: '',
-            capacity: '',
-          });
-          this.load();
-        },
-        error: (err) => {
-          this.volunteerShiftError.set(
-            err?.error?.message || this.i18n.t('Could not add this volunteer shift.'),
-          );
-          this.savingVolunteerShift.set(false);
-        },
-      });
-  }
-
-  deleteVolunteerShift(shiftId: string): void {
-    this.deletingVolunteerShiftId.set(shiftId);
-    this.volunteerShiftError.set(null);
-
-    this.tournamentsApi
-      .deleteVolunteerShift(this.tournamentId, shiftId)
-      .subscribe({
-        next: () => {
-          this.deletingVolunteerShiftId.set(null);
-          this.load();
-        },
-        error: (err) => {
-          this.volunteerShiftError.set(
-            err?.error?.message || this.i18n.t('Could not remove this volunteer shift.'),
-          );
-          this.deletingVolunteerShiftId.set(null);
-        },
-      });
-  }
-
-  toggleViewSignups(shiftId: string): void {
-    if (this.viewingSignupsShiftId() === shiftId) {
-      this.viewingSignupsShiftId.set(null);
-      return;
-    }
-
-    this.viewingSignupsShiftId.set(shiftId);
-    this.loadingSignups.set(true);
-    this.shiftSignups.set([]);
-
-    this.tournamentsApi
-      .listVolunteerSignups(this.tournamentId, shiftId)
-      .subscribe({
-        next: (signups) => {
-          this.shiftSignups.set(signups);
-          this.loadingSignups.set(false);
-        },
-        error: () => {
-          this.loadingSignups.set(false);
-        },
-      });
-  }
-
-  trackByVolunteerShiftId(
-    _index: number,
-    shift: TournamentVolunteerShift,
-  ): string {
-    return shift.id;
-  }
-
-  trackByVolunteerSignupId(
-    _index: number,
-    signup: TournamentVolunteerSignup,
-  ): string {
-    return signup.id;
+  setVolunteersOpen(open: boolean): void {
+    this.tournament.update((t) => (t ? { ...t, volunteersOpen: open } : t));
   }
 
   // --- Info listings (hotel / merchandise / vendor) ---

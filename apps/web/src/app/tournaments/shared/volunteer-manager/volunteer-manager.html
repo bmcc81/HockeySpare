@@ -1,0 +1,203 @@
+<div class="card mt-4">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+      <div>
+        <h2 class="h5 mb-1">{{ 'Volunteers' | t }}</h2>
+        <span class="badge" [class.text-bg-success]="isOpen" [class.text-bg-warning]="!isOpen">
+          {{ isOpen ? ('Open to the public' | t) : ('Hidden: organizers only' | t) }}
+        </span>
+      </div>
+
+      <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-sm btn-outline-secondary" [routerLink]="['/tournaments', tournamentId]" target="_blank">
+          {{ 'Preview the page' | t }}
+        </a>
+        <button
+          type="button"
+          class="btn btn-sm"
+          [class.btn-primary]="!isOpen"
+          [class.btn-outline-danger]="isOpen"
+          [disabled]="savingOpen()"
+          (click)="toggleOpen()"
+        >
+          {{ savingOpen() ? '...' : isOpen ? ('Hide from the public' | t) : ('Open sign-up to the public' | t) }}
+        </button>
+      </div>
+    </div>
+
+    <p class="text-secondary small" *ngIf="!isOpen">
+      {{ 'The Volunteer tab is hidden from everyone except organizers. Open the tournament page while signed in to try it (use the Volunteer tab), then open sign-up when you are ready.' | t }}
+    </p>
+
+    <div *ngIf="error()" class="alert alert-danger py-2">{{ error() }}</div>
+
+    <form [formGroup]="shiftForm" (ngSubmit)="addShift()" class="row g-2 mb-3">
+      <div class="col-12 col-md-3">
+        <label class="form-label">{{ 'Role' | t }}</label>
+        <input class="form-control" formControlName="role" [placeholder]="'e.g. Scorekeeper' | t" />
+      </div>
+      <div class="col-12 col-md-3">
+        <label class="form-label">{{ 'Location' | t }}</label>
+        <input class="form-control" formControlName="location" [placeholder]="'Optional' | t" />
+      </div>
+      <div class="col-6 col-md-2">
+        <label class="form-label">{{ 'Starts' | t }}</label>
+        <input type="datetime-local" class="form-control" formControlName="startsAt" />
+      </div>
+      <div class="col-6 col-md-2">
+        <label class="form-label">{{ 'Ends' | t }}</label>
+        <input type="datetime-local" class="form-control" formControlName="endsAt" />
+      </div>
+      <div class="col-6 col-md-1">
+        <label class="form-label">{{ 'Capacity' | t }}</label>
+        <input type="number" min="1" class="form-control" formControlName="capacity" [placeholder]="'Optional' | t" />
+      </div>
+      <div class="col-6 col-md-1 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary btn-sm w-100" [disabled]="shiftForm.invalid || saving()">
+          {{ saving() && !editingShiftId() ? '...' : ('Add' | t) }}
+        </button>
+      </div>
+      <div class="col-12">
+        <label class="form-label">{{ 'Description' | t }}</label>
+        <input class="form-control" formControlName="description" [placeholder]="'Optional' | t" />
+      </div>
+    </form>
+
+    <div *ngIf="loading()" class="text-secondary py-2">...</div>
+    <div *ngIf="!loading() && shifts().length === 0" class="text-secondary py-2">
+      {{ 'No volunteer shifts added yet.' | t }}
+    </div>
+
+    <div class="d-flex flex-column gap-4">
+      <section *ngFor="let day of groups()">
+        <h3 class="h6 border-bottom pb-1 mb-2">{{ day.day }}</h3>
+
+        <div class="d-flex flex-column gap-3">
+          <div *ngFor="let group of day.arenas">
+            <div class="text-uppercase text-secondary small mb-1" *ngIf="group.arena">{{ group.arena }}</div>
+
+            <div class="d-flex flex-column gap-2">
+              <div class="border rounded p-2" *ngFor="let shift of group.shifts; trackBy: trackById">
+                <ng-container *ngIf="editingShiftId() !== shift.id">
+                  <div class="d-flex justify-content-between align-items-start gap-2 flex-wrap">
+                    <div>
+                      <strong>{{ shift.role }}</strong>
+                      <span class="text-secondary small">
+                        &middot; {{ shift.startsAt | ldate: 'shortTime' }} - {{ shift.endsAt | ldate: 'shortTime' }}
+                      </span>
+                      <div class="text-secondary small" *ngIf="shift.description">{{ shift.description }}</div>
+                      <div class="small">
+                        <span
+                          class="badge"
+                          [class.text-bg-success]="!shift.capacity || filled(shift) < shift.capacity"
+                          [class.text-bg-secondary]="shift.capacity && filled(shift) >= shift.capacity"
+                        >
+                          {{ filled(shift) }}<span *ngIf="shift.capacity"> / {{ shift.capacity }}</span>
+                          {{ 'signed up' | t }}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="d-flex gap-2 flex-shrink-0 flex-wrap">
+                      <button type="button" class="btn btn-sm btn-outline-primary" (click)="startAddName(shift.id)">
+                        {{ 'Add a name' | t }}
+                      </button>
+                      <button type="button" class="btn btn-sm btn-outline-secondary" (click)="startEdit(shift)">
+                        {{ 'Edit' | t }}
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-danger"
+                        [disabled]="deletingShiftId() === shift.id"
+                        (click)="deleteShift(shift)"
+                      >
+                        {{ deletingShiftId() === shift.id ? '...' : ('Remove' | t) }}
+                      </button>
+                    </div>
+                  </div>
+
+                  <ul class="list-unstyled small mt-2 mb-0 ps-2 border-start" *ngIf="shift.signups?.length">
+                    <li
+                      class="d-flex justify-content-between align-items-center gap-2 py-1"
+                      *ngFor="let signup of shift.signups; trackBy: trackById"
+                    >
+                      <span>
+                        {{ signup.name }}<span *ngIf="signup.email"> &middot; {{ signup.email }}</span
+                        ><span *ngIf="signup.phone"> &middot; {{ signup.phone }}</span>
+                      </span>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-link text-danger p-0"
+                        [disabled]="removingSignupId() === signup.id"
+                        (click)="removeSignup(shift, signup.id)"
+                      >
+                        {{ removingSignupId() === signup.id ? '...' : ('Remove' | t) }}
+                      </button>
+                    </li>
+                  </ul>
+
+                  <form
+                    *ngIf="addingNameShiftId() === shift.id"
+                    [formGroup]="nameForm"
+                    (ngSubmit)="addName(shift.id)"
+                    class="row g-2 mt-2"
+                  >
+                    <div class="col-12 col-md-4">
+                      <input class="form-control form-control-sm" [placeholder]="'Name' | t" formControlName="name" />
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <input class="form-control form-control-sm" [placeholder]="'Email (optional)' | t" formControlName="email" />
+                    </div>
+                    <div class="col-12 col-md-3">
+                      <input class="form-control form-control-sm" [placeholder]="'Phone (optional)' | t" formControlName="phone" />
+                    </div>
+                    <div class="col-12 col-md-1">
+                      <button type="submit" class="btn btn-primary btn-sm w-100" [disabled]="nameForm.invalid || savingName()">
+                        {{ savingName() ? '...' : ('Add' | t) }}
+                      </button>
+                    </div>
+                  </form>
+                </ng-container>
+
+                <form *ngIf="editingShiftId() === shift.id" [formGroup]="editForm" (ngSubmit)="saveEdit(shift.id)" class="row g-2">
+                  <div class="col-12 col-md-3">
+                    <label class="form-label">{{ 'Role' | t }}</label>
+                    <input class="form-control form-control-sm" formControlName="role" />
+                  </div>
+                  <div class="col-12 col-md-3">
+                    <label class="form-label">{{ 'Location' | t }}</label>
+                    <input class="form-control form-control-sm" formControlName="location" />
+                  </div>
+                  <div class="col-6 col-md-2">
+                    <label class="form-label">{{ 'Starts' | t }}</label>
+                    <input type="datetime-local" class="form-control form-control-sm" formControlName="startsAt" />
+                  </div>
+                  <div class="col-6 col-md-2">
+                    <label class="form-label">{{ 'Ends' | t }}</label>
+                    <input type="datetime-local" class="form-control form-control-sm" formControlName="endsAt" />
+                  </div>
+                  <div class="col-12 col-md-2">
+                    <label class="form-label">{{ 'Capacity' | t }}</label>
+                    <input type="number" min="1" class="form-control form-control-sm" formControlName="capacity" />
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">{{ 'Description' | t }}</label>
+                    <input class="form-control form-control-sm" formControlName="description" />
+                  </div>
+                  <div class="col-12 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary btn-sm" [disabled]="editForm.invalid || saving()">
+                      {{ saving() ? '...' : ('Save' | t) }}
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm" (click)="cancelEdit()">
+                      {{ 'Cancel' | t }}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>

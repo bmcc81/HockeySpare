@@ -4,6 +4,7 @@
  */
 import { escapeHtml } from './tournament-share';
 import { BuiltEmail, FollowLang, wrapHtml } from './follow/follow-emails';
+import { pickLanguage } from './pick-language';
 
 const TIME_ZONE = process.env.TOURNAMENT_TIME_ZONE ?? 'America/Toronto';
 
@@ -44,6 +45,10 @@ export function formatShiftTime(startsAt: Date, endsAt: Date, lang: FollowLang):
 
 export function volunteerConfirmationEmail(ctx: VolunteerConfirmationContext): BuiltEmail {
   const when = formatShiftTime(ctx.startsAt, ctx.endsAt, ctx.lang);
+  // Roles and notes written as "English | Français" come out in the email's language only.
+  const role = pickLanguage(ctx.role, ctx.lang);
+  const location = pickLanguage(ctx.location, ctx.lang);
+  const description = pickLanguage(ctx.description, ctx.lang);
   const tournamentUrl = `${ctx.origin}/tournaments/${ctx.tournamentId}`;
   const fr = ctx.lang === 'fr';
   // French puts a space before the colon.
@@ -53,10 +58,10 @@ export function volunteerConfirmationEmail(ctx: VolunteerConfirmationContext): B
     fr
       ? `Bonjour ${ctx.volunteerName}, merci de donner un coup de main au tournoi ${ctx.tournamentName} ! Vous êtes inscrit(e) au quart suivant :`
       : `Hi ${ctx.volunteerName}, thank you for volunteering at ${ctx.tournamentName}! You are signed up for this shift:`,
-    field(fr ? 'Rôle' : 'Role', ctx.role),
+    field(fr ? 'Rôle' : 'Role', role),
     field(fr ? 'Quand' : 'When', when),
-    ctx.location ? field(fr ? 'Où' : 'Where', ctx.location) : '',
-    ctx.description ? field(fr ? 'Détails' : 'Details', ctx.description) : '',
+    location ? field(fr ? 'Où' : 'Where', location) : '',
+    description ? field(fr ? 'Détails' : 'Details', description) : '',
   ].filter(Boolean);
 
   const change = ctx.contactEmail
@@ -73,9 +78,9 @@ export function volunteerConfirmationEmail(ctx: VolunteerConfirmationContext): B
 
   return {
     subject: fr
-      ? `Inscription confirmée : ${ctx.role} (${ctx.tournamentName})`
-      : `You're signed up: ${ctx.role} (${ctx.tournamentName})`,
-    text: [...lines, '', change, '', `${fr ? 'Page du tournoi' : 'Tournament page'}: ${tournamentUrl}`, '', footer].join('\n'),
+      ? `Inscription confirmée : ${role} (${ctx.tournamentName})`
+      : `You're signed up: ${role} (${ctx.tournamentName})`,
+    text: [...lines, '', change, '', field(fr ? 'Page du tournoi' : 'Tournament page', tournamentUrl), '', footer].join('\n'),
     html: wrapHtml(
       [...lines.map(escapeHtml), escapeHtml(change)],
       fr ? 'Voir le tournoi' : 'View the tournament',

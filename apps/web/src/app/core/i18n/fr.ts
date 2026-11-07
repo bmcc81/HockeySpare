@@ -1404,4 +1404,5 @@ export const FR: Record<string, string> = {
   "Could not add this name.": "Impossible d’ajouter ce nom.",
   "Could not remove this name.": "Impossible de retirer ce nom.",
   "We emailed you a confirmation.": "Nous vous avons envoyé une confirmation par courriel.",
+  "To post in English and French, write both on each line, separated by \" | \" (English | Français). Visitors see their own language. The first line of a longer post becomes its heading.": "Pour publier en français et en anglais, écrivez les deux sur chaque ligne, séparés par « | » (English | Français). Chaque visiteur voit sa langue. La première ligne d’un long message devient son titre.",
 };

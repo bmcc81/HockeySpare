@@ -33,6 +33,8 @@ import { LocalDatePipe, TranslatePipe } from '../../core/i18n/t.pipe';
 import { TeamCalendarLinksComponent } from '../shared/team-calendar-links/team-calendar-links';
 import { googleGameLink } from '../shared/calendar-links';
 import { groupVolunteerShifts } from '../shared/volunteer-groups';
+import { announcementSummary, parseAnnouncement } from '../shared/announcement-view';
+import { pickLanguage } from '../../core/i18n/pick-language';
 import { AuthStateService } from '../../auth/auth-state.service';
 
 type TournamentTab =
@@ -46,6 +48,27 @@ type TournamentTab =
   | 'volunteer'
   | 'sponsors'
   | 'register';
+
+const HIDDEN_ANNOUNCEMENTS_KEY = 'hockeyspare.hiddenAnnouncements';
+
+/** Storage can be unavailable (private windows, blocked site data), so every access is guarded. */
+function readHiddenAnnouncements(): Set<string> {
+  try {
+    const raw = localStorage.getItem(HIDDEN_ANNOUNCEMENTS_KEY);
+    const ids: unknown = raw ? JSON.parse(raw) : [];
+    return new Set(Array.isArray(ids) ? ids.filter((id): id is string => typeof id === 'string') : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function saveHiddenAnnouncements(ids: Set<string>): void {
+  try {
+    localStorage.setItem(HIDDEN_ANNOUNCEMENTS_KEY, JSON.stringify([...ids]));
+  } catch {
+    // Not remembered; it still works for this visit.
+  }
+}
 
 const LIVE_SCORE_POLL_INTERVAL_MS = 20000;
 const COUNTDOWN_TICK_MS = 1000;
@@ -616,10 +639,40 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
     return announcement.id;
   }
 
-  generalAnnouncements(): Tournament['announcements'] {
-    return (this.tournament()?.announcements ?? []).filter(
-      (a) => a.type !== 'WEATHER',
-    );
+  trackByAnnouncementViewId(_index: number, item: { announcement: { id: string } }): string {
+    return item.announcement.id;
+  }
+
+  /** The latest general announcements, ready to show in the visitor's language. */
+  generalAnnouncementViews = computed(() =>
+    (this.tournament()?.announcements ?? [])
+      .filter((a) => a.type !== 'WEATHER')
+      .slice(0, 3)
+      .map((announcement) => {
+        const view = parseAnnouncement(announcement.body, this.i18n.lang());
+        return { announcement, view, summary: announcementSummary(view) };
+      }),
+  );
+
+  /** Announcements the visitor has hidden (remembered on this device). Weather alerts cannot be hidden. */
+  hiddenAnnouncementIds = signal<Set<string>>(readHiddenAnnouncements());
+
+  isAnnouncementHidden(id: string): boolean {
+    return this.hiddenAnnouncementIds().has(id);
+  }
+
+  toggleAnnouncement(id: string): void {
+    const next = new Set(this.hiddenAnnouncementIds());
+    if (!next.delete(id)) {
+      next.add(id);
+    }
+    this.hiddenAnnouncementIds.set(next);
+    saveHiddenAnnouncements(next);
+  }
+
+  /** Organizer-typed text (volunteer roles, notes) shown in the visitor's language. */
+  pick(text: string | null | undefined): string {
+    return pickLanguage(text, this.i18n.lang());
   }
 
   weatherAlerts(): Tournament['announcements'] {

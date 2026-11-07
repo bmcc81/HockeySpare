@@ -9,8 +9,8 @@
  * run the SQL again: shifts have fixed ids, so a re-run updates them in place
  * and keeps any names already on them.
  *
- * Roles and notes are bilingual ("English / Français") because the volunteer
- * page shows them as typed. "close" has no fixed time, so each day gets an
+ * Roles and notes are bilingual ("English | Français"): the volunteer page and
+ * the confirmation email show only the reader's language. "close" has no fixed time, so each day gets an
  * approximate one (CLOSE below) and the shift's note says it is approximate.
  */
 
@@ -35,30 +35,47 @@ const CLOSE = {
   22: '15:30',
 };
 
-const UNTIL_CLOSE = 'Until close (end time is approximate) / Jusqu’à la fermeture (heure de fin approximative)';
+// "English | Français": the site shows each visitor (and each email) only their language.
+const bi = (en, fr) => `${en} | ${fr}`;
+// Joins two bilingual texts language by language: both(a, b) = "a-en. b-en | a-fr. b-fr".
+const both = (a, b, sep = '. ') => {
+  const [aEn, aFr] = a.split(' | ');
+  const [bEn, bFr] = b.split(' | ');
+  return `${aEn}${sep}${bEn} | ${aFr}${sep}${bFr}`;
+};
+
+const UNTIL_CLOSE = bi('Until close (end time is approximate)', 'Jusqu’à la fermeture (heure de fin approximative)');
 
 // --- Roles -----------------------------------------------------------------
-const SUPERVISOR = 'Supervisor / Superviseur';
-const TIMEKEEPER = 'Timekeeper / Chronométreur';
-const REFEREES = 'Referees / Arbitres';
-const HOST = 'Host / Accueil';
-const BAR_HOST = 'Bar host / Hôte au bar';
-const KITCHEN = 'Kitchen helper / Aide-cuisine';
-const RAFFLE = 'Raffle & beer tickets / Billets de tirage et de bière';
-const BEER = 'Beer tickets / Billets de bière';
-const LOUNGE = 'Lounge helper & cleaner / Aide au salon et entretien';
-const LOUNGE_DRIVER = 'Lounge helper, cleaner & IGA pizza driver / Aide au salon, entretien et livreur de pizza IGA';
+const SUPERVISOR = bi('Supervisor', 'Superviseur');
+const TIMEKEEPER = bi('Timekeeper', 'Chronométreur');
+const REFEREES = bi('Referees', 'Arbitres');
+const HOST = bi('Host', 'Accueil');
+const BAR_HOST = bi('Bar host', 'Hôte au bar');
+const KITCHEN = bi('Kitchen helper', 'Aide-cuisine');
+const RAFFLE = bi('Raffle & beer tickets', 'Billets de tirage et de bière');
+const BEER = bi('Beer tickets', 'Billets de bière');
+const LOUNGE = bi('Lounge helper & cleaner', 'Aide au salon et entretien');
+const LOUNGE_DRIVER = bi('Lounge helper, cleaner & IGA pizza driver', 'Aide au salon, entretien et livreur de pizza IGA');
 
 // --- Notes -----------------------------------------------------------------
-const ALL_GAMES = 'For all games / Pour tous les matchs';
-const THREE_GAMES = 'For 3 games / Pour 3 matchs';
-const TWO_GAMES = 'For 2 games / Pour 2 matchs';
-const WELCOME =
-  'Welcome teams, guide them to their rooms, neck guards, roster sheets / Accueillir les équipes, les guider vers les vestiaires, protège-cous, feuilles d’alignement';
-const WELCOME_PFDS =
-  `${WELCOME}; tell people no tickets are sold at PFDS / ne pas oublier de dire qu’aucun billet n’est vendu au PFDS`;
-const BAR_NOTE = 'Coordinate food and beer with the kitchen and bar / Coordonner la nourriture et la bière avec la cuisine et le bar';
-const RAFFLE_9PM = 'Raffle is at 9 PM! / Le tirage a lieu à 21 h !';
+const ALL_GAMES = bi('For all games', 'Pour tous les matchs');
+const THREE_GAMES = bi('For 3 games', 'Pour 3 matchs');
+const TWO_GAMES = bi('For 2 games', 'Pour 2 matchs');
+const WELCOME = bi(
+  'Welcome teams, guide them to their rooms, neck guards, roster sheets',
+  'Accueillir les équipes, les guider vers les vestiaires, protège-cous, feuilles d’alignement',
+);
+const WELCOME_PFDS = both(
+  WELCOME,
+  bi('tell people no tickets are sold at PFDS', 'ne pas oublier de dire qu’aucun billet n’est vendu au PFDS'),
+  '; ',
+);
+const BAR_NOTE = bi(
+  'Coordinate food and beer with the kitchen and bar',
+  'Coordonner la nourriture et la bière avec la cuisine et le bar',
+);
+const RAFFLE_9PM = bi('Raffle is at 9 PM!', 'Le tirage a lieu à 21 h !');
 
 // --- The list ---------------------------------------------------------------
 // [day, arena, role, people, from, to, note]  ("close" = that day's CLOSE time)
@@ -105,7 +122,7 @@ for (const day of [19, 20]) {
   add(day, IB, REFEREES, 2, '20:00', '23:00');
   add(day, IB, HOST, 1, '17:15', '21:15', WELCOME);
   add(day, IB, SUPERVISOR, 1, '17:30', '20:30', THREE_GAMES);
-  add(day, IB, SUPERVISOR, 1, '20:30', 'close', `${TWO_GAMES}. ${UNTIL_CLOSE}`);
+  add(day, IB, SUPERVISOR, 1, '20:30', 'close', both(TWO_GAMES, UNTIL_CLOSE));
   add(day, IB, KITCHEN, 1, '18:30', '20:30');
   add(day, IB, KITCHEN, 1, '20:30', '23:30');
   add(day, IB, RAFFLE, 1, '18:30', '20:30');
@@ -136,7 +153,7 @@ add(21, IB, KITCHEN, 1, '20:00', '23:00');
 add(21, IB, RAFFLE, 1, '11:30', '14:30');
 add(21, IB, RAFFLE, 1, '14:30', '17:30');
 add(21, IB, RAFFLE, 1, '17:30', '20:30');
-add(21, IB, RAFFLE, 1, '20:30', 'close', `${RAFFLE_9PM} ${UNTIL_CLOSE}`);
+add(21, IB, RAFFLE, 1, '20:30', 'close', both(RAFFLE_9PM, UNTIL_CLOSE, ' '));
 add(21, IB, LOUNGE, 1, '11:30', '15:30');
 add(21, IB, LOUNGE, 1, '15:30', '19:30');
 add(21, IB, LOUNGE, 1, '19:30', 'close', UNTIL_CLOSE);
@@ -148,7 +165,7 @@ add(22, IB, TIMEKEEPER, 1, '13:00', '15:00');
 add(22, IB, REFEREES, 2, '13:00', '15:00');
 add(22, IB, HOST, 1, '09:15', '14:15', WELCOME);
 add(22, IB, SUPERVISOR, 1, '09:30', '12:30', TWO_GAMES);
-add(22, IB, SUPERVISOR, 1, '11:30', 'close', `${THREE_GAMES}. ${UNTIL_CLOSE}`);
+add(22, IB, SUPERVISOR, 1, '11:30', 'close', both(THREE_GAMES, UNTIL_CLOSE));
 add(22, IB, KITCHEN, 1, '10:30', '13:00');
 add(22, IB, KITCHEN, 1, '13:00', '15:30');
 add(22, IB, BEER, 1, '11:00', 'close', UNTIL_CLOSE);

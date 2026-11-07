@@ -58,13 +58,37 @@
       </div>
     </div>
 
-    <div class="alert alert-info d-flex flex-column gap-1 mb-4" *ngIf="generalAnnouncements().length > 0">
-      <div
-        *ngFor="let announcement of generalAnnouncements().slice(0, 3); trackBy: trackByAnnouncementId"
+    <div class="d-flex flex-column gap-2 mb-4" *ngIf="generalAnnouncementViews().length > 0">
+      <section
+        class="card border-info"
+        *ngFor="let item of generalAnnouncementViews(); trackBy: trackByAnnouncementViewId"
       >
-        <strong>{{ announcement.createdAt | ldate: 'MMM d' }}:</strong>
-        <span style="white-space: pre-line">{{ announcement.body }}</span>
-      </div>
+        <div class="card-header bg-info-subtle d-flex justify-content-between align-items-center gap-2 py-2">
+          <div class="min-w-0">
+            <strong>{{ isAnnouncementHidden(item.announcement.id) || !item.view.title ? item.summary : item.view.title }}</strong>
+            <span class="text-secondary small ms-2 text-nowrap">{{ item.announcement.createdAt | ldate: 'MMM d' }}</span>
+          </div>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary flex-shrink-0"
+            [attr.aria-expanded]="!isAnnouncementHidden(item.announcement.id)"
+            (click)="toggleAnnouncement(item.announcement.id)"
+          >
+            {{ isAnnouncementHidden(item.announcement.id) ? ('Show' | t) : ('Hide' | t) }}
+          </button>
+        </div>
+
+        <div class="card-body py-2" *ngIf="!isAnnouncementHidden(item.announcement.id)">
+          <div
+            class="d-flex gap-3 py-1"
+            [class.border-top]="!first"
+            *ngFor="let row of item.view.rows; let first = first"
+          >
+            <span class="fw-semibold flex-shrink-0" style="min-width: 3rem" *ngIf="row.label">{{ row.label }}</span>
+            <span>{{ row.text }}</span>
+          </div>
+        </div>
+      </section>
     </div>
 
     <ul class="nav nav-tabs mb-4">
@@ -756,7 +780,7 @@
 
           <div class="d-flex flex-column gap-3">
             <div *ngFor="let group of day.arenas">
-              <h3 class="h6 text-uppercase text-secondary mb-2" *ngIf="group.arena">{{ group.arena }}</h3>
+              <h3 class="h6 text-uppercase text-secondary mb-2" *ngIf="group.arena">{{ pick(group.arena) }}</h3>
 
               <div class="d-flex flex-column gap-2">
                 <div
@@ -765,11 +789,11 @@
                 >
                   <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
                     <div>
-                      <strong>{{ shift.role }}</strong>
+                      <strong>{{ pick(shift.role) }}</strong>
                       <div class="text-secondary small">
                         {{ shift.startsAt | ldate: 'shortTime' }} - {{ shift.endsAt | ldate: 'shortTime' }}
                       </div>
-                      <p class="small mb-1" *ngIf="shift.description">{{ shift.description }}</p>
+                      <p class="small mb-1" *ngIf="shift.description">{{ pick(shift.description) }}</p>
                       <div class="small" *ngIf="spotsRemaining(shift) !== null">
                         <span
                           class="badge"

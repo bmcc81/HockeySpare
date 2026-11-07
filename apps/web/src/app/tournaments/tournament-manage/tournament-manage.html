@@ -1574,6 +1574,9 @@
             {{ savingAnnouncement() ? '...' : ('Post' | t) }}
           </button>
         </form>
+        <div class="form-text mb-3">
+          {{ 'To post in English and French, write both on each line, separated by " | " (English | Français). Visitors see their own language. The first line of a longer post becomes its heading.' | t }}
+        </div>
 
         <div *ngIf="t.announcements.length === 0" class="text-secondary py-2">
           {{ 'No announcements yet.' | t }}
@@ -1587,7 +1590,7 @@
           >
             <div>
               <span class="badge text-bg-danger mb-1" *ngIf="announcement.type === 'WEATHER'">{{ 'Weather alert' | t }}</span>
-              <div>{{ announcement.body }}</div>
+              <div style="white-space: pre-line">{{ announcement.body }}</div>
               <div class="text-secondary small">
                 {{ announcement.createdAt | ldate: 'medium' }}
               </div>

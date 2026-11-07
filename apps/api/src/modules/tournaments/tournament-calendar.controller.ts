@@ -23,7 +23,8 @@ export class TournamentCalendarController {
     @Res() res: Response,
   ): Promise<void> {
     const origin = (process.env.PUBLIC_BASE_URL ?? DEFAULT_ORIGIN).replace(/\/+$/, '');
-    const data = await this.tournaments.getCalendarData(id, teamId, division);
+    // A pasted address often drags a trailing space along; don't fail on it.
+    const data = await this.tournaments.getCalendarData(id, teamId?.trim(), division?.trim());
 
     const calendarName = data.team
       ? `${data.team.name} - ${data.tournament.name}`

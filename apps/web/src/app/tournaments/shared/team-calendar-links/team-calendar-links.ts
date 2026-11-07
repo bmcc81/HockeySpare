@@ -5,7 +5,7 @@ import { TranslatePipe } from '../../../core/i18n/t.pipe';
 import { I18nService } from '../../../core/i18n/i18n.service';
 import { AuthStateService } from '../../../auth/auth-state.service';
 import { TournamentsApiService } from '../../../core/services/tournaments-api.service';
-import { googleSubscribeUrl, teamCalendarFeedUrl, webcalUrl } from '../calendar-links';
+import { googleSubscribeUrl, isIosDevice, teamCalendarFeedUrl, webcalUrl } from '../calendar-links';
 
 /**
  * "Add to Google Calendar" / Apple / Outlook / download buttons for one
@@ -21,8 +21,14 @@ import { googleSubscribeUrl, teamCalendarFeedUrl, webcalUrl } from '../calendar-
       <a class="btn btn-sm btn-primary" [href]="google" target="_blank" rel="noopener noreferrer">
         {{ 'Add to Google Calendar' | t }}
       </a>
-      <a class="btn btn-sm btn-outline-secondary" [href]="webcal">{{ 'Apple / Outlook' | t }}</a>
+      <button *ngIf="ios" type="button" class="btn btn-sm btn-outline-secondary" (click)="copyLink()">
+        {{ copied() ? ('Link copied' | t) : ('Copy calendar link' | t) }}
+      </button>
+      <a *ngIf="!ios" class="btn btn-sm btn-outline-secondary" [href]="webcal">{{ 'Apple / Outlook' | t }}</a>
       <a class="btn btn-sm btn-outline-secondary" [href]="ics" download>{{ 'Download .ics' | t }}</a>
+    </div>
+    <div class="small text-secondary mt-1" *ngIf="ios">
+      {{ 'iPhone: copy the link, then go to Settings, Apps, Calendar, Calendar Accounts, Add Account, Other, Add Subscribed Calendar, and paste it.' | t }}
     </div>
     <div class="small text-secondary mt-1">
       {{ 'Your calendar updates by itself if the schedule changes (Google can take up to a day to refresh).' | t }}
@@ -140,8 +146,24 @@ export class TeamCalendarLinksComponent {
     return this.feed;
   }
 
+  readonly ios = isIosDevice(navigator.userAgent, navigator.maxTouchPoints);
+  copied = signal(false);
+
+  /** Copies the https feed address, for iOS's "Add Subscribed Calendar". */
+  async copyLink(): Promise<void> {
+    const link = this.feed.trim();
+    try {
+      await navigator.clipboard.writeText(link);
+    } catch {
+      window.prompt('Copy this link', link);
+      return;
+    }
+    this.copied.set(true);
+    setTimeout(() => this.copied.set(false), 3000);
+  }
+
   /** Angular treats webcal: as unsafe by default; this is our own feed URL. */
   get webcal(): SafeUrl {
-    return this.sanitizer.bypassSecurityTrustUrl(webcalUrl(this.feed, navigator.userAgent));
+    return this.sanitizer.bypassSecurityTrustUrl(webcalUrl(this.feed));
   }
 }

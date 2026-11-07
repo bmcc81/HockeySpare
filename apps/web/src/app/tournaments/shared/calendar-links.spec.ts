@@ -2,6 +2,7 @@ import type { TournamentGame, TournamentVenue } from '@hockeyspare/contracts';
 import {
   googleGameLink,
   googleSubscribeUrl,
+  isIosDevice,
   teamCalendarFeedUrl,
   webcalUrl,
 } from './calendar-links';
@@ -20,13 +21,11 @@ describe('calendar links', () => {
     expect(decodeURIComponent(google.split('cid=')[1])).toBe(webcalUrl(feed));
   });
 
-  it('uses the secure webcals:// scheme on Apple devices so iOS does not warn about http', () => {
-    const iphone = 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15';
-    expect(webcalUrl(feed, iphone)).toBe(
-      'webcals://site.example/api/tournaments/t1/calendar.ics?team=team%202',
-    );
-    expect(webcalUrl(feed, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/130')).toMatch(/^webcal:\/\//);
-    expect(webcalUrl('http://localhost:3000/x.ics', iphone)).toBe('webcal://localhost:3000/x.ics');
+  it('recognises iPhones and iPads (which report as a Mac) but not desktops', () => {
+    expect(isIosDevice('Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)')).toBe(true);
+    expect(isIosDevice('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)', 5)).toBe(true);
+    expect(isIosDevice('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)', 0)).toBe(false);
+    expect(isIosDevice('Mozilla/5.0 (Windows NT 10.0; Win64; x64)')).toBe(false);
   });
 
   it('builds a one-game Google Calendar link with times in UTC, the venue and a link back', () => {

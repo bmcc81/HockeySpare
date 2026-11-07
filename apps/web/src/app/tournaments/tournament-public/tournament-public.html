@@ -776,7 +776,7 @@
                           [class.text-bg-success]="spotsRemaining(shift)! > 0"
                           [class.text-bg-secondary]="spotsRemaining(shift) === 0"
                         >
-                          {{ spotsRemaining(shift) === 0 ? ('Full' | t) : ('{n} spots left' | t: { n: spotsRemaining(shift) }) }}
+                          {{ spotsRemaining(shift) === 0 ? ('Full' | t) : spotsRemaining(shift) === 1 ? ('1 spot left' | t) : ('{n} spots left' | t: { n: spotsRemaining(shift) }) }}
                         </span>
                       </div>
                     </div>
@@ -796,6 +796,7 @@
                     *ngIf="volunteerSignupSuccessShiftId() === shift.id"
                   >
                     {{ 'You\'re signed up. Thank you for volunteering!' | t }}
+                    <span *ngIf="volunteerConfirmationEmailed()">{{ 'We emailed you a confirmation.' | t }}</span>
                   </div>
 
                   <form

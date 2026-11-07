@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
@@ -40,6 +41,8 @@ import type { ShareInfo } from './tournament-share';
 import { CreateTournamentVolunteerShiftDto } from './dto/create-tournament-volunteer-shift.dto';
 import { UpdateTournamentVolunteerShiftDto } from './dto/update-tournament-volunteer-shift.dto';
 import { AddTournamentVolunteerDto } from './dto/add-tournament-volunteer.dto';
+import { normalizeLang, type FollowLang } from './follow/follow-emails';
+import { volunteerConfirmationEmail } from './volunteer-emails';
 import { CreateTournamentVolunteerSignupDto } from './dto/create-tournament-volunteer-signup.dto';
 import { CreateTournamentInfoListingDto } from './dto/create-tournament-info-listing.dto';
 import { UpdateTournamentInfoListingDto } from './dto/update-tournament-info-listing.dto';
@@ -55,6 +58,8 @@ import type Stripe from 'stripe';
 
 @Injectable()
 export class TournamentsService {
+  private readonly logger = new Logger(TournamentsService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly stripeService: StripeService,
@@ -3106,7 +3111,13 @@ export class TournamentsService {
       where: { id: shiftId, tournamentId },
       include: {
         _count: { select: { signups: true } },
-        tournament: { select: { volunteersOpen: true } },
+        tournament: {
+          select: {
+            volunteersOpen: true,
+            name: true,
+            contactEmail: true,
+          },
+        },
       },
     });
 
@@ -3143,7 +3154,7 @@ export class TournamentsService {
       );
     }
 
-    return this.prisma.tournamentVolunteerSignup.create({
+    const signup = await this.prisma.tournamentVolunteerSignup.create({
       data: {
         shiftId,
         name: dto.name.trim(),
@@ -3151,6 +3162,71 @@ export class TournamentsService {
         phone: dto.phone?.trim() || null,
       },
     });
+
+    const confirmationEmailSent = await this.sendVolunteerConfirmation({
+      to: email,
+      lang: normalizeLang(dto.lang),
+      tournamentId,
+      tournamentName: shift.tournament.name,
+      contactEmail: shift.tournament.contactEmail,
+      volunteerName: signup.name,
+      shift,
+    });
+
+    return { ...signup, confirmationEmailSent };
+  }
+
+  /**
+   * Emails the volunteer their shift. A mail problem never undoes the signup:
+   * it is logged and reported back as `false`.
+   */
+  private async sendVolunteerConfirmation(input: {
+    to: string;
+    lang: FollowLang;
+    tournamentId: string;
+    tournamentName: string;
+    contactEmail: string | null;
+    volunteerName: string;
+    shift: {
+      role: string;
+      location: string | null;
+      description: string | null;
+      startsAt: Date;
+      endsAt: Date;
+    };
+  }): Promise<boolean> {
+    if (!this.emailService.isConfigured) {
+      return false;
+    }
+
+    try {
+      const built = volunteerConfirmationEmail({
+        origin: this.emailService.getAppUrl(),
+        tournamentId: input.tournamentId,
+        tournamentName: input.tournamentName,
+        lang: input.lang,
+        volunteerName: input.volunteerName,
+        role: input.shift.role,
+        location: input.shift.location,
+        description: input.shift.description,
+        startsAt: input.shift.startsAt,
+        endsAt: input.shift.endsAt,
+        contactEmail: input.contactEmail,
+      });
+
+      await this.emailService.sendMail({
+        to: input.to,
+        ...built,
+        headers: input.contactEmail ? { 'Reply-To': input.contactEmail } : undefined,
+      });
+
+      return true;
+    } catch (err) {
+      this.logger.warn(
+        `Volunteer confirmation to ${input.to} failed: ${(err as Error).message}`,
+      );
+      return false;
+    }
   }
 
   /**

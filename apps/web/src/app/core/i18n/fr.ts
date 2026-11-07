@@ -176,6 +176,7 @@ export const FR: Record<string, string> = {
   "No volunteer shifts have been posted yet.": "Aucun quart de bénévolat n’a encore été publié.",
   "Full": "Complet",
   "{n} spots left": "{n} places restantes",
+  "1 spot left": "1 place restante",
   "Sign up": "S’inscrire",
   "Cancel": "Annuler",
   "Phone (optional)": "Téléphone (facultatif)",
@@ -1402,4 +1403,5 @@ export const FR: Record<string, string> = {
   "Could not save this volunteer shift.": "Impossible d’enregistrer ce quart de bénévolat.",
   "Could not add this name.": "Impossible d’ajouter ce nom.",
   "Could not remove this name.": "Impossible de retirer ce nom.",
+  "We emailed you a confirmation.": "Nous vous avons envoyé une confirmation par courriel.",
 };

@@ -22,6 +22,7 @@ import {
   CreateTournamentVolunteerSignupInput,
   UpdateTournamentVolunteerShiftInput,
   AddTournamentVolunteerInput,
+  TournamentVolunteerSignupResult,
   CreateTournamentWebhookInput,
   FileStorageStatus,
   ScheduleBracketMatchGameInput,
@@ -709,8 +710,8 @@ export class TournamentsApiService {
     tournamentId: string,
     shiftId: string,
     input: CreateTournamentVolunteerSignupInput,
-  ): Observable<TournamentVolunteerSignup> {
-    return this.http.post<TournamentVolunteerSignup>(
+  ): Observable<TournamentVolunteerSignupResult> {
+    return this.http.post<TournamentVolunteerSignupResult>(
       `/api/tournaments/${tournamentId}/volunteer-shifts/${shiftId}/signups`,
       input,
     );

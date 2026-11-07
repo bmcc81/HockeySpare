@@ -41,6 +41,8 @@ import { CreateTournamentRefereeDto } from './dto/create-tournament-referee.dto'
 import { AssignTournamentGameRefereeDto } from './dto/assign-tournament-game-referee.dto';
 import { CreateTournamentVolunteerShiftDto } from './dto/create-tournament-volunteer-shift.dto';
 import { CreateTournamentVolunteerSignupDto } from './dto/create-tournament-volunteer-signup.dto';
+import { UpdateTournamentVolunteerShiftDto } from './dto/update-tournament-volunteer-shift.dto';
+import { AddTournamentVolunteerDto } from './dto/add-tournament-volunteer.dto';
 import { CreateTournamentInfoListingDto } from './dto/create-tournament-info-listing.dto';
 import { UpdateTournamentInfoListingDto } from './dto/update-tournament-info-listing.dto';
 import { CreateTournamentLostFoundItemDto } from './dto/create-tournament-lost-found-item.dto';
@@ -792,6 +794,62 @@ export class TournamentsController {
       this.getUserId(req),
       id,
       dto,
+    );
+  }
+
+  // Organizer view: all shifts with their signups, even while sign-up is closed.
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/volunteer-shifts')
+  listVolunteerShifts(@Req() req: AuthRequest, @Param('id') id: string) {
+    return this.tournamentsService.listVolunteerShifts(this.getUserId(req), id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/volunteer-shifts/:shiftId')
+  updateVolunteerShift(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('shiftId') shiftId: string,
+    @Body() dto: UpdateTournamentVolunteerShiftDto,
+  ) {
+    return this.tournamentsService.updateVolunteerShift(
+      this.getUserId(req),
+      id,
+      shiftId,
+      dto,
+    );
+  }
+
+  // Organizer puts a name on a shift (email optional).
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/volunteer-shifts/:shiftId/volunteers')
+  addVolunteerToShift(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('shiftId') shiftId: string,
+    @Body() dto: AddTournamentVolunteerDto,
+  ) {
+    return this.tournamentsService.addVolunteerToShift(
+      this.getUserId(req),
+      id,
+      shiftId,
+      dto,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/volunteer-shifts/:shiftId/signups/:signupId')
+  removeVolunteerSignup(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('shiftId') shiftId: string,
+    @Param('signupId') signupId: string,
+  ) {
+    return this.tournamentsService.removeVolunteerSignup(
+      this.getUserId(req),
+      id,
+      shiftId,
+      signupId,
     );
   }
 

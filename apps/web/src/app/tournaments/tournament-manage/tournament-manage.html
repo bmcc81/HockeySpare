@@ -1776,109 +1776,12 @@
       </div>
     </div>
 
-    <div class="card mt-4" *ngIf="isOwner">
-      <div class="card-body">
-        <h2 class="h5">{{ 'Volunteer shifts (' | t }}{{ t.volunteerShifts.length }})</h2>
-
-        <div *ngIf="volunteerShiftError()" class="alert alert-danger py-2">
-          {{ volunteerShiftError() }}
-        </div>
-
-        <form
-          [formGroup]="volunteerShiftForm"
-          (ngSubmit)="saveVolunteerShift()"
-          class="row g-2 mb-3"
-        >
-          <div class="col-12 col-md-3">
-            <label class="form-label">{{ 'Role' | t }}</label>
-            <input class="form-control" formControlName="role" [placeholder]="'e.g. Scorekeeper' | t" />
-          </div>
-          <div class="col-12 col-md-3">
-            <label class="form-label">{{ 'Location' | t }}</label>
-            <input class="form-control" formControlName="location" [placeholder]="'Optional' | t" />
-          </div>
-          <div class="col-6 col-md-2">
-            <label class="form-label">{{ 'Starts' | t }}</label>
-            <input type="datetime-local" class="form-control" formControlName="startsAt" />
-          </div>
-          <div class="col-6 col-md-2">
-            <label class="form-label">{{ 'Ends' | t }}</label>
-            <input type="datetime-local" class="form-control" formControlName="endsAt" />
-          </div>
-          <div class="col-6 col-md-1">
-            <label class="form-label">{{ 'Capacity' | t }}</label>
-            <input type="number" min="1" class="form-control" formControlName="capacity" [placeholder]="'Optional' | t" />
-          </div>
-          <div class="col-6 col-md-1 d-flex align-items-end">
-            <button
-              type="submit"
-              class="btn btn-primary btn-sm w-100"
-              [disabled]="volunteerShiftForm.invalid || savingVolunteerShift()"
-            >
-              {{ savingVolunteerShift() ? '...' : ('Add' | t) }}
-            </button>
-          </div>
-          <div class="col-12">
-            <label class="form-label">{{ 'Description' | t }}</label>
-            <input class="form-control" formControlName="description" [placeholder]="'Optional' | t" />
-          </div>
-        </form>
-
-        <div *ngIf="t.volunteerShifts.length === 0" class="text-secondary py-2">
-          {{ 'No volunteer shifts added yet.' | t }}
-        </div>
-
-        <div class="d-flex flex-column gap-2">
-          <div
-            class="border rounded p-2"
-            *ngFor="let shift of t.volunteerShifts; trackBy: trackByVolunteerShiftId"
-          >
-            <div class="d-flex justify-content-between align-items-start gap-2">
-              <div>
-                <strong>{{ shift.role }}</strong>
-                <span class="text-secondary small" *ngIf="shift.location"> &middot; {{ shift.location }}</span>
-                <div class="text-secondary small">
-                  {{ shift.startsAt | ldate: 'medium' }} - {{ shift.endsAt | ldate: 'shortTime' }}
-                </div>
-                <div class="text-secondary small" *ngIf="shift.capacity">
-                  {{ shift._count?.signups ?? 0 }} / {{ shift.capacity }} {{ 'signed up' | t }}
-                </div>
-                <div class="text-secondary small" *ngIf="!shift.capacity">
-                  {{ shift._count?.signups ?? 0 }} {{ 'signed up' | t }}
-                </div>
-              </div>
-
-              <div class="d-flex gap-2 flex-shrink-0">
-                <button
-                  type="button"
-                  class="btn btn-sm btn-outline-secondary"
-                  (click)="toggleViewSignups(shift.id)"
-                >
-                  {{ viewingSignupsShiftId() === shift.id ? ('Hide' | t) : ('View' | t) }} {{ 'signups' | t }}
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-sm btn-outline-danger"
-                  [disabled]="deletingVolunteerShiftId() === shift.id"
-                  (click)="deleteVolunteerShift(shift.id)"
-                >
-                  {{ deletingVolunteerShiftId() === shift.id ? '...' : ('Remove' | t) }}
-                </button>
-              </div>
-            </div>
-
-            <div class="mt-2 ps-2 border-start" *ngIf="viewingSignupsShiftId() === shift.id">
-              <div class="text-secondary small" *ngIf="shiftSignups().length === 0">
-                {{ 'No signups yet.' | t }}
-              </div>
-              <div *ngFor="let signup of shiftSignups(); trackBy: trackByVolunteerSignupId" class="small">
-                {{ signup.name }} &middot; {{ signup.email }}<span *ngIf="signup.phone"> &middot; {{ signup.phone }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <app-volunteer-manager
+      *ngIf="isOwner"
+      [tournamentId]="tournamentId"
+      [open]="t.volunteersOpen"
+      (openChange)="setVolunteersOpen($event)"
+    ></app-volunteer-manager>
 
     <div class="card mt-4" *ngIf="isOwner">
       <div class="card-body">

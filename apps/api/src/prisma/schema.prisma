@@ -583,6 +583,9 @@ model Tournament {
   contactPhone         String?
   logoUrl              String?
   rulebookUrl          String?
+  // When false the Volunteer tab is hidden from the public (organizers can still
+  // preview it), so shifts can be loaded and tested before members see them.
+  volunteersOpen       Boolean                    @default(true)
   createdAt            DateTime                   @default(now())
   updatedAt            DateTime                   @updatedAt
 
@@ -762,7 +765,8 @@ model TournamentVolunteerSignup {
   id        String   @id @default(cuid())
   shiftId   String
   name      String
-  email     String
+  // Optional: organizers can put a name on a shift without an email.
+  email     String?
   phone     String?
   createdAt DateTime @default(now())
 

@@ -20,6 +20,8 @@ import {
   CreateTournamentVenueInput,
   CreateTournamentVolunteerShiftInput,
   CreateTournamentVolunteerSignupInput,
+  UpdateTournamentVolunteerShiftInput,
+  AddTournamentVolunteerInput,
   CreateTournamentWebhookInput,
   FileStorageStatus,
   ScheduleBracketMatchGameInput,
@@ -652,6 +654,45 @@ export class TournamentsApiService {
     return this.http.post<TournamentVolunteerShift>(
       `/api/tournaments/${tournamentId}/volunteer-shifts`,
       input,
+    );
+  }
+
+  /** Organizer view: every shift with its signups, even while sign-up is closed. */
+  listVolunteerShifts(tournamentId: string): Observable<TournamentVolunteerShift[]> {
+    return this.http.get<TournamentVolunteerShift[]>(
+      `/api/tournaments/${tournamentId}/volunteer-shifts`,
+    );
+  }
+
+  updateVolunteerShift(
+    tournamentId: string,
+    shiftId: string,
+    input: UpdateTournamentVolunteerShiftInput,
+  ): Observable<TournamentVolunteerShift> {
+    return this.http.patch<TournamentVolunteerShift>(
+      `/api/tournaments/${tournamentId}/volunteer-shifts/${shiftId}`,
+      input,
+    );
+  }
+
+  addVolunteerToShift(
+    tournamentId: string,
+    shiftId: string,
+    input: AddTournamentVolunteerInput,
+  ): Observable<TournamentVolunteerSignup> {
+    return this.http.post<TournamentVolunteerSignup>(
+      `/api/tournaments/${tournamentId}/volunteer-shifts/${shiftId}/volunteers`,
+      input,
+    );
+  }
+
+  removeVolunteerSignup(
+    tournamentId: string,
+    shiftId: string,
+    signupId: string,
+  ): Observable<{ id: string; deleted: boolean }> {
+    return this.http.delete<{ id: string; deleted: boolean }>(
+      `/api/tournaments/${tournamentId}/volunteer-shifts/${shiftId}/signups/${signupId}`,
     );
   }
 

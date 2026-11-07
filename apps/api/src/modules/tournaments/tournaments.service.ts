@@ -38,6 +38,8 @@ import { CreateTournamentRefereeDto } from './dto/create-tournament-referee.dto'
 import { AssignTournamentGameRefereeDto } from './dto/assign-tournament-game-referee.dto';
 import type { ShareInfo } from './tournament-share';
 import { CreateTournamentVolunteerShiftDto } from './dto/create-tournament-volunteer-shift.dto';
+import { UpdateTournamentVolunteerShiftDto } from './dto/update-tournament-volunteer-shift.dto';
+import { AddTournamentVolunteerDto } from './dto/add-tournament-volunteer.dto';
 import { CreateTournamentVolunteerSignupDto } from './dto/create-tournament-volunteer-signup.dto';
 import { CreateTournamentInfoListingDto } from './dto/create-tournament-info-listing.dto';
 import { UpdateTournamentInfoListingDto } from './dto/update-tournament-info-listing.dto';
@@ -392,6 +394,12 @@ export class TournamentsService {
       throw new NotFoundException('Tournament not found');
     }
 
+    // Shifts stay hidden from the public until the organizers open sign-up.
+    // Organizers preview them through listVolunteerShifts instead.
+    if (!tournament.volunteersOpen) {
+      return { ...tournament, volunteerShifts: [] };
+    }
+
     return tournament;
   }
 
@@ -404,6 +412,9 @@ export class TournamentsService {
       },
       data: {
         ...(dto.name ? { name: dto.name.trim() } : {}),
+        ...(dto.volunteersOpen !== undefined
+          ? { volunteersOpen: dto.volunteersOpen }
+          : {}),
         ...(dto.description !== undefined
           ? { description: dto.description?.trim() || null }
           : {}),
@@ -3093,6 +3104,149 @@ export class TournamentsService {
   ) {
     const shift = await this.prisma.tournamentVolunteerShift.findFirst({
       where: { id: shiftId, tournamentId },
+      include: {
+        _count: { select: { signups: true } },
+        tournament: { select: { volunteersOpen: true } },
+      },
+    });
+
+    // A closed tournament looks exactly like one without the shift.
+    if (!shift || !shift.tournament.volunteersOpen) {
+      throw new NotFoundException('Volunteer shift not found');
+    }
+
+    if (shift.capacity !== null && shift._count.signups >= shift.capacity) {
+      throw new BadRequestException('This volunteer shift is already full.');
+    }
+
+    const email = dto.email.trim().toLowerCase();
+
+    // The same person cannot hold two shifts that overlap in time (this also
+    // covers signing up twice for the same shift).
+    const clash = await this.prisma.tournamentVolunteerSignup.findFirst({
+      where: {
+        email,
+        shift: {
+          tournamentId,
+          startsAt: { lt: shift.endsAt },
+          endsAt: { gt: shift.startsAt },
+        },
+      },
+      include: { shift: { select: { id: true } } },
+    });
+
+    if (clash) {
+      throw new BadRequestException(
+        clash.shift.id === shiftId
+          ? 'You are already signed up for this shift.'
+          : 'You are already signed up for another shift at the same time.',
+      );
+    }
+
+    return this.prisma.tournamentVolunteerSignup.create({
+      data: {
+        shiftId,
+        name: dto.name.trim(),
+        email,
+        phone: dto.phone?.trim() || null,
+      },
+    });
+  }
+
+  /**
+   * Organizer view of every shift with its signups, including while sign-up is
+   * still closed to the public. The Volunteer tab uses it for the organizer preview.
+   */
+  async listVolunteerShifts(userId: string, tournamentId: string) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    return this.prisma.tournamentVolunteerShift.findMany({
+      where: { tournamentId },
+      orderBy: [{ startsAt: 'asc' }, { location: 'asc' }, { role: 'asc' }],
+      include: {
+        _count: { select: { signups: true } },
+        signups: { orderBy: { createdAt: 'asc' } },
+      },
+    });
+  }
+
+  async updateVolunteerShift(
+    userId: string,
+    tournamentId: string,
+    shiftId: string,
+    dto: UpdateTournamentVolunteerShiftDto,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const shift = await this.prisma.tournamentVolunteerShift.findFirst({
+      where: { id: shiftId, tournamentId },
+      include: { _count: { select: { signups: true } } },
+    });
+
+    if (!shift) {
+      throw new NotFoundException('Volunteer shift not found');
+    }
+
+    const startsAt = dto.startsAt ? new Date(dto.startsAt) : shift.startsAt;
+    const endsAt = dto.endsAt ? new Date(dto.endsAt) : shift.endsAt;
+
+    if (endsAt <= startsAt) {
+      throw new BadRequestException('A shift must end after it starts.');
+    }
+
+    if (
+      dto.capacity !== undefined &&
+      dto.capacity !== null &&
+      dto.capacity < shift._count.signups
+    ) {
+      throw new BadRequestException(
+        `This shift already has ${shift._count.signups} people on it. Remove someone first, or choose a larger capacity.`,
+      );
+    }
+
+    const updated = await this.prisma.tournamentVolunteerShift.update({
+      where: { id: shiftId },
+      data: {
+        ...(dto.role !== undefined && dto.role.trim()
+          ? { role: dto.role.trim() }
+          : {}),
+        ...(dto.description !== undefined
+          ? { description: dto.description.trim() || null }
+          : {}),
+        ...(dto.location !== undefined
+          ? { location: dto.location.trim() || null }
+          : {}),
+        ...(dto.startsAt ? { startsAt } : {}),
+        ...(dto.endsAt ? { endsAt } : {}),
+        ...(dto.capacity !== undefined ? { capacity: dto.capacity } : {}),
+      },
+      include: {
+        _count: { select: { signups: true } },
+        signups: { orderBy: { createdAt: 'asc' } },
+      },
+    });
+
+    await this.logAudit(
+      tournamentId,
+      userId,
+      'VOLUNTEER_SHIFT_UPDATED',
+      updated.role,
+    );
+
+    return updated;
+  }
+
+  /** An organizer puts a name on a shift. Email is optional; a full shift is still full. */
+  async addVolunteerToShift(
+    userId: string,
+    tournamentId: string,
+    shiftId: string,
+    dto: AddTournamentVolunteerDto,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const shift = await this.prisma.tournamentVolunteerShift.findFirst({
+      where: { id: shiftId, tournamentId },
       include: { _count: { select: { signups: true } } },
     });
 
@@ -3101,17 +3255,59 @@ export class TournamentsService {
     }
 
     if (shift.capacity !== null && shift._count.signups >= shift.capacity) {
-      throw new BadRequestException('This volunteer shift is already full.');
+      throw new BadRequestException(
+        'This volunteer shift is already full. Raise its capacity first.',
+      );
     }
 
-    return this.prisma.tournamentVolunteerSignup.create({
+    const signup = await this.prisma.tournamentVolunteerSignup.create({
       data: {
         shiftId,
         name: dto.name.trim(),
-        email: dto.email.trim().toLowerCase(),
+        email: dto.email?.trim().toLowerCase() || null,
         phone: dto.phone?.trim() || null,
       },
     });
+
+    await this.logAudit(
+      tournamentId,
+      userId,
+      'VOLUNTEER_ADDED',
+      `${signup.name} - ${shift.role}`,
+    );
+
+    return signup;
+  }
+
+  async removeVolunteerSignup(
+    userId: string,
+    tournamentId: string,
+    shiftId: string,
+    signupId: string,
+  ) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    const signup = await this.prisma.tournamentVolunteerSignup.findFirst({
+      where: { id: signupId, shiftId, shift: { tournamentId } },
+      include: { shift: { select: { role: true } } },
+    });
+
+    if (!signup) {
+      throw new NotFoundException('Volunteer signup not found');
+    }
+
+    await this.prisma.tournamentVolunteerSignup.delete({
+      where: { id: signupId },
+    });
+
+    await this.logAudit(
+      tournamentId,
+      userId,
+      'VOLUNTEER_REMOVED',
+      `${signup.name} - ${signup.shift.role}`,
+    );
+
+    return { id: signup.id, deleted: true };
   }
 
   async listVolunteerSignups(

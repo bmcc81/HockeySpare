@@ -157,7 +157,7 @@ export type TournamentVolunteerSignupGroupByOutputType = {
   id: string
   shiftId: string
   name: string
-  email: string
+  email: string | null
   phone: string | null
   createdAt: Date
   _count: TournamentVolunteerSignupCountAggregateOutputType | null
@@ -187,7 +187,7 @@ export type TournamentVolunteerSignupWhereInput = {
   id?: Prisma.StringFilter<"TournamentVolunteerSignup"> | string
   shiftId?: Prisma.StringFilter<"TournamentVolunteerSignup"> | string
   name?: Prisma.StringFilter<"TournamentVolunteerSignup"> | string
-  email?: Prisma.StringFilter<"TournamentVolunteerSignup"> | string
+  email?: Prisma.StringNullableFilter<"TournamentVolunteerSignup"> | string | null
   phone?: Prisma.StringNullableFilter<"TournamentVolunteerSignup"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TournamentVolunteerSignup"> | Date | string
   shift?: Prisma.XOR<Prisma.TournamentVolunteerShiftScalarRelationFilter, Prisma.TournamentVolunteerShiftWhereInput>
@@ -197,7 +197,7 @@ export type TournamentVolunteerSignupOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   shiftId?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  email?: Prisma.SortOrder
+  email?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   shift?: Prisma.TournamentVolunteerShiftOrderByWithRelationInput
@@ -210,7 +210,7 @@ export type TournamentVolunteerSignupWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.TournamentVolunteerSignupWhereInput | Prisma.TournamentVolunteerSignupWhereInput[]
   shiftId?: Prisma.StringFilter<"TournamentVolunteerSignup"> | string
   name?: Prisma.StringFilter<"TournamentVolunteerSignup"> | string
-  email?: Prisma.StringFilter<"TournamentVolunteerSignup"> | string
+  email?: Prisma.StringNullableFilter<"TournamentVolunteerSignup"> | string | null
   phone?: Prisma.StringNullableFilter<"TournamentVolunteerSignup"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TournamentVolunteerSignup"> | Date | string
   shift?: Prisma.XOR<Prisma.TournamentVolunteerShiftScalarRelationFilter, Prisma.TournamentVolunteerShiftWhereInput>
@@ -220,7 +220,7 @@ export type TournamentVolunteerSignupOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   shiftId?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  email?: Prisma.SortOrder
+  email?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.TournamentVolunteerSignupCountOrderByAggregateInput
@@ -235,7 +235,7 @@ export type TournamentVolunteerSignupScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"TournamentVolunteerSignup"> | string
   shiftId?: Prisma.StringWithAggregatesFilter<"TournamentVolunteerSignup"> | string
   name?: Prisma.StringWithAggregatesFilter<"TournamentVolunteerSignup"> | string
-  email?: Prisma.StringWithAggregatesFilter<"TournamentVolunteerSignup"> | string
+  email?: Prisma.StringNullableWithAggregatesFilter<"TournamentVolunteerSignup"> | string | null
   phone?: Prisma.StringNullableWithAggregatesFilter<"TournamentVolunteerSignup"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TournamentVolunteerSignup"> | Date | string
 }
@@ -243,7 +243,7 @@ export type TournamentVolunteerSignupScalarWhereWithAggregatesInput = {
 export type TournamentVolunteerSignupCreateInput = {
   id?: string
   name: string
-  email: string
+  email?: string | null
   phone?: string | null
   createdAt?: Date | string
   shift: Prisma.TournamentVolunteerShiftCreateNestedOneWithoutSignupsInput
@@ -253,7 +253,7 @@ export type TournamentVolunteerSignupUncheckedCreateInput = {
   id?: string
   shiftId: string
   name: string
-  email: string
+  email?: string | null
   phone?: string | null
   createdAt?: Date | string
 }
@@ -261,7 +261,7 @@ export type TournamentVolunteerSignupUncheckedCreateInput = {
 export type TournamentVolunteerSignupUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   shift?: Prisma.TournamentVolunteerShiftUpdateOneRequiredWithoutSignupsNestedInput
@@ -271,7 +271,7 @@ export type TournamentVolunteerSignupUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   shiftId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -280,7 +280,7 @@ export type TournamentVolunteerSignupCreateManyInput = {
   id?: string
   shiftId: string
   name: string
-  email: string
+  email?: string | null
   phone?: string | null
   createdAt?: Date | string
 }
@@ -288,7 +288,7 @@ export type TournamentVolunteerSignupCreateManyInput = {
 export type TournamentVolunteerSignupUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -297,7 +297,7 @@ export type TournamentVolunteerSignupUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   shiftId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -384,7 +384,7 @@ export type TournamentVolunteerSignupUncheckedUpdateManyWithoutShiftNestedInput 
 export type TournamentVolunteerSignupCreateWithoutShiftInput = {
   id?: string
   name: string
-  email: string
+  email?: string | null
   phone?: string | null
   createdAt?: Date | string
 }
@@ -392,7 +392,7 @@ export type TournamentVolunteerSignupCreateWithoutShiftInput = {
 export type TournamentVolunteerSignupUncheckedCreateWithoutShiftInput = {
   id?: string
   name: string
-  email: string
+  email?: string | null
   phone?: string | null
   createdAt?: Date | string
 }
@@ -430,7 +430,7 @@ export type TournamentVolunteerSignupScalarWhereInput = {
   id?: Prisma.StringFilter<"TournamentVolunteerSignup"> | string
   shiftId?: Prisma.StringFilter<"TournamentVolunteerSignup"> | string
   name?: Prisma.StringFilter<"TournamentVolunteerSignup"> | string
-  email?: Prisma.StringFilter<"TournamentVolunteerSignup"> | string
+  email?: Prisma.StringNullableFilter<"TournamentVolunteerSignup"> | string | null
   phone?: Prisma.StringNullableFilter<"TournamentVolunteerSignup"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TournamentVolunteerSignup"> | Date | string
 }
@@ -438,7 +438,7 @@ export type TournamentVolunteerSignupScalarWhereInput = {
 export type TournamentVolunteerSignupCreateManyShiftInput = {
   id?: string
   name: string
-  email: string
+  email?: string | null
   phone?: string | null
   createdAt?: Date | string
 }
@@ -446,7 +446,7 @@ export type TournamentVolunteerSignupCreateManyShiftInput = {
 export type TournamentVolunteerSignupUpdateWithoutShiftInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -454,7 +454,7 @@ export type TournamentVolunteerSignupUpdateWithoutShiftInput = {
 export type TournamentVolunteerSignupUncheckedUpdateWithoutShiftInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -462,7 +462,7 @@ export type TournamentVolunteerSignupUncheckedUpdateWithoutShiftInput = {
 export type TournamentVolunteerSignupUncheckedUpdateManyWithoutShiftInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -528,7 +528,7 @@ export type $TournamentVolunteerSignupPayload<ExtArgs extends runtime.Types.Exte
     id: string
     shiftId: string
     name: string
-    email: string
+    email: string | null
     phone: string | null
     createdAt: Date
   }, ExtArgs["result"]["tournamentVolunteerSignup"]>

@@ -24,14 +24,16 @@ const PFDS1 = 'PFDS 1';
 const PFDS2 = 'PFDS 2';
 const IB = 'CSSR (Île Bizard)';
 
-// Approximate closing time per day (24-hour, Montreal time).
+// Approximate closing time per day (24-hour, Montreal time). "24:00" is midnight at the
+// end of that day. Chris (Nov 7): Thursday, Friday and Saturday have an extra late game,
+// so close is 12 AM on those nights.
 const CLOSE = {
   16: '23:30',
   17: '23:30',
   18: '23:30',
-  19: '23:30',
-  20: '23:30',
-  21: '23:30',
+  19: '24:00',
+  20: '24:00',
+  21: '24:00',
   22: '15:30',
 };
 

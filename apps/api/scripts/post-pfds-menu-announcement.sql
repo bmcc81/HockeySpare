@@ -1,5 +1,5 @@
 -- Pierrefonds Oldtimers Tournament 2026: post the food menu as an announcement
--- (approved by Chris on Nov 6).
+-- (approved by Chris on Nov 6; Sunday changed to just "Pizza" on Nov 7).
 --
 -- Every line is written "English | Français", and the tournament page shows each
 -- visitor only their own language. The first line is the heading; each day is a
@@ -20,7 +20,7 @@ INSERT INTO "TournamentAnnouncement" (id, "tournamentId", body, type, "createdAt
   E'Thu: Pulled pork sandwich, Mexican style, with fries | Jeu : Sandwich au porc effiloché à la mexicaine avec frites\n' ||
   E'Fri: Chicken quesadilla with fries | Ven : Quesadilla au poulet avec frites\n' ||
   E'Sat: Barbacoa tacos (2) with fries | Sam : Tacos barbacoa (2) avec frites\n' ||
-  E'Sun: Pizza and leftovers! with fries | Dim : Pizza et restes ! avec frites',
+  E'Sun: Pizza | Dim : Pizza',
   'GENERAL',
   now()
 );

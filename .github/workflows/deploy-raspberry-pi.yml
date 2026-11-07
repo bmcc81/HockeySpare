@@ -79,6 +79,11 @@ jobs:
     # ARM32 ("Linux ARM32 runners are no longer supported"), which breaks actions/checkout
     # and actions/download-artifact. So every step in this job is plain shell: it fetches
     # the cleanup script and downloads the build artifacts through the GitHub API with curl.
+    # No checkout means no workspace folder, so run the steps from /tmp.
+    defaults:
+      run:
+        working-directory: /tmp
+
     env:
       GH_TOKEN: ${{ github.token }}
       REPO: ${{ github.repository }}

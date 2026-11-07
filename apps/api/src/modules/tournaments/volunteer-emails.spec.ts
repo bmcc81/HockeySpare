@@ -43,6 +43,42 @@ describe('volunteer confirmation email', () => {
     expect(email.html).toContain('Voir le tournoi');
   });
 
+  describe('bilingual shifts ("English | Français")', () => {
+    const shift = {
+      ...base,
+      role: 'Timekeeper | Chronométreur',
+      location: 'CSSR (Île Bizard)',
+      description: 'For all games | Pour tous les matchs',
+    };
+
+    it('is entirely French for a French reader', () => {
+      const email = volunteerConfirmationEmail({ ...shift, lang: 'fr' });
+
+      expect(email.subject).toContain('Chronométreur');
+      expect(email.text).toContain('Rôle : Chronométreur');
+      expect(email.text).toContain('Détails : Pour tous les matchs');
+      expect(email.text).not.toContain('Timekeeper');
+      expect(email.text).not.toContain('For all games');
+      expect(email.html).not.toContain('Timekeeper');
+      expect(email.html).not.toContain(' | ');
+    });
+
+    it('is entirely English for an English reader', () => {
+      const email = volunteerConfirmationEmail({ ...shift, lang: 'en' });
+
+      expect(email.subject).toContain('Timekeeper');
+      expect(email.text).toContain('Role: Timekeeper');
+      expect(email.text).toContain('Details: For all games');
+      expect(email.text).not.toContain('Chronométreur');
+      expect(email.text).not.toContain('Pour tous les matchs');
+    });
+  });
+
+  it('puts the space before the colon in every French label, including the link', () => {
+    const email = volunteerConfirmationEmail({ ...base, lang: 'fr' });
+    expect(email.text).toContain('Page du tournoi : https://site.example/tournaments/t1');
+  });
+
   it('leaves out the location and details when there are none', () => {
     const email = volunteerConfirmationEmail({ ...base, location: null, lang: 'en' });
     expect(email.text).not.toContain('Where:');

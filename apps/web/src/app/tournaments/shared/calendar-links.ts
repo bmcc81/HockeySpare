@@ -12,8 +12,16 @@ export function googleSubscribeUrl(feedUrl: string): string {
   return `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(feedUrl.replace(/^https?:/, 'webcal:'))}`;
 }
 
-export function webcalUrl(feedUrl: string): string {
-  return feedUrl.replace(/^https?:/, 'webcal:');
+/**
+ * The subscribe link for Apple Calendar and Outlook. A plain `webcal://` link
+ * is treated as http:// by iOS, which warns "Insecure Connection" even though
+ * the site is https. Apple devices understand `webcals://` (the secure
+ * version), so use it for them when the feed is https.
+ */
+export function webcalUrl(feedUrl: string, userAgent = ''): string {
+  const apple = /iPhone|iPad|iPod|Macintosh/i.test(userAgent);
+  const scheme = apple && feedUrl.startsWith('https:') ? 'webcals:' : 'webcal:';
+  return feedUrl.replace(/^https?:/, scheme);
 }
 
 /** 20261116T230000Z */

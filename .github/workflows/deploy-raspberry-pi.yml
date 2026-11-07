@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: read
+  actions: read # lets the Pi job download this run's build artifacts
 
 concurrency:
   group: hockeyspare-production-deploy
@@ -74,12 +75,21 @@ jobs:
     runs-on: [self-hosted, Linux, ARM, hockeyspare-pi]
     timeout-minutes: 10
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
+    # The Pi is 32-bit ARM, and GitHub's runner no longer supports Node-based actions on
+    # ARM32 ("Linux ARM32 runners are no longer supported"), which breaks actions/checkout
+    # and actions/download-artifact. So every step in this job is plain shell: it fetches
+    # the cleanup script and downloads the build artifacts through the GitHub API with curl.
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      RUN_ID: ${{ github.run_id }}
+      COMMIT_SHA: ${{ github.sha }}
 
+    steps:
       - name: Clean up disk space before deploy
-        run: bash scripts/pi-cleanup.sh
+        run: |
+          curl -fsSL             -H "Authorization: Bearer $GH_TOKEN"             -H "Accept: application/vnd.github.raw"             -o /tmp/hockeyspare-pi-cleanup.sh             "https://api.github.com/repos/$REPO/contents/scripts/pi-cleanup.sh?ref=$COMMIT_SHA"
+          bash /tmp/hockeyspare-pi-cleanup.sh
 
       - name: Prepare deployment directory
         run: |
@@ -87,17 +97,27 @@ jobs:
           mkdir -p /tmp/hockeyspare-deploy/angular
           mkdir -p /tmp/hockeyspare-deploy/api
 
-      - name: Download Angular artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: hockeyspare-angular-browser
-          path: /tmp/hockeyspare-deploy/angular
+      - name: Download build artifacts
+        run: |
+          download() {
+            name="$1"
+            dest="$2"
 
-      - name: Download API artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: hockeyspare-api-dist
-          path: /tmp/hockeyspare-deploy/api
+            url=$(curl -fsS               -H "Authorization: Bearer $GH_TOKEN"               -H "Accept: application/vnd.github+json"               "https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/artifacts?per_page=100"               | jq -r --arg name "$name" '.artifacts[] | select(.name == $name) | .archive_download_url'               | head -n 1)
+
+            if [ -z "$url" ]; then
+              echo "Artifact $name not found for run $RUN_ID." >&2
+              exit 1
+            fi
+
+            curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -o "/tmp/$name.zip" "$url"
+            unzip -q -o "/tmp/$name.zip" -d "$dest"
+            rm -f "/tmp/$name.zip"
+            echo "Downloaded $name -> $dest"
+          }
+
+          download hockeyspare-angular-browser /tmp/hockeyspare-deploy/angular
+          download hockeyspare-api-dist /tmp/hockeyspare-deploy/api
 
       - name: Dry run complete
         if: ${{ inputs.deploy != true }}

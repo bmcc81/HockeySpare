@@ -59,7 +59,7 @@ export function unsubscribeUrl(origin: string, token: string): string {
   return `${origin}/api/follow/unsubscribe?token=${encodeURIComponent(token)}`;
 }
 
-function wrapHtml(lines: string[], buttonLabel: string | null, buttonUrl: string | null, footer: string): string {
+export function wrapHtml(lines: string[], buttonLabel: string | null, buttonUrl: string | null, footer: string): string {
   const body = lines.map((l) => `<p style="margin:0 0 12px">${l}</p>`).join('');
   const button =
     buttonLabel && buttonUrl

@@ -124,6 +124,8 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
   submittingVolunteerSignup = signal(false);
   volunteerSignupError = signal<string | null>(null);
   volunteerSignupSuccessShiftId = signal<string | null>(null);
+  /** True when the last sign-up also got a confirmation email. */
+  volunteerConfirmationEmailed = signal(false);
 
   /**
    * Set when sign-up is still closed to the public and the signed-in viewer is
@@ -712,16 +714,23 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
     };
 
     // While previewing, sign-up is still closed to the public, so organizers
-    // add the name through their own endpoint (same form, same result).
+    // add the name through their own endpoint (same form, same result). No
+    // confirmation email goes out in that case.
     const request = this.volunteerPreview()
       ? this.tournamentsApi.addVolunteerToShift(this.tournamentId, shiftId, input)
-      : this.tournamentsApi.signUpForVolunteerShift(this.tournamentId, shiftId, input);
+      : this.tournamentsApi.signUpForVolunteerShift(this.tournamentId, shiftId, {
+          ...input,
+          lang: this.i18n.lang() === 'fr' ? 'fr' : 'en',
+        });
 
     request.subscribe({
-        next: () => {
+        next: (result) => {
           this.submittingVolunteerSignup.set(false);
           this.signingUpShiftId.set(null);
           this.volunteerSignupSuccessShiftId.set(shiftId);
+          this.volunteerConfirmationEmailed.set(
+            (result as { confirmationEmailSent?: boolean }).confirmationEmailSent === true,
+          );
           this.tournamentsApi.getPublic(this.tournamentId).subscribe({
             next: (tournament) => {
               this.tournament.set(tournament);

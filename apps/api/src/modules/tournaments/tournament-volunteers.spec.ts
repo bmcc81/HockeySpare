@@ -3,11 +3,14 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { TournamentsService } from './tournaments.service';
 
 // The service only touches prisma here, so the other collaborators are stubs.
-function makeService(prisma: Record<string, unknown>) {
+function makeService(
+  prisma: Record<string, unknown>,
+  email: Record<string, unknown> = { isConfigured: false },
+) {
   return new TournamentsService(
     prisma as never,
     {} as never,
-    {} as never,
+    email as never,
     {} as never,
     {} as never,
   );
@@ -25,7 +28,13 @@ function shift(overrides: Record<string, unknown> = {}) {
     endsAt: END,
     capacity: 1,
     _count: { signups: 0 },
-    tournament: { volunteersOpen: true },
+    location: 'CSSR (Île Bizard)',
+    description: null,
+    tournament: {
+      volunteersOpen: true,
+      name: 'Pierrefonds Oldtimers Tournament',
+      contactEmail: null,
+    },
     ...overrides,
   };
 }
@@ -85,7 +94,9 @@ describe('TournamentsService volunteers', () => {
 
     it('refuses while sign-up is closed, as if the shift did not exist', async () => {
       const { prisma } = prismaWith({
-        shift: shift({ tournament: { volunteersOpen: false } }),
+        shift: shift({
+          tournament: { volunteersOpen: false, name: 'T', contactEmail: null },
+        }),
       });
 
       await expect(
@@ -141,6 +152,97 @@ describe('TournamentsService volunteers', () => {
     });
   });
 
+  describe('confirmation email', () => {
+    const dto = { name: 'Pat', email: 'Pat@Example.com', lang: 'fr' as const };
+
+    function setup(email: Record<string, unknown>) {
+      const prisma = {
+        tournamentVolunteerShift: {
+          findFirst: jest.fn().mockResolvedValue(shift({ capacity: 3 })),
+        },
+        tournamentVolunteerSignup: {
+          findFirst: jest.fn().mockResolvedValue(null),
+          create: jest.fn().mockResolvedValue({ id: 's1', name: 'Pat' }),
+        },
+      };
+      return makeService(prisma, email);
+    }
+
+    it('emails the volunteer their shift in their language', async () => {
+      const sendMail = jest.fn().mockResolvedValue(undefined);
+      const service = setup({
+        isConfigured: true,
+        getAppUrl: () => 'https://site.example',
+        sendMail,
+      });
+
+      const result = await service.signUpForVolunteerShift('t1', 'shift1', dto);
+
+      expect(result.confirmationEmailSent).toBe(true);
+      expect(sendMail).toHaveBeenCalledTimes(1);
+      const sent = sendMail.mock.calls[0][0];
+      expect(sent.to).toBe('pat@example.com');
+      expect(sent.subject).toContain('Inscription confirmée');
+      expect(sent.headers).toBeUndefined();
+    });
+
+    it('sets Reply-To when the tournament has a contact address', async () => {
+      const sendMail = jest.fn().mockResolvedValue(undefined);
+      const prisma = {
+        tournamentVolunteerShift: {
+          findFirst: jest.fn().mockResolvedValue(
+            shift({
+              capacity: 3,
+              tournament: {
+                volunteersOpen: true,
+                name: 'T',
+                contactEmail: 'org@example.com',
+              },
+            }),
+          ),
+        },
+        tournamentVolunteerSignup: {
+          findFirst: jest.fn().mockResolvedValue(null),
+          create: jest.fn().mockResolvedValue({ id: 's1', name: 'Pat' }),
+        },
+      };
+
+      await makeService(prisma, {
+        isConfigured: true,
+        getAppUrl: () => 'https://site.example',
+        sendMail,
+      }).signUpForVolunteerShift('t1', 'shift1', { name: 'Pat', email: 'p@x.com' });
+
+      expect(sendMail.mock.calls[0][0].headers).toEqual({
+        'Reply-To': 'org@example.com',
+      });
+    });
+
+    it('still saves the signup when mail is not set up', async () => {
+      const sendMail = jest.fn();
+      const service = setup({ isConfigured: false, sendMail });
+
+      const result = await service.signUpForVolunteerShift('t1', 'shift1', dto);
+
+      expect(result.id).toBe('s1');
+      expect(result.confirmationEmailSent).toBe(false);
+      expect(sendMail).not.toHaveBeenCalled();
+    });
+
+    it('still saves the signup when the mail server fails', async () => {
+      const service = setup({
+        isConfigured: true,
+        getAppUrl: () => 'https://site.example',
+        sendMail: jest.fn().mockRejectedValue(new Error('535 auth failed')),
+      });
+
+      const result = await service.signUpForVolunteerShift('t1', 'shift1', dto);
+
+      expect(result.id).toBe('s1');
+      expect(result.confirmationEmailSent).toBe(false);
+    });
+  });
+
   describe('organizer actions', () => {
     // Owner of the tournament, so the manage check passes.
     const tournamentRow = { id: 't1', createdById: 'org1' };
@@ -173,6 +275,28 @@ describe('TournamentsService volunteers', () => {
       expect(create).toHaveBeenCalledWith({
         data: { shiftId: 'shift1', name: 'Chris', email: null, phone: null },
       });
+    });
+
+    it('does not email people an organizer adds', async () => {
+      const sendMail = jest.fn();
+      const service = makeService(
+        prismaFor({
+          tournamentVolunteerShift: {
+            findFirst: jest.fn().mockResolvedValue(shift({ capacity: 2 })),
+          },
+          tournamentVolunteerSignup: {
+            create: jest.fn().mockResolvedValue({ id: 's1', name: 'Pat' }),
+          },
+        }),
+        { isConfigured: true, sendMail },
+      );
+
+      await service.addVolunteerToShift('org1', 't1', 'shift1', {
+        name: 'Pat',
+        email: 'pat@example.com',
+      });
+
+      expect(sendMail).not.toHaveBeenCalled();
     });
 
     it('will not add a name to a full shift', async () => {

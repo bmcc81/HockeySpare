@@ -563,7 +563,15 @@ export interface CreateTournamentVolunteerSignupInput {
   name: string;
   email: string;
   phone?: string | null;
+  /** Language of the confirmation email. */
+  lang?: 'en' | 'fr';
 }
+
+/** What a public volunteer sign-up returns. */
+export type TournamentVolunteerSignupResult = TournamentVolunteerSignup & {
+  /** True when a confirmation email went out. */
+  confirmationEmailSent?: boolean;
+};
 
 export type TournamentInfoListingCategory = 'HOTEL' | 'MERCHANDISE' | 'VENDOR';
 

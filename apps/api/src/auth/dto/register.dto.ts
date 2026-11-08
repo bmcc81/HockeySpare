@@ -1,4 +1,4 @@
-import { IsEmail, IsOptional, IsString, MinLength, MaxLength } from 'class-validator';
+import { IsEmail, IsIn, IsOptional, IsString, MinLength, MaxLength } from 'class-validator';
 
 export class RegisterDto {
   @IsEmail()
@@ -18,4 +18,9 @@ export class RegisterDto {
   @IsString()
   @MaxLength(50)
   lastName: string;
+
+  /** Language of the welcome email. */
+  @IsOptional()
+  @IsIn(['en', 'fr'])
+  lang?: 'en' | 'fr';
 }

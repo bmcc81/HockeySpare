@@ -6,6 +6,8 @@ export interface RegisterRequest {
   password: string;
   firstName?: string;
   lastName?: string;
+  /** Language of the welcome email. */
+  lang?: 'en' | 'fr';
 }
 
 export interface RegisterResponse {

@@ -1,5 +1,5 @@
 import type { TournamentVolunteerShift } from '@hockeyspare/contracts';
-import { groupVolunteerShifts } from './volunteer-groups';
+import { buildVolunteerGrid, groupVolunteerShifts, openSpots } from './volunteer-groups';
 
 function shift(
   id: string,
@@ -60,5 +60,67 @@ describe('groupVolunteerShifts', () => {
   it('writes the day heading in the requested language', () => {
     const [monday] = groupVolunteerShifts(shifts, 'fr-CA');
     expect(monday.day.toLowerCase()).toContain('lundi');
+  });
+});
+
+describe('buildVolunteerGrid', () => {
+  function slot(
+    id: string,
+    role: string,
+    start: string,
+    end: string,
+    location: string | null,
+  ): TournamentVolunteerShift {
+    return { ...shift(id, role, start, location), endsAt: end };
+  }
+
+  const shifts = [
+    slot('1', 'Timekeeper', '2026-11-16T18:00:00', '2026-11-16T20:00:00', 'Île Bizard'),
+    slot('2', 'Timekeeper', '2026-11-16T18:00:00', '2026-11-16T20:00:00', 'PFDS'),
+    slot('3', 'Referees', '2026-11-16T18:00:00', '2026-11-16T20:00:00', 'Île Bizard'),
+    slot('4', 'Host', '2026-11-16T20:00:00', '2026-11-16T22:00:00', 'PFDS'),
+    slot('5', 'Helper', '2026-11-17T18:00:00', '2026-11-17T20:00:00', null),
+  ];
+
+  it('has one column per arena and one row per time slot', () => {
+    const [monday, tuesday] = buildVolunteerGrid(shifts, 'en-CA');
+    expect(monday.arenas).toEqual(['Île Bizard', 'PFDS']);
+    expect(monday.rows).toHaveLength(2);
+    expect(tuesday.arenas).toEqual([null]);
+  });
+
+  it('puts shifts with the same time on one row, in their arena column', () => {
+    const [monday] = buildVolunteerGrid(shifts, 'en-CA');
+    const [first, second] = monday.rows;
+    expect(first.cells[0].map((s) => s.role)).toEqual(['Referees', 'Timekeeper']);
+    expect(first.cells[1].map((s) => s.role)).toEqual(['Timekeeper']);
+    expect(second.cells[0]).toEqual([]);
+    expect(second.cells[1].map((s) => s.role)).toEqual(['Host']);
+  });
+
+  it('orders rows by start time', () => {
+    const [monday] = buildVolunteerGrid(shifts, 'en-CA');
+    expect(monday.rows.map((r) => r.startsAt)).toEqual([
+      '2026-11-16T18:00:00',
+      '2026-11-16T20:00:00',
+    ]);
+  });
+
+  it('returns nothing for no shifts', () => {
+    expect(buildVolunteerGrid([], 'en-CA')).toEqual([]);
+  });
+});
+
+describe('openSpots', () => {
+  const base = shift('1', 'Host', '2026-11-16T18:00:00', null);
+
+  it('is the capacity minus the names already on the shift', () => {
+    const named = { ...base, capacity: 3, signups: [{ id: 's', shiftId: '1', name: 'A', createdAt: '' }] };
+    expect(openSpots(named)).toBe(2);
+  });
+
+  it('is zero without a capacity or when the shift is full', () => {
+    expect(openSpots(base)).toBe(0);
+    expect(openSpots({ ...base, capacity: 1, _count: { signups: 4 } })).toBe(0);
   });
 });

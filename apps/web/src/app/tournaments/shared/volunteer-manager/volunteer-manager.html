@@ -12,6 +12,13 @@
         <a class="btn btn-sm btn-outline-secondary" [routerLink]="['/tournaments', tournamentId]" target="_blank">
           {{ 'Preview the page' | t }}
         </a>
+        <a
+          class="btn btn-sm btn-outline-secondary"
+          [routerLink]="['/tournaments', tournamentId, 'volunteer-sheet']"
+          target="_blank"
+        >
+          {{ 'Grid and printable sheet' | t }}
+        </a>
         <button
           type="button"
           class="btn btn-sm"

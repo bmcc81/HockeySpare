@@ -1396,6 +1396,12 @@ export const FR: Record<string, string> = {
   "We couldn't send the email just now. Please try again in a few minutes.": "Nous n’avons pas pu envoyer le courriel pour l’instant. Réessayez dans quelques minutes.",
   // --- volunteer management (organizer preview, add/remove names) ---
   "Volunteers": "Bénévoles",
+  "Grid and printable sheet": "Grille et feuille à imprimer",
+  "Back to manage": "Retour à la gestion",
+  "Show phone numbers": "Afficher les numéros de téléphone",
+  "Volunteer schedule": "Horaire des bénévoles",
+  "No arena": "Sans aréna",
+  "Could not load the volunteer shifts. Only organizers can open this sheet.": "Impossible de charger les quarts de bénévolat. Seuls les organisateurs peuvent ouvrir cette feuille.",
   "Open to the public": "Ouvert au public",
   "Hidden: organizers only": "Masqué : organisateurs seulement",
   "Preview the page": "Aperçu de la page",

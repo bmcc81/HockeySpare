@@ -199,6 +199,14 @@ export const routes: Routes = [
   },
   {
     // Public - no auth guard. Print-optimized schedule/teams/sponsors handout.
+    path: 'tournaments/:id/volunteer-sheet',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./tournaments/volunteer-sheet/volunteer-sheet').then(
+        (m) => m.VolunteerSheetComponent,
+      ),
+  },
+  {
     path: 'tournaments/:id/program',
     loadComponent: () =>
       import('./tournaments/tournament-program/tournament-program').then(

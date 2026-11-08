@@ -927,6 +927,8 @@ export const FR: Record<string, string> = {
   "Total": "Total",
   "Total:": "Total :",
   "Refresh": "Actualiser",
+  "A new version of HockeySpare is available.": "Une nouvelle version de HockeySpare est disponible.",
+  "Later": "Plus tard",
   "Refreshing...": "Actualisation...",
   "Send": "Envoyer",
   "Sending...": "Envoi...",

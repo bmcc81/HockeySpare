@@ -7,6 +7,7 @@ import { AiModule } from '../../ai/ai.module';
 import { TournamentsController } from './tournaments.controller';
 import { TournamentsPublicApiController } from './tournaments-public-api.controller';
 import { TournamentShareController } from './tournament-share.controller';
+import { TournamentSitemapController } from './tournament-sitemap.controller';
 import { TournamentCalendarController } from './tournament-calendar.controller';
 import { TournamentFollowController } from './follow/tournament-follow.controller';
 import { TournamentFollowService } from './follow/tournament-follow.service';
@@ -26,6 +27,7 @@ import { ApiKeyGuard } from './api-key.guard';
     TournamentsController,
     TournamentsPublicApiController,
     TournamentShareController,
+    TournamentSitemapController,
     TournamentCalendarController,
     TournamentFollowController,
   ],

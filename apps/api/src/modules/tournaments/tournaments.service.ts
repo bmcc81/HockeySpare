@@ -371,16 +371,20 @@ export class TournamentsService {
     };
   }
 
-  /** Just what a link preview needs: public fields only. Null when there is no such tournament. */
-  /** Every tournament page, for the public sitemap (they are all open to anyone with the link). */
+  /**
+   * Tournament pages for the public sitemap. Demo tournaments (ids starting
+   * with `demo-`) stay reachable by link but are kept off Google.
+   */
   async listForSitemap() {
     return this.prisma.tournament.findMany({
+      where: { NOT: { id: { startsWith: 'demo-' } } },
       select: { id: true, startDate: true, endDate: true, updatedAt: true },
       orderBy: { updatedAt: 'desc' },
       take: 5000,
     });
   }
 
+  /** Just what a link preview needs: public fields only. Null when there is no such tournament. */
   async getShareInfo(tournamentId: string): Promise<ShareInfo | null> {
     return this.prisma.tournament.findUnique({
       where: { id: tournamentId },

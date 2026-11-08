@@ -658,6 +658,20 @@ export class TournamentsApiService {
     );
   }
 
+  /** How many people the after-the-final thank-you email would reach. */
+  getThankYouPreview(tournamentId: string): Observable<{ recipients: number; emailConfigured: boolean }> {
+    return this.http.get<{ recipients: number; emailConfigured: boolean }>(
+      `/api/tournaments/${tournamentId}/thank-you`,
+    );
+  }
+
+  sendThankYou(tournamentId: string, note?: string): Observable<{ sent: number; failed: number }> {
+    return this.http.post<{ sent: number; failed: number }>(
+      `/api/tournaments/${tournamentId}/thank-you`,
+      { note },
+    );
+  }
+
   /** Organizer view: every shift with its signups, even while sign-up is closed. */
   listVolunteerShifts(tournamentId: string): Observable<TournamentVolunteerShift[]> {
     return this.http.get<TournamentVolunteerShift[]>(

@@ -12,6 +12,8 @@ import { TournamentCalendarController } from './tournament-calendar.controller';
 import { TournamentFollowController } from './follow/tournament-follow.controller';
 import { TournamentFollowService } from './follow/tournament-follow.service';
 import { FollowReminderScheduler } from './follow/follow-reminder.scheduler';
+import { TournamentThankYouController } from './thank-you/tournament-thank-you.controller';
+import { TournamentThankYouService } from './thank-you/tournament-thank-you.service';
 import { TournamentsService } from './tournaments.service';
 import { ApiKeyGuard } from './api-key.guard';
 
@@ -30,12 +32,14 @@ import { ApiKeyGuard } from './api-key.guard';
     TournamentSitemapController,
     TournamentCalendarController,
     TournamentFollowController,
+    TournamentThankYouController,
   ],
   providers: [
     TournamentsService,
     ApiKeyGuard,
     TournamentFollowService,
     FollowReminderScheduler,
+    TournamentThankYouService,
   ],
   exports: [TournamentsService],
 })

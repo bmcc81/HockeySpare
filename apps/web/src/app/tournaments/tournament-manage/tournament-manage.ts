@@ -43,6 +43,7 @@ import { AuthStateService } from '../../auth/auth-state.service';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { QrCodeComponent } from '../shared/qr-code/qr-code';
 import { VolunteerManagerComponent } from '../shared/volunteer-manager/volunteer-manager';
+import { ThankYouManagerComponent } from '../shared/thank-you-manager/thank-you-manager';
 import { TournamentManageAuctionComponent } from '../tournament-manage-auction/tournament-manage-auction';
 import { TranslatePipe, LocalDatePipe } from '../../core/i18n/t.pipe';
 
@@ -108,6 +109,7 @@ const AUDIT_ACTION_LABELS: Record<string, string> = {
     QrCodeComponent,
     TournamentManageAuctionComponent,
     VolunteerManagerComponent,
+    ThankYouManagerComponent,
     TranslatePipe,
     LocalDatePipe,
   ],

@@ -34,4 +34,30 @@ describe('AnalyticsService', () => {
 
     expect(document.querySelector('script[data-website-id]')).toBeNull();
   });
+
+  describe('opting out with ?notrack', () => {
+    const visit = (query: string) => window.history.replaceState({}, '', '/' + query);
+
+    afterEach(() => {
+      visit('');
+      localStorage.removeItem('umami.disabled');
+    });
+
+    it('?notrack=1 sets the flag Umami checks, and it sticks for later visits', () => {
+      visit('?notrack=1');
+      new AnalyticsService().init();
+      expect(localStorage.getItem('umami.disabled')).toBe('1');
+
+      visit('');
+      new AnalyticsService().init();
+      expect(localStorage.getItem('umami.disabled')).toBe('1');
+    });
+
+    it('?notrack=0 turns counting back on', () => {
+      localStorage.setItem('umami.disabled', '1');
+      visit('?notrack=0');
+      new AnalyticsService().init();
+      expect(localStorage.getItem('umami.disabled')).toBeNull();
+    });
+  });
 });

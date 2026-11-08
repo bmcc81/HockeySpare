@@ -1,9 +1,9 @@
 // apps/web/src/environments/environment.ts
 export const environment = {
   apiBaseUrl: '/api',
-  // Umami visitor statistics. Stays off until a website id is filled in.
+  // Umami visitor statistics. The website id is public (it is in the page source).
   analytics: {
-    umamiWebsiteId: '',
+    umamiWebsiteId: '1ffac3ca-054c-4e2c-b09a-d323de6c4efe',
     umamiScriptUrl: 'https://cloud.umami.is/script.js',
   },
 };

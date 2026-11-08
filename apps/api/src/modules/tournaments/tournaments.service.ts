@@ -372,6 +372,15 @@ export class TournamentsService {
   }
 
   /** Just what a link preview needs: public fields only. Null when there is no such tournament. */
+  /** Every tournament page, for the public sitemap (they are all open to anyone with the link). */
+  async listForSitemap() {
+    return this.prisma.tournament.findMany({
+      select: { id: true, startDate: true, endDate: true, updatedAt: true },
+      orderBy: { updatedAt: 'desc' },
+      take: 5000,
+    });
+  }
+
   async getShareInfo(tournamentId: string): Promise<ShareInfo | null> {
     return this.prisma.tournament.findUnique({
       where: { id: tournamentId },

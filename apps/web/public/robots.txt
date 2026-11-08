@@ -2,6 +2,7 @@
 User-agent: *
 Allow: /
 Disallow: /api/
+Allow: /api/sitemap.xml
 Disallow: /login
 Disallow: /register
 Disallow: /messages
@@ -12,4 +13,4 @@ Disallow: /score-sheets/
 Disallow: /tournaments/new
 Disallow: /tournaments/*/manage
 
-Sitemap: https://hockeyspare.webinkgraphics.com/sitemap.xml
+Sitemap: https://hockeyspare.webinkgraphics.com/api/sitemap.xml

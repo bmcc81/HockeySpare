@@ -27,6 +27,7 @@ import {
 } from '@hockeyspare/contracts';
 import { Subscription, interval, switchMap } from 'rxjs';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
+import { AnalyticsService } from '../../core/analytics/analytics.service';
 import { AuctionApiService } from '../../core/services/auction-api.service';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { LocalDatePipe, TranslatePipe } from '../../core/i18n/t.pipe';
@@ -96,6 +97,7 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
   private readonly sanitizer = inject(DomSanitizer);
   private readonly i18n = inject(I18nService);
   private readonly authState = inject(AuthStateService);
+  private readonly analytics = inject(AnalyticsService);
 
   auctionActive = signal(false);
 
@@ -778,6 +780,7 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
 
     request.subscribe({
         next: (result) => {
+          this.analytics.track('volunteer_signup');
           this.submittingVolunteerSignup.set(false);
           this.signingUpShiftId.set(null);
           this.volunteerSignupSuccessShiftId.set(shiftId);
@@ -866,6 +869,7 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
       })
       .subscribe({
         next: (result) => {
+          this.analytics.track('team_registration');
           if (result.checkoutUrl) {
             // Leaving the page for Stripe Checkout - no need to reset
             // submittingRegistration, the navigation takes over.

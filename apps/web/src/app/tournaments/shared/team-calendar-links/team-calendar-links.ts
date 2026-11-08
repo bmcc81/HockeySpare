@@ -4,6 +4,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { TranslatePipe } from '../../../core/i18n/t.pipe';
 import { I18nService } from '../../../core/i18n/i18n.service';
 import { AuthStateService } from '../../../auth/auth-state.service';
+import { AnalyticsService } from '../../../core/analytics/analytics.service';
 import { TournamentsApiService } from '../../../core/services/tournaments-api.service';
 import { googleSubscribeUrl, isIosDevice, teamCalendarFeedUrl, webcalUrl } from '../calendar-links';
 
@@ -18,14 +19,14 @@ import { googleSubscribeUrl, isIosDevice, teamCalendarFeedUrl, webcalUrl } from 
   imports: [TranslatePipe, NgIf],
   template: `
     <div class="d-flex flex-wrap gap-2 align-items-center">
-      <a class="btn btn-sm btn-primary" [href]="google" target="_blank" rel="noopener noreferrer">
+      <a class="btn btn-sm btn-primary" [href]="google" target="_blank" rel="noopener noreferrer" (click)="track('calendar_google')">
         {{ 'Add to Google Calendar' | t }}
       </a>
       <button *ngIf="ios" type="button" class="btn btn-sm btn-outline-secondary" (click)="copyLink()">
         {{ copied() ? ('Link copied' | t) : ('Copy calendar link' | t) }}
       </button>
-      <a *ngIf="!ios" class="btn btn-sm btn-outline-secondary" [href]="webcal">{{ 'Apple / Outlook' | t }}</a>
-      <a class="btn btn-sm btn-outline-secondary" [href]="ics" download>{{ 'Download .ics' | t }}</a>
+      <a *ngIf="!ios" class="btn btn-sm btn-outline-secondary" [href]="webcal" (click)="track('calendar_apple_outlook')">{{ 'Apple / Outlook' | t }}</a>
+      <a class="btn btn-sm btn-outline-secondary" [href]="ics" download (click)="track('calendar_download_ics')">{{ 'Download .ics' | t }}</a>
     </div>
     <div class="small text-secondary mt-1" *ngIf="ios">
       {{ 'iPhone: copy the link, then go to Settings, Apps, Calendar, Calendar Accounts, Add Account, Other, Add Subscribed Calendar, and paste it.' | t }}
@@ -65,6 +66,11 @@ export class TeamCalendarLinksComponent {
   private readonly api = inject(TournamentsApiService);
   private readonly i18n = inject(I18nService);
   private readonly auth = inject(AuthStateService);
+  private readonly analytics = inject(AnalyticsService);
+
+  track(event: string): void {
+    this.analytics.track(event);
+  }
 
   submitting = signal(false);
   message = signal<string | null>(null);
@@ -116,6 +122,7 @@ export class TeamCalendarLinksComponent {
         } else if (result.status === 'confirmation_recently_sent') {
           this.message.set('We already sent you a link. Check your inbox (and your spam folder).');
         } else {
+          this.analytics.track('reminder_signup');
           this.message.set('Check your inbox: we sent a link to confirm {email}.');
         }
       },
@@ -158,6 +165,7 @@ export class TeamCalendarLinksComponent {
       window.prompt('Copy this link', link);
       return;
     }
+    this.analytics.track('calendar_copy_link');
     this.copied.set(true);
     setTimeout(() => this.copied.set(false), 3000);
   }

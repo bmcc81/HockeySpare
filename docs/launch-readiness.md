@@ -6,6 +6,7 @@ Legend: [x] done · [ ] to do · (needs X) = blocked on a decision or input
 
 ## 1. Ready for strangers
 - [x] Cloudflare Web Analytics is installed (already in `index.html`).
+- [x] Umami event tracking is wired in (calendar buttons, reminder sign-up, volunteer sign-up, team registration). It stays off until `analytics.umamiWebsiteId` is set in `apps/web/src/environments/environment.ts`.
 - [x] Site-wide share preview: title, description and image for links pasted in chats/social.
 - [x] Terms of Service page (`/terms`) linked from the footer.
 - [x] Call-to-action on every public tournament page for visitors: post a spare request, find a game, run your own tournament/league.

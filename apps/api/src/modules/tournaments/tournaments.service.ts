@@ -395,7 +395,7 @@ export class TournamentsService {
         startDate: true,
         endDate: true,
         logoUrl: true,
-        venues: { select: { name: true }, orderBy: { name: 'asc' } },
+        venues: { select: { name: true, address: true }, orderBy: { name: 'asc' } },
       },
     });
   }

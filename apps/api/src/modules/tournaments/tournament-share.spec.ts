@@ -100,3 +100,47 @@ describe('injectShareTags', () => {
     expect(html).toContain('https://site.example/tournaments/abc123');
   });
 });
+
+describe('event structured data', () => {
+  const origin = 'https://site.example';
+  const build = (over: Partial<ShareInfo> = {}) =>
+    buildShareTags(info(over), origin, `${origin}/default.png`).structuredData;
+
+  it('describes the tournament as a schema.org SportsEvent', () => {
+    const data = JSON.parse(build({ venues: [{ name: 'PFDS', address: '13800 Boul. Gouin O, Pierrefonds, QC' }] }));
+    expect(data['@type']).toBe('SportsEvent');
+    expect(data.name).toBe('Pierrefonds Oldtimers Tournament');
+    expect(data.startDate).toBe('2026-11-16');
+    expect(data.endDate).toBe('2026-11-22');
+    expect(data.url).toBe('https://site.example/tournaments/abc123');
+    expect(data.location).toEqual({ '@type': 'Place', name: 'PFDS', address: '13800 Boul. Gouin O, Pierrefonds, QC' });
+  });
+
+  it('lists several venues, and leaves out dates and venues that are not set', () => {
+    const several = JSON.parse(build());
+    expect(Array.isArray(several.location)).toBe(true);
+    expect(several.location).toHaveLength(2);
+
+    const bare = JSON.parse(build({ startDate: null, endDate: null, venues: [] }));
+    expect(bare.startDate).toBeUndefined();
+    expect(bare.endDate).toBeUndefined();
+    expect(bare.location).toBeUndefined();
+  });
+
+  it('cannot close the script element it sits in', () => {
+    const json = build({ name: '</script><script>alert(1)</script>' });
+    expect(json).not.toContain('<');
+    expect(JSON.parse(json).name).toBe('</script><script>alert(1)</script>');
+  });
+
+  it('is added once to the page, replacing any earlier block', () => {
+    const tags = buildShareTags(info(), origin, `${origin}/default.png`);
+    const page = INDEX.replace('</head>', '<script type="application/ld+json">{"old":true}</script></head>');
+    const html = injectShareTags(page, tags);
+
+    expect(html.match(/application\/ld\+json/g)).toHaveLength(1);
+    expect(html).not.toContain('"old":true');
+    expect(html).toContain('"@type":"SportsEvent"');
+  });
+});
+

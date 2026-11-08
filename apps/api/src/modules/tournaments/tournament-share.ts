@@ -14,7 +14,7 @@ export interface ShareInfo {
   startDate: Date | null;
   endDate: Date | null;
   logoUrl: string | null;
-  venues: { name: string }[];
+  venues: { name: string; address?: string | null }[];
 }
 
 export interface ShareTags {
@@ -22,6 +22,8 @@ export interface ShareTags {
   description: string;
   url: string;
   image: string;
+  /** schema.org SportsEvent as JSON, for Google's event results. */
+  structuredData: string;
 }
 
 export function escapeHtml(value: string): string {
@@ -58,6 +60,43 @@ export function formatDateRange(start: Date | null, end: Date | null): string {
 
 const TAGLINE = 'Live scores, standings and schedule · Pointages, classements et calendrier en direct';
 
+const dateOnly = (d: Date) => d.toISOString().slice(0, 10);
+
+/** JSON that is safe to place inside a <script> element. */
+function jsonForScript(value: unknown): string {
+  return JSON.stringify(value).replace(/</g, '\\u003c');
+}
+
+/**
+ * Event details for Google (schema.org SportsEvent). Dates are whole days, the
+ * way the tournament stores them. The contact email is left out on purpose.
+ */
+export function buildEventJsonLd(info: ShareInfo, url: string, image: string, description: string): string {
+  const places = info.venues
+    .filter((v) => v.name.trim())
+    .map((v) => ({
+      '@type': 'Place',
+      name: v.name.trim(),
+      ...(v.address?.trim() ? { address: v.address.trim() } : {}),
+    }));
+
+  return jsonForScript({
+    '@context': 'https://schema.org',
+    '@type': 'SportsEvent',
+    name: info.name,
+    description,
+    url,
+    image: [image],
+    sport: 'Ice hockey',
+    inLanguage: ['en', 'fr'],
+    eventStatus: 'https://schema.org/EventScheduled',
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    ...(info.startDate ? { startDate: dateOnly(info.startDate) } : {}),
+    ...(info.endDate ?? info.startDate ? { endDate: dateOnly((info.endDate ?? info.startDate) as Date) } : {}),
+    ...(places.length === 1 ? { location: places[0] } : places.length > 1 ? { location: places } : {}),
+  });
+}
+
 export function buildShareTags(info: ShareInfo, origin: string, defaultImage: string): ShareTags {
   const venueNames = info.venues
     .map((v) => v.name.split(/\s+-\s+/)[0].trim())
@@ -75,11 +114,15 @@ export function buildShareTags(info: ShareInfo, origin: string, defaultImage: st
       : `${origin}${info.logoUrl.startsWith('/') ? '' : '/'}${info.logoUrl}`;
   }
 
+  const url = `${origin}/tournaments/${encodeURIComponent(info.id)}`;
+  const shortDescription = description.slice(0, 300);
+
   return {
     title: `${info.name} - HockeySpare`,
-    description: description.slice(0, 300),
-    url: `${origin}/tournaments/${encodeURIComponent(info.id)}`,
+    description: shortDescription,
+    url,
     image,
+    structuredData: buildEventJsonLd(info, url, image, shortDescription),
   };
 }
 
@@ -88,6 +131,7 @@ export function injectShareTags(indexHtml: string, tags: ShareTags): string {
   const stripped = indexHtml
     .replace(/<title>[\s\S]*?<\/title>/i, '')
     .replace(/<link\s[^>]*rel="canonical"[^>]*>/gi, '')
+    .replace(/<script\s[^>]*type="application\/ld\+json"[^>]*>[\s\S]*?<\/script>/gi, '')
     .replace(
       /<meta\s[^>]*?(?:name|property)="(?:description|og:[^"]*|twitter:[^"]*)"[^>]*>/gi,
       '',
@@ -112,6 +156,7 @@ export function injectShareTags(indexHtml: string, tags: ShareTags): string {
     `<meta name="twitter:title" content="${t}" />`,
     `<meta name="twitter:description" content="${d}" />`,
     `<meta name="twitter:image" content="${i}" />`,
+    `<script type="application/ld+json">${tags.structuredData}</script>`,
   ].join('\n    ');
 
   return /<\/head>/i.test(stripped)

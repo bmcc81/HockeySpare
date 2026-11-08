@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { adminGuard } from './auth/admin.guard';
 import { authGuard } from './auth/auth.guard';
 import { guestGuard } from './auth/guest.guard';
+import type { SeoRouteData } from './core/seo/seo.service';
 
 export const routes: Routes = [
   {
@@ -23,6 +24,13 @@ export const routes: Routes = [
   },
   {
     path: 'requests',
+    data: {
+      seo: {
+        title: 'Spare requests - HockeySpare',
+        description:
+          'Teams looking for a spare player or goalie, and players offering to fill in. Post a request or an offer in minutes.',
+      } satisfies SeoRouteData,
+    },
     loadComponent: () =>
       import('./requests/request-list/request-list').then(
         (m) => m.RequestListComponent,
@@ -216,6 +224,7 @@ export const routes: Routes = [
   {
     // Public - no auth guard. Anyone with the link can view the schedule/rules.
     path: 'tournaments/:id',
+    data: { seo: { keep: true } satisfies SeoRouteData },
     loadComponent: () =>
       import('./tournaments/tournament-public/tournament-public').then(
         (m) => m.TournamentPublicComponent,
@@ -232,12 +241,24 @@ export const routes: Routes = [
 
   {
     path: 'terms',
+    data: {
+      seo: {
+        title: 'Terms of Service - HockeySpare',
+        description: 'The terms for using HockeySpare to find spares and run leagues and tournaments.',
+      } satisfies SeoRouteData,
+    },
     loadComponent: () =>
       import('./legal/terms/terms').then((m) => m.TermsComponent),
   },
 
   {
     path: 'privacy',
+    data: {
+      seo: {
+        title: 'Privacy Policy - HockeySpare',
+        description: 'How HockeySpare collects, uses and protects your information.',
+      } satisfies SeoRouteData,
+    },
     loadComponent: () =>
       import('./legal/privacy-policy/privacy-policy').then(
         (m) => m.PrivacyPolicyComponent,

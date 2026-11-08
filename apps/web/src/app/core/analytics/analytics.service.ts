@@ -1,6 +1,9 @@
 import { Injectable, isDevMode } from '@angular/core';
 import { environment } from '../../../environments/environment';
 
+/** The key Umami's own script checks before it records anything. */
+const OPT_OUT_KEY = 'umami.disabled';
+
 type EventData = Record<string, string | number | boolean>;
 
 declare global {
@@ -21,10 +24,35 @@ declare global {
  */
 @Injectable({ providedIn: 'root' })
 export class AnalyticsService {
+  /**
+   * Lets the site owner leave their own visits out of the numbers: open any
+   * page with `?notrack=1` once on a device to stop counting it, and
+   * `?notrack=0` to count it again. Umami itself honours the same flag.
+   */
+  private applyOptOut(): boolean {
+    try {
+      const choice = new URLSearchParams(window.location.search).get('notrack');
+      if (choice === '1') {
+        localStorage.setItem(OPT_OUT_KEY, '1');
+      } else if (choice === '0') {
+        localStorage.removeItem(OPT_OUT_KEY);
+      }
+      return localStorage.getItem(OPT_OUT_KEY) !== null;
+    } catch {
+      return false;
+    }
+  }
+
   init(): void {
     const { umamiWebsiteId, umamiScriptUrl } = environment.analytics;
 
-    if (!umamiWebsiteId || isDevMode() || typeof document === 'undefined') {
+    if (typeof document === 'undefined') {
+      return;
+    }
+
+    const optedOut = this.applyOptOut();
+
+    if (!umamiWebsiteId || isDevMode() || optedOut) {
       return;
     }
     if (document.querySelector('script[data-website-id]')) {

@@ -86,6 +86,7 @@ export class RegisterComponent {
         lastName: lastName.trim() || undefined,
         email: email.trim().toLowerCase(),
         password,
+        lang: this.i18n.lang(),
       })
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({

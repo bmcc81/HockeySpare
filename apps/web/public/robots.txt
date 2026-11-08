@@ -1,0 +1,15 @@
+# HockeySpare - what search engines may crawl.
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /login
+Disallow: /register
+Disallow: /messages
+Disallow: /profile/
+Disallow: /my-team
+Disallow: /leagues
+Disallow: /score-sheets/
+Disallow: /tournaments/new
+Disallow: /tournaments/*/manage
+
+Sitemap: https://hockeyspare.webinkgraphics.com/sitemap.xml

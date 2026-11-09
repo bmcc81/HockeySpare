@@ -8,3 +8,9 @@
 .container {
   padding: 16px;
 }
+
+/* Reserve the first screen for the page so the footer is not drawn at the top
+   while the route is still loading and then thrown off-screen (layout shift). */
+main.container {
+  min-height: calc(100vh - 4rem);
+}

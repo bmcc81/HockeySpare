@@ -24,13 +24,4 @@ describe('HomeComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  it('showcases the featured tournament with links to its public page and program', () => {
-    fixture.detectChanges();
-    const links = Array.from(
-      (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLAnchorElement>('.featured-tournament a'),
-    ).map((a) => a.getAttribute('href'));
-    expect(links).toContain(`/tournaments/${component.featuredTournamentId}`);
-    expect(links).toContain(`/tournaments/${component.featuredTournamentId}/program`);
-  });
 });

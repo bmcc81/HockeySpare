@@ -20,6 +20,7 @@
 }
 
 .hero,
+.featured-tournament,
 .management,
 .audiences,
 .how-it-works,
@@ -458,3 +459,19 @@ a:focus-visible { outline: 3px solid #439eff; outline-offset: 4px; }
 }
 
 .arena, .level, .note { margin: .4rem 0; color: var(--muted); }
+
+.featured-tournament { padding-top: 1rem; }
+.featured-tournament-card { position: relative; overflow: hidden; border-radius: 24px; background: linear-gradient(120deg, #091827, #123456); padding: clamp(1.6rem, 4vw, 2.6rem); box-shadow: 0 16px 36px #10203318; }
+.featured-tournament-copy { max-width: 46rem; }
+.featured-tournament .eyebrow { color: #c2e3ff; }
+.featured-tournament h2 { margin: .7rem 0 .3rem; font-size: clamp(1.8rem, 3.4vw, 2.6rem); line-height: 1.1; letter-spacing: -.03em; color: #fff; text-wrap: balance; }
+.featured-tournament-dates { margin: 0 0 .8rem; color: #8dcfff; font-weight: 700; }
+.featured-tournament-copy p { color: #d5e0eb; line-height: 1.7; margin: 0 0 1.3rem; }
+.featured-tournament-copy .featured-tournament-dates { margin-bottom: .8rem; color: #8dcfff; }
+.featured-tournament-actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+.featured-tournament .btn-outline-light { background: #ffffff0d; border-color: #ffffff70; color: #fff; }
+.featured-tournament .btn-outline-light:hover { background: #ffffff20; }
+@media (max-width: 575.98px) {
+  .featured-tournament-actions { flex-direction: column; }
+  .featured-tournament-actions .btn { width: 100%; }
+}

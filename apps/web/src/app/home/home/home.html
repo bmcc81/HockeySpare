@@ -1,6 +1,10 @@
 <section class="home-page">
   <section class="hero" aria-labelledby="hero-title">
-    <img class="hero-image" src="/images/hockey-hero.png" [alt]="'Hockey players chasing the puck across an indoor ice rink' | t" width="1536" height="1024" fetchpriority="high" />
+    <picture>
+      <source media="(max-width: 575.98px)" srcset="/images/hockey-hero-1024.webp" type="image/webp" />
+      <source srcset="/images/hockey-hero-1536.webp" type="image/webp" />
+      <img class="hero-image" src="/images/hockey-hero.png" [alt]="'Hockey players chasing the puck across an indoor ice rink' | t" width="1536" height="1024" fetchpriority="high" />
+    </picture>
     <div class="hero-copy">
       <span class="eyebrow">{{ 'Your community. Your game.' | t }}</span>
       <h1 id="hero-title">{{ 'Less organizing.' | t }}<br />{{ 'More' | t }} <span>{{ 'hockey.' | t }}</span></h1>

@@ -34,6 +34,20 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="HockeySpare" />
+    <script>
+      // Only the home page shows the hero image: start fetching it right away,
+      // before the app has loaded, so it is not the last thing to arrive.
+      if (location.pathname === '/') {
+        var hero = document.createElement('link');
+        hero.rel = 'preload';
+        hero.as = 'image';
+        hero.type = 'image/webp';
+        hero.href = matchMedia('(max-width: 575.98px)').matches
+          ? '/images/hockey-hero-1024.webp'
+          : '/images/hockey-hero-1536.webp';
+        document.head.appendChild(hero);
+      }
+    </script>
   </head>
   <body>
     <app-root></app-root>

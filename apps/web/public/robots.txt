@@ -3,6 +3,9 @@ User-agent: *
 Allow: /
 Disallow: /api/
 Allow: /api/sitemap.xml
+# The public pages load their data from these endpoints; Google must be able to fetch them to render the page.
+Allow: /api/tournaments/
+Allow: /api/player-highlights
 Disallow: /login
 Disallow: /register
 Disallow: /messages

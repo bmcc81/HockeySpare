@@ -1,4 +1,5 @@
 import { PlayerHighlightsComponent } from '../../shared/player-highlights/player-highlights';
+import { FeaturedTournamentComponent } from '../../shared/featured-tournament/featured-tournament';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -36,14 +37,11 @@ type ManagementFeature = {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [PlayerHighlightsComponent, CommonModule, RouterLink, InViewDirective, TranslatePipe],
+  imports: [PlayerHighlightsComponent, FeaturedTournamentComponent, CommonModule, RouterLink, InViewDirective, TranslatePipe],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
 export class HomeComponent {
-  /** The tournament showcased at the top of the home page (Pierrefonds Oldtimers 2026). */
-  readonly featuredTournamentId = 'cmspgfwhd0006g3yqolfrjj9j';
-
   managementFeatures: ManagementFeature[] = [
     {
       title: 'Standings & schedules',

@@ -23,20 +23,7 @@
     <a routerLink="/requests/team/new"><span>03</span><span><strong>{{ 'Complete your lineup' | t }}</strong><small>{{ 'Find a spare →' | t }}</small></span></a>
   </nav>
 
-  <section class="featured-tournament" aria-labelledby="featured-tournament-title">
-    <div class="featured-tournament-card" [appInView]="0">
-      <div class="featured-tournament-copy">
-        <span class="eyebrow">{{ 'Happening now on HockeySpare' | t }}</span>
-        <h2 id="featured-tournament-title">{{ 'Pierrefonds Oldtimers Tournament' | t }}</h2>
-        <p class="featured-tournament-dates">{{ 'November 16 to 22, 2026' | t }}</p>
-        <p>{{ 'Follow the schedule, live scores, teams, and sponsors for the week, and sign up to volunteer.' | t }}</p>
-        <div class="featured-tournament-actions">
-          <a class="btn btn-primary btn-lg" [routerLink]="['/tournaments', featuredTournamentId]">{{ 'View the tournament' | t }}</a>
-          <a class="btn btn-outline-light btn-lg" [routerLink]="['/tournaments', featuredTournamentId, 'program']">{{ 'Printable program' | t }}</a>
-        </div>
-      </div>
-    </div>
-  </section>
+  <app-featured-tournament></app-featured-tournament>
 
   <app-player-highlights scope="home"></app-player-highlights>
 

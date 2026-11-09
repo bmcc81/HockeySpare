@@ -41,6 +41,9 @@ type ManagementFeature = {
   styleUrl: './home.scss',
 })
 export class HomeComponent {
+  /** The tournament showcased at the top of the home page (Pierrefonds Oldtimers 2026). */
+  readonly featuredTournamentId = 'cmspgfwhd0006g3yqolfrjj9j';
+
   managementFeatures: ManagementFeature[] = [
     {
       title: 'Standings & schedules',

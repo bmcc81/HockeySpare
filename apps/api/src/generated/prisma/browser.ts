@@ -143,6 +143,12 @@ export type TournamentApiKey = Prisma.TournamentApiKeyModel
  */
 export type TournamentWebhook = Prisma.TournamentWebhookModel
 /**
+ * Model TournamentSlugAlias
+ * A tournament's earlier readable address (name + start date), kept after a
+ * rename or date change so links that were already shared keep working.
+ */
+export type TournamentSlugAlias = Prisma.TournamentSlugAliasModel
+/**
  * Model TournamentCoOrganizer
  * 
  */

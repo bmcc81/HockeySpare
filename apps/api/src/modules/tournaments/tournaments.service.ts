@@ -403,7 +403,47 @@ export class TournamentsService {
       take: 5000,
     });
 
-    return all.find((t) => tournamentSlug(t.name, t.startDate) === wanted)?.id ?? null;
+    const current = all.find((t) => tournamentSlug(t.name, t.startDate) === wanted);
+
+    if (current) {
+      return current.id;
+    }
+
+    // An earlier address of a tournament that was renamed or moved.
+    try {
+      const alias = await this.prisma.tournamentSlugAlias.findUnique({
+        where: { slug: wanted },
+        select: { tournamentId: true },
+      });
+      return alias?.tournamentId ?? null;
+    } catch (error) {
+      this.logger.warn(`Could not look up old tournament addresses: ${String(error)}`);
+      return null;
+    }
+  }
+
+  /**
+   * After a rename or a new start date, keep the address people were given
+   * before working. Never blocks the edit itself.
+   */
+  private async rememberOldSlug(
+    before: { id: string; name: string; startDate: Date | null },
+    after: { name: string; startDate: Date | null },
+  ): Promise<void> {
+    const oldSlug = tournamentSlug(before.name, before.startDate);
+
+    if (oldSlug === tournamentSlug(after.name, after.startDate)) {
+      return;
+    }
+
+    try {
+      await this.prisma.tournamentSlugAlias.createMany({
+        data: [{ slug: oldSlug, tournamentId: before.id }],
+        skipDuplicates: true,
+      });
+    } catch (error) {
+      this.logger.warn(`Could not save the old address ${oldSlug}: ${String(error)}`);
+    }
   }
 
   /** Just what a link preview needs: public fields only. Null when there is no such tournament. */
@@ -448,7 +488,7 @@ export class TournamentsService {
   }
 
   async update(userId: string, tournamentId: string, dto: UpdateTournamentDto) {
-    await this.getOwnedTournament(userId, tournamentId);
+    const before = await this.getOwnedTournament(userId, tournamentId);
 
     const updated = await this.prisma.tournament.update({
       where: {
@@ -500,6 +540,7 @@ export class TournamentsService {
       include: this.tournamentInclude,
     });
 
+    await this.rememberOldSlug(before, updated);
     await this.logAudit(tournamentId, userId, 'TOURNAMENT_UPDATED');
 
     return updated;

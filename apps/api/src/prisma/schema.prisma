@@ -610,6 +610,7 @@ model Tournament {
   infoListings    TournamentInfoListing[]
   lostFoundItems  TournamentLostFoundItem[]
   auction         TournamentAuction?
+  slugAliases     TournamentSlugAlias[]
 
   @@index([leagueId])
   @@index([createdById])
@@ -648,6 +649,18 @@ model TournamentWebhook {
   url          String
   secret       String
   active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  @@index([tournamentId])
+}
+
+/// A tournament's earlier readable address (name + start date), kept after a
+/// rename or date change so links that were already shared keep working.
+model TournamentSlugAlias {
+  slug         String   @id
+  tournamentId String
   createdAt    DateTime @default(now())
 
   tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)

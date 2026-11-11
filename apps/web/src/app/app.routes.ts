@@ -3,6 +3,7 @@ import { adminGuard } from './auth/admin.guard';
 import { authGuard } from './auth/auth.guard';
 import { guestGuard } from './auth/guest.guard';
 import type { SeoRouteData } from './core/seo/seo.service';
+import { tournamentIdResolver } from './tournaments/tournament-public/tournament-id.resolver';
 
 export const routes: Routes = [
   {
@@ -230,8 +231,21 @@ export const routes: Routes = [
       ),
   },
   {
+    // Public - the short address for the volunteer sign-up: it opens the
+    // tournament page on its Volunteer tab.
+    path: 'tournaments/:id/volunteers',
+    resolve: { tournamentId: tournamentIdResolver },
+    data: { openTab: 'volunteer' },
+    loadComponent: () =>
+      import('./tournaments/tournament-public/tournament-public').then(
+        (m) => m.TournamentPublicComponent,
+      ),
+  },
+  {
     // Public - no auth guard. Anyone with the link can view the schedule/rules.
+    // The address is the tournament's name and start date (or its id).
     path: 'tournaments/:id',
+    resolve: { tournamentId: tournamentIdResolver },
     data: { seo: { keep: true } satisfies SeoRouteData },
     loadComponent: () =>
       import('./tournaments/tournament-public/tournament-public').then(

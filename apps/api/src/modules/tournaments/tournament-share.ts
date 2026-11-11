@@ -1,9 +1,11 @@
+import { tournamentSlug } from './tournament-slug';
+
 /**
  * Link-preview ("share card") support for public tournament pages.
  *
  * The web app is a single-page app, and chat/social link crawlers don't run
  * JavaScript, so they only ever see the site-wide tags in index.html. The
- * server therefore answers `/tournaments/<id>` with the same index.html but
+ * server therefore answers `/tournaments/<slug or id>` with the same index.html but
  * with the tournament's own title, description and image in the head.
  */
 
@@ -114,7 +116,7 @@ export function buildShareTags(info: ShareInfo, origin: string, defaultImage: st
       : `${origin}${info.logoUrl.startsWith('/') ? '' : '/'}${info.logoUrl}`;
   }
 
-  const url = `${origin}/tournaments/${encodeURIComponent(info.id)}`;
+  const url = `${origin}/tournaments/${encodeURIComponent(tournamentSlug(info.name, info.startDate))}`;
   const shortDescription = description.slice(0, 300);
 
   return {

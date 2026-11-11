@@ -56,7 +56,7 @@ describe('buildShareTags', () => {
     expect(tags.title).toBe('Pierrefonds Oldtimers Tournament - HockeySpare');
     expect(tags.description).toContain('Nov 16–22, 2026');
     expect(tags.description).toContain('CSSR, PFDS');
-    expect(tags.url).toBe('https://site.example/tournaments/abc123');
+    expect(tags.url).toBe('https://site.example/tournaments/pierrefonds-oldtimers-tournament-2026-11-16');
     expect(tags.image).toBe('https://site.example/default.png');
   });
 
@@ -97,7 +97,7 @@ describe('injectShareTags', () => {
     const html = fallbackHtml(tags);
     expect(html).toContain('og:title');
     expect(html).toContain('http-equiv="refresh"');
-    expect(html).toContain('https://site.example/tournaments/abc123');
+    expect(html).toContain('https://site.example/tournaments/pierrefonds-oldtimers-tournament-2026-11-16');
   });
 });
 
@@ -112,7 +112,7 @@ describe('event structured data', () => {
     expect(data.name).toBe('Pierrefonds Oldtimers Tournament');
     expect(data.startDate).toBe('2026-11-16');
     expect(data.endDate).toBe('2026-11-22');
-    expect(data.url).toBe('https://site.example/tournaments/abc123');
+    expect(data.url).toBe('https://site.example/tournaments/pierrefonds-oldtimers-tournament-2026-11-16');
     expect(data.location).toEqual({ '@type': 'Place', name: 'PFDS', address: '13800 Boul. Gouin O, Pierrefonds, QC' });
   });
 

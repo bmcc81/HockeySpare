@@ -38,6 +38,7 @@ import { CreateTournamentWebhookDto } from './dto/create-tournament-webhook.dto'
 import { CreateTournamentRefereeDto } from './dto/create-tournament-referee.dto';
 import { AssignTournamentGameRefereeDto } from './dto/assign-tournament-game-referee.dto';
 import type { ShareInfo } from './tournament-share';
+import { looksLikeTournamentId, tournamentSlug } from './tournament-slug';
 import { CreateTournamentVolunteerShiftDto } from './dto/create-tournament-volunteer-shift.dto';
 import { UpdateTournamentVolunteerShiftDto } from './dto/update-tournament-volunteer-shift.dto';
 import { AddTournamentVolunteerDto } from './dto/add-tournament-volunteer.dto';
@@ -378,14 +379,39 @@ export class TournamentsService {
   async listForSitemap() {
     return this.prisma.tournament.findMany({
       where: { NOT: { id: { startsWith: 'demo-' } } },
-      select: { id: true, startDate: true, endDate: true, updatedAt: true },
+      select: { id: true, name: true, startDate: true, endDate: true, updatedAt: true },
       orderBy: { updatedAt: 'desc' },
       take: 5000,
     });
   }
 
+  /**
+   * The id behind a readable address such as `pierrefonds-oldtimers-tournament-2026-11-16`.
+   * Null when no tournament has that name and start date. There are only a
+   * handful of tournaments, so the slugs are compared in memory.
+   */
+  async resolveSlug(slug: string): Promise<string | null> {
+    const wanted = slug.trim().toLowerCase();
+
+    if (!wanted) {
+      return null;
+    }
+
+    const all = await this.prisma.tournament.findMany({
+      select: { id: true, name: true, startDate: true },
+      orderBy: { createdAt: 'asc' },
+      take: 5000,
+    });
+
+    return all.find((t) => tournamentSlug(t.name, t.startDate) === wanted)?.id ?? null;
+  }
+
   /** Just what a link preview needs: public fields only. Null when there is no such tournament. */
-  async getShareInfo(tournamentId: string): Promise<ShareInfo | null> {
+  async getShareInfo(idOrSlug: string): Promise<ShareInfo | null> {
+    const tournamentId = looksLikeTournamentId(idOrSlug)
+      ? idOrSlug
+      : ((await this.resolveSlug(idOrSlug)) ?? idOrSlug);
+
     return this.prisma.tournament.findUnique({
       where: { id: tournamentId },
       select: {

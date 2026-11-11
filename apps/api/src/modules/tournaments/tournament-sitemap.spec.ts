@@ -20,6 +20,12 @@ describe('buildSitemapXml', () => {
     expect(xml).toContain('<lastmod>2026-11-07</lastmod>');
   });
 
+  it('lists the readable address when the tournament name is known', () => {
+    const xml = buildSitemapXml('https://example.com', [t({ name: 'Pierrefonds Oldtimers Tournament' })]);
+    expect(xml).toContain('<loc>https://example.com/tournaments/pierrefonds-oldtimers-tournament-2026-11-16</loc>');
+    expect(xml).not.toContain('abc123');
+  });
+
   it('still lists the static pages when there are no tournaments', () => {
     const xml = buildSitemapXml('https://example.com', []);
     expect(xml).toContain('<loc>https://example.com/privacy</loc>');

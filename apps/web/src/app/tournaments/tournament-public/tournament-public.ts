@@ -105,7 +105,15 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
   private countdownIntervalId: ReturnType<typeof setInterval> | null = null;
   private bannerIntervalId: ReturnType<typeof setInterval> | null = null;
 
-  tournamentId = this.route.snapshot.paramMap.get('id') ?? '';
+  // The route resolves a readable address (name and start date) to the id;
+  // old links that carry the id itself pass straight through.
+  tournamentId =
+    (this.route.snapshot.data['tournamentId'] as string | undefined) ??
+    this.route.snapshot.paramMap.get('id') ??
+    '';
+
+  /** Set by the short volunteer address: the tab to open once the tournament has loaded. */
+  private requestedTab = this.route.snapshot.data['openTab'] as TournamentTab | undefined;
 
   tournament = signal<Tournament | null>(null);
   loading = signal(true);
@@ -190,6 +198,7 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
         this.tournament.set(tournament);
         this.loading.set(false);
         this.loadVolunteerPreview();
+        this.openRequestedTab();
         this.jumpToFragmentGame();
       },
       error: () => {
@@ -726,7 +735,10 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
     // Anyone who is not an organizer of this tournament gets a 403, which just
     // means there is no preview for them.
     this.tournamentsApi.listVolunteerShifts(this.tournamentId).subscribe({
-      next: (shifts) => this.volunteerPreviewShifts.set(shifts),
+      next: (shifts) => {
+        this.volunteerPreviewShifts.set(shifts);
+        this.openRequestedTab();
+      },
       error: () => this.volunteerPreviewShifts.set(null),
     });
   }
@@ -812,6 +824,14 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
 
     if (this.bannerIntervalId !== null) {
       clearInterval(this.bannerIntervalId);
+    }
+  }
+
+  /** Opens the tab asked for by the address, once there is something to show on it. */
+  private openRequestedTab(): void {
+    if (this.requestedTab === 'volunteer' && this.volunteerShifts().length > 0) {
+      this.requestedTab = undefined;
+      this.setTab('volunteer');
     }
   }
 

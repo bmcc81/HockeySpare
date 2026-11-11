@@ -1,7 +1,10 @@
 import { escapeHtml } from './tournament-share';
+import { tournamentSlug } from './tournament-slug';
 
 export interface SitemapTournament {
   id: string;
+  /** With the name, the readable address is listed instead of the id. */
+  name?: string;
   startDate: Date | null;
   endDate: Date | null;
   updatedAt: Date;
@@ -39,7 +42,7 @@ export function buildSitemapXml(origin: string, tournaments: SitemapTournament[]
     ...tournaments.map((t) => {
       const monthly = tournamentChangefreq(t, now) === 'monthly';
       return (
-        `  <url>\n    <loc>${escapeHtml(`${base}/tournaments/${encodeURIComponent(t.id)}`)}</loc>\n` +
+        `  <url>\n    <loc>${escapeHtml(`${base}/tournaments/${encodeURIComponent(t.name ? tournamentSlug(t.name, t.startDate) : t.id)}`)}</loc>\n` +
         `    <lastmod>${day(t.updatedAt)}</lastmod>\n` +
         `    <changefreq>${monthly ? 'monthly' : 'daily'}</changefreq>\n` +
         `    <priority>${monthly ? '0.5' : '0.9'}</priority>\n  </url>`

@@ -4,6 +4,7 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -82,6 +83,18 @@ export class TournamentsController {
   @Get('mine')
   listMine(@Req() req: AuthRequest) {
     return this.tournamentsService.listMine(this.getUserId(req));
+  }
+
+  // Public - turns a readable address (name and start date) into the tournament id.
+  @Get('resolve/:slug')
+  async resolveSlug(@Param('slug') slug: string) {
+    const id = await this.tournamentsService.resolveSlug(slug);
+
+    if (!id) {
+      throw new NotFoundException('Tournament not found');
+    }
+
+    return { id };
   }
 
   // Public - no auth guard. Anyone with the link can view the schedule/rules.

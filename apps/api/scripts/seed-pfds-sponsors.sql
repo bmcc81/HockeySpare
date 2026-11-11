@@ -21,7 +21,8 @@ INSERT INTO "TournamentSponsor" (id, "tournamentId", name, "logoUrl", "linkUrl",
   ('sp_pfds2026_08_dickiemoore','cmspgfwhd0006g3yqolfrjj9j', 'Location Dickie Moore',        '/images/sponsors/location-dickie-moore.png', NULL, NULL, '2026-11-06 15:00:08'),
   ('sp_pfds2026_09_bonheur',    'cmspgfwhd0006g3yqolfrjj9j', 'Matelas Bonheur',             '/images/sponsors/matelas-bonheur.png',       NULL, NULL, '2026-11-06 15:00:09'),
   ('sp_pfds2026_10_arterra',    'cmspgfwhd0006g3yqolfrjj9j', 'Vins Arterra Canada',         '/images/sponsors/vins-arterra.png',          NULL, NULL, '2026-11-06 15:00:10'),
-  ('sp_pfds2026_11_station22',  'cmspgfwhd0006g3yqolfrjj9j', 'Station 22',                  NULL,                                         NULL, NULL, '2026-11-06 15:00:11');
+  ('sp_pfds2026_11_station22',  'cmspgfwhd0006g3yqolfrjj9j', 'Station 22',                  NULL,                                         NULL, NULL, '2026-11-06 15:00:11'),
+  ('sp_pfds2026_12_maisonverte','cmspgfwhd0006g3yqolfrjj9j', 'La Maison Verte',             '/images/sponsors/la-maison-verte.png',       'https://lamaisonverte.ca', NULL, '2026-11-11 20:00:00');
 
 SELECT name, "logoUrl" FROM "TournamentSponsor"
 WHERE "tournamentId" = 'cmspgfwhd0006g3yqolfrjj9j' ORDER BY "createdAt";

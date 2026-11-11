@@ -76,6 +76,7 @@ export const ModelName = {
   TournamentMediaAsset: 'TournamentMediaAsset',
   TournamentApiKey: 'TournamentApiKey',
   TournamentWebhook: 'TournamentWebhook',
+  TournamentSlugAlias: 'TournamentSlugAlias',
   TournamentCoOrganizer: 'TournamentCoOrganizer',
   TournamentAuditLogEntry: 'TournamentAuditLogEntry',
   TournamentAnnouncement: 'TournamentAnnouncement',
@@ -515,6 +516,15 @@ export const TournamentWebhookScalarFieldEnum = {
 } as const
 
 export type TournamentWebhookScalarFieldEnum = (typeof TournamentWebhookScalarFieldEnum)[keyof typeof TournamentWebhookScalarFieldEnum]
+
+
+export const TournamentSlugAliasScalarFieldEnum = {
+  slug: 'slug',
+  tournamentId: 'tournamentId',
+  createdAt: 'createdAt'
+} as const
+
+export type TournamentSlugAliasScalarFieldEnum = (typeof TournamentSlugAliasScalarFieldEnum)[keyof typeof TournamentSlugAliasScalarFieldEnum]
 
 
 export const TournamentCoOrganizerScalarFieldEnum = {

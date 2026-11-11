@@ -365,6 +365,7 @@ export type TournamentWhereInput = {
   infoListings?: Prisma.TournamentInfoListingListRelationFilter
   lostFoundItems?: Prisma.TournamentLostFoundItemListRelationFilter
   auction?: Prisma.XOR<Prisma.TournamentAuctionNullableScalarRelationFilter, Prisma.TournamentAuctionWhereInput> | null
+  slugAliases?: Prisma.TournamentSlugAliasListRelationFilter
 }
 
 export type TournamentOrderByWithRelationInput = {
@@ -410,6 +411,7 @@ export type TournamentOrderByWithRelationInput = {
   infoListings?: Prisma.TournamentInfoListingOrderByRelationAggregateInput
   lostFoundItems?: Prisma.TournamentLostFoundItemOrderByRelationAggregateInput
   auction?: Prisma.TournamentAuctionOrderByWithRelationInput
+  slugAliases?: Prisma.TournamentSlugAliasOrderByRelationAggregateInput
 }
 
 export type TournamentWhereUniqueInput = Prisma.AtLeast<{
@@ -458,6 +460,7 @@ export type TournamentWhereUniqueInput = Prisma.AtLeast<{
   infoListings?: Prisma.TournamentInfoListingListRelationFilter
   lostFoundItems?: Prisma.TournamentLostFoundItemListRelationFilter
   auction?: Prisma.XOR<Prisma.TournamentAuctionNullableScalarRelationFilter, Prisma.TournamentAuctionWhereInput> | null
+  slugAliases?: Prisma.TournamentSlugAliasListRelationFilter
 }, "id" | "stripeAccountId">
 
 export type TournamentOrderByWithAggregationInput = {
@@ -557,6 +560,7 @@ export type TournamentCreateInput = {
   infoListings?: Prisma.TournamentInfoListingCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateInput = {
@@ -600,6 +604,7 @@ export type TournamentUncheckedCreateInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionUncheckedCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUpdateInput = {
@@ -643,6 +648,7 @@ export type TournamentUpdateInput = {
   infoListings?: Prisma.TournamentInfoListingUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateInput = {
@@ -686,6 +692,7 @@ export type TournamentUncheckedUpdateInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUncheckedUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateManyInput = {
@@ -983,6 +990,20 @@ export type TournamentUpdateOneRequiredWithoutWebhooksNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TournamentUpdateToOneWithWhereWithoutWebhooksInput, Prisma.TournamentUpdateWithoutWebhooksInput>, Prisma.TournamentUncheckedUpdateWithoutWebhooksInput>
 }
 
+export type TournamentCreateNestedOneWithoutSlugAliasesInput = {
+  create?: Prisma.XOR<Prisma.TournamentCreateWithoutSlugAliasesInput, Prisma.TournamentUncheckedCreateWithoutSlugAliasesInput>
+  connectOrCreate?: Prisma.TournamentCreateOrConnectWithoutSlugAliasesInput
+  connect?: Prisma.TournamentWhereUniqueInput
+}
+
+export type TournamentUpdateOneRequiredWithoutSlugAliasesNestedInput = {
+  create?: Prisma.XOR<Prisma.TournamentCreateWithoutSlugAliasesInput, Prisma.TournamentUncheckedCreateWithoutSlugAliasesInput>
+  connectOrCreate?: Prisma.TournamentCreateOrConnectWithoutSlugAliasesInput
+  upsert?: Prisma.TournamentUpsertWithoutSlugAliasesInput
+  connect?: Prisma.TournamentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TournamentUpdateToOneWithWhereWithoutSlugAliasesInput, Prisma.TournamentUpdateWithoutSlugAliasesInput>, Prisma.TournamentUncheckedUpdateWithoutSlugAliasesInput>
+}
+
 export type TournamentCreateNestedOneWithoutCoOrganizersInput = {
   create?: Prisma.XOR<Prisma.TournamentCreateWithoutCoOrganizersInput, Prisma.TournamentUncheckedCreateWithoutCoOrganizersInput>
   connectOrCreate?: Prisma.TournamentCreateOrConnectWithoutCoOrganizersInput
@@ -1247,6 +1268,7 @@ export type TournamentCreateWithoutCreatedByInput = {
   infoListings?: Prisma.TournamentInfoListingCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutCreatedByInput = {
@@ -1289,6 +1311,7 @@ export type TournamentUncheckedCreateWithoutCreatedByInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionUncheckedCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutCreatedByInput = {
@@ -1384,6 +1407,7 @@ export type TournamentCreateWithoutLeagueInput = {
   infoListings?: Prisma.TournamentInfoListingCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutLeagueInput = {
@@ -1426,6 +1450,7 @@ export type TournamentUncheckedCreateWithoutLeagueInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionUncheckedCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutLeagueInput = {
@@ -1494,6 +1519,7 @@ export type TournamentCreateWithoutMediaAssetsInput = {
   infoListings?: Prisma.TournamentInfoListingCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutMediaAssetsInput = {
@@ -1536,6 +1562,7 @@ export type TournamentUncheckedCreateWithoutMediaAssetsInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionUncheckedCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutMediaAssetsInput = {
@@ -1594,6 +1621,7 @@ export type TournamentUpdateWithoutMediaAssetsInput = {
   infoListings?: Prisma.TournamentInfoListingUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutMediaAssetsInput = {
@@ -1636,6 +1664,7 @@ export type TournamentUncheckedUpdateWithoutMediaAssetsInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUncheckedUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutApiKeysInput = {
@@ -1678,6 +1707,7 @@ export type TournamentCreateWithoutApiKeysInput = {
   infoListings?: Prisma.TournamentInfoListingCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutApiKeysInput = {
@@ -1720,6 +1750,7 @@ export type TournamentUncheckedCreateWithoutApiKeysInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionUncheckedCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutApiKeysInput = {
@@ -1778,6 +1809,7 @@ export type TournamentUpdateWithoutApiKeysInput = {
   infoListings?: Prisma.TournamentInfoListingUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutApiKeysInput = {
@@ -1820,6 +1852,7 @@ export type TournamentUncheckedUpdateWithoutApiKeysInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUncheckedUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutWebhooksInput = {
@@ -1862,6 +1895,7 @@ export type TournamentCreateWithoutWebhooksInput = {
   infoListings?: Prisma.TournamentInfoListingCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutWebhooksInput = {
@@ -1904,6 +1938,7 @@ export type TournamentUncheckedCreateWithoutWebhooksInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionUncheckedCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutWebhooksInput = {
@@ -1962,6 +1997,7 @@ export type TournamentUpdateWithoutWebhooksInput = {
   infoListings?: Prisma.TournamentInfoListingUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutWebhooksInput = {
@@ -1998,6 +2034,195 @@ export type TournamentUncheckedUpdateWithoutWebhooksInput = {
   auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedUpdateManyWithoutTournamentNestedInput
   mediaAssets?: Prisma.TournamentMediaAssetUncheckedUpdateManyWithoutTournamentNestedInput
   apiKeys?: Prisma.TournamentApiKeyUncheckedUpdateManyWithoutTournamentNestedInput
+  referees?: Prisma.TournamentRefereeUncheckedUpdateManyWithoutTournamentNestedInput
+  volunteerShifts?: Prisma.TournamentVolunteerShiftUncheckedUpdateManyWithoutTournamentNestedInput
+  teamFollows?: Prisma.TournamentTeamFollowUncheckedUpdateManyWithoutTournamentNestedInput
+  infoListings?: Prisma.TournamentInfoListingUncheckedUpdateManyWithoutTournamentNestedInput
+  lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedUpdateManyWithoutTournamentNestedInput
+  auction?: Prisma.TournamentAuctionUncheckedUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedUpdateManyWithoutTournamentNestedInput
+}
+
+export type TournamentCreateWithoutSlugAliasesInput = {
+  id?: string
+  name: string
+  description?: string | null
+  rules?: string | null
+  startDate?: Date | string | null
+  endDate?: Date | string | null
+  registrationMode?: $Enums.TournamentRegistrationMode
+  registrationDeadline?: Date | string | null
+  registrationFeeCents?: number | null
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  contactName?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  logoUrl?: string | null
+  rulebookUrl?: string | null
+  volunteersOpen?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  league?: Prisma.LeagueCreateNestedOneWithoutTournamentsInput
+  createdBy: Prisma.UserCreateNestedOneWithoutCreatedTournamentsInput
+  games?: Prisma.TournamentGameCreateNestedManyWithoutTournamentInput
+  registrations?: Prisma.TournamentRegistrationCreateNestedManyWithoutTournamentInput
+  sponsors?: Prisma.TournamentSponsorCreateNestedManyWithoutTournamentInput
+  payments?: Prisma.TournamentPaymentCreateNestedManyWithoutTournamentInput
+  teams?: Prisma.TournamentTeamCreateNestedManyWithoutTournamentInput
+  brackets?: Prisma.TournamentBracketCreateNestedManyWithoutTournamentInput
+  announcements?: Prisma.TournamentAnnouncementCreateNestedManyWithoutTournamentInput
+  venues?: Prisma.TournamentVenueCreateNestedManyWithoutTournamentInput
+  coOrganizers?: Prisma.TournamentCoOrganizerCreateNestedManyWithoutTournamentInput
+  auditLogEntries?: Prisma.TournamentAuditLogEntryCreateNestedManyWithoutTournamentInput
+  mediaAssets?: Prisma.TournamentMediaAssetCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookCreateNestedManyWithoutTournamentInput
+  referees?: Prisma.TournamentRefereeCreateNestedManyWithoutTournamentInput
+  volunteerShifts?: Prisma.TournamentVolunteerShiftCreateNestedManyWithoutTournamentInput
+  teamFollows?: Prisma.TournamentTeamFollowCreateNestedManyWithoutTournamentInput
+  infoListings?: Prisma.TournamentInfoListingCreateNestedManyWithoutTournamentInput
+  lostFoundItems?: Prisma.TournamentLostFoundItemCreateNestedManyWithoutTournamentInput
+  auction?: Prisma.TournamentAuctionCreateNestedOneWithoutTournamentInput
+}
+
+export type TournamentUncheckedCreateWithoutSlugAliasesInput = {
+  id?: string
+  name: string
+  description?: string | null
+  rules?: string | null
+  startDate?: Date | string | null
+  endDate?: Date | string | null
+  leagueId?: string | null
+  createdById: string
+  registrationMode?: $Enums.TournamentRegistrationMode
+  registrationDeadline?: Date | string | null
+  registrationFeeCents?: number | null
+  stripeAccountId?: string | null
+  stripePayoutsEnabled?: boolean
+  contactName?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  logoUrl?: string | null
+  rulebookUrl?: string | null
+  volunteersOpen?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  games?: Prisma.TournamentGameUncheckedCreateNestedManyWithoutTournamentInput
+  registrations?: Prisma.TournamentRegistrationUncheckedCreateNestedManyWithoutTournamentInput
+  sponsors?: Prisma.TournamentSponsorUncheckedCreateNestedManyWithoutTournamentInput
+  payments?: Prisma.TournamentPaymentUncheckedCreateNestedManyWithoutTournamentInput
+  teams?: Prisma.TournamentTeamUncheckedCreateNestedManyWithoutTournamentInput
+  brackets?: Prisma.TournamentBracketUncheckedCreateNestedManyWithoutTournamentInput
+  announcements?: Prisma.TournamentAnnouncementUncheckedCreateNestedManyWithoutTournamentInput
+  venues?: Prisma.TournamentVenueUncheckedCreateNestedManyWithoutTournamentInput
+  coOrganizers?: Prisma.TournamentCoOrganizerUncheckedCreateNestedManyWithoutTournamentInput
+  auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedCreateNestedManyWithoutTournamentInput
+  mediaAssets?: Prisma.TournamentMediaAssetUncheckedCreateNestedManyWithoutTournamentInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedCreateNestedManyWithoutTournamentInput
+  webhooks?: Prisma.TournamentWebhookUncheckedCreateNestedManyWithoutTournamentInput
+  referees?: Prisma.TournamentRefereeUncheckedCreateNestedManyWithoutTournamentInput
+  volunteerShifts?: Prisma.TournamentVolunteerShiftUncheckedCreateNestedManyWithoutTournamentInput
+  teamFollows?: Prisma.TournamentTeamFollowUncheckedCreateNestedManyWithoutTournamentInput
+  infoListings?: Prisma.TournamentInfoListingUncheckedCreateNestedManyWithoutTournamentInput
+  lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedCreateNestedManyWithoutTournamentInput
+  auction?: Prisma.TournamentAuctionUncheckedCreateNestedOneWithoutTournamentInput
+}
+
+export type TournamentCreateOrConnectWithoutSlugAliasesInput = {
+  where: Prisma.TournamentWhereUniqueInput
+  create: Prisma.XOR<Prisma.TournamentCreateWithoutSlugAliasesInput, Prisma.TournamentUncheckedCreateWithoutSlugAliasesInput>
+}
+
+export type TournamentUpsertWithoutSlugAliasesInput = {
+  update: Prisma.XOR<Prisma.TournamentUpdateWithoutSlugAliasesInput, Prisma.TournamentUncheckedUpdateWithoutSlugAliasesInput>
+  create: Prisma.XOR<Prisma.TournamentCreateWithoutSlugAliasesInput, Prisma.TournamentUncheckedCreateWithoutSlugAliasesInput>
+  where?: Prisma.TournamentWhereInput
+}
+
+export type TournamentUpdateToOneWithWhereWithoutSlugAliasesInput = {
+  where?: Prisma.TournamentWhereInput
+  data: Prisma.XOR<Prisma.TournamentUpdateWithoutSlugAliasesInput, Prisma.TournamentUncheckedUpdateWithoutSlugAliasesInput>
+}
+
+export type TournamentUpdateWithoutSlugAliasesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rules?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationMode?: Prisma.EnumTournamentRegistrationModeFieldUpdateOperationsInput | $Enums.TournamentRegistrationMode
+  registrationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rulebookUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  volunteersOpen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  league?: Prisma.LeagueUpdateOneWithoutTournamentsNestedInput
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedTournamentsNestedInput
+  games?: Prisma.TournamentGameUpdateManyWithoutTournamentNestedInput
+  registrations?: Prisma.TournamentRegistrationUpdateManyWithoutTournamentNestedInput
+  sponsors?: Prisma.TournamentSponsorUpdateManyWithoutTournamentNestedInput
+  payments?: Prisma.TournamentPaymentUpdateManyWithoutTournamentNestedInput
+  teams?: Prisma.TournamentTeamUpdateManyWithoutTournamentNestedInput
+  brackets?: Prisma.TournamentBracketUpdateManyWithoutTournamentNestedInput
+  announcements?: Prisma.TournamentAnnouncementUpdateManyWithoutTournamentNestedInput
+  venues?: Prisma.TournamentVenueUpdateManyWithoutTournamentNestedInput
+  coOrganizers?: Prisma.TournamentCoOrganizerUpdateManyWithoutTournamentNestedInput
+  auditLogEntries?: Prisma.TournamentAuditLogEntryUpdateManyWithoutTournamentNestedInput
+  mediaAssets?: Prisma.TournamentMediaAssetUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUpdateManyWithoutTournamentNestedInput
+  referees?: Prisma.TournamentRefereeUpdateManyWithoutTournamentNestedInput
+  volunteerShifts?: Prisma.TournamentVolunteerShiftUpdateManyWithoutTournamentNestedInput
+  teamFollows?: Prisma.TournamentTeamFollowUpdateManyWithoutTournamentNestedInput
+  infoListings?: Prisma.TournamentInfoListingUpdateManyWithoutTournamentNestedInput
+  lostFoundItems?: Prisma.TournamentLostFoundItemUpdateManyWithoutTournamentNestedInput
+  auction?: Prisma.TournamentAuctionUpdateOneWithoutTournamentNestedInput
+}
+
+export type TournamentUncheckedUpdateWithoutSlugAliasesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rules?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  leagueId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  registrationMode?: Prisma.EnumTournamentRegistrationModeFieldUpdateOperationsInput | $Enums.TournamentRegistrationMode
+  registrationDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePayoutsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rulebookUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  volunteersOpen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  games?: Prisma.TournamentGameUncheckedUpdateManyWithoutTournamentNestedInput
+  registrations?: Prisma.TournamentRegistrationUncheckedUpdateManyWithoutTournamentNestedInput
+  sponsors?: Prisma.TournamentSponsorUncheckedUpdateManyWithoutTournamentNestedInput
+  payments?: Prisma.TournamentPaymentUncheckedUpdateManyWithoutTournamentNestedInput
+  teams?: Prisma.TournamentTeamUncheckedUpdateManyWithoutTournamentNestedInput
+  brackets?: Prisma.TournamentBracketUncheckedUpdateManyWithoutTournamentNestedInput
+  announcements?: Prisma.TournamentAnnouncementUncheckedUpdateManyWithoutTournamentNestedInput
+  venues?: Prisma.TournamentVenueUncheckedUpdateManyWithoutTournamentNestedInput
+  coOrganizers?: Prisma.TournamentCoOrganizerUncheckedUpdateManyWithoutTournamentNestedInput
+  auditLogEntries?: Prisma.TournamentAuditLogEntryUncheckedUpdateManyWithoutTournamentNestedInput
+  mediaAssets?: Prisma.TournamentMediaAssetUncheckedUpdateManyWithoutTournamentNestedInput
+  apiKeys?: Prisma.TournamentApiKeyUncheckedUpdateManyWithoutTournamentNestedInput
+  webhooks?: Prisma.TournamentWebhookUncheckedUpdateManyWithoutTournamentNestedInput
   referees?: Prisma.TournamentRefereeUncheckedUpdateManyWithoutTournamentNestedInput
   volunteerShifts?: Prisma.TournamentVolunteerShiftUncheckedUpdateManyWithoutTournamentNestedInput
   teamFollows?: Prisma.TournamentTeamFollowUncheckedUpdateManyWithoutTournamentNestedInput
@@ -2046,6 +2271,7 @@ export type TournamentCreateWithoutCoOrganizersInput = {
   infoListings?: Prisma.TournamentInfoListingCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutCoOrganizersInput = {
@@ -2088,6 +2314,7 @@ export type TournamentUncheckedCreateWithoutCoOrganizersInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionUncheckedCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutCoOrganizersInput = {
@@ -2146,6 +2373,7 @@ export type TournamentUpdateWithoutCoOrganizersInput = {
   infoListings?: Prisma.TournamentInfoListingUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutCoOrganizersInput = {
@@ -2188,6 +2416,7 @@ export type TournamentUncheckedUpdateWithoutCoOrganizersInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUncheckedUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutAuditLogEntriesInput = {
@@ -2230,6 +2459,7 @@ export type TournamentCreateWithoutAuditLogEntriesInput = {
   infoListings?: Prisma.TournamentInfoListingCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutAuditLogEntriesInput = {
@@ -2272,6 +2502,7 @@ export type TournamentUncheckedCreateWithoutAuditLogEntriesInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionUncheckedCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutAuditLogEntriesInput = {
@@ -2330,6 +2561,7 @@ export type TournamentUpdateWithoutAuditLogEntriesInput = {
   infoListings?: Prisma.TournamentInfoListingUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutAuditLogEntriesInput = {
@@ -2372,6 +2604,7 @@ export type TournamentUncheckedUpdateWithoutAuditLogEntriesInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUncheckedUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutAnnouncementsInput = {
@@ -2414,6 +2647,7 @@ export type TournamentCreateWithoutAnnouncementsInput = {
   infoListings?: Prisma.TournamentInfoListingCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutAnnouncementsInput = {
@@ -2456,6 +2690,7 @@ export type TournamentUncheckedCreateWithoutAnnouncementsInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionUncheckedCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutAnnouncementsInput = {
@@ -2514,6 +2749,7 @@ export type TournamentUpdateWithoutAnnouncementsInput = {
   infoListings?: Prisma.TournamentInfoListingUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutAnnouncementsInput = {
@@ -2556,6 +2792,7 @@ export type TournamentUncheckedUpdateWithoutAnnouncementsInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUncheckedUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutVenuesInput = {
@@ -2598,6 +2835,7 @@ export type TournamentCreateWithoutVenuesInput = {
   infoListings?: Prisma.TournamentInfoListingCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutVenuesInput = {
@@ -2640,6 +2878,7 @@ export type TournamentUncheckedCreateWithoutVenuesInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionUncheckedCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutVenuesInput = {
@@ -2698,6 +2937,7 @@ export type TournamentUpdateWithoutVenuesInput = {
   infoListings?: Prisma.TournamentInfoListingUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutVenuesInput = {
@@ -2740,6 +2980,7 @@ export type TournamentUncheckedUpdateWithoutVenuesInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUncheckedUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutRefereesInput = {
@@ -2782,6 +3023,7 @@ export type TournamentCreateWithoutRefereesInput = {
   infoListings?: Prisma.TournamentInfoListingCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutRefereesInput = {
@@ -2824,6 +3066,7 @@ export type TournamentUncheckedCreateWithoutRefereesInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionUncheckedCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutRefereesInput = {
@@ -2882,6 +3125,7 @@ export type TournamentUpdateWithoutRefereesInput = {
   infoListings?: Prisma.TournamentInfoListingUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutRefereesInput = {
@@ -2924,6 +3168,7 @@ export type TournamentUncheckedUpdateWithoutRefereesInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUncheckedUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutVolunteerShiftsInput = {
@@ -2966,6 +3211,7 @@ export type TournamentCreateWithoutVolunteerShiftsInput = {
   infoListings?: Prisma.TournamentInfoListingCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutVolunteerShiftsInput = {
@@ -3008,6 +3254,7 @@ export type TournamentUncheckedCreateWithoutVolunteerShiftsInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionUncheckedCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutVolunteerShiftsInput = {
@@ -3066,6 +3313,7 @@ export type TournamentUpdateWithoutVolunteerShiftsInput = {
   infoListings?: Prisma.TournamentInfoListingUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutVolunteerShiftsInput = {
@@ -3108,6 +3356,7 @@ export type TournamentUncheckedUpdateWithoutVolunteerShiftsInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUncheckedUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutInfoListingsInput = {
@@ -3150,6 +3399,7 @@ export type TournamentCreateWithoutInfoListingsInput = {
   teamFollows?: Prisma.TournamentTeamFollowCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutInfoListingsInput = {
@@ -3192,6 +3442,7 @@ export type TournamentUncheckedCreateWithoutInfoListingsInput = {
   teamFollows?: Prisma.TournamentTeamFollowUncheckedCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionUncheckedCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutInfoListingsInput = {
@@ -3250,6 +3501,7 @@ export type TournamentUpdateWithoutInfoListingsInput = {
   teamFollows?: Prisma.TournamentTeamFollowUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutInfoListingsInput = {
@@ -3292,6 +3544,7 @@ export type TournamentUncheckedUpdateWithoutInfoListingsInput = {
   teamFollows?: Prisma.TournamentTeamFollowUncheckedUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUncheckedUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutLostFoundItemsInput = {
@@ -3334,6 +3587,7 @@ export type TournamentCreateWithoutLostFoundItemsInput = {
   teamFollows?: Prisma.TournamentTeamFollowCreateNestedManyWithoutTournamentInput
   infoListings?: Prisma.TournamentInfoListingCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutLostFoundItemsInput = {
@@ -3376,6 +3630,7 @@ export type TournamentUncheckedCreateWithoutLostFoundItemsInput = {
   teamFollows?: Prisma.TournamentTeamFollowUncheckedCreateNestedManyWithoutTournamentInput
   infoListings?: Prisma.TournamentInfoListingUncheckedCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionUncheckedCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutLostFoundItemsInput = {
@@ -3434,6 +3689,7 @@ export type TournamentUpdateWithoutLostFoundItemsInput = {
   teamFollows?: Prisma.TournamentTeamFollowUpdateManyWithoutTournamentNestedInput
   infoListings?: Prisma.TournamentInfoListingUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutLostFoundItemsInput = {
@@ -3476,6 +3732,7 @@ export type TournamentUncheckedUpdateWithoutLostFoundItemsInput = {
   teamFollows?: Prisma.TournamentTeamFollowUncheckedUpdateManyWithoutTournamentNestedInput
   infoListings?: Prisma.TournamentInfoListingUncheckedUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUncheckedUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutGamesInput = {
@@ -3518,6 +3775,7 @@ export type TournamentCreateWithoutGamesInput = {
   infoListings?: Prisma.TournamentInfoListingCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutGamesInput = {
@@ -3560,6 +3818,7 @@ export type TournamentUncheckedCreateWithoutGamesInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionUncheckedCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutGamesInput = {
@@ -3618,6 +3877,7 @@ export type TournamentUpdateWithoutGamesInput = {
   infoListings?: Prisma.TournamentInfoListingUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutGamesInput = {
@@ -3660,6 +3920,7 @@ export type TournamentUncheckedUpdateWithoutGamesInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUncheckedUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutRegistrationsInput = {
@@ -3702,6 +3963,7 @@ export type TournamentCreateWithoutRegistrationsInput = {
   infoListings?: Prisma.TournamentInfoListingCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutRegistrationsInput = {
@@ -3744,6 +4006,7 @@ export type TournamentUncheckedCreateWithoutRegistrationsInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionUncheckedCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutRegistrationsInput = {
@@ -3802,6 +4065,7 @@ export type TournamentUpdateWithoutRegistrationsInput = {
   infoListings?: Prisma.TournamentInfoListingUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutRegistrationsInput = {
@@ -3844,6 +4108,7 @@ export type TournamentUncheckedUpdateWithoutRegistrationsInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUncheckedUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutTeamsInput = {
@@ -3886,6 +4151,7 @@ export type TournamentCreateWithoutTeamsInput = {
   infoListings?: Prisma.TournamentInfoListingCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutTeamsInput = {
@@ -3928,6 +4194,7 @@ export type TournamentUncheckedCreateWithoutTeamsInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionUncheckedCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutTeamsInput = {
@@ -3986,6 +4253,7 @@ export type TournamentUpdateWithoutTeamsInput = {
   infoListings?: Prisma.TournamentInfoListingUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutTeamsInput = {
@@ -4028,6 +4296,7 @@ export type TournamentUncheckedUpdateWithoutTeamsInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUncheckedUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutBracketsInput = {
@@ -4070,6 +4339,7 @@ export type TournamentCreateWithoutBracketsInput = {
   infoListings?: Prisma.TournamentInfoListingCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutBracketsInput = {
@@ -4112,6 +4382,7 @@ export type TournamentUncheckedCreateWithoutBracketsInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionUncheckedCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutBracketsInput = {
@@ -4170,6 +4441,7 @@ export type TournamentUpdateWithoutBracketsInput = {
   infoListings?: Prisma.TournamentInfoListingUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutBracketsInput = {
@@ -4212,6 +4484,7 @@ export type TournamentUncheckedUpdateWithoutBracketsInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUncheckedUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutPaymentsInput = {
@@ -4254,6 +4527,7 @@ export type TournamentCreateWithoutPaymentsInput = {
   infoListings?: Prisma.TournamentInfoListingCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutPaymentsInput = {
@@ -4296,6 +4570,7 @@ export type TournamentUncheckedCreateWithoutPaymentsInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionUncheckedCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutPaymentsInput = {
@@ -4354,6 +4629,7 @@ export type TournamentUpdateWithoutPaymentsInput = {
   infoListings?: Prisma.TournamentInfoListingUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutPaymentsInput = {
@@ -4396,6 +4672,7 @@ export type TournamentUncheckedUpdateWithoutPaymentsInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUncheckedUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutSponsorsInput = {
@@ -4438,6 +4715,7 @@ export type TournamentCreateWithoutSponsorsInput = {
   infoListings?: Prisma.TournamentInfoListingCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutSponsorsInput = {
@@ -4480,6 +4758,7 @@ export type TournamentUncheckedCreateWithoutSponsorsInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionUncheckedCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutSponsorsInput = {
@@ -4538,6 +4817,7 @@ export type TournamentUpdateWithoutSponsorsInput = {
   infoListings?: Prisma.TournamentInfoListingUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutSponsorsInput = {
@@ -4580,6 +4860,7 @@ export type TournamentUncheckedUpdateWithoutSponsorsInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUncheckedUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutAuctionInput = {
@@ -4622,6 +4903,7 @@ export type TournamentCreateWithoutAuctionInput = {
   teamFollows?: Prisma.TournamentTeamFollowCreateNestedManyWithoutTournamentInput
   infoListings?: Prisma.TournamentInfoListingCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemCreateNestedManyWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutAuctionInput = {
@@ -4664,6 +4946,7 @@ export type TournamentUncheckedCreateWithoutAuctionInput = {
   teamFollows?: Prisma.TournamentTeamFollowUncheckedCreateNestedManyWithoutTournamentInput
   infoListings?: Prisma.TournamentInfoListingUncheckedCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedCreateNestedManyWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutAuctionInput = {
@@ -4722,6 +5005,7 @@ export type TournamentUpdateWithoutAuctionInput = {
   teamFollows?: Prisma.TournamentTeamFollowUpdateManyWithoutTournamentNestedInput
   infoListings?: Prisma.TournamentInfoListingUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUpdateManyWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutAuctionInput = {
@@ -4764,6 +5048,7 @@ export type TournamentUncheckedUpdateWithoutAuctionInput = {
   teamFollows?: Prisma.TournamentTeamFollowUncheckedUpdateManyWithoutTournamentNestedInput
   infoListings?: Prisma.TournamentInfoListingUncheckedUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedUpdateManyWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateWithoutTeamFollowsInput = {
@@ -4806,6 +5091,7 @@ export type TournamentCreateWithoutTeamFollowsInput = {
   infoListings?: Prisma.TournamentInfoListingCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutTeamFollowsInput = {
@@ -4848,6 +5134,7 @@ export type TournamentUncheckedCreateWithoutTeamFollowsInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedCreateNestedManyWithoutTournamentInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedCreateNestedManyWithoutTournamentInput
   auction?: Prisma.TournamentAuctionUncheckedCreateNestedOneWithoutTournamentInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedCreateNestedManyWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutTeamFollowsInput = {
@@ -4906,6 +5193,7 @@ export type TournamentUpdateWithoutTeamFollowsInput = {
   infoListings?: Prisma.TournamentInfoListingUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutTeamFollowsInput = {
@@ -4948,6 +5236,7 @@ export type TournamentUncheckedUpdateWithoutTeamFollowsInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUncheckedUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentCreateManyCreatedByInput = {
@@ -5013,6 +5302,7 @@ export type TournamentUpdateWithoutCreatedByInput = {
   infoListings?: Prisma.TournamentInfoListingUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutCreatedByInput = {
@@ -5055,6 +5345,7 @@ export type TournamentUncheckedUpdateWithoutCreatedByInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUncheckedUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateManyWithoutCreatedByInput = {
@@ -5143,6 +5434,7 @@ export type TournamentUpdateWithoutLeagueInput = {
   infoListings?: Prisma.TournamentInfoListingUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutLeagueInput = {
@@ -5185,6 +5477,7 @@ export type TournamentUncheckedUpdateWithoutLeagueInput = {
   infoListings?: Prisma.TournamentInfoListingUncheckedUpdateManyWithoutTournamentNestedInput
   lostFoundItems?: Prisma.TournamentLostFoundItemUncheckedUpdateManyWithoutTournamentNestedInput
   auction?: Prisma.TournamentAuctionUncheckedUpdateOneWithoutTournamentNestedInput
+  slugAliases?: Prisma.TournamentSlugAliasUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateManyWithoutLeagueInput = {
@@ -5234,6 +5527,7 @@ export type TournamentCountOutputType = {
   teamFollows: number
   infoListings: number
   lostFoundItems: number
+  slugAliases: number
 }
 
 export type TournamentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -5255,6 +5549,7 @@ export type TournamentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extens
   teamFollows?: boolean | TournamentCountOutputTypeCountTeamFollowsArgs
   infoListings?: boolean | TournamentCountOutputTypeCountInfoListingsArgs
   lostFoundItems?: boolean | TournamentCountOutputTypeCountLostFoundItemsArgs
+  slugAliases?: boolean | TournamentCountOutputTypeCountSlugAliasesArgs
 }
 
 /**
@@ -5393,6 +5688,13 @@ export type TournamentCountOutputTypeCountLostFoundItemsArgs<ExtArgs extends run
   where?: Prisma.TournamentLostFoundItemWhereInput
 }
 
+/**
+ * TournamentCountOutputType without action
+ */
+export type TournamentCountOutputTypeCountSlugAliasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TournamentSlugAliasWhereInput
+}
+
 
 export type TournamentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -5437,6 +5739,7 @@ export type TournamentSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   infoListings?: boolean | Prisma.Tournament$infoListingsArgs<ExtArgs>
   lostFoundItems?: boolean | Prisma.Tournament$lostFoundItemsArgs<ExtArgs>
   auction?: boolean | Prisma.Tournament$auctionArgs<ExtArgs>
+  slugAliases?: boolean | Prisma.Tournament$slugAliasesArgs<ExtArgs>
   _count?: boolean | Prisma.TournamentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tournament"]>
 
@@ -5539,6 +5842,7 @@ export type TournamentInclude<ExtArgs extends runtime.Types.Extensions.InternalA
   infoListings?: boolean | Prisma.Tournament$infoListingsArgs<ExtArgs>
   lostFoundItems?: boolean | Prisma.Tournament$lostFoundItemsArgs<ExtArgs>
   auction?: boolean | Prisma.Tournament$auctionArgs<ExtArgs>
+  slugAliases?: boolean | Prisma.Tournament$slugAliasesArgs<ExtArgs>
   _count?: boolean | Prisma.TournamentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TournamentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -5574,6 +5878,7 @@ export type $TournamentPayload<ExtArgs extends runtime.Types.Extensions.Internal
     infoListings: Prisma.$TournamentInfoListingPayload<ExtArgs>[]
     lostFoundItems: Prisma.$TournamentLostFoundItemPayload<ExtArgs>[]
     auction: Prisma.$TournamentAuctionPayload<ExtArgs> | null
+    slugAliases: Prisma.$TournamentSlugAliasPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -6012,6 +6317,7 @@ export interface Prisma__TournamentClient<T, Null = never, ExtArgs extends runti
   infoListings<T extends Prisma.Tournament$infoListingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tournament$infoListingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TournamentInfoListingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   lostFoundItems<T extends Prisma.Tournament$lostFoundItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tournament$lostFoundItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TournamentLostFoundItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auction<T extends Prisma.Tournament$auctionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tournament$auctionArgs<ExtArgs>>): Prisma.Prisma__TournamentAuctionClient<runtime.Types.Result.GetResult<Prisma.$TournamentAuctionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  slugAliases<T extends Prisma.Tournament$slugAliasesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tournament$slugAliasesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TournamentSlugAliasPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6930,6 +7236,30 @@ export type Tournament$auctionArgs<ExtArgs extends runtime.Types.Extensions.Inte
    */
   include?: Prisma.TournamentAuctionInclude<ExtArgs> | null
   where?: Prisma.TournamentAuctionWhereInput
+}
+
+/**
+ * Tournament.slugAliases
+ */
+export type Tournament$slugAliasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TournamentSlugAlias
+   */
+  select?: Prisma.TournamentSlugAliasSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TournamentSlugAlias
+   */
+  omit?: Prisma.TournamentSlugAliasOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TournamentSlugAliasInclude<ExtArgs> | null
+  where?: Prisma.TournamentSlugAliasWhereInput
+  orderBy?: Prisma.TournamentSlugAliasOrderByWithRelationInput | Prisma.TournamentSlugAliasOrderByWithRelationInput[]
+  cursor?: Prisma.TournamentSlugAliasWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TournamentSlugAliasScalarFieldEnum | Prisma.TournamentSlugAliasScalarFieldEnum[]
 }
 
 /**

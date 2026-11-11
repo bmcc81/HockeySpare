@@ -409,6 +409,7 @@ export const ModelName = {
   TournamentMediaAsset: 'TournamentMediaAsset',
   TournamentApiKey: 'TournamentApiKey',
   TournamentWebhook: 'TournamentWebhook',
+  TournamentSlugAlias: 'TournamentSlugAlias',
   TournamentCoOrganizer: 'TournamentCoOrganizer',
   TournamentAuditLogEntry: 'TournamentAuditLogEntry',
   TournamentAnnouncement: 'TournamentAnnouncement',
@@ -450,7 +451,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "request" | "requestResponse" | "playerOffer" | "user" | "league" | "leagueArena" | "leagueMember" | "team" | "teamMessage" | "teamMember" | "playerStat" | "memberFee" | "payment" | "teamGame" | "teamGameInvite" | "teamGameAvailability" | "notification" | "booking" | "gameScoreSheet" | "gameScoreSheetPlayer" | "helpArticle" | "tournament" | "tournamentMediaAsset" | "tournamentApiKey" | "tournamentWebhook" | "tournamentCoOrganizer" | "tournamentAuditLogEntry" | "tournamentAnnouncement" | "tournamentVenue" | "tournamentReferee" | "tournamentGameReferee" | "tournamentVolunteerShift" | "tournamentVolunteerSignup" | "tournamentInfoListing" | "tournamentLostFoundItem" | "tournamentGame" | "tournamentRegistration" | "tournamentTeam" | "tournamentBracket" | "tournamentBracketMatch" | "tournamentTeamPlayer" | "tournamentGamePlayerStat" | "tournamentPayment" | "tournamentSponsor" | "tournamentAuction" | "tournamentAuctionItem" | "tournamentAuctionBidder" | "tournamentAuctionBid" | "tournamentAuctionPayment" | "tournamentTeamFollow" | "tournamentGameReminder"
+    modelProps: "request" | "requestResponse" | "playerOffer" | "user" | "league" | "leagueArena" | "leagueMember" | "team" | "teamMessage" | "teamMember" | "playerStat" | "memberFee" | "payment" | "teamGame" | "teamGameInvite" | "teamGameAvailability" | "notification" | "booking" | "gameScoreSheet" | "gameScoreSheetPlayer" | "helpArticle" | "tournament" | "tournamentMediaAsset" | "tournamentApiKey" | "tournamentWebhook" | "tournamentSlugAlias" | "tournamentCoOrganizer" | "tournamentAuditLogEntry" | "tournamentAnnouncement" | "tournamentVenue" | "tournamentReferee" | "tournamentGameReferee" | "tournamentVolunteerShift" | "tournamentVolunteerSignup" | "tournamentInfoListing" | "tournamentLostFoundItem" | "tournamentGame" | "tournamentRegistration" | "tournamentTeam" | "tournamentBracket" | "tournamentBracketMatch" | "tournamentTeamPlayer" | "tournamentGamePlayerStat" | "tournamentPayment" | "tournamentSponsor" | "tournamentAuction" | "tournamentAuctionItem" | "tournamentAuctionBidder" | "tournamentAuctionBid" | "tournamentAuctionPayment" | "tournamentTeamFollow" | "tournamentGameReminder"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2301,6 +2302,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.TournamentWebhookCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.TournamentWebhookCountAggregateOutputType> | number
+        }
+      }
+    }
+    TournamentSlugAlias: {
+      payload: Prisma.$TournamentSlugAliasPayload<ExtArgs>
+      fields: Prisma.TournamentSlugAliasFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TournamentSlugAliasFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentSlugAliasPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TournamentSlugAliasFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentSlugAliasPayload>
+        }
+        findFirst: {
+          args: Prisma.TournamentSlugAliasFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentSlugAliasPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TournamentSlugAliasFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentSlugAliasPayload>
+        }
+        findMany: {
+          args: Prisma.TournamentSlugAliasFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentSlugAliasPayload>[]
+        }
+        create: {
+          args: Prisma.TournamentSlugAliasCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentSlugAliasPayload>
+        }
+        createMany: {
+          args: Prisma.TournamentSlugAliasCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TournamentSlugAliasCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentSlugAliasPayload>[]
+        }
+        delete: {
+          args: Prisma.TournamentSlugAliasDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentSlugAliasPayload>
+        }
+        update: {
+          args: Prisma.TournamentSlugAliasUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentSlugAliasPayload>
+        }
+        deleteMany: {
+          args: Prisma.TournamentSlugAliasDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TournamentSlugAliasUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TournamentSlugAliasUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentSlugAliasPayload>[]
+        }
+        upsert: {
+          args: Prisma.TournamentSlugAliasUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TournamentSlugAliasPayload>
+        }
+        aggregate: {
+          args: Prisma.TournamentSlugAliasAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTournamentSlugAlias>
+        }
+        groupBy: {
+          args: Prisma.TournamentSlugAliasGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TournamentSlugAliasGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TournamentSlugAliasCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TournamentSlugAliasCountAggregateOutputType> | number
         }
       }
     }
@@ -4664,6 +4739,15 @@ export const TournamentWebhookScalarFieldEnum = {
 export type TournamentWebhookScalarFieldEnum = (typeof TournamentWebhookScalarFieldEnum)[keyof typeof TournamentWebhookScalarFieldEnum]
 
 
+export const TournamentSlugAliasScalarFieldEnum = {
+  slug: 'slug',
+  tournamentId: 'tournamentId',
+  createdAt: 'createdAt'
+} as const
+
+export type TournamentSlugAliasScalarFieldEnum = (typeof TournamentSlugAliasScalarFieldEnum)[keyof typeof TournamentSlugAliasScalarFieldEnum]
+
+
 export const TournamentCoOrganizerScalarFieldEnum = {
   id: 'id',
   tournamentId: 'tournamentId',
@@ -5636,6 +5720,7 @@ export type GlobalOmitConfig = {
   tournamentMediaAsset?: Prisma.TournamentMediaAssetOmit
   tournamentApiKey?: Prisma.TournamentApiKeyOmit
   tournamentWebhook?: Prisma.TournamentWebhookOmit
+  tournamentSlugAlias?: Prisma.TournamentSlugAliasOmit
   tournamentCoOrganizer?: Prisma.TournamentCoOrganizerOmit
   tournamentAuditLogEntry?: Prisma.TournamentAuditLogEntryOmit
   tournamentAnnouncement?: Prisma.TournamentAnnouncementOmit

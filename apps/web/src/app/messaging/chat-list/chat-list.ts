@@ -5,11 +5,12 @@ import { MyTeamSummary } from '@hockeyspare/contracts';
 import { TeamService } from '../../core/services/team';
 import { TranslatePipe } from '../../core/i18n/t.pipe';
 import { I18nService } from '../../core/i18n/i18n.service';
+import { LoaderComponent } from '../../shared/loader/loader';
 
 @Component({
   selector: 'app-chat-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, TranslatePipe],
+  imports: [LoaderComponent, CommonModule, RouterLink, TranslatePipe],
   templateUrl: './chat-list.html',
   styleUrl: './chat-list.scss',
 })

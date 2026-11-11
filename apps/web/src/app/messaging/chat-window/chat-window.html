@@ -7,7 +7,7 @@
 
   <div *ngIf="error()" class="alert alert-danger">{{ error() }}</div>
 
-  <div *ngIf="loading()" class="text-secondary">{{ 'Loading messages...' | t }}</div>
+  <app-loader *ngIf="loading()" [label]="'Loading messages...' | t"></app-loader>
 
   <div
     class="flex-grow-1 overflow-auto border rounded p-3 mb-3 bg-light"

@@ -21,9 +21,7 @@
 
   <div *ngIf="error()" class="alert alert-danger">{{ error() }}</div>
 
-  <div *ngIf="loading()" class="text-center text-secondary py-5">
-    {{ 'Loading my bookings...' | t }}
-  </div>
+  <app-loader *ngIf="loading()" [label]="'Loading my bookings...' | t"></app-loader>
 
   <ng-container *ngIf="!loading()">
     <div *ngIf="bookings().length === 0" class="card">

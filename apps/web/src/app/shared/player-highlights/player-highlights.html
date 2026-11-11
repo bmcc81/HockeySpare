@@ -10,9 +10,7 @@
     </div>
     <span class="scope">{{ (data()?.scopeLabel || 'Player highlights') | t }}</span>
   </header>
-  <p *ngIf="loading() && !data()" role="status" class="state">
-    {{ 'Loading player highlights…' | t }}
-  </p>
+  <app-loader *ngIf="loading() && !data()" [label]="'Loading player highlights…' | t" [compact]="true"></app-loader>
   <div *ngIf="error()" role="alert" class="state">
     {{ data() ? ('Could not refresh player highlights. Showing the last loaded results.' | t) : ('Player highlights could not be loaded.' | t) }}
     <button type="button" (click)="load(true)">{{ 'Try again' | t }}</button>

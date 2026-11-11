@@ -5,11 +5,12 @@ import { AdminTeamSummary } from '@hockeyspare/contracts';
 import { TeamService } from '../../core/services/team';
 import { TranslatePipe } from '../../core/i18n/t.pipe';
 import { I18nService } from '../../core/i18n/i18n.service';
+import { LoaderComponent } from '../../shared/loader/loader';
 
 @Component({
   selector: 'app-all-teams',
   standalone: true,
-  imports: [CommonModule, TranslatePipe],
+  imports: [LoaderComponent, CommonModule, TranslatePipe],
   templateUrl: './all-teams.html',
 })
 export class AllTeamsComponent implements OnInit {

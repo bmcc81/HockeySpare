@@ -173,7 +173,7 @@
   </ng-container>
 
   <ng-template #loadingTpl>
-    <p class="text-muted">{{ 'Loading auction…' | t }}</p>
+    <app-loader [label]="'Loading auction…' | t" [compact]="true"></app-loader>
   </ng-template>
   <ng-template #errorTpl>
     <div class="alert alert-danger">{{ error() }}</div>

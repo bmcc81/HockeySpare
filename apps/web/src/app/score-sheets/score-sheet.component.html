@@ -4,7 +4,7 @@
   </button>
 
   <div *ngIf="loading()" class="card">
-    <div class="card-body text-secondary">{{ 'Loading scoresheet...' | t }}</div>
+    <app-loader [label]="'Loading scoresheet...' | t"></app-loader>
   </div>
 
   <div *ngIf="!loading() && error" class="alert alert-danger">

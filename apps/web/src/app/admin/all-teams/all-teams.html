@@ -9,9 +9,7 @@
     </div>
   </div>
 
-  <div *ngIf="loading()" class="state-card">
-    {{ 'Loading teams...' | t }}
-  </div>
+  <app-loader *ngIf="loading()" [label]="'Loading teams...' | t"></app-loader>
 
   <div *ngIf="error()" class="alert alert-danger">
     {{ error() }}

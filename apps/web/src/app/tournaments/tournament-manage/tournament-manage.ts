@@ -46,6 +46,7 @@ import { VolunteerManagerComponent } from '../shared/volunteer-manager/volunteer
 import { ThankYouManagerComponent } from '../shared/thank-you-manager/thank-you-manager';
 import { TournamentManageAuctionComponent } from '../tournament-manage-auction/tournament-manage-auction';
 import { TranslatePipe, LocalDatePipe } from '../../core/i18n/t.pipe';
+import { LoaderComponent } from '../../shared/loader/loader';
 
 /** Plain-language names for the audit log's action codes (translated when shown). */
 const AUDIT_ACTION_LABELS: Record<string, string> = {
@@ -102,7 +103,7 @@ const AUDIT_ACTION_LABELS: Record<string, string> = {
 @Component({
   selector: 'app-tournament-manage',
   standalone: true,
-  imports: [
+  imports: [LoaderComponent, 
     CommonModule,
     ReactiveFormsModule,
     RouterLink,

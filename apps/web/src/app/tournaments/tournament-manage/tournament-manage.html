@@ -2073,7 +2073,7 @@
         </div>
 
         <div class="mt-3" *ngIf="showAuditLog()">
-          <div *ngIf="loadingAuditLog()" class="text-secondary">{{ 'Loading...' | t }}</div>
+          <app-loader *ngIf="loadingAuditLog()" [label]="'Loading...' | t" [compact]="true"></app-loader>
 
           <div
             *ngIf="!loadingAuditLog() && auditLog().length === 0"
@@ -2291,5 +2291,5 @@
 </section>
 
 <ng-template #loadingTpl>
-  <div class="container py-5 text-center text-secondary">{{ 'Loading...' | t }}</div>
+  <app-loader [label]="'Loading...' | t"></app-loader>
 </ng-template>

@@ -9,11 +9,12 @@ import { BookingApiService } from '../../core/services/bookings.service';
 import { RequestType, SpareRequest } from '@hockeyspare/contracts';
 import { TranslatePipe, LocalDatePipe } from '../../core/i18n/t.pipe';
 import { I18nService } from '../../core/i18n/i18n.service';
+import { LoaderComponent } from '../../shared/loader/loader';
 
 @Component({
   selector: 'app-request-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslatePipe, LocalDatePipe],
+  imports: [LoaderComponent, CommonModule, RouterModule, TranslatePipe, LocalDatePipe],
   templateUrl: './request-detail.html',
   styleUrl: './request-detail.scss',
 })

@@ -6,6 +6,7 @@ import { I18nService } from '../../core/i18n/i18n.service';
 import { LocalDatePipe, TranslatePipe } from '../../core/i18n/t.pipe';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
 import { buildVolunteerGrid, openSpots } from '../shared/volunteer-groups';
+import { LoaderComponent } from '../../shared/loader/loader';
 
 /**
  * Organizer-only grid of volunteer shifts (day by arena by time) that prints
@@ -14,7 +15,7 @@ import { buildVolunteerGrid, openSpots } from '../shared/volunteer-groups';
 @Component({
   selector: 'app-volunteer-sheet',
   standalone: true,
-  imports: [CommonModule, RouterLink, TranslatePipe, LocalDatePipe],
+  imports: [LoaderComponent, CommonModule, RouterLink, TranslatePipe, LocalDatePipe],
   templateUrl: './volunteer-sheet.html',
 })
 export class VolunteerSheetComponent implements OnInit {

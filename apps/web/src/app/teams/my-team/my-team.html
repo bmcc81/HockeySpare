@@ -1621,7 +1621,5 @@
 </ng-template>
 
 <ng-template #loadingTpl>
-  <section class="container py-5 text-center text-secondary">
-    {{ 'Loading team page...' | t }}
-  </section>
+  <app-loader [label]="'Loading team page...' | t"></app-loader>
 </ng-template>

@@ -8,13 +8,14 @@ import {
 } from '../../core/services/bookings-api';
 import { TranslatePipe, LocalDatePipe } from '../../core/i18n/t.pipe';
 import { I18nService } from '../../core/i18n/i18n.service';
+import { LoaderComponent } from '../../shared/loader/loader';
 
 type BookingStatusFilter = 'ALL' | BookingStatus;
 
 @Component({
   selector: 'app-incoming-bookings',
   standalone: true,
-  imports: [CommonModule, TranslatePipe, LocalDatePipe],
+  imports: [LoaderComponent, CommonModule, TranslatePipe, LocalDatePipe],
   templateUrl: './incoming-bookings.html',
   styleUrl: './incoming-bookings.scss',
 })

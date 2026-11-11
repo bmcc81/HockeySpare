@@ -21,13 +21,14 @@ import { TeamService } from '../../core/services/team';
 import { AuthStateService } from '../../auth/auth-state.service';
 import { TranslatePipe, LocalDatePipe } from '../../core/i18n/t.pipe';
 import { I18nService } from '../../core/i18n/i18n.service';
+import { LoaderComponent } from '../../shared/loader/loader';
 
 const POLL_INTERVAL_MS = 10000;
 
 @Component({
   selector: 'app-chat-window',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslatePipe, LocalDatePipe],
+  imports: [LoaderComponent, CommonModule, ReactiveFormsModule, RouterLink, TranslatePipe, LocalDatePipe],
   templateUrl: './chat-window.html',
   styleUrl: './chat-window.scss',
 })

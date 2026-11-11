@@ -283,6 +283,6 @@
       </ng-container>
     </ng-container>
 
-    <ng-template #loadingTpl><p class="text-muted mb-0">{{ 'Loading auction…' | t }}</p></ng-template>
+    <ng-template #loadingTpl><app-loader [label]="'Loading auction…' | t" [compact]="true"></app-loader></ng-template>
   </div>
 </div>

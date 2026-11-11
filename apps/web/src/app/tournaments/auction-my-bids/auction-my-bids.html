@@ -75,6 +75,6 @@
     </ng-container>
   </ng-container>
 
-  <ng-template #loadingTpl><p class="text-muted">{{ 'Loading…' | t }}</p></ng-template>
+  <ng-template #loadingTpl><app-loader [label]="'Loading…' | t"></app-loader></ng-template>
   <ng-template #errorTpl><div class="alert alert-danger">{{ error() }}</div></ng-template>
 </section>

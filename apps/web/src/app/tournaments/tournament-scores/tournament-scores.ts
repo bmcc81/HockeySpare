@@ -12,6 +12,7 @@ import { Subscription, interval } from 'rxjs';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { LocalDatePipe, TranslatePipe } from '../../core/i18n/t.pipe';
+import { LoaderComponent } from '../../shared/loader/loader';
 
 const REFRESH_MS = 30000;
 const SAVE_DEBOUNCE_MS = 600;
@@ -28,7 +29,7 @@ type SaveState = 'saving' | 'saved' | 'error';
 @Component({
   selector: 'app-tournament-scores',
   standalone: true,
-  imports: [CommonModule, RouterLink, TranslatePipe, LocalDatePipe],
+  imports: [LoaderComponent, CommonModule, RouterLink, TranslatePipe, LocalDatePipe],
   templateUrl: './tournament-scores.html',
 })
 export class TournamentScoresComponent implements OnInit, OnDestroy {

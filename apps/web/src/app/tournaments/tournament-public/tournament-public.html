@@ -354,9 +354,7 @@
     </div>
 
     <div *ngIf="activeTab() === 'standings'">
-      <div *ngIf="standingsLoading()" class="text-secondary">
-        {{ 'Loading standings...' | t }}
-      </div>
+      <app-loader *ngIf="standingsLoading()" [label]="'Loading standings...' | t" [compact]="true"></app-loader>
 
       <div
         *ngIf="!standingsLoading() && standings().length === 0"
@@ -1041,5 +1039,5 @@
 </section>
 
 <ng-template #loadingTpl>
-  <div class="container py-5 text-center text-secondary">{{ 'Loading...' | t }}</div>
+  <app-loader [label]="'Loading...' | t"></app-loader>
 </ng-template>

@@ -1,7 +1,7 @@
 <section class="league-detail-page">
   <a routerLink="/leagues" class="back-link">{{ '← Back to leagues' | t }}</a>
 
-  <div *ngIf="loading()" class="state-card">{{ 'Loading league...' | t }}</div>
+  <app-loader *ngIf="loading()" [label]="'Loading league...' | t"></app-loader>
 
   <div *ngIf="error()" class="alert alert-danger">{{ error() }}</div>
 
@@ -333,9 +333,7 @@
             {{ standingsError() }}
           </div>
 
-          <div *ngIf="standingsLoading()" class="empty">
-            {{ 'Loading standings...' | t }}
-          </div>
+          <app-loader *ngIf="standingsLoading()" [label]="'Loading standings...' | t" [compact]="true"></app-loader>
 
           <div
             *ngIf="!standingsLoading() && standings().length === 0"

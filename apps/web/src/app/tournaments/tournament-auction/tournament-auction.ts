@@ -11,6 +11,7 @@ import { Subscription, interval, switchMap } from 'rxjs';
 import { AuctionApiService } from '../../core/services/auction-api.service';
 import { TranslatePipe } from '../../core/i18n/t.pipe';
 import { I18nService } from '../../core/i18n/i18n.service';
+import { LoaderComponent } from '../../shared/loader/loader';
 
 const POLL_MS = 15000;
 const TICK_MS = 1000;
@@ -25,7 +26,7 @@ interface StoredBidder {
 @Component({
   selector: 'app-tournament-auction',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslatePipe],
+  imports: [LoaderComponent, CommonModule, ReactiveFormsModule, RouterLink, TranslatePipe],
   templateUrl: './tournament-auction.html',
 })
 export class TournamentAuctionComponent implements OnInit, OnDestroy {

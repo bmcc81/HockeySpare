@@ -1,7 +1,7 @@
 <section class="container py-4" style="max-width: 640px">
   <h1 class="h3 mb-3">{{ 'Messages' | t }}</h1>
 
-  <div *ngIf="loading()" class="text-secondary">{{ 'Loading your teams...' | t }}</div>
+  <app-loader *ngIf="loading()" [label]="'Loading your teams...' | t"></app-loader>
 
   <div *ngIf="error()" class="alert alert-danger">{{ error() }}</div>
 

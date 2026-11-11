@@ -5,11 +5,12 @@ import { LeagueDto } from '@hockeyspare/contracts';
 import { LeaguesApiService } from '../../core/services/leagues-api.service';
 import { TranslatePipe } from '../../core/i18n/t.pipe';
 import { I18nService } from '../../core/i18n/i18n.service';
+import { LoaderComponent } from '../../shared/loader/loader';
 
 @Component({
   selector: 'app-leagues-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, TranslatePipe],
+  imports: [LoaderComponent, CommonModule, RouterLink, TranslatePipe],
   templateUrl: './leagues-list.html',
   styleUrl: './leagues-list.scss',
 })

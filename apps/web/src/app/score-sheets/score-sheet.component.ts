@@ -16,6 +16,7 @@ import {
 import { ScoreSheetsApiService } from '../core/services/score-sheets-api.service';
 import { TranslatePipe, LocalDatePipe } from '../core/i18n/t.pipe';
 import { I18nService } from '../core/i18n/i18n.service';
+import { LoaderComponent } from '../shared/loader/loader';
 
 type ScoreSheetPlayerLineGroup = {
   teamId: string;
@@ -29,7 +30,7 @@ type ScoreSheetPlayerLineGroup = {
 @Component({
   selector: 'app-score-sheet',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, LocalDatePipe],
+  imports: [LoaderComponent, CommonModule, ReactiveFormsModule, TranslatePipe, LocalDatePipe],
   templateUrl: './score-sheet.component.html',
 })
 export class ScoreSheetComponent implements OnInit {

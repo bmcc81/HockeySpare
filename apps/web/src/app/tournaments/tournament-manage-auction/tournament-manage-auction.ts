@@ -18,6 +18,7 @@ import { Subscription, interval, switchMap } from 'rxjs';
 import { AuctionApiService } from '../../core/services/auction-api.service';
 import { TranslatePipe, LocalDatePipe } from '../../core/i18n/t.pipe';
 import { I18nService } from '../../core/i18n/i18n.service';
+import { LoaderComponent } from '../../shared/loader/loader';
 
 const POLL_MS = 20000;
 
@@ -33,7 +34,7 @@ function toLocalInput(iso: string | null | undefined): string {
 @Component({
   selector: 'app-tournament-manage-auction',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslatePipe, LocalDatePipe],
+  imports: [LoaderComponent, CommonModule, ReactiveFormsModule, RouterLink, TranslatePipe, LocalDatePipe],
   templateUrl: './tournament-manage-auction.html',
 })
 export class TournamentManageAuctionComponent implements OnInit, OnDestroy {

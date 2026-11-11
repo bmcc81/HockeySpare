@@ -37,6 +37,7 @@ import { groupVolunteerShifts } from '../shared/volunteer-groups';
 import { announcementSummary, parseAnnouncement } from '../shared/announcement-view';
 import { pickLanguage } from '../../core/i18n/pick-language';
 import { AuthStateService } from '../../auth/auth-state.service';
+import { LoaderComponent } from '../../shared/loader/loader';
 
 type TournamentTab =
   | 'schedule'
@@ -78,7 +79,7 @@ const BANNER_ROTATE_MS = 5000;
 @Component({
   selector: 'app-tournament-public',
   standalone: true,
-  imports: [
+  imports: [LoaderComponent, 
     PlayerHighlightsComponent,
     CommonModule,
     ReactiveFormsModule,

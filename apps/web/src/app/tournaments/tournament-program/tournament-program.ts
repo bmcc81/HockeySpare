@@ -6,11 +6,12 @@ import { TournamentsApiService } from '../../core/services/tournaments-api.servi
 import { QrCodeComponent } from '../shared/qr-code/qr-code';
 import { TranslatePipe, LocalDatePipe } from '../../core/i18n/t.pipe';
 import { I18nService } from '../../core/i18n/i18n.service';
+import { LoaderComponent } from '../../shared/loader/loader';
 
 @Component({
   selector: 'app-tournament-program',
   standalone: true,
-  imports: [CommonModule, QrCodeComponent, TranslatePipe, LocalDatePipe],
+  imports: [LoaderComponent, CommonModule, QrCodeComponent, TranslatePipe, LocalDatePipe],
   templateUrl: './tournament-program.html',
 })
 export class TournamentProgramComponent implements OnInit {

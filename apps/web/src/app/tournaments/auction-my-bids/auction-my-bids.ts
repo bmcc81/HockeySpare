@@ -5,11 +5,12 @@ import { MyBidsView } from '@hockeyspare/contracts';
 import { AuctionApiService } from '../../core/services/auction-api.service';
 import { TranslatePipe } from '../../core/i18n/t.pipe';
 import { I18nService } from '../../core/i18n/i18n.service';
+import { LoaderComponent } from '../../shared/loader/loader';
 
 @Component({
   selector: 'app-auction-my-bids',
   standalone: true,
-  imports: [CommonModule, RouterLink, TranslatePipe],
+  imports: [LoaderComponent, CommonModule, RouterLink, TranslatePipe],
   templateUrl: './auction-my-bids.html',
 })
 export class AuctionMyBidsComponent implements OnInit {

@@ -13,9 +13,7 @@
     </a>
   </div>
 
-  <div *ngIf="loading()" class="state-card">
-    {{ 'Loading leagues...' | t }}
-  </div>
+  <app-loader *ngIf="loading()" [label]="'Loading leagues...' | t"></app-loader>
 
   <div *ngIf="error()" class="alert alert-danger">
     {{ error() }}

@@ -12,11 +12,12 @@ import {
 import { PlayerHighlights } from '@hockeyspare/contracts';
 import { Subscription } from 'rxjs';
 import { TranslatePipe, LocalDatePipe } from '../../core/i18n/t.pipe';
+import { LoaderComponent } from '../loader/loader';
 
 @Component({
   selector: 'app-player-highlights',
   standalone: true,
-  imports: [CommonModule, TranslatePipe, LocalDatePipe],
+  imports: [LoaderComponent, CommonModule, TranslatePipe, LocalDatePipe],
   templateUrl: './player-highlights.html',
   styleUrl: './player-highlights.scss',
 })

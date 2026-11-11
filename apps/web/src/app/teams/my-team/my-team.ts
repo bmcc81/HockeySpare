@@ -21,11 +21,12 @@ import {
 import { TeamService } from '../../core/services/team';
 import { TranslatePipe, LocalDatePipe } from '../../core/i18n/t.pipe';
 import { I18nService } from '../../core/i18n/i18n.service';
+import { LoaderComponent } from '../../shared/loader/loader';
 
 @Component({
   selector: 'app-my-team',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, LocalDatePipe],
+  imports: [LoaderComponent, CommonModule, ReactiveFormsModule, TranslatePipe, LocalDatePipe],
   templateUrl: './my-team.html',
   styleUrl: './my-team.scss',
 })

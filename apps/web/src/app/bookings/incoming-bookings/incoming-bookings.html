@@ -92,9 +92,7 @@
     </div>
   </div>
 
-  <div *ngIf="loading()" class="text-center text-secondary py-5">
-    {{ 'Loading incoming bookings...' | t }}
-  </div>
+  <app-loader *ngIf="loading()" [label]="'Loading incoming bookings...' | t"></app-loader>
 
   <ng-container *ngIf="!loading()">
     <div *ngIf="bookings().length === 0" class="card">

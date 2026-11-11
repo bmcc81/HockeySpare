@@ -4,11 +4,12 @@ import { RouterLink } from '@angular/router';
 import { Tournament } from '@hockeyspare/contracts';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
 import { TranslatePipe } from '../../core/i18n/t.pipe';
+import { LoaderComponent } from '../../shared/loader/loader';
 
 @Component({
   selector: 'app-tournaments-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, TranslatePipe],
+  imports: [LoaderComponent, CommonModule, RouterLink, TranslatePipe],
   templateUrl: './tournaments-list.html',
 })
 export class TournamentsListComponent implements OnInit {

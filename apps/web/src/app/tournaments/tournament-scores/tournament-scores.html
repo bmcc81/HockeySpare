@@ -73,7 +73,7 @@
   </a>
 
   <div *ngIf="error()" class="alert alert-danger">{{ error() }}</div>
-  <div *ngIf="loading()" class="text-secondary">{{ 'Loading...' | t }}</div>
+  <app-loader *ngIf="loading()" [label]="'Loading...' | t"></app-loader>
 
   <ng-container *ngIf="tournament() as t">
     <h1 class="h4 mb-0">{{ 'Score entry' | t }}</h1>

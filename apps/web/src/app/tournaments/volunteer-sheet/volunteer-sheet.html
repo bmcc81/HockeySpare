@@ -127,7 +127,7 @@
   </div>
 </div>
 
-<div *ngIf="loading()" class="text-secondary">{{ 'Loading...' | t }}</div>
+<app-loader *ngIf="loading()" [label]="'Loading...' | t"></app-loader>
 <div *ngIf="error()" class="alert alert-danger">{{ error() }}</div>
 
 <ng-container *ngIf="!loading() && !error()">

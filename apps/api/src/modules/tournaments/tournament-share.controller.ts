@@ -32,7 +32,7 @@ export class TournamentShareController {
       return;
     }
 
-    const tags = buildShareTags(info, origin, `${origin}/images/hockey-hero.png`);
+    const tags = buildShareTags(info, origin, `${origin}/images/hockey-share.jpg`);
     res.send(indexHtml ? injectShareTags(indexHtml, tags) : fallbackHtml(tags));
   }
 

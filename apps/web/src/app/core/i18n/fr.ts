@@ -1441,5 +1441,9 @@ export const FR: Record<string, string> = {
   "Could not add this name.": "Impossible d’ajouter ce nom.",
   "Could not remove this name.": "Impossible de retirer ce nom.",
   "We emailed you a confirmation.": "Nous vous avons envoyé une confirmation par courriel.",
+  "You are booked, but we could not email you a confirmation.": "Votre quart est réservé, mais nous n'avons pas pu vous envoyer de confirmation par courriel.",
+  "Please note your shift and the time. The organizers can confirm it with you if you ask.": "Veuillez noter votre quart et l'heure. Les organisateurs peuvent vous le confirmer si vous le demandez.",
+  "These volunteers are booked, but their confirmation email could not be sent:": "Ces bénévoles sont inscrits, mais leur courriel de confirmation n'a pas pu être envoyé :",
+  "Contact them directly to confirm their shift.": "Communiquez directement avec eux pour confirmer leur quart.",
   "To post in English and French, write both on each line, separated by \" | \" (English | Français). Visitors see their own language. The first line of a longer post becomes its heading.": "Pour publier en français et en anglais, écrivez les deux sur chaque ligne, séparés par « | » (English | Français). Chaque visiteur voit sa langue. La première ligne d’un long message devient son titre.",
 };

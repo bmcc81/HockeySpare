@@ -817,6 +817,13 @@ export class TournamentsController {
     return this.tournamentsService.listVolunteerShifts(this.getUserId(req), id);
   }
 
+  // Organizer view: volunteers who signed up but did not get a confirmation email.
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/volunteer-email-problems')
+  listVolunteerEmailProblems(@Req() req: AuthRequest, @Param('id') id: string) {
+    return this.tournamentsService.listVolunteerEmailProblems(this.getUserId(req), id);
+  }
+
   @UseGuards(JwtAuthGuard)
   @Patch(':id/volunteer-shifts/:shiftId')
   updateVolunteerShift(

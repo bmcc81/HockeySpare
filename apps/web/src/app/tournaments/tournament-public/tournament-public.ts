@@ -158,7 +158,8 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
   volunteerSignupError = signal<string | null>(null);
   volunteerSignupSuccessShiftId = signal<string | null>(null);
   /** True when the last sign-up also got a confirmation email. */
-  volunteerConfirmationEmailed = signal(false);
+  /** true: emailed, false: booked but the email failed, null: no email was attempted (organizer preview). */
+  volunteerConfirmationEmailed = signal<boolean | null>(null);
 
   /**
    * Set when sign-up is still closed to the public and the signed-in viewer is
@@ -796,9 +797,8 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
           this.submittingVolunteerSignup.set(false);
           this.signingUpShiftId.set(null);
           this.volunteerSignupSuccessShiftId.set(shiftId);
-          this.volunteerConfirmationEmailed.set(
-            (result as { confirmationEmailSent?: boolean }).confirmationEmailSent === true,
-          );
+          const emailed = (result as { confirmationEmailSent?: unknown }).confirmationEmailSent;
+          this.volunteerConfirmationEmailed.set(typeof emailed === 'boolean' ? emailed : null);
           this.tournamentsApi.getPublic(this.tournamentId).subscribe({
             next: (tournament) => {
               this.tournament.set(tournament);

@@ -57,6 +57,9 @@ import { AiService } from '../../ai/ai.service';
 import { createHmac, randomBytes } from 'crypto';
 import type Stripe from 'stripe';
 
+/** Audit action for a volunteer who signed up but could not be emailed a confirmation. */
+export const VOLUNTEER_EMAIL_FAILED = 'VOLUNTEER_EMAIL_FAILED';
+
 @Injectable()
 export class TournamentsService {
   private readonly logger = new Logger(TournamentsService.name);
@@ -3253,7 +3256,46 @@ export class TournamentsService {
       shift,
     });
 
+    if (!confirmationEmailSent) {
+      await this.recordVolunteerEmailProblem(tournamentId, signup, shift);
+    }
+
     return { ...signup, confirmationEmailSent };
+  }
+
+  /**
+   * A confirmation email that could not be sent is written to the audit log, so
+   * organizers can see who to contact. It never blocks or undoes the signup.
+   */
+  private async recordVolunteerEmailProblem(
+    tournamentId: string,
+    signup: { name: string; email: string | null },
+    shift: { role: string; startsAt: Date },
+  ): Promise<void> {
+    try {
+      await this.prisma.tournamentAuditLogEntry.create({
+        data: {
+          tournamentId,
+          userId: null,
+          action: VOLUNTEER_EMAIL_FAILED,
+          detail: `${signup.name} <${signup.email ?? ''}> - ${shift.role}, ${shift.startsAt.toISOString()}`,
+        },
+      });
+    } catch (err) {
+      this.logger.warn(`Could not record the failed volunteer email: ${(err as Error).message}`);
+    }
+  }
+
+  /** Organizer view: volunteers who signed up but did not get a confirmation email. */
+  async listVolunteerEmailProblems(userId: string, tournamentId: string) {
+    await this.getOwnedTournament(userId, tournamentId);
+
+    return this.prisma.tournamentAuditLogEntry.findMany({
+      where: { tournamentId, action: VOLUNTEER_EMAIL_FAILED },
+      select: { id: true, detail: true, createdAt: true },
+      orderBy: { createdAt: 'desc' },
+      take: 100,
+    });
   }
 
   /**

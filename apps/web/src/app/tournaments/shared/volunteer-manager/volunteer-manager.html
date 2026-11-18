@@ -38,6 +38,20 @@
 
     <div *ngIf="error()" class="alert alert-danger py-2">{{ error() }}</div>
 
+    <div *ngIf="emailProblems().length > 0" class="alert alert-warning py-2">
+      <strong>
+        {{ 'These volunteers are booked, but their confirmation email could not be sent:' | t }}
+      </strong>
+      <ul class="mb-0 mt-1 small">
+        <li *ngFor="let problem of emailProblems()">
+          {{ problem.detail }} ({{ problem.createdAt | ldate: 'MMM d, h:mm a' }})
+        </li>
+      </ul>
+      <div class="small mt-1">
+        {{ 'Contact them directly to confirm their shift.' | t }}
+      </div>
+    </div>
+
     <form [formGroup]="shiftForm" (ngSubmit)="addShift()" class="row g-2 mb-3">
       <div class="col-12 col-md-3">
         <label class="form-label">{{ 'Role' | t }}</label>

@@ -83,8 +83,16 @@ export class VolunteerManagerComponent implements OnInit {
     return this.open !== false;
   }
 
+  /** Volunteers who are booked but did not get a confirmation email, newest first. */
+  emailProblems = signal<{ id: string; detail: string | null; createdAt: string }[]>([]);
+
   ngOnInit(): void {
     this.load();
+    // A warning only: if it cannot be loaded the rest of the page still works.
+    this.api.listVolunteerEmailProblems(this.tournamentId).subscribe({
+      next: (problems) => this.emailProblems.set(problems),
+      error: () => this.emailProblems.set([]),
+    });
   }
 
   filled(shift: TournamentVolunteerShift): number {

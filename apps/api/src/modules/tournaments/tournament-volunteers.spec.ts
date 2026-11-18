@@ -243,6 +243,102 @@ describe('TournamentsService volunteers', () => {
     });
   });
 
+  describe('failed confirmation emails are recorded for organizers', () => {
+    const dto = { name: 'Pat', email: 'Pat@Example.com' };
+
+    function setup(email: Record<string, unknown>, auditCreate: jest.Mock) {
+      const prisma = {
+        tournamentVolunteerShift: {
+          findFirst: jest.fn().mockResolvedValue(shift({ capacity: 3 })),
+        },
+        tournamentVolunteerSignup: {
+          findFirst: jest.fn().mockResolvedValue(null),
+          create: jest
+            .fn()
+            .mockResolvedValue({ id: 's1', name: 'Pat', email: 'pat@example.com' }),
+        },
+        tournamentAuditLogEntry: { create: auditCreate },
+      };
+      return makeService(prisma, email);
+    }
+
+    const failingMail = {
+      isConfigured: true,
+      getAppUrl: () => 'https://site.example',
+      sendMail: jest.fn().mockRejectedValue(new Error('525 5.7.1 Unauthorized IP address')),
+    };
+
+    it('writes an audit entry when the email could not be sent', async () => {
+      const auditCreate = jest.fn().mockResolvedValue({});
+
+      await setup(failingMail, auditCreate).signUpForVolunteerShift('t1', 'shift1', dto);
+
+      expect(auditCreate).toHaveBeenCalledTimes(1);
+      const data = auditCreate.mock.calls[0][0].data;
+      expect(data.tournamentId).toBe('t1');
+      expect(data.userId).toBeNull();
+      expect(data.action).toBe('VOLUNTEER_EMAIL_FAILED');
+      expect(data.detail).toContain('Pat <pat@example.com>');
+      expect(data.detail).toContain('Timekeeper');
+    });
+
+    it('records it too when mail is not set up at all', async () => {
+      const auditCreate = jest.fn().mockResolvedValue({});
+
+      await setup({ isConfigured: false }, auditCreate).signUpForVolunteerShift(
+        't1',
+        'shift1',
+        dto,
+      );
+
+      expect(auditCreate).toHaveBeenCalledTimes(1);
+    });
+
+    it('writes nothing when the email went out', async () => {
+      const auditCreate = jest.fn();
+      const mail = {
+        isConfigured: true,
+        getAppUrl: () => 'https://site.example',
+        sendMail: jest.fn().mockResolvedValue(undefined),
+      };
+
+      await setup(mail, auditCreate).signUpForVolunteerShift('t1', 'shift1', dto);
+
+      expect(auditCreate).not.toHaveBeenCalled();
+    });
+
+    it('still books the shift if the audit entry cannot be saved', async () => {
+      const auditCreate = jest.fn().mockRejectedValue(new Error('db down'));
+
+      const result = await setup(failingMail, auditCreate).signUpForVolunteerShift(
+        't1',
+        'shift1',
+        dto,
+      );
+
+      expect(result.id).toBe('s1');
+      expect(result.confirmationEmailSent).toBe(false);
+    });
+
+    it('lists the problems for the tournament owner', async () => {
+      const rows = [{ id: 'a1', detail: 'Pat <p@x.com> - Timekeeper', createdAt: new Date() }];
+      const findMany = jest.fn().mockResolvedValue(rows);
+      const service = makeService({
+        tournament: {
+          findUnique: jest.fn().mockResolvedValue({ id: 't1', createdById: 'org1' }),
+        },
+        tournamentAuditLogEntry: { findMany },
+      });
+
+      await expect(service.listVolunteerEmailProblems('org1', 't1')).resolves.toBe(rows);
+      expect(findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { tournamentId: 't1', action: 'VOLUNTEER_EMAIL_FAILED' },
+        }),
+      );
+    });
+  });
+
   describe('organizer actions', () => {
     // Owner of the tournament, so the manage check passes.
     const tournamentRow = { id: 't1', createdById: 'org1' };

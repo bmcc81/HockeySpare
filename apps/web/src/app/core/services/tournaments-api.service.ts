@@ -679,6 +679,15 @@ export class TournamentsApiService {
     );
   }
 
+  /** Volunteers who signed up but could not be emailed a confirmation (organizers only). */
+  listVolunteerEmailProblems(
+    tournamentId: string,
+  ): Observable<{ id: string; detail: string | null; createdAt: string }[]> {
+    return this.http.get<{ id: string; detail: string | null; createdAt: string }[]>(
+      `/api/tournaments/${tournamentId}/volunteer-email-problems`,
+    );
+  }
+
   updateVolunteerShift(
     tournamentId: string,
     shiftId: string,

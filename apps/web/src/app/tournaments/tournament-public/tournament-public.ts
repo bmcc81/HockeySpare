@@ -25,7 +25,8 @@ import {
   TournamentVenue,
   TournamentVolunteerShift,
 } from '@hockeyspare/contracts';
-import { Subscription, interval, switchMap } from 'rxjs';
+import { Subscription, filter, fromEvent, interval, merge, switchMap } from 'rxjs';
+import { shouldPollLiveScores } from './live-poll';
 import { TournamentsApiService } from '../../core/services/tournaments-api.service';
 import { AnalyticsService } from '../../core/analytics/analytics.service';
 import { AuctionApiService } from '../../core/services/auction-api.service';
@@ -229,8 +230,22 @@ export class TournamentPublicComponent implements OnInit, OnDestroy {
 
     // Lightweight polling so anyone viewing the schedule sees live scores
     // update without a manual refresh, without needing a websocket setup.
-    this.pollSubscription = interval(LIVE_SCORE_POLL_INTERVAL_MS)
-      .pipe(switchMap(() => this.tournamentsApi.getPublic(this.tournamentId)))
+    // It pauses while the tab is in the background and stops once the
+    // tournament is over; coming back to the tab refreshes right away.
+    const backToTab$ = fromEvent(document, 'visibilitychange').pipe(
+      filter(() => !document.hidden),
+    );
+
+    this.pollSubscription = merge(interval(LIVE_SCORE_POLL_INTERVAL_MS), backToTab$)
+      .pipe(
+        filter(() =>
+          shouldPollLiveScores({
+            hidden: document.hidden,
+            endDate: this.tournament()?.endDate,
+          }),
+        ),
+        switchMap(() => this.tournamentsApi.getPublic(this.tournamentId)),
+      )
       .subscribe({
         next: (tournament) => {
           this.tournament.set(tournament);
